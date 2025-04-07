@@ -1,9 +1,14 @@
-package com.thelegendofbald.ui;
+package com.thelegendofbald.ui.model;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
+
+    public GamePanel(Dimension size) {
+        this.setPreferredSize(size);
+        this.setBackground(Color.BLACK);
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
