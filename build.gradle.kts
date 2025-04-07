@@ -44,10 +44,10 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
 }
 
-application {
+/*application {
     // Define the main class for the application.
     mainClass.set("it.unibo.sampleapp.RateAMovie")
-}
+}*/
 
 tasks.test {
     useJUnitPlatform()
