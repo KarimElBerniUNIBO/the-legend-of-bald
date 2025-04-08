@@ -86,4 +86,6 @@ public class Bald extends Entity {
         this.x += speedX;
         this.y += speedY;
     }
+
+    
 }

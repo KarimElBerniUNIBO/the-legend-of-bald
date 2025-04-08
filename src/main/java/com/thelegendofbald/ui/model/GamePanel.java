@@ -3,7 +3,7 @@ package com.thelegendofbald.ui.model;
 import javax.swing.*;
 
 import com.thelegendofbald.characters.Bald;
-
+import com.thelegendofbald.characters.DummyEnemy;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -18,7 +18,8 @@ public class GamePanel extends JPanel {
     
     private BufferedImage image;
     private static String path;
-    private final Bald bald = new Bald(60, 60, 100, "Bald", 50); // Create an instance of Bald
+    private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
+    private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);// Create an instance of Bald
     Timer timer = new Timer(16, e -> update()); // 60 FPS (1000ms / 60 ≈ 16ms)
     public GamePanel(Dimension size, String path) {
         timer.start();
@@ -98,10 +99,15 @@ public class GamePanel extends JPanel {
             g.fillRect(100, 100, 50, 50);
         }
         bald.render(g);
+        dummyenemy.render(g);
+
     }
 
     public void update() {
         bald.move();
+        dummyenemy.followPlayer(bald);
+        dummyenemy.updateAnimation();
+        
         repaint(); // Repaint the panel to reflect changes
     }
     

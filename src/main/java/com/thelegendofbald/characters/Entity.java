@@ -19,6 +19,6 @@ public abstract class Entity {
     public int getY() { return y; }
     public void setY(int y) { this.y = y; }
     public int getHealth() { return health; }
-    public void setHealth(int health) { this.health = health; }
+    public void setHealth(int health) {this.health = health;}
 
 }
