@@ -20,7 +20,6 @@ repositories { // Where to search for dependencies
 }
 
 dependencies {
-
     // Suppressions for SpotBugs
     compileOnly("com.github.spotbugs:spotbugs-annotations:4.9.3")
 
@@ -44,10 +43,10 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
 }
 
-/*application {
+application {
     // Define the main class for the application.
     mainClass.set("it.unibo.sampleapp.RateAMovie")
-}*/
+}
 
 tasks.test {
     useJUnitPlatform()

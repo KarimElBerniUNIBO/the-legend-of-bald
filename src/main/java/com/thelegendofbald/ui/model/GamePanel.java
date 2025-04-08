@@ -3,8 +3,10 @@ package com.thelegendofbald.ui.model;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 
@@ -30,15 +32,23 @@ public class GamePanel extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
     
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        // Logica per disegnare il gioco (esempio: disegnare il personaggio)
-        g.setColor(Color.RED);
-        g.fillRect(100, 100, 50, 50);  // Disegna un quadrato rosso come esempio
+        // Draw the image instead of the red square
+        if (image != null) {
+            g.drawImage(image, 100, 100, 50, 50, null);
+        } else {
+            // Fallback to the square if image loading failed
+            g.setColor(Color.RED);
+            g.fillRect(100, 100, 50, 50);
+        }
     }
+    
 }
 
