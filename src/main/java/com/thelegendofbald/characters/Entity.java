@@ -4,15 +4,12 @@ import java.awt.Graphics;
 
 public abstract class Entity {
     protected int x, y; // Posizione
-    protected int width, height; // Dimensioni
     protected int health; // Vita
     protected String name; // Nome dell'entità
 
-    public Entity(int x, int y, int width, int height, int health, String name) {
+    public Entity(int x, int y, int health, String name) {
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
         this.health = health;
         this.name = name;
     }

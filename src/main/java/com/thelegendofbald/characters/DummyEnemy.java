@@ -2,10 +2,22 @@ package com.thelegendofbald.characters;
 
 import java.awt.Graphics;
 
-public class Bald extends Entity {
+public class DummyEnemy extends Entity {
+
+    @Override
+    public void update() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    @Override
+    public void render(Graphics g) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'render'");
+    }
     private int attackPower; // Potenza d'attacco
 
-    public Bald(int x, int y, int health, String name, int attackPower ) {
+    public DummyEnemy(int x, int y, int health, String name, int attackPower) {
         super(x, y, health, name);
         this.attackPower = attackPower;
     }
@@ -13,9 +25,7 @@ public class Bald extends Entity {
     public int getAttackPower() { 
         return attackPower; 
     }
-    public void setAttackPower(int attackPower) { 
-        this.attackPower = attackPower; 
-    }
+
 
     public void takeDamage(int damage) {
         this.health -= damage;
@@ -30,17 +40,12 @@ public class Bald extends Entity {
 
     @Override
     public void update() {
-        // Logica di aggiornamento per Bald
+        // Logica di aggiornamento per DummyEnemy
     }
 
     @Override
     public void render(Graphics g) {
-        // Logica di rendering per Bald
-    }
-    public void attack(Entity target) {
-
-            target.setHealth(target.getHealth() - attackPower);
-
+        // Logica di rendering per DummyEnemy
     }
     
 }
