@@ -1,10 +1,15 @@
 package com.thelegendofbald.ui.model;
 
 import javax.swing.*;
+
+import com.thelegendofbald.characters.Bald;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 import javax.imageio.ImageIO;
@@ -12,17 +17,64 @@ import javax.imageio.ImageIO;
 public class GamePanel extends JPanel {
     
     private BufferedImage image;
-
-    public GamePanel(Dimension size) {
+    private static String path;
+    private final Bald bald = new Bald(60, 60, 100, "Bald", 50); // Create an instance of Bald
+    Timer timer = new Timer(16, e -> update()); // 60 FPS (1000ms / 60 ≈ 16ms)
+    public GamePanel(Dimension size, String path) {
+        timer.start();
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
+        this.path = path;
         loadImage();
+        setFocusable(true);
+        requestFocusInWindow();
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                handleKeyPress(e);
+            }
+    
+            @Override
+            public void keyReleased(KeyEvent e) {
+                handleKeyRelease(e);
+            }
+        });
+    }
+        
+
+    private void handleKeyPress(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_UP: // Freccia su
+                bald.setSpeedY(-5); // Muovi Bald verso l'alto
+             break;
+            case KeyEvent.VK_DOWN: // Freccia giù
+                bald.setSpeedY(5); // Muovi Bald verso il basso
+                break;
+            case KeyEvent.VK_LEFT: // Freccia sinistra
+                bald.setSpeedX(-5); // Muovi Bald verso sinistra
+                break;
+            case KeyEvent.VK_RIGHT: // Freccia destra
+                bald.setSpeedX(5); // Muovi Bald verso destra
+                break;
+        }
+    }
+    private void handleKeyRelease(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_DOWN:
+                bald.setSpeedY(0); // Ferma il movimento verticale
+                break;
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_RIGHT:
+                bald.setSpeedX(0); // Ferma il movimento orizzontale
+                break;
+        }
     }
 
     private void loadImage() {
         try {
             // Load image from resources folder (adjust path as needed)
-            InputStream is = getClass().getResourceAsStream("/images/character.png");
+            InputStream is = getClass().getResourceAsStream(this.path);
             if (is != null) {
                 image = ImageIO.read(is);
             } else {
@@ -36,16 +88,23 @@ public class GamePanel extends JPanel {
     }
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
-        // Draw the image instead of the red square
+
+
         if (image != null) {
-            g.drawImage(image, 100, 100, 50, 50, null);
+            g.drawImage(image, 0, 0, 900, 600, null);
         } else {
             // Fallback to the square if image loading failed
             g.setColor(Color.RED);
             g.fillRect(100, 100, 50, 50);
         }
+        bald.render(g);
     }
+
+    public void update() {
+        bald.move();
+        repaint(); // Repaint the panel to reflect changes
+    }
+    
     
 }
 

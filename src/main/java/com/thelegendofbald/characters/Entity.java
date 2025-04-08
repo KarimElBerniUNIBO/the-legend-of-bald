@@ -1,6 +1,6 @@
 package com.thelegendofbald.characters;
 
-import java.awt.Graphics;
+
 
 public abstract class Entity {
     protected int x, y; // Posizione
@@ -21,9 +21,4 @@ public abstract class Entity {
     public int getHealth() { return health; }
     public void setHealth(int health) { this.health = health; }
 
-    // Metodo astratto per l'aggiornamento delle entità
-    public abstract void update();
-
-    // Metodo astratto per il rendering delle entità
-    public abstract void render(Graphics g);
 }

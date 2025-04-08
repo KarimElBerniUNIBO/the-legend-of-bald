@@ -9,13 +9,12 @@ import java.awt.*;
 public class GameWindow extends JFrame implements View {
 
     private static final String TITLE = "The Legend of Bald";
-    private static final Dimension size = new Dimension(800, 600);
+    private static final Dimension size = new Dimension(900, 600);
 
-    private final JPanel gamePanel;
-
+    private final JPanel map;
     public GameWindow() {
-        this.gamePanel = new GamePanel(size);
-        this.add(this.gamePanel);
+        this.map = new GamePanel(size,"/images/examplemap.jpg");
+        this.add(map);
     }
 
     @Override

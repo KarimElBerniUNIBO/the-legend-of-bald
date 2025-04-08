@@ -1,20 +1,10 @@
 package com.thelegendofbald.characters;
 
-import java.awt.Graphics;
+
 
 public class DummyEnemy extends Entity {
 
-    @Override
-    public void update() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
-    }
 
-    @Override
-    public void render(Graphics g) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'render'");
-    }
     private int attackPower; // Potenza d'attacco
 
     public DummyEnemy(int x, int y, int health, String name, int attackPower) {
@@ -38,14 +28,5 @@ public class DummyEnemy extends Entity {
         this.health += amount;
     }
 
-    @Override
-    public void update() {
-        // Logica di aggiornamento per DummyEnemy
-    }
-
-    @Override
-    public void render(Graphics g) {
-        // Logica di rendering per DummyEnemy
-    }
     
 }
