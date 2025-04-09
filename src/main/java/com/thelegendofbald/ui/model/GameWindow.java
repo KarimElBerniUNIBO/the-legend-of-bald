@@ -1,10 +1,12 @@
 package com.thelegendofbald.ui.model;
 
-import javax.swing.*;
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import com.thelegendofbald.ui.api.View;
-
-import java.awt.*;
+import com.thelegendofbald.ui.mainmenu.model.MenuPanel;
 
 public class GameWindow extends JFrame implements View {
 
@@ -12,9 +14,11 @@ public class GameWindow extends JFrame implements View {
     private static final Dimension size = new Dimension(900, 600);
 
     private final JPanel map;
+    
     public GameWindow() {
         this.map = new GamePanel(size,"/images/examplemap.jpg");
-        this.add(map);
+        //this.add(map);
+        this.add(new MenuPanel(size));
     }
 
     @Override
