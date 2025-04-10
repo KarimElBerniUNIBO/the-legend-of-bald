@@ -105,6 +105,7 @@ public class GamePanel extends JPanel {
 
     public void update() {
         bald.move();
+        bald.updateAnimation();
         dummyenemy.followPlayer(bald);
         dummyenemy.updateAnimation();
         
