@@ -1,4 +1,4 @@
-package com.thelegendofbald.ui.mainmenu.model;
+package com.thelegendofbald.ui.mainmenu.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -30,6 +30,8 @@ public class MenuPanel extends JPanel {
 
         this.add(titleLabel, BorderLayout.NORTH);
         this.add(centerPanel, BorderLayout.CENTER);
+        this.add(new SidePanel(size), BorderLayout.EAST);
+        this.add(new SidePanel(size), BorderLayout.WEST);
     }
 
 }

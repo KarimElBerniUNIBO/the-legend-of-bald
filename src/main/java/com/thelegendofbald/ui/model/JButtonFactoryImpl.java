@@ -1,11 +1,11 @@
-package com.thelegendofbald.ui.mainmenu.model;
+package com.thelegendofbald.ui.model;
 
 import java.awt.Dimension;
 
 import javax.swing.JButton;
 
-import com.thelegendofbald.ui.mainmenu.api.JButtonFactory;
-import com.thelegendofbald.ui.mainmenu.api.SquareButton;
+import com.thelegendofbald.ui.api.JButtonFactory;
+import com.thelegendofbald.ui.mainmenu.model.SquareButton;
 
 public class JButtonFactoryImpl implements JButtonFactory {
 

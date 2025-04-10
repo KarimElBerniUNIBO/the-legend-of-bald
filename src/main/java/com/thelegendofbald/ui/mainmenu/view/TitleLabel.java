@@ -1,4 +1,4 @@
-package com.thelegendofbald.ui.mainmenu.model;
+package com.thelegendofbald.ui.mainmenu.view;
 
 import java.awt.Color;
 import java.awt.Dimension;

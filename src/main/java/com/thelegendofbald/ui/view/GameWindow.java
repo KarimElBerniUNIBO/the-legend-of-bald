@@ -1,4 +1,4 @@
-package com.thelegendofbald.ui.model;
+package com.thelegendofbald.ui.view;
 
 import java.awt.Dimension;
 
@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.thelegendofbald.ui.api.View;
-import com.thelegendofbald.ui.mainmenu.model.MenuPanel;
+import com.thelegendofbald.ui.mainmenu.view.MenuPanel;
 
 public class GameWindow extends JFrame implements View {
 

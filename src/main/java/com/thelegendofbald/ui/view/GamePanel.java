@@ -1,4 +1,4 @@
-package com.thelegendofbald.ui.model;
+package com.thelegendofbald.ui.view;
 
 import javax.swing.*;
 

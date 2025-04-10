@@ -1,4 +1,4 @@
-package com.thelegendofbald.ui.mainmenu.api;
+package com.thelegendofbald.ui.api;
 
 import java.awt.Dimension;
 

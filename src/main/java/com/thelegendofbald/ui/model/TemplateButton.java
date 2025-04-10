@@ -1,4 +1,4 @@
-package com.thelegendofbald.ui.mainmenu.api;
+package com.thelegendofbald.ui.model;
 
 import java.awt.Color;
 import java.awt.Component;

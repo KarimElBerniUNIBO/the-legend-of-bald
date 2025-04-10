@@ -1,6 +1,8 @@
-package com.thelegendofbald.ui.mainmenu.api;
+package com.thelegendofbald.ui.mainmenu.model;
 
 import java.awt.Dimension;
+
+import com.thelegendofbald.ui.model.TemplateButton;
 
 public class SquareButton extends TemplateButton {
 
