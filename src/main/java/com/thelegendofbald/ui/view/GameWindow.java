@@ -18,7 +18,7 @@ public class GameWindow extends JFrame implements View {
     public GameWindow() {
         this.map = new GamePanel(size,"/images/examplemap.jpg");
         //this.add(map);
-        this.add(new MenuPanel(size));
+        this.setContentPane(new MenuPanel(size));
     }
 
     @Override

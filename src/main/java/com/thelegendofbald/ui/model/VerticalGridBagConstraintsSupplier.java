@@ -3,9 +3,22 @@ package com.thelegendofbald.ui.model;
 import java.awt.GridBagConstraints;
 import java.util.function.Supplier;
 
-class VerticalGridBagConstraintsSupplier implements Supplier<GridBagConstraints> {
+/**
+ * A supplier that provides {@code GridBagConstraints} instances
+ * configured for vertical filling.
+ * <p>
+ * This class ensures that components stretch vertically while distributing 
+ * space evenly within the container.
+ * </p>
+ */
+public final class VerticalGridBagConstraintsSupplier implements Supplier<GridBagConstraints> {
 
-    private class VerticalGridBagConstraints extends GridBagConstraints {
+    @Override
+    public GridBagConstraints get() {
+        return new VerticalGridBagConstraints();
+    }
+
+    private final class VerticalGridBagConstraints extends GridBagConstraints {
 
         private VerticalGridBagConstraints() {
             this.fill = GridBagConstraints.VERTICAL;
@@ -13,11 +26,6 @@ class VerticalGridBagConstraintsSupplier implements Supplier<GridBagConstraints>
             this.weightx = 1.0;
         }
 
-    }
-
-    @Override
-    public GridBagConstraints get() {
-        return new VerticalGridBagConstraints();
     }
 
 }

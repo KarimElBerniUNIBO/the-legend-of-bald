@@ -1,6 +1,5 @@
 package com.thelegendofbald.ui.mainmenu.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,10 +12,15 @@ import javax.swing.JPanel;
 
 import com.thelegendofbald.ui.api.GridBagConstraintsFactory;
 import com.thelegendofbald.ui.api.JButtonFactory;
+import com.thelegendofbald.ui.mainmenu.controller.SettingsButtonActionListener;
 import com.thelegendofbald.ui.model.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.ui.model.JButtonFactoryImpl;
 
 class CenterPanel extends JPanel {
+
+    //private static final int PROPORTION = 2;
+    private static final int BUTTONS_PADDING_PROPORTION = 15;
+    private static final double DEFAULT_ARC_PROPORTION = 0.2;
 
     private static final String PLAY_BUTTON_TEXT = "PLAY";
     private static final String SETTINGS_BUTTON_TEXT = "SETTINGS";
@@ -33,19 +37,21 @@ class CenterPanel extends JPanel {
 
     private final List<JButton> buttons;
 
-    CenterPanel(Dimension size) {
-        this.setPreferredSize(new Dimension((int) size.getWidth() / 2, (int) size.getHeight() / 2));
-        this.setBackground(Color.BLACK);
+    CenterPanel(final Dimension size) {
+        this.setOpaque(false);
         this.setLayout(new GridBagLayout());
 
-        playButton = buttonFactory.createSquareButton(PLAY_BUTTON_TEXT, size);
-        settingsButton = buttonFactory.createSquareButton(SETTINGS_BUTTON_TEXT, size);
-        leaderBoardButton = buttonFactory.createSquareButton(LEADERBOARD_BUTTON_TEXT, size);
+        playButton = buttonFactory.createRoundedButton(PLAY_BUTTON_TEXT, size, DEFAULT_ARC_PROPORTION);
+        
+        settingsButton = buttonFactory.createRoundedButton(SETTINGS_BUTTON_TEXT, size, DEFAULT_ARC_PROPORTION);
+        settingsButton.addActionListener(new SettingsButtonActionListener());
+        
+        leaderBoardButton = buttonFactory.createRoundedButton(LEADERBOARD_BUTTON_TEXT, size, DEFAULT_ARC_PROPORTION);
 
         buttons = new LinkedList<>(List.of(playButton, settingsButton, leaderBoardButton));
 
         gbc = gbcFactory.createBothGridBagConstraints();
-        gbc.insets = new Insets(0, 0, (int) size.getHeight() / 15, 0);
+        gbc.insets = new Insets(0, 0, (int) size.getHeight() / BUTTONS_PADDING_PROPORTION, 0);
 
         this.addButtonsToPanel();
     }
