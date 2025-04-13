@@ -13,7 +13,7 @@ import javax.swing.JPanel;
  * This panel serves as the container for menu components, including the title
  * and central elements.
  */
-public class MenuPanel extends JPanel {
+public class MainPanel extends JPanel {
 
     private static final String TITLE_TEXT = "THE LEGEND OF BALD";
     private static final String TITLE_FONT_NAME = Font.SERIF;
@@ -26,7 +26,7 @@ public class MenuPanel extends JPanel {
      *
      * @param size The preferred dimensions of the panel.
      */
-    public MenuPanel(final Dimension size) {
+    public MainPanel(final Dimension size) {
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setLayout(new BorderLayout());
