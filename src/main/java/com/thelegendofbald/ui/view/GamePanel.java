@@ -1,18 +1,20 @@
-package com.thelegendofbald.ui.model;
+package com.thelegendofbald.ui.view;
 
-import javax.swing.*;
-
-import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.characters.DummyEnemy;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
 
 import javax.imageio.ImageIO;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.characters.DummyEnemy;
 
 public class GamePanel extends JPanel {
     
