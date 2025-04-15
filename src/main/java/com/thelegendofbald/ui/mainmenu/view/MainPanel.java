@@ -4,9 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.Optional;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
 
 /**
  * Represents the main panel of the main menu.
@@ -16,7 +19,13 @@ import javax.swing.JPanel;
 public class MainPanel extends JPanel {
 
     private static final String TITLE_TEXT = "THE LEGEND OF BALD";
+
     private static final String TITLE_FONT_NAME = Font.SERIF;
+    private static final int FONT_WIDTH_PROPORTION = 2;
+    private static final int FONT_HEIGHT_PROPORTION = 3;
+    private static final Dimension FONT_PROPORTION = new Dimension(FONT_WIDTH_PROPORTION, FONT_HEIGHT_PROPORTION);
+
+    private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
 
     private final JLabel titleLabel;
     private final JPanel centerPanel;
@@ -31,11 +40,12 @@ public class MainPanel extends JPanel {
         this.setBackground(Color.BLACK);
         this.setLayout(new BorderLayout());
 
-        titleLabel = new TitleLabel(
+        titleLabel = tlFactory.createTitleLabelWithProportion(
                 TITLE_TEXT,
                 size,
-                Color.WHITE,
-                TITLE_FONT_NAME);
+                FONT_PROPORTION,
+                Optional.empty(),
+                Optional.of(TITLE_FONT_NAME));
         centerPanel = new CenterPanel(size);
 
         this.add(titleLabel, BorderLayout.NORTH);

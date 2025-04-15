@@ -1,4 +1,4 @@
-package com.thelegendofbald.ui.controller;
+package com.thelegendofbald.ui.model;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;

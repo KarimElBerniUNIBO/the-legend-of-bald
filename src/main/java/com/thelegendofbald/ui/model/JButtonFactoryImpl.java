@@ -1,38 +1,48 @@
 package com.thelegendofbald.ui.model;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.util.Optional;
 
 import javax.swing.JButton;
 
 import com.thelegendofbald.ui.api.JButtonFactory;
+import com.thelegendofbald.ui.settingsmenu.model.TrasparentBackgroundButton;
 
 /**
  * Implementation of JButtonFactory.
  */
 public final class JButtonFactoryImpl implements JButtonFactory {
 
-    /**
-     * Creates a default template rectangle button with the specified text.
-     *
-     * @param text The text to display on the button.
-     * @param parentSize The size of the parent container.
-     * @return An instance of SquareButton.
-     */
-    @Override
-    public JButton createRectangleButton(final String text, final Dimension parentSize) {
-        return new RectangleButton(text, parentSize);
-    }
+        private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
+        private static final Color DEFAULT_FOREGROUND_COLOR = Color.BLACK;
+        private static final String DEFAULT_FONT_NAME = Font.SANS_SERIF;
+        private static final int DEFAULT_FONT_TYPE = Font.BOLD;
 
-    /**
-     * Creates a rounded button with the specified text.
-     *
-     * @param text The text to display on the button.
-     * @param parentSize The size of the parent container.
-     * @param arcProportion the proportion [0-1] of how much smooth are the corners
-     * @return An instance of SquareButton.
-     */
-    @Override
-    public JButton createRoundedButton(String text, Dimension parentSize, double arcProportion) {
-        return new RoundedButton(text, parentSize, arcProportion);
-    }
+        @Override
+        public JButton createRectangleButton(String text, Dimension parentSize, Optional<Color> bgColor,
+                        Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType) {
+                return new RectangleButton(text, parentSize, bgColor.orElse(DEFAULT_BACKGROUND_COLOR),
+                                fontName.orElse(DEFAULT_FONT_NAME), fontColor.orElse(DEFAULT_FOREGROUND_COLOR),
+                                fontType.orElse(DEFAULT_FONT_TYPE));
+        }
+
+        @Override
+        public JButton createRoundedButton(String text, Dimension parentSize, double arcProportion,
+                        Optional<Color> bgColor, Optional<String> fontName, Optional<Color> fontColor,
+                        Optional<Integer> fontType) {
+                return new RoundedButton(text, parentSize, arcProportion, bgColor.orElse(DEFAULT_BACKGROUND_COLOR),
+                                fontName.orElse(DEFAULT_FONT_NAME), fontColor.orElse(DEFAULT_FOREGROUND_COLOR),
+                                fontType.orElse(DEFAULT_FONT_TYPE));
+        }
+
+        @Override
+        public JButton createTrasparentButton(String text, Dimension parentSize, Optional<String> fontName,
+                        Optional<Color> fontColor, Optional<Integer> fontType) {
+                return new TrasparentBackgroundButton(text, parentSize, DEFAULT_BACKGROUND_COLOR,
+                                fontName.orElse(DEFAULT_FONT_NAME), fontColor.orElse(DEFAULT_FOREGROUND_COLOR),
+                                fontType.orElse(DEFAULT_FONT_TYPE));
+        }
+
 }

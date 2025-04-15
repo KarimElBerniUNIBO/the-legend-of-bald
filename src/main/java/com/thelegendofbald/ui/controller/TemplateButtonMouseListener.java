@@ -5,6 +5,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
+import com.thelegendofbald.ui.model.SoundPlayer;
+
 
 public abstract class TemplateButtonMouseListener extends MouseAdapter {
 

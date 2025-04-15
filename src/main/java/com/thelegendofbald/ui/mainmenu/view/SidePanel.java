@@ -4,7 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
-class SidePanel extends JPanel {
+final class SidePanel extends JPanel {
 
     private static final double WIDTH_PROPORTION = 3.5;
 
