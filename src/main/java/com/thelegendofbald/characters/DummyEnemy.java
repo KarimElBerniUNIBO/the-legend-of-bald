@@ -9,52 +9,52 @@ public class DummyEnemy extends Entity {
 
     private BufferedImage spritesheet; 
     private BufferedImage walkFrames[];
+    private BufferedImage image; // Variable to store the loaded image
 
     private int attackPower; 
     private int speedY = 2;
     private int speedX = 2;
 
 
-    private int currentFrame = 0; // Indice del frame corrente
-    private int frameDelay = 5;  // Numero di aggiornamenti prima di cambiare frame
-    private int frameCounter = 0; // Contatore per il ritardo tra i frame
 
     private int width = 128; // Larghezza del frame
     private int height = 128; // Altezza del frame
+
+    private BufferedImage[] runFrames; // Array di immagini per l'animazione della corsa
+    private int currentFrame = 0; // Indice del frame corrente
+    private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
+    private int frameCounter = 0; // Contatore per il ritardo tra i frame
+
+    private boolean facingRight = false; // Direzione in cui Bald sta guardando
+
     
 
     public DummyEnemy(int x, int y, int health, String name, int attackPower) {
         super(x, y, health, name);
         this.attackPower = attackPower;
-        loadImage();
-        extractFrames(128, 128, 7);
+
+        loadRunFrames();
     }
     private String path = "/images/enemyWalkSpritesheet.png"; 
 
-    private void loadImage() {
-       try {
-          InputStream is = getClass().getResourceAsStream(this.path); // Cambia il percorso se necessario
-          if (is != null) {
-              spritesheet = ImageIO.read(is);
-          } else {
-              System.err.println("Image for DummyEnemy not found");
-          }
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-    }
 
 
 
-    private void extractFrames(int frameWidth, int frameHeight, int numFrames) {
-        walkFrames = new BufferedImage[numFrames];
-        for (int i = 0; i < numFrames; i++) {
-           walkFrames[i] = spritesheet.getSubimage(
-                i * frameWidth, // Posizione X del frame
-                0,              // Posizione Y del frame (supponendo che i frame siano su una sola riga)
-                frameWidth,     // Larghezza del frame
-               frameHeight     // Altezza del frame
-           );
+    private void loadRunFrames() {
+        try {
+            int numFrames = 9; // Supponiamo di avere 6 frame
+            runFrames = new BufferedImage[numFrames];
+            for (int i = 0; i < numFrames; i++) {
+                String framePath = String.format("/images/dummyenemy_run/__TRAINEE_Run_00%d.png", i + 1); // Percorso dei frame
+                InputStream is = getClass().getResourceAsStream(framePath);
+                if (is != null) {
+                    runFrames[i] = ImageIO.read(is);
+                } else {
+                    System.err.println("Frame " + framePath + " not found");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -74,37 +74,48 @@ public class DummyEnemy extends Entity {
         this.health += amount;
     }
 
+
+
     public void updateAnimation() {
         frameCounter++;
         if (frameCounter >= frameDelay) {
             frameCounter = 0;
-            currentFrame = (currentFrame + 1) % walkFrames.length; // Passa al frame successivo
+            currentFrame = (currentFrame + 1) % runFrames.length; // Cicla tra i frame
         }
     }
 
     
     public void render(Graphics g) {
-        if (spritesheet != null) {
-            g.drawImage(walkFrames[currentFrame], x, y, width, height, null); // Disegna l'immagine di Bald
+        if (runFrames != null && runFrames[currentFrame] != null) {
+            if (!facingRight) {
+                // Draw normally if facing right
+                g.drawImage(runFrames[currentFrame], x, y, 50, 50, null);
+            } else {
+                // Draw flipped horizontally without changing the position
+                g.drawImage(runFrames[currentFrame], x + 50, y, -50, 50, null);
+            }
         } else {
-            // Fallback al quadrato rosso se l'immagine non è caricata
+            // Fallback to a red square if frames are not loaded
             g.setColor(Color.RED);
             g.fillRect(x, y, 50, 50);
         }
     }
 
     public void followPlayer(Bald bald) {
-        if (bald.getX() > this.x) {
+        if (bald.getX() > this.x ) {
             x += speedX;
-        } else if (bald.getX() < this.x) {
+            facingRight = true;
+        } else if (bald.getX() < this.x ) {
             x -= speedX;
+            facingRight = false;
         }
     
-        if (bald.getY() > this.y) {
+        if (bald.getY() > this.y ) {
             y += speedY;
-        } else if (bald.getY() < this.y) {
+        } else if (bald.getY() < this.y ) {
             y -= speedY;
         }
+        
     }
 
     

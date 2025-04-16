@@ -23,7 +23,7 @@ public class Bald extends Entity {
     public Bald(int x, int y, int health, String name, int attackPower ) {
         super(x, y, health, name);
         this.attackPower = attackPower;
-        loadImage();
+
         loadRunFrames();
     }
 
@@ -70,18 +70,6 @@ public class Bald extends Entity {
 
     }
 
-    private void loadImage() {
-       try {
-          InputStream is = getClass().getResourceAsStream(this.path); // Cambia il percorso se necessario
-          if (is != null) {
-              image = ImageIO.read(is);
-          } else {
-              System.err.println("Image for Bald not found");
-          }
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-    }
 
     public void updateAnimation() {
         frameCounter++;
@@ -113,6 +101,7 @@ public class Bald extends Entity {
     
     public void setSpeedY(int speedY) {
         this.speedY = speedY;
+        
     }
     
     public void move() {
@@ -123,6 +112,7 @@ public class Bald extends Entity {
         }
         this.x += speedX;
         this.y += speedY;
+        
     }
 
 }
