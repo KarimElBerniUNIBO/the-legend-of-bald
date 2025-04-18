@@ -24,17 +24,26 @@ public class GamePanel extends JPanel {
     private static String path;
     private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
     private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);// Create an instance of Bald
+    private final GridPanel gridPanel;
     Timer timer = new Timer(16, e -> update()); // 60 FPS (1000ms / 60 ≈ 16ms)
     private final Set<Integer> pressedKeys = new HashSet<>();
+
     public GamePanel(Dimension size, String path) {
+        this.gridPanel = new GridPanel();
+        this.gridPanel.setOpaque(false); //per rendere la griglia trasparente
         timer.start();
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
-        this.path = path;
+        GamePanel.path = path;
         loadImage();
         setFocusable(true);
         requestFocusInWindow();
 
+        this.setLayout(null); 
+        this.add(gridPanel); 
+
+        // Imposta le dimensioni di GridPanel per adattarsi alla finestra
+        gridPanel.setBounds(0, 0, size.width, size.height);
 
     addKeyListener(new KeyAdapter() {
       @Override
@@ -89,9 +98,12 @@ public class GamePanel extends JPanel {
 
 
     }
+
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+       
 
         if (image != null) {
             g.drawImage(image, 0, 0, 900, 600, null);
@@ -100,6 +112,8 @@ public class GamePanel extends JPanel {
             g.setColor(Color.RED);
             g.fillRect(100, 100, 50, 50);
         }
+
+        gridPanel.paintComponent(g);
         bald.render(g);
         dummyenemy.render(g);
 
