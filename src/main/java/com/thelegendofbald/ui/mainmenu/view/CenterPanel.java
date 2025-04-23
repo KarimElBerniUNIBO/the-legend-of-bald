@@ -52,10 +52,9 @@ final class CenterPanel extends JPanel implements InteractivePanel {
     @Override
     public List<JButton> getListOfButtons(Dimension size) {
         return Stream.iterate(0, i -> i <= Buttons.getMaxIndex(), i -> i + 1)
-                .map(
-                        i -> buttonFactory.createRoundedButton(Buttons.getIndex(i).getName(), size,
-                                DEFAULT_ARC_PROPORTION, Optional.empty(), Optional.empty(), Optional.empty(),
-                                Optional.empty()))
+                .map(i -> buttonFactory.createRoundedButton(Buttons.getIndex(i).getName(), size,
+                        DEFAULT_ARC_PROPORTION, Optional.empty(), Optional.empty(), Optional.empty(),
+                        Optional.empty()))
                 .toList();
     }
 

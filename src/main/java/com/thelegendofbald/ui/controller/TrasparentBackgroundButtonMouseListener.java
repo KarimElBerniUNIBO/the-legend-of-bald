@@ -5,24 +5,18 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
-import com.thelegendofbald.ui.model.RoundedButton;
+import com.thelegendofbald.ui.model.TrasparentBackgroundButton;
 
-public class RoundedButtonMouseListener extends TemplateButtonMouseListener {
+public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouseListener {
 
     private static final double FACTOR_OF_DARKNESS = 0.6;
-
-    private final Color buttonBGColor;
-    private final Color buttonBGHoverColor;
 
     private final Color buttonFGColor;
     private final Color buttonFGHoverColor;
 
-    public RoundedButtonMouseListener(RoundedButton button) {
-        this.buttonBGColor = button.getBackground();
-        this.buttonBGHoverColor = this.getDarkenColor(this.buttonBGColor);
-
+    public TrasparentBackgroundButtonMouseListener(TrasparentBackgroundButton button) {
         this.buttonFGColor = button.getForeground();
-        this.buttonFGHoverColor = this.getDarkenColor(this.buttonFGColor);
+        this.buttonFGHoverColor = this.getDarkenColor(buttonFGColor);
     }
 
     private Color getDarkenColor(Color color) {
@@ -37,10 +31,8 @@ public class RoundedButtonMouseListener extends TemplateButtonMouseListener {
     public void mouseEntered(MouseEvent e) {
         super.mouseEntered(e);
         SwingUtilities.invokeLater(() -> {
-            var button = (RoundedButton) e.getSource();
-
-            button.setBackground(this.buttonBGHoverColor);
-            button.setForeground(this.buttonFGHoverColor);
+            var button = (TrasparentBackgroundButton) e.getSource();
+            button.setForeground(buttonFGHoverColor);
         });
     }
 
@@ -48,10 +40,8 @@ public class RoundedButtonMouseListener extends TemplateButtonMouseListener {
     public void mouseExited(MouseEvent e) {
         super.mouseExited(e);
         SwingUtilities.invokeLater(() -> {
-            var button = (RoundedButton) e.getSource();
-
-            button.setBackground(this.buttonBGColor);
-            button.setForeground(this.buttonFGColor);
+            var button = (TrasparentBackgroundButton) e.getSource();
+            button.setForeground(buttonFGColor);
         });
     }
 

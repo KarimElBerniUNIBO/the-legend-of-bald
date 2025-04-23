@@ -10,7 +10,7 @@ import javax.swing.JButton;
 
 public abstract class TemplateButton extends JButton {
     
-    private static final int PROPORTION = 25;
+    protected static final int PROPORTION = 25;
 
     public TemplateButton(final String text, final Dimension windowSize, final Color bgColor, final String fontName, final Color fontColor, final int fontType) {
         this.setText(text);

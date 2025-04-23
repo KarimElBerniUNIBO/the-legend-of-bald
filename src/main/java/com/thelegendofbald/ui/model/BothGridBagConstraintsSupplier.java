@@ -18,6 +18,7 @@ public final class BothGridBagConstraintsSupplier implements Supplier<GridBagCon
 
         private BothGridBagConstraints() {
             this.fill = GridBagConstraints.BOTH;
+            this.anchor = GridBagConstraints.CENTER;
             this.weighty = 1.0;
             this.weightx = 1.0;
         }

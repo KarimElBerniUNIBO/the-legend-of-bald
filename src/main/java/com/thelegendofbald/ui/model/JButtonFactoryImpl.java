@@ -8,7 +8,6 @@ import java.util.Optional;
 import javax.swing.JButton;
 
 import com.thelegendofbald.ui.api.JButtonFactory;
-import com.thelegendofbald.ui.settingsmenu.model.TrasparentBackgroundButton;
 
 /**
  * Implementation of JButtonFactory.

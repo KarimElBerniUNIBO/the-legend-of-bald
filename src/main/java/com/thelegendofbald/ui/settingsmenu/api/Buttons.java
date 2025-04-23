@@ -1,18 +1,21 @@
 package com.thelegendofbald.ui.settingsmenu.api;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public enum Buttons {
-    VIDEO("VIDEO", 0),
-    AUDIO("AUDIO", 1),
-    KEYBINDS("KEYBINDS", 2);
+    VIDEO("VIDEO", 0, Optional.empty()),
+    AUDIO("AUDIO", 1, Optional.empty()),
+    KEYBINDS("KEYBINDS", 2, Optional.empty());
 
     private final String name;
     private final int index;
+    private Optional<SettingsEditor> settingsEditor;
 
-    Buttons(String name, int index) {
+    Buttons(String name, int index, Optional<SettingsEditor> settingsEditor) {
         this.name = name;
         this.index = index;
+        this.settingsEditor = settingsEditor;
     }
 
     public String getName() {
@@ -21,6 +24,14 @@ public enum Buttons {
 
     public int getIndex() {
         return this.index;
+    }
+
+    public SettingsEditor getSettingsEditor() {
+        return this.settingsEditor.orElseThrow(() -> new NullPointerException());
+    }
+
+    public void setSettingsEditor(SettingsEditor settingsEditor) {
+        this.settingsEditor = Optional.of(settingsEditor);
     }
 
     public static int getMaxIndex() {
