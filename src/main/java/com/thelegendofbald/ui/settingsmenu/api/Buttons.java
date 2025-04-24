@@ -3,16 +3,19 @@ package com.thelegendofbald.ui.settingsmenu.api;
 import java.util.Arrays;
 import java.util.Optional;
 
+import javax.swing.JButton;
+
 public enum Buttons {
-    VIDEO("VIDEO", 0, Optional.empty()),
-    AUDIO("AUDIO", 1, Optional.empty()),
-    KEYBINDS("KEYBINDS", 2, Optional.empty());
+    VIDEO("VIDEO", 0, Optional.empty(), Optional.empty()),
+    AUDIO("AUDIO", 1, Optional.empty(), Optional.empty()),
+    KEYBINDS("KEYBINDS", 2, Optional.empty(), Optional.empty());
 
     private final String name;
     private final int index;
     private Optional<SettingsEditor> settingsEditor;
+    private Optional<JButton> linkedButton;
 
-    Buttons(String name, int index, Optional<SettingsEditor> settingsEditor) {
+    Buttons(String name, int index, Optional<SettingsEditor> settingsEditor, Optional<JButton> linkedButton) {
         this.name = name;
         this.index = index;
         this.settingsEditor = settingsEditor;
@@ -32,6 +35,14 @@ public enum Buttons {
 
     public void setSettingsEditor(SettingsEditor settingsEditor) {
         this.settingsEditor = Optional.of(settingsEditor);
+    }
+
+    public JButton getLinkedButton() {
+        return this.linkedButton.orElseThrow(() -> new NullPointerException());
+    }
+
+    public void setLinkedButton(JButton button) {
+        this.linkedButton = Optional.of(button);
     }
 
     public static int getMaxIndex() {

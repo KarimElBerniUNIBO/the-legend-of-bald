@@ -1,12 +1,10 @@
 package com.thelegendofbald.ui.settingsmenu.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.JPanel;
 
@@ -23,14 +21,11 @@ class AudioEditorPanel extends JPanel implements SettingsEditor {
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final List<ConfigPanel> audioConfigs = this.getConfigsPanels();
-
     private boolean initialized = false;
-    private final Random random = new Random();
 
     public AudioEditorPanel(Dimension size) {
         this.setMaximumSize(size);
-        //this.setOpaque(false);
-        this.setBackground(new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
+        this.setOpaque(false);
         this.setLayout(new GridBagLayout());
         this.addComponentListener(new ResizeListener(this::onResize));
     }

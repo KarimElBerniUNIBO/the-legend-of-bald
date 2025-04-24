@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import com.thelegendofbald.ui.api.JButtonFactory;
 import com.thelegendofbald.ui.mainmenu.api.InteractivePanel;
 import com.thelegendofbald.ui.model.JButtonFactoryImpl;
+import com.thelegendofbald.ui.model.TrasparentBackgroundButton;
 import com.thelegendofbald.ui.settingsmenu.api.Buttons;
 import com.thelegendofbald.ui.settingsmenu.api.SettingsEditorsManager;
 import com.thelegendofbald.ui.settingsmenu.controller.SwitchToOtherSettingsEditorPanel;
@@ -25,19 +26,25 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
 
     private final JButtonFactory jbFactory = new JButtonFactoryImpl();
     private final List<JButton> buttons;
-
     private final SettingsEditorsManager sem;
 
     CategoriesPanel(Dimension size, SettingsEditorsManager sem) {
         this.buttons = this.getListOfButtons(size);
         this.sem = sem;
+        var selectedButton = (TrasparentBackgroundButton) this.buttons.getFirst();
+        selectedButton.select();
 
         this.setMaximumSize(new Dimension((int) size.getWidth(), (int) size.getHeight() / HEIGHT_PROPORTION));
         this.setOpaque(false);
         this.setLayout(new FlowLayout(FlowLayout.CENTER, (int) (size.getWidth() * WIDTH_BUTTONS_PADDING), 0));
 
+        this.linkJButtonsToButtonsEnum();
         this.connectButtonsWithActionListeners();
         this.addButtonsToPanel();
+    }
+
+    private void linkJButtonsToButtonsEnum() {
+        this.buttons.stream().forEach(jb -> Buttons.getIndex(this.buttons.indexOf(jb)).setLinkedButton(jb));
     }
 
     @Override
@@ -57,6 +64,15 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
     @Override
     public void addButtonsToPanel() {
         buttons.forEach(this::add);
+    }
+
+    @Override
+    public void unselectAllButtons() {
+        this.buttons.stream().forEach(jb -> {
+            var transparentJB = (TrasparentBackgroundButton) jb;
+            transparentJB.unselect();
+        });
+
     }
 
 }

@@ -13,4 +13,6 @@ public interface InteractivePanel {
 
     void addButtonsToPanel();
 
+    void unselectAllButtons();
+
 }

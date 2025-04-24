@@ -55,4 +55,10 @@ public class RoundedButtonMouseListener extends TemplateButtonMouseListener {
         });
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        super.mouseClicked(e);
+        this.mouseExited(e);
+    }
+
 }

@@ -82,4 +82,8 @@ final class CenterPanel extends JPanel implements InteractivePanel {
         });
     }
 
+    @Override
+    public void unselectAllButtons() {
+    }
+
 }

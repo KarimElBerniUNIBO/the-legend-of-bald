@@ -3,16 +3,51 @@ package com.thelegendofbald.ui.model;
 import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.ImageIcon;
+
 import com.thelegendofbald.ui.controller.TrasparentBackgroundButtonMouseListener;
 
 public class TrasparentBackgroundButton extends TemplateButton {
 
+    private final Color buttonFGColor;
+    private final Color buttonFGSelectedColor;
+
+    private boolean selected = false;
+
     public TrasparentBackgroundButton(String text, Dimension windowSize, Color bgColor, String fontName,
             Color fontColor, int fontType) {
         super(text, windowSize, bgColor, fontName, fontColor, fontType);
+        this.buttonFGColor = fontColor;
+        this.buttonFGSelectedColor = Color.YELLOW;
+
         this.setContentAreaFilled(false);
         this.setBorderPainted(false);
         this.addMouseListener(new TrasparentBackgroundButtonMouseListener(this));
+    }
+
+    public TrasparentBackgroundButton(ImageIcon icon, Dimension windowSize, Color bgColor, Color fgColor) {
+        super(icon, windowSize, bgColor, fgColor);
+        this.buttonFGColor = fgColor;
+        this.buttonFGSelectedColor = Color.YELLOW;
+
+        this.setContentAreaFilled(false);
+        this.setBorderPainted(false);
+        this.addMouseListener(new TrasparentBackgroundButtonMouseListener(this));
+    }
+
+    public void select() {
+        this.selected = true;
+        this.setForeground(buttonFGSelectedColor);
+    }
+
+    public void unselect() {
+        this.selected = false;
+        this.setForeground(this.buttonFGColor);
+    }
+
+    @Override
+    public boolean isSelected() {
+        return this.selected;
     }
 
 }

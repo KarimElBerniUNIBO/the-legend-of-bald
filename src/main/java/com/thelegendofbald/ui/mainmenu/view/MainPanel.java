@@ -9,6 +9,8 @@ import java.util.Optional;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.apache.commons.math3.fraction.Fraction;
+
 import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
 
 /**
@@ -19,11 +21,10 @@ import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
 public class MainPanel extends JPanel {
 
     private static final String TITLE_TEXT = "THE LEGEND OF BALD";
-
     private static final String TITLE_FONT_NAME = Font.SERIF;
-    private static final int FONT_WIDTH_PROPORTION = 2;
-    private static final int FONT_HEIGHT_PROPORTION = 3;
-    private static final Dimension FONT_PROPORTION = new Dimension(FONT_WIDTH_PROPORTION, FONT_HEIGHT_PROPORTION);
+    private final int FONT_WIDTH_PROPORTION;
+    private final int FONT_HEIGHT_PROPORTION;
+    private final Dimension FONT_PROPORTION;
 
     private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
 
@@ -36,6 +37,11 @@ public class MainPanel extends JPanel {
      * @param size The preferred dimensions of the panel.
      */
     public MainPanel(final Dimension size) {
+        Fraction proportion = new Fraction(size.getWidth() / size.getHeight());
+        FONT_WIDTH_PROPORTION = proportion.getDenominator();
+        FONT_HEIGHT_PROPORTION = proportion.getNumerator();
+        FONT_PROPORTION = new Dimension(FONT_WIDTH_PROPORTION, FONT_HEIGHT_PROPORTION);
+
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setLayout(new BorderLayout());

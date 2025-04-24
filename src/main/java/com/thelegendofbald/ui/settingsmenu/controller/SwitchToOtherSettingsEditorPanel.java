@@ -21,6 +21,7 @@ public class SwitchToOtherSettingsEditorPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         SwingUtilities.invokeLater(() -> {
+            button.getLinkedButton();
             sem.changeSettingsEditorPanel(button.getSettingsEditor());
         });
     }

@@ -2,9 +2,11 @@ package com.thelegendofbald.ui.controller;
 
 import java.awt.Color;
 import java.awt.event.MouseEvent;
+import java.util.Optional;
 
 import javax.swing.SwingUtilities;
 
+import com.thelegendofbald.ui.mainmenu.api.InteractivePanel;
 import com.thelegendofbald.ui.model.TrasparentBackgroundButton;
 
 public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouseListener {
@@ -32,7 +34,9 @@ public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouse
         super.mouseEntered(e);
         SwingUtilities.invokeLater(() -> {
             var button = (TrasparentBackgroundButton) e.getSource();
-            button.setForeground(buttonFGHoverColor);
+            if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
+                button.setForeground(buttonFGHoverColor);
+            }
         });
     }
 
@@ -41,7 +45,22 @@ public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouse
         super.mouseExited(e);
         SwingUtilities.invokeLater(() -> {
             var button = (TrasparentBackgroundButton) e.getSource();
-            button.setForeground(buttonFGColor);
+            if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
+                button.setForeground(buttonFGColor);
+            }
+        });
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        super.mouseClicked(e);
+        SwingUtilities.invokeLater(() -> {
+            var button = (TrasparentBackgroundButton) e.getSource();
+            if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
+                var parent = (InteractivePanel) SwingUtilities.getAncestorOfClass(InteractivePanel.class, button);
+                parent.unselectAllButtons();
+                button.select();
+            }
         });
     }
 

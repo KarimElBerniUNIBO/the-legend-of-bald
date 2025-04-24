@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
+import javax.swing.ImageIcon;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.ui.controller.RoundedButtonMouseListener;
@@ -19,6 +21,15 @@ public class RoundedButton extends TemplateButton {
     public RoundedButton(final String text, final Dimension windowSize, final double arcProportion, final Color bgColor, final String fontName,
             final Color fontColor, final int fontType) {
         super(text, windowSize, bgColor, fontName, fontColor, fontType);
+        this.arcProportion = arcProportion;
+        this.windowSize = windowSize;
+
+        this.setContentAreaFilled(false);
+        this.addMouseListener(new RoundedButtonMouseListener(this));
+    }
+
+    public RoundedButton(ImageIcon icon, Dimension windowSize, double arcProportion, Color bgColor, Color fgColor) {
+        super(icon, windowSize, bgColor, fgColor);
         this.arcProportion = arcProportion;
         this.windowSize = windowSize;
 
