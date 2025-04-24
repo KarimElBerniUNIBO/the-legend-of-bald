@@ -16,15 +16,15 @@ import com.thelegendofbald.ui.settingsmenu.view.SettingsPanel;
 public class GameWindow extends JFrame implements View {
 
     private static final String TITLE = "The Legend of Bald";
-    private static final Dimension size = new Dimension(900, 600);
+    private static final Dimension size = new Dimension(1280, 704);
 
     private final List<JPanel> panels = new LinkedList<>();
-    
+
     public GameWindow() {
         this.panels.add(new MainPanel(size));
         this.panels.add(new SettingsPanel(size));
         this.panels.add(new LeaderBoardPanel(size));
-        this.panels.add(new GamePanel(size,"/images/examplemap.jpg"));
+        this.panels.add(new GamePanel(size)); 
 
         this.setContentPane(this.panels.getFirst());
     }
