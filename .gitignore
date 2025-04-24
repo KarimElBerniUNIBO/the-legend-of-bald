@@ -1,6 +1,6 @@
 # Ignore Gradle project-specific cache directory
 .gradle
-
+settings.json
 # Ignore Gradle build output directory
 build/
 bin/
@@ -13,3 +13,8 @@ bin/
 .settings/
 .classpath
 
+# Ignore VS Code Configuration folder
+.vscode/
+
+# Ignore Mac storage files
+.DS_Store
