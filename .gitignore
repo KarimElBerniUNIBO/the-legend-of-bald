@@ -12,3 +12,9 @@ bin/
 .project
 .settings/
 .classpath
+
+# Ignore VS Code Configuration folder
+.vscode/
+
+# Ignore Mac storage files
+.DS_Store
