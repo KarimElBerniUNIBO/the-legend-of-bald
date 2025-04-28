@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import com.thelegendofbald.ui.api.JButtonFactory;
+import com.thelegendofbald.ui.settingsmenu.model.KeybindingButton;
 
 /**
  * Implementation of JButtonFactory.
@@ -61,7 +62,24 @@ public final class JButtonFactoryImpl implements JButtonFactory {
 
         @Override
         public JButton createTrasparentButton(ImageIcon icon, Dimension parentSize, Optional<Color> fgColor) {
-                return new TrasparentBackgroundButton(icon, parentSize, DEFAULT_BACKGROUND_COLOR, fgColor.orElse(DEFAULT_FOREGROUND_COLOR));
+                return new TrasparentBackgroundButton(icon, parentSize, DEFAULT_BACKGROUND_COLOR,
+                                fgColor.orElse(DEFAULT_FOREGROUND_COLOR));
+        }
+
+        @Override
+        public JButton createKeybindingButton(String text, Dimension parentSize, double arcProportion,
+                        Optional<Color> bgColor, Optional<String> fontName, Optional<Color> fontColor,
+                        Optional<Integer> fontType) {
+                return new KeybindingButton(text, parentSize, arcProportion, bgColor.orElse(DEFAULT_BACKGROUND_COLOR),
+                                fontName.orElse(DEFAULT_FONT_NAME), fontColor.orElse(DEFAULT_FOREGROUND_COLOR),
+                                fontType.orElse(DEFAULT_FONT_TYPE));
+        }
+
+        @Override
+        public JButton createKeybindingButton(ImageIcon icon, Dimension parentSize, double arcProportion,
+                        Optional<Color> bgColor, Optional<Color> fgColor) {
+                return new KeybindingButton(icon, parentSize, arcProportion, bgColor.orElse(DEFAULT_BACKGROUND_COLOR),
+                                fgColor.orElse(DEFAULT_FOREGROUND_COLOR));
         }
 
 }

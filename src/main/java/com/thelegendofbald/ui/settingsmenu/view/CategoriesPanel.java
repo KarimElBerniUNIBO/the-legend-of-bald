@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.ui.api.JButtonFactory;
 import com.thelegendofbald.ui.mainmenu.api.InteractivePanel;
@@ -68,11 +69,10 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
 
     @Override
     public void unselectAllButtons() {
-        this.buttons.stream().forEach(jb -> {
-            var transparentJB = (TrasparentBackgroundButton) jb;
-            transparentJB.unselect();
-        });
-
+        this.buttons.stream()
+                .filter(jbutton -> jbutton instanceof TrasparentBackgroundButton)
+                .map(jbutton -> (TrasparentBackgroundButton) jbutton)
+                .forEach(TrasparentBackgroundButton::unselect);
     }
 
 }

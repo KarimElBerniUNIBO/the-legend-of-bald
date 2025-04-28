@@ -24,20 +24,22 @@ class SettingsEditorPanel extends JPanel implements SettingsEditorsManager {
     private static final String APPLY_BUTTON_TEXT = "Apply";
     private static final double APPLY_BUTTON_ARC_PROPORTION = 0.1;
 
-    private final List<SettingsEditor> settingsEditors = this.getSettingsEditors();
-    private SettingsEditor actualSettingsEditor = this.settingsEditors.getFirst();
+    private final List<SettingsEditor> settingsEditors;
+    private SettingsEditor actualSettingsEditor;
 
     private final JButtonFactory jbFactory = new JButtonFactoryImpl();
     private final JButton apply;
 
-    private final Dimension prefSize;
+    private final Dimension preferredSize;
 
     SettingsEditorPanel(Dimension size) {
         int width = (int) (size.getWidth() * WIDTH_PROPORTION);
         int height = (int) (size.getHeight() * HEIGHT_PROPORTION);
-        this.prefSize = new Dimension(width, height);
+        this.preferredSize = new Dimension(width, height);
+        this.settingsEditors = this.getSettingsEditors();
+        this.actualSettingsEditor = this.settingsEditors.getFirst();
 
-        this.apply = jbFactory.createRoundedButton(APPLY_BUTTON_TEXT, prefSize, APPLY_BUTTON_ARC_PROPORTION,
+        this.apply = jbFactory.createRoundedButton(APPLY_BUTTON_TEXT, preferredSize, APPLY_BUTTON_ARC_PROPORTION,
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 
         this.setOpaque(false);
@@ -49,9 +51,9 @@ class SettingsEditorPanel extends JPanel implements SettingsEditorsManager {
 
     private List<SettingsEditor> getSettingsEditors() {
         Map<Buttons, SettingsEditor> buttonToSettingEditor = Map.of(
-                Buttons.VIDEO, new VideoEditorPanel(this.prefSize),
-                Buttons.AUDIO, new AudioEditorPanel(this.prefSize),
-                Buttons.KEYBINDS, new KeybindsEditorPanel(this.prefSize)
+                Buttons.VIDEO, new VideoEditorPanel(this.preferredSize),
+                Buttons.AUDIO, new AudioEditorPanel(this.preferredSize),
+                Buttons.KEYBINDS, new KeybindsEditorPanel(this.preferredSize)
         );
         buttonToSettingEditor.forEach(Buttons::setSettingsEditor);
 

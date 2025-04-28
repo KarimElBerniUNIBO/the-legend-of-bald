@@ -21,4 +21,8 @@ public interface JButtonFactory {
     JButton createTrasparentButton(String text, Dimension parentSize, Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType);
     JButton createTrasparentButton(ImageIcon icon, Dimension parentSize, Optional<Color> fgColor);
 
+    JButton createKeybindingButton(String text, Dimension parentSize, double arcProportion, Optional<Color> bgColor, Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType);
+    JButton createKeybindingButton(ImageIcon icon, Dimension parentSize, double arcProportion, Optional<Color> bgColor, Optional<Color> fgColor);
+
+
 }

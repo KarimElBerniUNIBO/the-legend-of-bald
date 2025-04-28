@@ -3,8 +3,6 @@ package com.thelegendofbald.ui.controller;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.SwingUtilities;
-
 import com.thelegendofbald.ui.model.SoundPlayer;
 
 
@@ -22,24 +20,17 @@ public abstract class TemplateButtonMouseListener extends MouseAdapter {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            mouseHover.play();
-        });
-        
+        mouseHover.play();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            mousePressed.play();
-        });
+        mousePressed.play();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            mouseReleased.play();
-        });
+        mouseReleased.play();
     }
 
 }

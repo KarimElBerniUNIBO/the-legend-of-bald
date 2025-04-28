@@ -2,6 +2,7 @@ package com.thelegendofbald.ui.settingsmenu.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
 
@@ -20,10 +21,7 @@ public class SwitchToOtherSettingsEditorPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            button.getLinkedButton();
-            sem.changeSettingsEditorPanel(button.getSettingsEditor());
-        });
+        SwingUtilities.invokeLater(() -> sem.changeSettingsEditorPanel(button.getSettingsEditor()));
     }
 
 }

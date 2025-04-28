@@ -19,7 +19,9 @@ public abstract class TemplateButton extends JButton {
         this.setBackground(bgColor);
         this.setForeground(fontColor);
         this.setFont(new Font(fontName, fontType, (int) windowSize.getWidth() / PROPORTION));
-        this.setFocusable(false);
+        this.setFocusable(true);
+        this.setFocusTraversalKeysEnabled(false);
+        this.setFocusPainted(false);
     }
 
     public TemplateButton(final ImageIcon icon, final Dimension windowSize, final Color bgColor, final Color fgColor) {
@@ -27,7 +29,9 @@ public abstract class TemplateButton extends JButton {
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.setBackground(bgColor);
         this.setForeground(fgColor);
-        this.setFocusable(false);
+        this.setFocusable(true);
+        this.setFocusTraversalKeysEnabled(false);
+        this.setFocusPainted(false);
     }
 
 }

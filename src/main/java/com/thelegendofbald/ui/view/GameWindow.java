@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.ui.api.Panels;
 import com.thelegendofbald.ui.api.View;
@@ -16,7 +17,7 @@ import com.thelegendofbald.ui.settingsmenu.view.SettingsPanel;
 public class GameWindow extends JFrame implements View {
 
     private static final String TITLE = "The Legend of Bald";
-    private static final Dimension size = new Dimension(900, 600);
+    private Dimension size = new Dimension(900, 600);
 
     private final List<JPanel> panels = new LinkedList<>();
     
@@ -50,7 +51,21 @@ public class GameWindow extends JFrame implements View {
     }
 
     @Override
-    public Dimension getActualSize() {
+    public Dimension getSize() {
         return size;
     }
+
+    @Override
+    public void setSize(Dimension size) {
+        this.size = size;
+    }
+
+    @Override
+    public void update() {
+        SwingUtilities.invokeLater(() -> {
+            this.revalidate();
+            this.repaint();
+        });
+    }
+
 }

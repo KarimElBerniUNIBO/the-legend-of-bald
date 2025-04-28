@@ -38,11 +38,13 @@ public class TrasparentBackgroundButton extends TemplateButton {
     public void select() {
         this.selected = true;
         this.setForeground(buttonFGSelectedColor);
+        this.repaint();
     }
 
     public void unselect() {
         this.selected = false;
-        this.setForeground(this.buttonFGColor);
+        this.setForeground(buttonFGColor);
+        this.repaint();
     }
 
     @Override

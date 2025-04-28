@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.ui.mainmenu.api.InteractivePanel;
 import com.thelegendofbald.ui.model.TrasparentBackgroundButton;
+import com.thelegendofbald.utils.ColorUtils;
 
 public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouseListener {
 
@@ -15,53 +16,43 @@ public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouse
 
     private final Color buttonFGColor;
     private final Color buttonFGHoverColor;
+    
 
     public TrasparentBackgroundButtonMouseListener(TrasparentBackgroundButton button) {
         this.buttonFGColor = button.getForeground();
-        this.buttonFGHoverColor = this.getDarkenColor(buttonFGColor);
-    }
-
-    private Color getDarkenColor(Color color) {
-        int red = (int) (color.getRed() * FACTOR_OF_DARKNESS);
-        int green = (int) (color.getGreen() * FACTOR_OF_DARKNESS);
-        int blue = (int) (color.getBlue() * FACTOR_OF_DARKNESS);
-
-        return new Color(red, green, blue);
+        this.buttonFGHoverColor = ColorUtils.getDarkenColor(buttonFGColor, FACTOR_OF_DARKNESS);
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
         super.mouseEntered(e);
-        SwingUtilities.invokeLater(() -> {
-            var button = (TrasparentBackgroundButton) e.getSource();
-            if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
-                button.setForeground(buttonFGHoverColor);
-            }
-        });
+        var button = (TrasparentBackgroundButton) e.getSource();
+
+        if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
+            button.setForeground(buttonFGHoverColor);
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         super.mouseExited(e);
-        SwingUtilities.invokeLater(() -> {
-            var button = (TrasparentBackgroundButton) e.getSource();
-            if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
-                button.setForeground(buttonFGColor);
-            }
-        });
+        var button = (TrasparentBackgroundButton) e.getSource();
+
+        if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
+            button.setForeground(buttonFGColor);
+        }
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        super.mouseClicked(e);
-        SwingUtilities.invokeLater(() -> {
-            var button = (TrasparentBackgroundButton) e.getSource();
-            if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
-                var parent = (InteractivePanel) SwingUtilities.getAncestorOfClass(InteractivePanel.class, button);
-                parent.unselectAllButtons();
-                button.select();
-            }
-        });
+    public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        var button = (TrasparentBackgroundButton) e.getSource();
+
+        if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
+            var parent = (InteractivePanel) SwingUtilities.getAncestorOfClass(InteractivePanel.class, button);
+            parent.unselectAllButtons();
+            button.select();
+        }
     }
 
 }
