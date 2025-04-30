@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import org.apache.commons.math3.fraction.Fraction;
 
+import com.thelegendofbald.ui.api.AdapterPanel;
 import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
 
 /**
@@ -18,7 +19,7 @@ import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
  * This panel serves as the container for menu components, including the title
  * and central elements.
  */
-public class MainPanel extends JPanel {
+public class MainPanel extends AdapterPanel {
 
     private static final String TITLE_TEXT = "THE LEGEND OF BALD";
     private static final String TITLE_FONT_NAME = Font.SERIF;
@@ -28,8 +29,8 @@ public class MainPanel extends JPanel {
 
     private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
 
-    private final JLabel titleLabel;
-    private final JPanel centerPanel;
+    private JLabel titleLabel;
+    private JPanel centerPanel;
 
     /**
      * Constructs the main menu panel with a specified size.
@@ -37,6 +38,7 @@ public class MainPanel extends JPanel {
      * @param size The preferred dimensions of the panel.
      */
     public MainPanel(final Dimension size) {
+        super(size);
         Fraction proportion = new Fraction(size.getWidth() / size.getHeight());
         FONT_WIDTH_PROPORTION = proportion.getDenominator();
         FONT_HEIGHT_PROPORTION = proportion.getNumerator();
@@ -45,19 +47,23 @@ public class MainPanel extends JPanel {
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setLayout(new BorderLayout());
+    }
 
+    @Override
+    public void addComponentsToPanel() {
         titleLabel = tlFactory.createTitleLabelWithProportion(
                 TITLE_TEXT,
-                size,
+                this.getSize(),
                 FONT_PROPORTION,
                 Optional.empty(),
                 Optional.of(TITLE_FONT_NAME));
-        centerPanel = new CenterPanel(size);
+        centerPanel = new CenterPanel(this.getSize());
 
         this.add(titleLabel, BorderLayout.NORTH);
         this.add(centerPanel, BorderLayout.CENTER);
-        this.add(new SidePanel(size), BorderLayout.EAST);
-        this.add(new SidePanel(size), BorderLayout.WEST);
+        this.add(new SidePanel(this.getSize()), BorderLayout.EAST);
+        this.add(new SidePanel(this.getSize()), BorderLayout.WEST);
+        super.addComponentsToPanel();
     }
 
 }

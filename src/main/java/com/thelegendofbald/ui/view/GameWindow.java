@@ -33,7 +33,7 @@ public class GameWindow extends JFrame implements View {
     @Override
     public void display() {
         this.setTitle(TITLE);
-        this.setResizable(false);
+        this.setResizable(true);
         this.pack();
         this.setLocationByPlatform(true);
         this.setVisible(true);
