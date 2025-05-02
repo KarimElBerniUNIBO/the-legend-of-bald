@@ -1,8 +1,0 @@
-C:\Users\elber\Documents\unibo\progetto-oop\the-legend-of-bald\build\classes\java\main\com\thelegendofbald\characters\Bald.class
-C:\Users\elber\Documents\unibo\progetto-oop\the-legend-of-bald\build\classes\java\main\com\thelegendofbald\characters\Entity.class
-C:\Users\elber\Documents\unibo\progetto-oop\the-legend-of-bald\build\classes\java\main\com\thelegendofbald\game\GameEngine.class
-C:\Users\elber\Documents\unibo\progetto-oop\the-legend-of-bald\build\classes\java\main\com\thelegendofbald\Main.class
-C:\Users\elber\Documents\unibo\progetto-oop\the-legend-of-bald\build\classes\java\main\com\thelegendofbald\ui\api\View.class
-C:\Users\elber\Documents\unibo\progetto-oop\the-legend-of-bald\build\classes\java\main\com\thelegendofbald\ui\model\GamePanel.class
-C:\Users\elber\Documents\unibo\progetto-oop\the-legend-of-bald\build\classes\java\main\com\thelegendofbald\ui\model\GameWindow.class
-C:\Users\elber\Documents\unibo\progetto-oop\the-legend-of-bald\build\classes\java\main\com\thelegendofbald\utils\MathUtils.class
