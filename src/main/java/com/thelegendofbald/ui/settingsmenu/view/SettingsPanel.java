@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import org.apache.commons.math3.fraction.Fraction;
 
 import com.thelegendofbald.ui.api.AdapterPanel;
-import com.thelegendofbald.ui.mainmenu.model.BackToMainPanel;
 import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
 import com.thelegendofbald.ui.settingsmenu.api.SettingsEditorsManager;
 
@@ -24,6 +23,7 @@ public class SettingsPanel extends AdapterPanel {
 
     private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
 
+    private JPanel backToMainPanel;
     private JLabel titleLabel;
     private JPanel categoriesPanel;
     private SettingsEditorsManager sem;
@@ -37,18 +37,39 @@ public class SettingsPanel extends AdapterPanel {
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        this.initializeComponents(size);
+    }
+
+    private void initializeComponents(Dimension size) {
+        //this.backToMainPanel = new BackToMainPanel(size);
+        this.titleLabel = tlFactory.createTitleLabelWithProportion("SETTINGS", size, new Dimension(TITLE_WIDTH_PROPORTION, TITLE_HEIGHT_PROPORTION), Optional.empty(), Optional.empty());
+        this.sem = new SettingsEditorPanel(size);
+        this.categoriesPanel = new CategoriesPanel(size, sem);
+    }
+
+    public void updateSize(Dimension newSize) {
+        this.titleLabel.setPreferredSize(newSize);
+        ((JPanel)this.sem).setPreferredSize(newSize);
+        this.categoriesPanel.setPreferredSize(newSize);
+
+        this.revalidate();
+        this.repaint();
     }
 
     @Override
     public void addComponentsToPanel() {
-        this.titleLabel = tlFactory.createTitleLabelWithProportion("SETTINGS", this.getSize(), new Dimension(TITLE_WIDTH_PROPORTION, TITLE_HEIGHT_PROPORTION), Optional.empty(), Optional.empty());
+        //this.backToMainPanel = new BackToMainPanel(this.getSize());
+        /*this.titleLabel = tlFactory.createTitleLabelWithProportion("SETTINGS", this.getSize(), new Dimension(TITLE_WIDTH_PROPORTION, TITLE_HEIGHT_PROPORTION), Optional.empty(), Optional.empty());
         this.sem = new SettingsEditorPanel(this.getSize());
-        this.categoriesPanel = new CategoriesPanel(this.getSize(), sem);
+        this.categoriesPanel = new CategoriesPanel(this.getSize(), sem);*/
 
-        //this.add(new BackToMainPanel(this.getSize()));
-        this.add(titleLabel);
-        this.add(categoriesPanel);
-        this.add((JPanel) sem);
+        this.updateSize(this.getSize());
+
+        //this.add(this.backToMainPanel);
+        this.add(this.titleLabel);
+        this.add(this.categoriesPanel);
+        this.add((JPanel) this.sem);
 
         super.addComponentsToPanel();
     }

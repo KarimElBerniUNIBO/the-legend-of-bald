@@ -2,8 +2,9 @@ package com.thelegendofbald.ui.settingsmenu.model;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.Random;
+import java.util.Optional;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -15,12 +16,9 @@ import org.apache.commons.math3.fraction.Fraction;
 
 import com.thelegendofbald.ui.api.GridBagConstraintsFactory;
 import com.thelegendofbald.ui.controller.ResizeListener;
+import com.thelegendofbald.ui.mainmenu.model.TitleLabel;
 import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
 import com.thelegendofbald.ui.model.GridBagConstraintsFactoryImpl;
-
-import java.awt.GridBagConstraints;
-import java.util.Optional;
-
 import com.thelegendofbald.ui.view.GameWindow;
 
 public class ConfigPanel extends JPanel {
@@ -32,6 +30,7 @@ public class ConfigPanel extends JPanel {
 
     private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
 
+    private Optional<JLabel> title = Optional.empty();
     private final String text;
     private final JComponent values;
 
@@ -54,20 +53,32 @@ public class ConfigPanel extends JPanel {
         }
     }
 
-    public void addComponentsToPanel() {
+    private void initializeComponents() {
         var window = (GameWindow) SwingUtilities.getWindowAncestor(this);
         Fraction proportion = new Fraction(window.getSize().getWidth() / window.getSize().getHeight());
         Dimension tlProportion = new Dimension(proportion.getNumerator(), proportion.getDenominator());
 
+        this.title = Optional.of(tlFactory.createTitleLabelWithProportion(this.text, this.getSize(), tlProportion, Optional.empty(), Optional.empty()));
+    }
+
+    public void addComponentsToPanel() {
+        if (this.title.isEmpty()) {
+            this.initializeComponents();
+        }
+
         gbc.gridx = 0;
-        this.add(tlFactory.createTitleLabelWithProportion(text, this.getSize(), tlProportion, Optional.empty(),
-                Optional.empty()), gbc);
+        this.add(title.get(), gbc);
 
         gbc.gridx = 1;
         this.add(values, gbc);
 
         this.revalidate();
         this.repaint();
+    }
+
+    @Override
+    public void setPreferredSize(Dimension size) {
+        this.title.ifPresent(t -> t.setPreferredSize(size));
     }
 
 }

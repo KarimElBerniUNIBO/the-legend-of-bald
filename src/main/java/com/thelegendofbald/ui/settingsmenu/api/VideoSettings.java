@@ -9,7 +9,7 @@ import javax.swing.JSlider;
 
 import com.thelegendofbald.ui.settingsmenu.model.CustomCheckBox;
 
-public enum VideoSettings {
+public enum VideoSettings implements SettingOption {
     FULLSCREEN("FULLSCREEN", new CustomCheckBox()),
     RESOLUTION("RESOLUTION", new JComboBox<>(List.of(
             "900x600",
@@ -24,17 +24,19 @@ public enum VideoSettings {
         this.jcomponent = jcomponent;
     }
 
+    @Override
     public String getText() {
         return this.text;
     }
 
+    @Override
     public JComponent getJcomponent() {
         return this.jcomponent;
     }
 
-    public static int getSize() {
+    /*public static int getSize() {
         return (int) Arrays.stream(VideoSettings.values())
                 .count();
-    }
+    }*/
 
 }

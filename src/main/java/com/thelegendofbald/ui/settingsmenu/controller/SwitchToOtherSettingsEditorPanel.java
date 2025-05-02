@@ -2,26 +2,25 @@ package com.thelegendofbald.ui.settingsmenu.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
 
-import com.thelegendofbald.ui.settingsmenu.api.Buttons;
+import com.thelegendofbald.ui.settingsmenu.api.Settings;
 import com.thelegendofbald.ui.settingsmenu.api.SettingsEditorsManager;
 
 public class SwitchToOtherSettingsEditorPanel implements ActionListener {
 
     private final SettingsEditorsManager sem;
-    private final Buttons button;
+    private final Settings setting;
 
-    public SwitchToOtherSettingsEditorPanel(SettingsEditorsManager sem, Buttons button) {
+    public SwitchToOtherSettingsEditorPanel(SettingsEditorsManager sem, Settings setting) {
         this.sem = sem;
-        this.button = button;
+        this.setting = setting;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        SwingUtilities.invokeLater(() -> sem.changeSettingsEditorPanel(button.getSettingsEditor()));
+        SwingUtilities.invokeLater(() -> sem.changeSettingsEditorPanel(setting.getSettingsEditor()));
     }
 
 }

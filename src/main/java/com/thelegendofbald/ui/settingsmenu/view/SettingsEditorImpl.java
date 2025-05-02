@@ -11,23 +11,32 @@ import javax.swing.JPanel;
 import com.thelegendofbald.ui.api.GridBagConstraintsFactory;
 import com.thelegendofbald.ui.controller.ResizeListener;
 import com.thelegendofbald.ui.model.GridBagConstraintsFactoryImpl;
-import com.thelegendofbald.ui.settingsmenu.api.AudioSettings;
+import com.thelegendofbald.ui.settingsmenu.api.Settings;
 import com.thelegendofbald.ui.settingsmenu.api.SettingsEditor;
 import com.thelegendofbald.ui.settingsmenu.model.ConfigPanel;
 
-class AudioEditorPanel extends JPanel implements SettingsEditor {
+public final class SettingsEditorImpl extends JPanel implements SettingsEditor {
 
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private final List<ConfigPanel> audioConfigs = this.getConfigsPanels();
     private boolean initialized = false;
+    private final Settings settings;
+    private final List<ConfigPanel> configsPanels;
 
-    public AudioEditorPanel(Dimension size) {
+    public SettingsEditorImpl(Dimension size, Settings settings) {
+        this.settings = settings;
+        this.configsPanels = this.getConfigsPanels();
         this.setMaximumSize(size);
         this.setOpaque(false);
         this.setLayout(new GridBagLayout());
         this.addComponentListener(new ResizeListener(this::onResize));
+    }
+
+    @Override
+    public List<ConfigPanel> getConfigsPanels() {
+        return this.settings.getConfigs().stream()
+                .map(config -> new ConfigPanel(config.getText(), config.getJcomponent())).toList();
     }
 
     @Override
@@ -39,22 +48,21 @@ class AudioEditorPanel extends JPanel implements SettingsEditor {
     }
 
     @Override
-    public List<ConfigPanel> getConfigsPanels() {
-        return Arrays.stream(AudioSettings.values())
-                .map(as -> new ConfigPanel(as.getText(), as.getJcomponent()))
-                .toList();
-    }
-
-    @Override
     public void addComponentsToPanel() {
-        this.audioConfigs.stream()
-            .forEach(ac -> {
-                gbc.gridy = audioConfigs.indexOf(ac);
-                this.add(ac, gbc);
-            });
+        this.configsPanels.stream()
+                .forEach(cp -> {
+                    gbc.gridy = configsPanels.indexOf(cp);
+                    this.add(cp, gbc);
+                });
 
         this.revalidate();
         this.repaint();
+    }
+
+    @Override
+    public void setPreferredSize(Dimension size) {
+        this.setMaximumSize(size);
+        this.configsPanels.forEach(cp -> cp.setPreferredSize(size));
     }
 
 }

@@ -1,32 +1,32 @@
 package com.thelegendofbald.ui.settingsmenu.api;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JButton;
 
-public enum Buttons {
-    VIDEO("VIDEO", 0, Optional.empty(), Optional.empty()),
-    AUDIO("AUDIO", 1, Optional.empty(), Optional.empty()),
-    KEYBINDS("KEYBINDS", 2, Optional.empty(), Optional.empty());
+public enum Settings {
+    VIDEO(VideoSettings.values(), Optional.empty(), Optional.empty()),
+    AUDIO(AudioSettings.values(), Optional.empty(), Optional.empty()),
+    KEYBINDS(KeybindsSettings.values(), Optional.empty(), Optional.empty());
 
-    private final String name;
-    private final int index;
+    private final SettingOption[] configs;
     private Optional<SettingsEditor> settingsEditor;
     private Optional<JButton> linkedButton;
-
-    Buttons(String name, int index, Optional<SettingsEditor> settingsEditor, Optional<JButton> linkedButton) {
-        this.name = name;
-        this.index = index;
+    
+    Settings(SettingOption[] settings, Optional<SettingsEditor> settingsEditor, Optional<JButton> linkedButton) {
+        this.configs = settings;
         this.settingsEditor = settingsEditor;
+        this.linkedButton = linkedButton;
     }
 
     public String getName() {
-        return this.name;
+        return this.name();
     }
 
-    public int getIndex() {
-        return this.index;
+    public List<SettingOption> getConfigs() {
+        return Arrays.stream(configs).toList();
     }
 
     public SettingsEditor getSettingsEditor() {
@@ -45,18 +45,22 @@ public enum Buttons {
         this.linkedButton = Optional.of(button);
     }
 
+    public int getIndex() {
+        return this.ordinal();
+    }
+
     public static int getMaxIndex() {
-        return Arrays.stream(Buttons.values())
-                    .mapToInt(Buttons::getIndex)
+        return Arrays.stream(Settings.values())
+                    .mapToInt(Settings::getIndex)
                     .max()
                     .orElse(0);
     }
 
-    public static Buttons getIndex(int index) {
-        return Arrays.stream(Buttons.values())
+    public static Settings getSettingByIndex(int index) {
+        return Arrays.stream(Settings.values())
                 .filter(b -> b.getIndex() == index)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException());
     }
-}
 
+}

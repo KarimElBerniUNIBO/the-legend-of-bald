@@ -5,6 +5,7 @@ import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
 
+import com.thelegendofbald.ui.api.TemplateButton;
 import com.thelegendofbald.ui.controller.TrasparentBackgroundButtonMouseListener;
 
 public class TrasparentBackgroundButton extends TemplateButton {
@@ -50,6 +51,11 @@ public class TrasparentBackgroundButton extends TemplateButton {
     @Override
     public boolean isSelected() {
         return this.selected;
+    }
+
+    @Override
+    public void setPreferredSize(Dimension size) {
+        super.setPreferredSize(size);
     }
 
 }

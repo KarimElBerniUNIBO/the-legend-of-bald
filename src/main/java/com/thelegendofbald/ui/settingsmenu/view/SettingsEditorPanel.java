@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 import com.thelegendofbald.ui.api.JButtonFactory;
 import com.thelegendofbald.ui.model.JButtonFactoryImpl;
-import com.thelegendofbald.ui.settingsmenu.api.Buttons;
+import com.thelegendofbald.ui.settingsmenu.api.Settings;
 import com.thelegendofbald.ui.settingsmenu.api.SettingsEditor;
 import com.thelegendofbald.ui.settingsmenu.api.SettingsEditorsManager;
 
@@ -30,7 +30,7 @@ class SettingsEditorPanel extends JPanel implements SettingsEditorsManager {
     private final JButtonFactory jbFactory = new JButtonFactoryImpl();
     private final JButton apply;
 
-    private final Dimension preferredSize;
+    private Dimension preferredSize;
 
     SettingsEditorPanel(Dimension size) {
         int width = (int) (size.getWidth() * WIDTH_PROPORTION);
@@ -50,15 +50,10 @@ class SettingsEditorPanel extends JPanel implements SettingsEditorsManager {
     }
 
     private List<SettingsEditor> getSettingsEditors() {
-        Map<Buttons, SettingsEditor> buttonToSettingEditor = Map.of(
-                Buttons.VIDEO, new VideoEditorPanel(this.preferredSize),
-                Buttons.AUDIO, new AudioEditorPanel(this.preferredSize),
-                Buttons.KEYBINDS, new KeybindsEditorPanel(this.preferredSize)
-        );
-        buttonToSettingEditor.forEach(Buttons::setSettingsEditor);
+        Arrays.stream(Settings.values()).forEach(setting -> setting.setSettingsEditor(new SettingsEditorImpl(preferredSize, setting)));
 
-        return Arrays.stream(Buttons.values())
-                .map(Buttons::getSettingsEditor)
+        return Arrays.stream(Settings.values())
+                .map(Settings::getSettingsEditor)
                 .toList();
     }
 
@@ -72,6 +67,15 @@ class SettingsEditorPanel extends JPanel implements SettingsEditorsManager {
             this.revalidate();
             this.repaint();
         }
+    }
+
+    @Override
+    public void setPreferredSize(Dimension size) {
+        int width = (int) (size.getWidth() * WIDTH_PROPORTION);
+        int height = (int) (size.getHeight() * HEIGHT_PROPORTION);
+        this.preferredSize = new Dimension(width, height);
+        this.settingsEditors.forEach(editor -> ((JPanel)editor).setPreferredSize(this.preferredSize));
+        this.apply.setPreferredSize(this.preferredSize);
     }
 
 }

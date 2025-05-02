@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.thelegendofbald.ui.api.TemplateButton;
 import com.thelegendofbald.ui.controller.RoundedButtonMouseListener;
 
 public class RoundedButton extends TemplateButton {

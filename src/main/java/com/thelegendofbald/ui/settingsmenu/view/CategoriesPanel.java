@@ -10,13 +10,12 @@ import java.util.stream.Stream;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.ui.api.JButtonFactory;
 import com.thelegendofbald.ui.mainmenu.api.InteractivePanel;
 import com.thelegendofbald.ui.model.JButtonFactoryImpl;
 import com.thelegendofbald.ui.model.TrasparentBackgroundButton;
-import com.thelegendofbald.ui.settingsmenu.api.Buttons;
+import com.thelegendofbald.ui.settingsmenu.api.Settings;
 import com.thelegendofbald.ui.settingsmenu.api.SettingsEditorsManager;
 import com.thelegendofbald.ui.settingsmenu.controller.SwitchToOtherSettingsEditorPanel;
 
@@ -45,13 +44,13 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
     }
 
     private void linkJButtonsToButtonsEnum() {
-        this.buttons.stream().forEach(jb -> Buttons.getIndex(this.buttons.indexOf(jb)).setLinkedButton(jb));
+        this.buttons.stream().forEach(jb -> Settings.getSettingByIndex(this.buttons.indexOf(jb)).setLinkedButton(jb));
     }
 
     @Override
     public List<JButton> getListOfButtons(Dimension size) {
-        return Stream.iterate(0, i -> i <= Buttons.getMaxIndex(), i -> i + 1)
-                .map(i -> jbFactory.createTrasparentButton(Buttons.getIndex(i).getName(), size,
+        return Stream.iterate(0, i -> i <= Settings.getMaxIndex(), i -> i + 1)
+                .map(i -> jbFactory.createTrasparentButton(Settings.getSettingByIndex(i).getName(), size,
                         Optional.of(Font.MONOSPACED), Optional.of(Color.WHITE), Optional.empty()))
                 .toList();
     }
@@ -59,7 +58,7 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
     @Override
     public void connectButtonsWithActionListeners() {
         Stream.iterate(0, i -> i < this.buttons.size(), i -> i + 1).forEach(i -> this.buttons.get(i)
-                .addActionListener(new SwitchToOtherSettingsEditorPanel(sem, Buttons.getIndex(i))));
+                .addActionListener(new SwitchToOtherSettingsEditorPanel(sem, Settings.getSettingByIndex(i))));
     }
 
     @Override
@@ -73,6 +72,12 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
                 .filter(jbutton -> jbutton instanceof TrasparentBackgroundButton)
                 .map(jbutton -> (TrasparentBackgroundButton) jbutton)
                 .forEach(TrasparentBackgroundButton::unselect);
+    }
+
+    @Override
+    public void setPreferredSize(Dimension size) {
+        this.setMaximumSize(new Dimension((int) size.getWidth(), (int) size.getHeight() / HEIGHT_PROPORTION));
+        this.buttons.forEach(jbutton -> jbutton.setPreferredSize(size));
     }
 
 }

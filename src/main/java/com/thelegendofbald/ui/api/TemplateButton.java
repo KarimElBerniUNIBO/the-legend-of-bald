@@ -14,6 +14,7 @@ public abstract class TemplateButton extends JButton {
     protected static final double PROPORTION = 0.05;
 
     public TemplateButton(final String text, final Dimension windowSize, final Color bgColor, final String fontName, final Color fontColor, final int fontType) {
+        super();
         this.setText(text);
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.setBackground(bgColor);
@@ -25,6 +26,7 @@ public abstract class TemplateButton extends JButton {
     }
 
     public TemplateButton(final ImageIcon icon, final Dimension windowSize, final Color bgColor, final Color fgColor) {
+        super();
         this.setIcon(icon);
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.setBackground(bgColor);
@@ -32,6 +34,12 @@ public abstract class TemplateButton extends JButton {
         this.setFocusable(true);
         this.setFocusTraversalKeysEnabled(false);
         this.setFocusPainted(false);
+    }
+
+    @Override
+    public void setPreferredSize(Dimension size) {
+        var font = this.getFont();
+        this.setFont(new Font(font.getName(), font.getStyle(), (int) (size.getWidth() * PROPORTION)));
     }
 
 }
