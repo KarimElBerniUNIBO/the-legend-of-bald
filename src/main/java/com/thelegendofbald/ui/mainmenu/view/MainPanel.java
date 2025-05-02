@@ -31,6 +31,8 @@ public class MainPanel extends AdapterPanel {
 
     private JLabel titleLabel;
     private JPanel centerPanel;
+    private JPanel leftSidePanel;
+    private JPanel rightSidePanel;
 
     /**
      * Constructs the main menu panel with a specified size.
@@ -47,10 +49,10 @@ public class MainPanel extends AdapterPanel {
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setLayout(new BorderLayout());
+        this.initializeComponents();
     }
 
-    @Override
-    public void addComponentsToPanel() {
+    private void initializeComponents() {
         titleLabel = tlFactory.createTitleLabelWithProportion(
                 TITLE_TEXT,
                 this.getSize(),
@@ -58,11 +60,32 @@ public class MainPanel extends AdapterPanel {
                 Optional.empty(),
                 Optional.of(TITLE_FONT_NAME));
         centerPanel = new CenterPanel(this.getSize());
+        leftSidePanel = new SidePanel(this.getSize());
+        rightSidePanel = new SidePanel(this.getSize());
+    }
+
+    public void updateSize(Dimension size) {
+        this.titleLabel.setPreferredSize(size);
+        this.centerPanel.setPreferredSize(size);
+        this.leftSidePanel.setPreferredSize(size);
+        this.rightSidePanel.setPreferredSize(size);
+    }
+
+    @Override
+    public void addComponentsToPanel() {
+        /*titleLabel = tlFactory.createTitleLabelWithProportion(
+                TITLE_TEXT,
+                this.getSize(),
+                FONT_PROPORTION,
+                Optional.empty(),
+                Optional.of(TITLE_FONT_NAME));
+        centerPanel = new CenterPanel(this.getSize());*/
+        this.updateSize(this.getSize());
 
         this.add(titleLabel, BorderLayout.NORTH);
         this.add(centerPanel, BorderLayout.CENTER);
-        this.add(new SidePanel(this.getSize()), BorderLayout.EAST);
-        this.add(new SidePanel(this.getSize()), BorderLayout.WEST);
+        this.add(leftSidePanel, BorderLayout.EAST);
+        this.add(rightSidePanel, BorderLayout.WEST);
         super.addComponentsToPanel();
     }
 

@@ -24,16 +24,17 @@ public class RoundedButton extends TemplateButton {
         super(text, windowSize, bgColor, fontName, fontColor, fontType);
         this.arcProportion = arcProportion;
         this.windowSize = windowSize;
-
-        this.setContentAreaFilled(false);
-        this.addMouseListener(new RoundedButtonMouseListener(this));
+        this.initialize();
     }
 
     public RoundedButton(ImageIcon icon, Dimension windowSize, double arcProportion, Color bgColor, Color fgColor) {
         super(icon, windowSize, bgColor, fgColor);
         this.arcProportion = arcProportion;
         this.windowSize = windowSize;
+        this.initialize();
+    }
 
+    private void initialize() {
         this.setContentAreaFilled(false);
         this.addMouseListener(new RoundedButtonMouseListener(this));
     }
@@ -73,6 +74,11 @@ public class RoundedButton extends TemplateButton {
         g2.drawRoundRect(0, 0, this.getWidth() - thickness / 2, this.getHeight() - thickness / 2, arcValue, arcValue);
 
         g2.dispose();
+    }
+
+    @Override
+    public void setPreferredSize(Dimension size) {
+        super.setPreferredSize(size);
     }
 
 }

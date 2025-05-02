@@ -44,7 +44,7 @@ public class GameWindow extends JFrame implements View {
     public void changeMainPanel(Panels panelEnum) {
         JPanel panel = this.panels.get(panelEnum.getIndex());
         this.setContentPane(panel);
-        this.pack();
+        //this.pack();
         this.revalidate();
         this.repaint();
         panel.requestFocusInWindow();

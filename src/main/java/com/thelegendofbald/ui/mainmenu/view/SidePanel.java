@@ -13,4 +13,9 @@ final class SidePanel extends JPanel {
         this.setOpaque(false);
     }
 
+    @Override
+    public void setPreferredSize(final Dimension size) {
+        super.setPreferredSize(new Dimension((int) (size.getWidth() / WIDTH_PROPORTION), (int) size.getHeight()));
+    }
+
 }

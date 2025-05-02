@@ -1,5 +1,6 @@
 package com.thelegendofbald.ui.mainmenu.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,7 +33,7 @@ final class CenterPanel extends JPanel implements InteractivePanel {
     private final JButtonFactory buttonFactory = new JButtonFactoryImpl();
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
 
-    private final GridBagConstraints gbc;
+    private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final List<JButton> buttons;
 
@@ -42,9 +43,6 @@ final class CenterPanel extends JPanel implements InteractivePanel {
 
         buttons = this.getListOfButtons(size);
 
-        gbc = gbcFactory.createBothGridBagConstraints();
-        gbc.insets = new Insets(0, 0, (int) (size.getHeight() * BUTTONS_PADDING_PROPORTION), 0);
-
         this.connectButtonsWithActionListeners();
         this.addButtonsToPanel();
     }
@@ -53,7 +51,7 @@ final class CenterPanel extends JPanel implements InteractivePanel {
     public List<JButton> getListOfButtons(Dimension size) {
         return Stream.iterate(0, i -> i <= Buttons.getMaxIndex(), i -> i + 1)
                 .map(i -> buttonFactory.createRoundedButton(Buttons.getIndex(i).getName(), size,
-                        DEFAULT_ARC_PROPORTION, Optional.empty(), Optional.empty(), Optional.empty(),
+                        DEFAULT_ARC_PROPORTION, Optional.empty(), Optional.empty(), Optional.of(Color.BLACK),
                         Optional.empty()))
                 .toList();
     }
@@ -84,6 +82,14 @@ final class CenterPanel extends JPanel implements InteractivePanel {
 
     @Override
     public void unselectAllButtons() {
+    }
+
+    @Override
+    public void setPreferredSize(Dimension size) {
+        this.removeAll();
+        gbc.insets = new Insets(0, 0, (int) (size.getHeight() * BUTTONS_PADDING_PROPORTION), 0);
+        buttons.forEach(b -> b.setPreferredSize(size));
+        this.addButtonsToPanel();
     }
 
 }
