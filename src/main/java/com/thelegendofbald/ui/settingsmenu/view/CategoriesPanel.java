@@ -1,0 +1,83 @@
+package com.thelegendofbald.ui.settingsmenu.view;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import com.thelegendofbald.ui.api.JButtonFactory;
+import com.thelegendofbald.ui.mainmenu.api.InteractivePanel;
+import com.thelegendofbald.ui.model.JButtonFactoryImpl;
+import com.thelegendofbald.ui.model.TrasparentBackgroundButton;
+import com.thelegendofbald.ui.settingsmenu.api.Settings;
+import com.thelegendofbald.ui.settingsmenu.api.SettingsEditorsManager;
+import com.thelegendofbald.ui.settingsmenu.controller.SwitchToOtherSettingsEditorPanel;
+
+final class CategoriesPanel extends JPanel implements InteractivePanel {
+
+    private static final int HEIGHT_PROPORTION = 10;
+    private static final double WIDTH_BUTTONS_PADDING = 0.1;
+
+    private final JButtonFactory jbFactory = new JButtonFactoryImpl();
+    private final List<JButton> buttons;
+    private final SettingsEditorsManager sem;
+
+    CategoriesPanel(Dimension size, SettingsEditorsManager sem) {
+        this.buttons = this.getListOfButtons(size);
+        this.sem = sem;
+        var selectedButton = (TrasparentBackgroundButton) this.buttons.getFirst();
+        selectedButton.select();
+
+        this.setMaximumSize(new Dimension((int) size.getWidth(), (int) size.getHeight() / HEIGHT_PROPORTION));
+        this.setOpaque(false);
+        this.setLayout(new FlowLayout(FlowLayout.CENTER, (int) (size.getWidth() * WIDTH_BUTTONS_PADDING), 0));
+
+        this.linkJButtonsToButtonsEnum();
+        this.connectButtonsWithActionListeners();
+        this.addButtonsToPanel();
+    }
+
+    private void linkJButtonsToButtonsEnum() {
+        this.buttons.stream().forEach(jb -> Settings.getSettingByIndex(this.buttons.indexOf(jb)).setLinkedButton(jb));
+    }
+
+    @Override
+    public List<JButton> getListOfButtons(Dimension size) {
+        return Stream.iterate(0, i -> i <= Settings.getMaxIndex(), i -> i + 1)
+                .map(i -> jbFactory.createTrasparentButton(Settings.getSettingByIndex(i).getName(), size,
+                        Optional.of(Font.MONOSPACED), Optional.of(Color.WHITE), Optional.empty()))
+                .toList();
+    }
+
+    @Override
+    public void connectButtonsWithActionListeners() {
+        Stream.iterate(0, i -> i < this.buttons.size(), i -> i + 1).forEach(i -> this.buttons.get(i)
+                .addActionListener(new SwitchToOtherSettingsEditorPanel(sem, Settings.getSettingByIndex(i))));
+    }
+
+    @Override
+    public void addButtonsToPanel() {
+        buttons.forEach(this::add);
+    }
+
+    @Override
+    public void unselectAllButtons() {
+        this.buttons.stream()
+                .filter(jbutton -> jbutton instanceof TrasparentBackgroundButton)
+                .map(jbutton -> (TrasparentBackgroundButton) jbutton)
+                .forEach(TrasparentBackgroundButton::unselect);
+    }
+
+    @Override
+    public void setPreferredSize(Dimension size) {
+        this.setMaximumSize(new Dimension((int) size.getWidth(), (int) size.getHeight() / HEIGHT_PROPORTION));
+        this.buttons.forEach(jbutton -> jbutton.setPreferredSize(size));
+    }
+
+}

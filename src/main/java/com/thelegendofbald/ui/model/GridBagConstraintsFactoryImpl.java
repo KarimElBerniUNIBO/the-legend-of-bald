@@ -1,6 +1,7 @@
 package com.thelegendofbald.ui.model;
 
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.util.function.Supplier;
 
 import com.thelegendofbald.ui.api.GridBagConstraintsFactory;
@@ -28,6 +29,13 @@ public final class GridBagConstraintsFactoryImpl implements GridBagConstraintsFa
         return verticalGBCSupplier.get();
     }
 
+    @Override
+    public GridBagConstraints createVerticalGridBagConstraints(Insets insets) {
+        GridBagConstraints gbc = verticalGBCSupplier.get();
+        gbc.insets = insets;
+        return gbc;
+    }
+
     /**
      * Creates a {@code GridBagConstraints} instance configured for horizontal filling.
      *
@@ -38,6 +46,13 @@ public final class GridBagConstraintsFactoryImpl implements GridBagConstraintsFa
         return horizontalGBCSupplier.get();
     }
 
+    @Override
+    public GridBagConstraints createHorizontalGridBagConstraints(Insets insets) {
+        GridBagConstraints gbc = horizontalGBCSupplier.get();
+        gbc.insets = insets;
+        return gbc;
+    }
+
     /**
      * Creates a {@code GridBagConstraints} instance configured to fill both directions.
      *
@@ -46,6 +61,13 @@ public final class GridBagConstraintsFactoryImpl implements GridBagConstraintsFa
     @Override
     public GridBagConstraints createBothGridBagConstraints() {
         return bothGBCSupplier.get();
+    }
+
+    @Override
+    public GridBagConstraints createBothGridBagConstraints(Insets insets) {
+        GridBagConstraints gbc = bothGBCSupplier.get();
+        gbc.insets = insets;
+        return gbc;
     }
 
 }

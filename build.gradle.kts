@@ -27,6 +27,9 @@ dependencies {
     implementation("com.omertron:API-OMDB:1.5")
     implementation("org.jooq:jool:0.9.15")
 
+    // Library for advanced mathematical operations like fractions, complex numbers and more
+    implementation("org.apache.commons:commons-math3:3.6.1")
+
     /*
      * Simple Logging Facade for Java (SLF4J) with Apache Log4j
      * See: http://www.slf4j.org/
