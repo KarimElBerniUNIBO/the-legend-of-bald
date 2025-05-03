@@ -3,6 +3,7 @@ package com.thelegendofbald.ui.api;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.ui.controller.ResizeListener;
 
@@ -15,25 +16,30 @@ public abstract class AdapterPanel extends JPanel {
 
     public AdapterPanel(Dimension size) {
         this.internalSize = size;
-        this.setPreferredSize(size);
-        this.setMinimumSize(new Dimension((int) (size.getWidth()), (int) (size.getHeight() * PROPORTION)));
-        this.setMaximumSize(size);
+        SwingUtilities.invokeLater(this::initializeSize);
         this.addComponentListener(new ResizeListener(this::onResize));
     }
 
-    public void onResize() {
+    private void initializeSize() {
+        this.setPreferredSize(this.internalSize);
+        this.setMinimumSize(new Dimension((int) (this.internalSize.getWidth()), (int) (this.internalSize.getHeight() * PROPORTION)));
+        this.setMaximumSize(this.internalSize);
+    }
+
+    private void onResize() {
         if (!initialized && this.getWidth() > 0 && this.getHeight() > 0) {
             initialized = true;
-            this.addComponentsToPanel();
+            this.update();
         } else if (initialized) {
             this.removeAll();
-            this.addComponentsToPanel();
+            this.update();
         }
     }
 
-    public void addComponentsToPanel() {
-        // Override this method to add components to the panel
+    protected abstract void addComponentsToPanel();
 
+    private void update() {
+        this.addComponentsToPanel();
         this.revalidate();
         this.repaint();
     }

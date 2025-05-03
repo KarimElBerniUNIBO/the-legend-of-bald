@@ -50,13 +50,15 @@ public class ConfigPanel extends JPanel {
         if (!initialized && this.getWidth() > 0 && this.getHeight() > 0) {
             this.addComponentsToPanel();
             initialized = true;
+        } else if (initialized) {
+            this.title.ifPresent(t -> ((TitleLabel)t).setPreferredSize(this.getSize()));
         }
     }
 
     private void initializeComponents() {
         var window = (GameWindow) SwingUtilities.getWindowAncestor(this);
-        Fraction proportion = new Fraction(window.getSize().getWidth() / window.getSize().getHeight());
-        Dimension tlProportion = new Dimension(proportion.getNumerator(), proportion.getDenominator());
+        var proportion = new Fraction(window.getSize().getWidth() / window.getSize().getHeight());
+        var tlProportion = new Dimension(proportion.getNumerator(), proportion.getDenominator());
 
         this.title = Optional.of(tlFactory.createTitleLabelWithProportion(this.text, this.getSize(), tlProportion, Optional.empty(), Optional.empty()));
     }
@@ -78,7 +80,8 @@ public class ConfigPanel extends JPanel {
 
     @Override
     public void setPreferredSize(Dimension size) {
-        this.title.ifPresent(t -> t.setPreferredSize(size));
+        super.setPreferredSize(size);
+        //this.title.ifPresent(t -> ((TitleLabel)t).setPreferredSize(size));
     }
 
 }

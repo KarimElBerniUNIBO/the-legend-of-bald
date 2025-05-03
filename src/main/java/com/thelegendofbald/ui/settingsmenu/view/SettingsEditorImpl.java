@@ -61,8 +61,9 @@ public final class SettingsEditorImpl extends JPanel implements SettingsEditor {
 
     @Override
     public void setPreferredSize(Dimension size) {
+        super.setPreferredSize(size);
         this.setMaximumSize(size);
-        this.configsPanels.forEach(cp -> cp.setPreferredSize(size));
+        //this.configsPanels.forEach(cp -> cp.setPreferredSize(size));
     }
 
 }

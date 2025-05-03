@@ -74,7 +74,8 @@ class SettingsEditorPanel extends JPanel implements SettingsEditorsManager {
         int width = (int) (size.getWidth() * WIDTH_PROPORTION);
         int height = (int) (size.getHeight() * HEIGHT_PROPORTION);
         this.preferredSize = new Dimension(width, height);
-        this.settingsEditors.forEach(editor -> ((JPanel)editor).setPreferredSize(this.preferredSize));
+        super.setPreferredSize(this.preferredSize);
+        this.settingsEditors.forEach(editor -> ((SettingsEditorImpl)editor).setPreferredSize(this.preferredSize));
         this.apply.setPreferredSize(this.preferredSize);
     }
 

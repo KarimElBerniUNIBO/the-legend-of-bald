@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.util.Pair;
 
 import com.thelegendofbald.ui.api.AdapterPanel;
 import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
@@ -60,8 +61,8 @@ public class MainPanel extends AdapterPanel {
                 Optional.empty(),
                 Optional.of(TITLE_FONT_NAME));
         centerPanel = new CenterPanel(this.getSize());
-        leftSidePanel = new SidePanel(this.getSize());
-        rightSidePanel = new SidePanel(this.getSize());
+        leftSidePanel = new SidePanel(this.getSize(), new Pair<>(3.5, 1.0));
+        rightSidePanel = new SidePanel(this.getSize(), new Pair<>(3.5, 1.0));
     }
 
     public void updateSize(Dimension size) {
@@ -79,7 +80,6 @@ public class MainPanel extends AdapterPanel {
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(leftSidePanel, BorderLayout.EAST);
         this.add(rightSidePanel, BorderLayout.WEST);
-        super.addComponentsToPanel();
     }
 
 }
