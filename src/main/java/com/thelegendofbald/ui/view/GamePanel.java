@@ -61,9 +61,12 @@ public class GamePanel extends JPanel {
                        pressedKeys.contains(KeyEvent.VK_LEFT) ? -5 : 0);
         bald.setSpeedY(pressedKeys.contains(KeyEvent.VK_DOWN) ? 5 :
                        pressedKeys.contains(KeyEvent.VK_UP) ? -5 : 0);
+     
     }
 
     private void update() {
+
+
         bald.move();
         dummyenemy.followPlayer(bald);
         dummyenemy.updateAnimation();
