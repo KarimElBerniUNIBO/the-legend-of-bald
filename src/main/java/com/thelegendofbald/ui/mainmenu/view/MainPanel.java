@@ -73,13 +73,6 @@ public class MainPanel extends AdapterPanel {
 
     @Override
     public void addComponentsToPanel() {
-        /*titleLabel = tlFactory.createTitleLabelWithProportion(
-                TITLE_TEXT,
-                this.getSize(),
-                FONT_PROPORTION,
-                Optional.empty(),
-                Optional.of(TITLE_FONT_NAME));
-        centerPanel = new CenterPanel(this.getSize());*/
         this.updateSize(this.getSize());
 
         this.add(titleLabel, BorderLayout.NORTH);

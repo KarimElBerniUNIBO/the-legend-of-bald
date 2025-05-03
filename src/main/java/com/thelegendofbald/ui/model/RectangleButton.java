@@ -5,6 +5,8 @@ import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
 
+import com.thelegendofbald.ui.api.TemplateButton;
+
 
 /**
  * Class created just for testing with a default template button.

@@ -19,7 +19,7 @@ public abstract class TemplateButton extends JButton {
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.setBackground(bgColor);
         this.setForeground(fontColor);
-        this.setFont(new Font(fontName, fontType, (int) (windowSize.getWidth() * PROPORTION)));
+        this.setFont(new Font(fontName, fontType, (int) (Math.min(windowSize.getWidth(), windowSize.getHeight()) * PROPORTION)));
         this.initialize();
     }
 
@@ -41,7 +41,7 @@ public abstract class TemplateButton extends JButton {
     @Override
     public void setPreferredSize(Dimension size) {
         if (!this.getText().isEmpty()) {
-            this.setFont(this.getFont().deriveFont((float) (size.getWidth() * PROPORTION)));
+            this.setFont(this.getFont().deriveFont((float) (Math.min(size.getWidth(), size.getHeight()) * PROPORTION)));
         }
     }
 

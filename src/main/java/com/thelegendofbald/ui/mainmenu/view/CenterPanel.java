@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +25,6 @@ import com.thelegendofbald.ui.view.GameWindow;
 
 final class CenterPanel extends JPanel implements InteractivePanel {
 
-    // private static final int PROPORTION = 2;
     private static final double BUTTONS_PADDING_PROPORTION = 0.05;
     private static final double DEFAULT_ARC_PROPORTION = 0.2;
 
@@ -87,7 +85,7 @@ final class CenterPanel extends JPanel implements InteractivePanel {
     @Override
     public void setPreferredSize(Dimension size) {
         this.removeAll();
-        gbc.insets = new Insets(0, 0, (int) (size.getHeight() * BUTTONS_PADDING_PROPORTION), 0);
+        gbc.insets.set(0, 0, (int) (size.getHeight() * BUTTONS_PADDING_PROPORTION), 0);
         buttons.forEach(b -> b.setPreferredSize(size));
         this.addButtonsToPanel();
     }
