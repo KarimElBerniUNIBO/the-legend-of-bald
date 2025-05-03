@@ -21,6 +21,7 @@ public final class HorizontalGridBagConstraintsSupplier implements Supplier<Grid
 
         private HorizontalGridBagConstraints() {
             this.fill = GridBagConstraints.HORIZONTAL;
+            this.anchor = GridBagConstraints.CENTER;
             this.weightx = 1.0;
             this.weighty = 1.0;
         }

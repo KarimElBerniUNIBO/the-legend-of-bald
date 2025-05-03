@@ -3,13 +3,12 @@ package com.thelegendofbald.ui.controller;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 
-import javax.swing.SwingUtilities;
-
 import com.thelegendofbald.ui.model.RoundedButton;
+import com.thelegendofbald.utils.ColorUtils;
 
 public class RoundedButtonMouseListener extends TemplateButtonMouseListener {
 
-    private static final double FACTOR_OF_DARKNESS = 0.8;
+    private static final double FACTOR_OF_DARKNESS = 0.6;
 
     private final Color buttonBGColor;
     private final Color buttonBGHoverColor;
@@ -19,40 +18,34 @@ public class RoundedButtonMouseListener extends TemplateButtonMouseListener {
 
     public RoundedButtonMouseListener(RoundedButton button) {
         this.buttonBGColor = button.getBackground();
-        this.buttonBGHoverColor = this.getDarkenColor(this.buttonBGColor);
+        this.buttonBGHoverColor = ColorUtils.getDarkenColor(this.buttonBGColor, FACTOR_OF_DARKNESS);
 
         this.buttonFGColor = button.getForeground();
-        this.buttonFGHoverColor = this.getDarkenColor(this.buttonFGColor);
-    }
-
-    private Color getDarkenColor(Color color) {
-        int red = (int) (color.getRed() * FACTOR_OF_DARKNESS);
-        int green = (int) (color.getGreen() * FACTOR_OF_DARKNESS);
-        int blue = (int) (color.getBlue() * FACTOR_OF_DARKNESS);
-
-        return new Color(red, green, blue);
+        this.buttonFGHoverColor = ColorUtils.getDarkenColor(this.buttonFGColor, FACTOR_OF_DARKNESS);
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
         super.mouseEntered(e);
-        SwingUtilities.invokeLater(() -> {
-            RoundedButton button = (RoundedButton) e.getSource();
+        var button = (RoundedButton) e.getSource();
 
-            button.setBackground(this.buttonBGHoverColor);
-            button.setForeground(this.buttonFGHoverColor);
-        });
+        button.setBackground(this.buttonBGHoverColor);
+        button.setForeground(this.buttonFGHoverColor);
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         super.mouseExited(e);
-        SwingUtilities.invokeLater(() -> {
-            RoundedButton button = (RoundedButton) e.getSource();
+        var button = (RoundedButton) e.getSource();
 
-            button.setBackground(this.buttonBGColor);
-            button.setForeground(this.buttonFGColor);
-        });
+        button.setBackground(this.buttonBGColor);
+        button.setForeground(this.buttonFGColor);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        this.mouseExited(e);
     }
 
 }
