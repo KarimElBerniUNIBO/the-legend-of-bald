@@ -7,22 +7,20 @@ import java.awt.GridBagLayout;
 import java.util.Optional;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 
-import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.util.Pair;
 
 import com.thelegendofbald.ui.api.GridBagConstraintsFactory;
-import com.thelegendofbald.ui.controller.ResizeListener;
 import com.thelegendofbald.ui.mainmenu.model.TitleLabel;
 import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
 import com.thelegendofbald.ui.model.GridBagConstraintsFactoryImpl;
-import com.thelegendofbald.ui.view.GameWindow;
 
 public class ConfigPanel extends JPanel {
 
+    private static final double TITLE_PROPORTION = 0.5;
     private static final int UP_DOWN_INSETS = 2;
 
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
@@ -30,11 +28,10 @@ public class ConfigPanel extends JPanel {
 
     private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
 
-    private Optional<JLabel> title = Optional.empty();
+    private Optional<TitleLabel> title = Optional.empty();
     private final String text;
     private final JComponent values;
 
-    private boolean initialized = false;
 
     public ConfigPanel(String text, JComponent values) {
         this.text = text;
@@ -43,45 +40,45 @@ public class ConfigPanel extends JPanel {
         this.setOpaque(false);
         this.setBorder(new MatteBorder(UP_DOWN_INSETS, 0, UP_DOWN_INSETS, 0, Color.WHITE));
         this.setLayout(new GridBagLayout());
-        this.addComponentListener(new ResizeListener(this::onResize));
     }
 
-    public void onResize() {
-        if (!initialized && this.getWidth() > 0 && this.getHeight() > 0) {
-            this.addComponentsToPanel();
-            initialized = true;
-        } else if (initialized) {
-            this.title.ifPresent(t -> ((TitleLabel)t).setPreferredSize(this.getSize()));
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        if (this.title.isEmpty()) {
+            SwingUtilities.invokeLater(() -> {
+                this.initializeComponents();
+                this.removeAll();
+                this.addComponentsToPanel();
+                this.revalidate();
+                this.repaint();
+            });
         }
     }
 
     private void initializeComponents() {
-        var window = (GameWindow) SwingUtilities.getWindowAncestor(this);
-        var proportion = new Fraction(window.getSize().getWidth() / window.getSize().getHeight());
-        var tlProportion = new Dimension(proportion.getNumerator(), proportion.getDenominator());
-
-        this.title = Optional.of(tlFactory.createTitleLabelWithProportion(this.text, this.getSize(), tlProportion, Optional.empty(), Optional.empty()));
+        this.title = Optional.of(tlFactory.createTitleLabelWithProportion(this.text, this.getSize(), Optional.of(new Pair<>(1.0,1.0)), Optional.empty(), Optional.empty()));
     }
 
-    public void addComponentsToPanel() {
-        if (this.title.isEmpty()) {
-            this.initializeComponents();
-        }
+    private void updateSize() {
+        this.title.ifPresent(t -> t.setPreferredSize(this.getSize()));
+        this.values.setPreferredSize(this.getSize());
+    }
+
+    private void addComponentsToPanel() {
+        this.updateSize();
 
         gbc.gridx = 0;
-        this.add(title.get(), gbc);
+        this.title.ifPresent(t -> this.add(t, gbc));
 
         gbc.gridx = 1;
         this.add(values, gbc);
-
-        this.revalidate();
-        this.repaint();
     }
 
     @Override
     public void setPreferredSize(Dimension size) {
         super.setPreferredSize(size);
-        //this.title.ifPresent(t -> ((TitleLabel)t).setPreferredSize(size));
+        SwingUtilities.invokeLater(this::updateSize);
     }
 
 }

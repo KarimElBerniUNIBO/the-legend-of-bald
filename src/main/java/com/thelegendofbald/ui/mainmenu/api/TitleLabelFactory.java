@@ -4,11 +4,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Optional;
 
-import javax.swing.JLabel;
+import org.apache.commons.math3.util.Pair;
+
+import com.thelegendofbald.ui.mainmenu.model.TitleLabel;
 
 public interface TitleLabelFactory {
 
-    JLabel createTitleLabelWithProportion(String text, Dimension size, Dimension proportion, Optional<Color> fgColor,
+    TitleLabel createTitleLabelWithProportion(String text, Dimension size, Optional<Pair<Double, Double>> moltiplicator, Optional<Color> fgColor,
             Optional<String> fontName);
 
 }

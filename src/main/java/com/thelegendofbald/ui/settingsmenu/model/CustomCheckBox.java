@@ -1,13 +1,9 @@
 package com.thelegendofbald.ui.settingsmenu.model;
 
-import java.awt.Dimension;
-
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 
-import com.thelegendofbald.ui.controller.ResizeListener;
 import com.thelegendofbald.ui.settingsmenu.controller.CustomCheckBoxMouseListener;
-import com.thelegendofbald.utils.ImageUtils;
 
 public class CustomCheckBox extends JCheckBox {
 
@@ -28,11 +24,11 @@ public class CustomCheckBox extends JCheckBox {
         this.setOpaque(false);
         this.setHorizontalAlignment(CENTER);
         this.setVerticalAlignment(CENTER);
-        this.addComponentListener(new ResizeListener(this::onResize));
+        //this.addComponentListener(new ResizeListener(this::onResize));
         this.addMouseListener(new CustomCheckBoxMouseListener(this));
     }
 
-    public void onResize() {
+    /*public void onResize() {
         if (this.getHeight() > 0) {
             int size = (int) (this.getHeight() * HEIGHT_PROPORTION);
             
@@ -44,7 +40,7 @@ public class CustomCheckBox extends JCheckBox {
             this.revalidate();
             this.repaint();
         }
-    }
+    }*/
 
     public ImageIcon getCheckedIcon() {
         return checkIconResized;

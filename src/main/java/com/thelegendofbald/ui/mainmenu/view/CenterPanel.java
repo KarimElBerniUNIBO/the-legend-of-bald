@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,29 +34,34 @@ final class CenterPanel extends JPanel implements InteractivePanel {
 
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private final List<JButton> buttons;
+    private List<JButton> buttons = Collections.emptyList();
 
     CenterPanel(final Dimension size) {
         this.setOpaque(false);
         this.setLayout(new GridBagLayout());
-
-        buttons = this.getListOfButtons(size);
-
-        this.connectButtonsWithActionListeners();
-        this.addButtonsToPanel();
     }
 
     @Override
-    public List<JButton> getListOfButtons(Dimension size) {
+    public void addNotify() {
+        super.addNotify();
+        if (this.buttons.isEmpty()) {
+            SwingUtilities.invokeLater(() -> {
+                this.buttons = this.getListOfButtons(this.getSize());
+                this.connectButtonsWithActionListeners();
+                this.addButtonsToPanel(); 
+            });
+        }
+    }
+
+    private List<JButton> getListOfButtons(Dimension size) {
         return Stream.iterate(0, i -> i <= Buttons.getMaxIndex(), i -> i + 1)
-                .map(i -> buttonFactory.createRoundedButton(Buttons.getIndex(i).getName(), size,
+                .map(i -> (JButton) buttonFactory.createRoundedButton(Buttons.getIndex(i).getName(), size, Optional.empty(),
                         DEFAULT_ARC_PROPORTION, Optional.empty(), Optional.empty(), Optional.of(Color.BLACK),
                         Optional.empty()))
                 .toList();
     }
 
-    @Override
-    public void connectButtonsWithActionListeners() {
+    private void connectButtonsWithActionListeners() {
         final Map<Buttons, Panels> buttonIndexToPanelIndex = Map.of(
                 Buttons.PLAY, Panels.PLAY_MENU,
                 Buttons.SETTINGS, Panels.SETTINGS_MENU,
@@ -70,8 +76,7 @@ final class CenterPanel extends JPanel implements InteractivePanel {
         });
     }
 
-    @Override
-    public void addButtonsToPanel() {
+    private void addButtonsToPanel() {
         buttons.stream().forEach(b -> {
             gbc.gridy = buttons.indexOf(b);
             this.add(b, gbc);
@@ -84,9 +89,9 @@ final class CenterPanel extends JPanel implements InteractivePanel {
 
     @Override
     public void setPreferredSize(Dimension size) {
+        super.setPreferredSize(size);
         this.removeAll();
         gbc.insets.set(0, 0, (int) (size.getHeight() * BUTTONS_PADDING_PROPORTION), 0);
-        buttons.forEach(b -> b.setPreferredSize(size));
         this.addButtonsToPanel();
     }
 

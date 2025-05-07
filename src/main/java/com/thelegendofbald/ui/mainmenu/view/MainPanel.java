@@ -4,15 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.Arrays;
 import java.util.Optional;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.apache.commons.math3.fraction.Fraction;
 import org.apache.commons.math3.util.Pair;
 
 import com.thelegendofbald.ui.api.AdapterPanel;
+import com.thelegendofbald.ui.mainmenu.model.TitleLabel;
 import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
 
 /**
@@ -24,13 +24,10 @@ public class MainPanel extends AdapterPanel {
 
     private static final String TITLE_TEXT = "THE LEGEND OF BALD";
     private static final String TITLE_FONT_NAME = Font.SERIF;
-    private final int FONT_WIDTH_PROPORTION;
-    private final int FONT_HEIGHT_PROPORTION;
-    private final Dimension FONT_PROPORTION;
 
     private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
 
-    private JLabel titleLabel;
+    private TitleLabel titleLabel;
     private JPanel centerPanel;
     private JPanel leftSidePanel;
     private JPanel rightSidePanel;
@@ -42,22 +39,18 @@ public class MainPanel extends AdapterPanel {
      */
     public MainPanel(final Dimension size) {
         super(size);
-        Fraction proportion = new Fraction(size.getWidth() / size.getHeight());
-        FONT_WIDTH_PROPORTION = proportion.getDenominator();
-        FONT_HEIGHT_PROPORTION = proportion.getNumerator();
-        FONT_PROPORTION = new Dimension(FONT_WIDTH_PROPORTION, FONT_HEIGHT_PROPORTION);
 
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setLayout(new BorderLayout());
-        this.initializeComponents();
     }
 
-    private void initializeComponents() {
+    @Override
+    protected void initializeComponents() {
         titleLabel = tlFactory.createTitleLabelWithProportion(
                 TITLE_TEXT,
                 this.getSize(),
-                FONT_PROPORTION,
+                Optional.of(new Pair<>(1.0, 0.3)),
                 Optional.empty(),
                 Optional.of(TITLE_FONT_NAME));
         centerPanel = new CenterPanel(this.getSize());
@@ -65,21 +58,21 @@ public class MainPanel extends AdapterPanel {
         rightSidePanel = new SidePanel(this.getSize(), new Pair<>(3.5, 1.0));
     }
 
-    public void updateSize(Dimension size) {
-        this.titleLabel.setPreferredSize(size);
+    private void updateSize(Dimension size) {
+        Arrays.stream(this.getComponents()).forEach(component -> component.setPreferredSize(size));
+        /*this.titleLabel.setPreferredSize(size);
         this.centerPanel.setPreferredSize(size);
         this.leftSidePanel.setPreferredSize(size);
-        this.rightSidePanel.setPreferredSize(size);
+        this.rightSidePanel.setPreferredSize(size);*/
     }
 
     @Override
-    public void addComponentsToPanel() {
-        this.updateSize(this.getSize());
-
+    protected void addComponentsToPanel() {
         this.add(titleLabel, BorderLayout.NORTH);
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(leftSidePanel, BorderLayout.EAST);
         this.add(rightSidePanel, BorderLayout.WEST);
+        this.updateSize(this.getSize());
     }
 
 }

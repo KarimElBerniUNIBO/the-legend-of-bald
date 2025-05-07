@@ -7,24 +7,31 @@ import java.awt.Font;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
+
+import org.apache.commons.math3.util.Pair;
 
 
 public abstract class TemplateButton extends JButton {
     
-    protected static final double PROPORTION = 0.05;
+    protected static final double PARENT_FONT_PROPORTION = 0.1;
 
-    public TemplateButton(final String text, final Dimension windowSize, final Color bgColor, final String fontName, final Color fontColor, final int fontType) {
+    private final Pair<Double, Double> moltiplicator;
+
+    public TemplateButton(final String text, final Dimension parentSize, final Pair<Double, Double> moltiplicator, final Color bgColor, final String fontName, final Color fontColor, final int fontType) {
         super();
+        this.moltiplicator = moltiplicator;
         this.setText(text);
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.setBackground(bgColor);
         this.setForeground(fontColor);
-        this.setFont(new Font(fontName, fontType, (int) (Math.min(windowSize.getWidth(), windowSize.getHeight()) * PROPORTION)));
+        this.setFont(new Font(fontName, fontType, this.calculateFontSize(parentSize)));
         this.initialize();
     }
 
-    public TemplateButton(final ImageIcon icon, final Dimension windowSize, final Color bgColor, final Color fgColor) {
+    public TemplateButton(final ImageIcon icon, final Dimension parentSize, final Pair<Double, Double> moltiplicator, final Color bgColor, final Color fgColor) {
         super();
+        this.moltiplicator = moltiplicator;
         this.setIcon(icon);
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.setBackground(bgColor);
@@ -39,10 +46,15 @@ public abstract class TemplateButton extends JButton {
     }
 
     @Override
-    public void setPreferredSize(Dimension size) {
-        if (!this.getText().isEmpty()) {
-            this.setFont(this.getFont().deriveFont((float) (Math.min(size.getWidth(), size.getHeight()) * PROPORTION)));
+    public void addNotify() {
+        super.addNotify();
+        if (this.getText() != null && !this.getText().isEmpty()) {
+            SwingUtilities.invokeLater(() -> this.setFont(this.getFont().deriveFont((float) this.calculateFontSize(this.getParent().getSize()))));
         }
+    }
+
+    private int calculateFontSize(Dimension size) {
+        return (int) (Math.min(size.getWidth() * this.moltiplicator.getFirst(), size.getHeight() * this.moltiplicator.getSecond()) * PARENT_FONT_PROPORTION);
     }
 
 }

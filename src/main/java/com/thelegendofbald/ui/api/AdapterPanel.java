@@ -12,7 +12,7 @@ public abstract class AdapterPanel extends JPanel {
     protected static final double PROPORTION = 0.85;
 
     protected Dimension internalSize;
-    protected boolean initialized = false;
+    private boolean initialized = false;
 
     public AdapterPanel(Dimension size) {
         this.internalSize = size;
@@ -20,18 +20,25 @@ public abstract class AdapterPanel extends JPanel {
         this.addComponentListener(new ResizeListener(this::onResize));
     }
 
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        if (!this.initialized) {
+            SwingUtilities.invokeLater(() -> this.initializeComponents());
+            this.initialized = true;
+        }
+    }
+
+    protected abstract void initializeComponents();
+
     private void initializeSize() {
         this.setPreferredSize(this.internalSize);
-        this.setMinimumSize(new Dimension((int) (this.internalSize.getWidth()), (int) (this.internalSize.getHeight() * PROPORTION)));
+        //this.setMinimumSize(new Dimension((int) (this.internalSize.getWidth()), (int) (this.internalSize.getHeight() * PROPORTION)));
         this.setMaximumSize(this.internalSize);
     }
 
     private void onResize() {
-        if (!initialized && this.getWidth() > 0 && this.getHeight() > 0) {
-            initialized = true;
-            this.update();
-        } else if (initialized) {
-            this.removeAll();
+        if (this.initialized && this.getWidth() > 0 && this.getHeight() > 0) {
             this.update();
         }
     }

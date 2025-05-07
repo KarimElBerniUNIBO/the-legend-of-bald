@@ -2,7 +2,6 @@ package com.thelegendofbald.ui.settingsmenu.api;
 
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.swing.JComponent;
@@ -26,7 +25,7 @@ public enum KeybindsSettings implements SettingOption {
     KeybindsSettings(String text, String buttonText) {
         this.text = text;
         this.buttonText = buttonText;
-        this.jcomponent = jbFactory.createKeybindingButton(text, new Dimension(0,0), 0.05, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+        this.jcomponent = jbFactory.createKeybindingButton(text, new Dimension(0,0), Optional.empty(), 0.05, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
     }
 
     @Override
