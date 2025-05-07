@@ -22,6 +22,7 @@ public final class VerticalGridBagConstraintsSupplier implements Supplier<GridBa
 
         private VerticalGridBagConstraints() {
             this.fill = GridBagConstraints.VERTICAL;
+            this.anchor = GridBagConstraints.CENTER;
             this.weighty = 1.0;
             this.weightx = 1.0;
         }

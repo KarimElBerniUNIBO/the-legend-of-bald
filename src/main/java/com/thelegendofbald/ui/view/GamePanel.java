@@ -44,26 +44,31 @@ public class GamePanel extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 pressedKeys.add(e.getKeyCode());
-                updateSpeed();
+                handleInput();
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 pressedKeys.remove(e.getKeyCode());
-                updateSpeed();
+                handleInput();
             }
         });
     }
 
-    private void updateSpeed() {
+    private void handleInput() {
         bald.updateAnimation();
         bald.setSpeedX(pressedKeys.contains(KeyEvent.VK_RIGHT) ? 5 :
                        pressedKeys.contains(KeyEvent.VK_LEFT) ? -5 : 0);
         bald.setSpeedY(pressedKeys.contains(KeyEvent.VK_DOWN) ? 5 :
                        pressedKeys.contains(KeyEvent.VK_UP) ? -5 : 0);
+     
     }
 
+    
+
     private void update() {
+
+        handleInput();
         bald.move();
         dummyenemy.followPlayer(bald);
         dummyenemy.updateAnimation();
