@@ -17,15 +17,15 @@ import com.thelegendofbald.ui.settingsmenu.view.SettingsPanel;
 public class GameWindow extends JFrame implements View {
 
     private static final String TITLE = "The Legend of Bald";
-    private static Dimension size = new Dimension(1280, 704);
+    private static Dimension internalSize = new Dimension(1280, 704);
 
     private final List<JPanel> panels = new LinkedList<>();
 
     public GameWindow() {
-        this.panels.add(new MainPanel(size));
-        this.panels.add(new SettingsPanel(size));
-        this.panels.add(new LeaderBoardPanel(size));
-        this.panels.add(new GamePanel(size)); 
+        this.panels.add(new MainPanel(internalSize));
+        this.panels.add(new SettingsPanel(internalSize));
+        this.panels.add(new LeaderBoardPanel(internalSize));
+        this.panels.add(new GamePanel(internalSize, this)); 
 
         this.setContentPane(this.panels.getFirst());
     }
@@ -51,13 +51,13 @@ public class GameWindow extends JFrame implements View {
     }
 
     @Override
-    public Dimension getSize() {
-        return size;
+    public Dimension getInternalSize() {
+        return internalSize;
     }
 
     @Override
-    public void setSize(Dimension size) {
-        GameWindow.size = size;
+    public void setInternalSize(Dimension size) {
+        GameWindow.internalSize = size;
     }
 
     @Override

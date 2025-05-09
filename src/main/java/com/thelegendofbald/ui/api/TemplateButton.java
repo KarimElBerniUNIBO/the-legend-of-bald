@@ -63,8 +63,4 @@ public abstract class TemplateButton extends JButton {
         return Math.max(1, scalingFactor);
     }
 
-    /*private int calculateFontSize(Dimension size) {
-        return (int) (Math.min(size.getWidth() * this.moltiplicator.getFirst(), size.getHeight() * this.moltiplicator.getSecond()) * PARENT_FONT_PROPORTION);
-    }*/
-
 }

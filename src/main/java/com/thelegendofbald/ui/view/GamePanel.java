@@ -3,6 +3,7 @@ package com.thelegendofbald.ui.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import javax.swing.Timer;
 
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.ui.api.View;
 
 public class GamePanel extends JPanel {
 
@@ -24,7 +26,10 @@ public class GamePanel extends JPanel {
     Timer timer = new Timer(16, e -> update());
     private final Set<Integer> pressedKeys = new HashSet<>();
 
-    public GamePanel(Dimension size) {
+    private final View window;
+
+    public GamePanel(Dimension size, View window) {
+        this.window = window;
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
@@ -78,11 +83,18 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        this.scaleGraphics(g);
 
         tileMap.render(g);           
         gridPanel.paintComponent(g); 
         bald.render(g);              
         dummyenemy.render(g);        
+    }
+
+    private void scaleGraphics(Graphics g) {
+        double scaleX = this.getWidth() / window.getInternalSize().getWidth();
+        double scaleY = this.getHeight() / window.getInternalSize().getHeight();
+        ((Graphics2D) g).scale(scaleX, scaleY);
     }
 }
 

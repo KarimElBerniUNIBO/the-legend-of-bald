@@ -9,9 +9,9 @@ public interface View {
 
     void changeMainPanel(Panels panelEnum);
 
-    Dimension getSize();
+    Dimension getInternalSize();
 
-    void setSize(Dimension size);
+    void setInternalSize(Dimension size);
 
     void update();
 
