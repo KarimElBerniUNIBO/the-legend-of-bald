@@ -5,24 +5,30 @@ import java.awt.Dimension;
 import java.util.Optional;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
+
+import org.apache.commons.math3.util.Pair;
+
+import com.thelegendofbald.ui.model.RectangleButton;
+import com.thelegendofbald.ui.model.RoundedButton;
+import com.thelegendofbald.ui.model.TrasparentBackgroundButton;
+import com.thelegendofbald.ui.settingsmenu.model.KeybindingButton;
 
 /**
  * Factory for creating template of buttons for User Interface.
  */
 public interface JButtonFactory {
 
-    JButton createRectangleButton(String text, Dimension parentSize, Optional<Color> bgColor, Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType);
-    JButton createRectangleButton(ImageIcon icon, Dimension parentSize, Optional<Color> bgColor, Optional<Color> fgColor);
+    RectangleButton createRectangleButton(String text, Dimension parentSize, Optional<Pair<Double, Double>> moltiplicator, Optional<Color> bgColor, Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType);
+    RectangleButton createRectangleButton(ImageIcon icon, Dimension parentSize, Optional<Pair<Double, Double>> moltiplicator, Optional<Color> bgColor, Optional<Color> fgColor);
 
-    JButton createRoundedButton(String text, Dimension parentSize, double arcProportion, Optional<Color> bgColor, Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType);
-    JButton createRoundedButton(ImageIcon icon, Dimension parentSize, double arcProportion, Optional<Color> bgColor, Optional<Color> fgColor);
+    RoundedButton createRoundedButton(String text, Dimension parentSize, Optional<Pair<Double, Double>> moltiplicator, double arcProportion, Optional<Color> bgColor, Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType);
+    RoundedButton createRoundedButton(ImageIcon icon, Dimension parentSize, Optional<Pair<Double, Double>> moltiplicator, double arcProportion, Optional<Color> bgColor, Optional<Color> fgColor);
 
-    JButton createTrasparentButton(String text, Dimension parentSize, Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType);
-    JButton createTrasparentButton(ImageIcon icon, Dimension parentSize, Optional<Color> fgColor);
+    TrasparentBackgroundButton createTrasparentButton(String text, Dimension parentSize, Optional<Pair<Double, Double>> moltiplicator, Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType);
+    TrasparentBackgroundButton createTrasparentButton(ImageIcon icon, Dimension parentSize, Optional<Pair<Double, Double>> moltiplicator, Optional<Color> fgColor);
 
-    JButton createKeybindingButton(String text, Dimension parentSize, double arcProportion, Optional<Color> bgColor, Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType);
-    JButton createKeybindingButton(ImageIcon icon, Dimension parentSize, double arcProportion, Optional<Color> bgColor, Optional<Color> fgColor);
+    KeybindingButton createKeybindingButton(String text, Dimension parentSize, Optional<Pair<Double, Double>> moltiplicator, double arcProportion, Optional<Color> bgColor, Optional<String> fontName, Optional<Color> fontColor, Optional<Integer> fontType);
+    KeybindingButton createKeybindingButton(ImageIcon icon, Dimension parentSize, Optional<Pair<Double, Double>> moltiplicator, double arcProportion, Optional<Color> bgColor, Optional<Color> fgColor);
 
 
 }

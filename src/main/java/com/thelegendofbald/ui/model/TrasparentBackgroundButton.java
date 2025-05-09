@@ -5,6 +5,8 @@ import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
 
+import org.apache.commons.math3.util.Pair;
+
 import com.thelegendofbald.ui.api.TemplateButton;
 import com.thelegendofbald.ui.controller.TrasparentBackgroundButtonMouseListener;
 
@@ -15,9 +17,9 @@ public class TrasparentBackgroundButton extends TemplateButton {
 
     private boolean selected = false;
 
-    public TrasparentBackgroundButton(String text, Dimension windowSize, Color bgColor, String fontName,
+    public TrasparentBackgroundButton(String text, Dimension windowSize, Pair<Double, Double> moltiplicator, Color bgColor, String fontName,
             Color fontColor, int fontType) {
-        super(text, windowSize, bgColor, fontName, fontColor, fontType);
+        super(text, windowSize, moltiplicator, bgColor, fontName, fontColor, fontType);
         this.buttonFGColor = fontColor;
         this.buttonFGSelectedColor = Color.YELLOW;
 
@@ -26,8 +28,8 @@ public class TrasparentBackgroundButton extends TemplateButton {
         this.addMouseListener(new TrasparentBackgroundButtonMouseListener(this));
     }
 
-    public TrasparentBackgroundButton(ImageIcon icon, Dimension windowSize, Color bgColor, Color fgColor) {
-        super(icon, windowSize, bgColor, fgColor);
+    public TrasparentBackgroundButton(ImageIcon icon, Dimension windowSize, Pair<Double, Double> moltiplicator, Color bgColor, Color fgColor) {
+        super(icon, windowSize, moltiplicator, bgColor, fgColor);
         this.buttonFGColor = fgColor;
         this.buttonFGSelectedColor = Color.YELLOW;
 

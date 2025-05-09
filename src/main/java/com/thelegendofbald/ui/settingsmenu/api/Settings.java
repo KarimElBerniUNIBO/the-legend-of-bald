@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import javax.swing.JButton;
 
+import com.thelegendofbald.ui.settingsmenu.model.SettingsEditor;
+
 public enum Settings {
     VIDEO(VideoSettings.values(), Optional.empty(), Optional.empty()),
     AUDIO(AudioSettings.values(), Optional.empty(), Optional.empty()),

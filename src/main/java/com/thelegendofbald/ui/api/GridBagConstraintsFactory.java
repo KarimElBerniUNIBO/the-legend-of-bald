@@ -8,6 +8,9 @@ import java.awt.Insets;
  */
 public interface GridBagConstraintsFactory {
 
+    GridBagConstraints createDefaultGridBagConstraint();
+    GridBagConstraints createDefaultGridBagConstraint(Insets insets);
+
     /**
      * Create layout constraints for vertical positioning.
      * 

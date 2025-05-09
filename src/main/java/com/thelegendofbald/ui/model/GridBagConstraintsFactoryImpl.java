@@ -19,6 +19,18 @@ public final class GridBagConstraintsFactoryImpl implements GridBagConstraintsFa
     private final Supplier<GridBagConstraints> horizontalGBCSupplier = new HorizontalGridBagConstraintsSupplier();
     private final Supplier<GridBagConstraints> bothGBCSupplier = new BothGridBagConstraintsSupplier();
 
+    @Override
+    public GridBagConstraints createDefaultGridBagConstraint() {
+        return new GridBagConstraints();
+    }
+
+    @Override
+    public GridBagConstraints createDefaultGridBagConstraint(Insets insets) {
+        var gbc = this.createDefaultGridBagConstraint();
+        gbc.insets = insets;
+        return gbc;
+    }
+
     /**
      * Creates a {@code GridBagConstraints} instance configured for vertical filling.
      *
