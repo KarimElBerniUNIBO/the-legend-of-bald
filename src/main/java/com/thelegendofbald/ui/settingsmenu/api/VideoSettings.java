@@ -1,6 +1,5 @@
 package com.thelegendofbald.ui.settingsmenu.api;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JComboBox;

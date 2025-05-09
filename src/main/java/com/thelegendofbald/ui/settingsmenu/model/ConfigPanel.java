@@ -20,7 +20,6 @@ import com.thelegendofbald.ui.model.GridBagConstraintsFactoryImpl;
 
 public class ConfigPanel extends AdapterPanel {
 
-    private static final double TITLE_PROPORTION = 0.5;
     private static final int UP_DOWN_INSETS = 2;
 
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();

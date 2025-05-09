@@ -29,8 +29,6 @@ public class MainPanel extends AdapterPanel {
 
     private TitleLabel titleLabel;
     private JPanel centerPanel;
-    private JPanel leftSidePanel;
-    private JPanel rightSidePanel;
 
     /**
      * Constructs the main menu panel with a specified size.

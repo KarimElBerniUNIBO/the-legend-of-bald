@@ -1,7 +1,5 @@
 package com.thelegendofbald.ui.settingsmenu.api;
 
-import java.util.Arrays;
-
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 
