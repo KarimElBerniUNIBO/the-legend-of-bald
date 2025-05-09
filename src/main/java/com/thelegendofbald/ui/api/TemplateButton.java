@@ -15,6 +15,7 @@ import org.apache.commons.math3.util.Pair;
 public abstract class TemplateButton extends JButton {
     
     protected static final double PARENT_FONT_PROPORTION = 0.1;
+    private static final double TEXT_PROPORTION = 0.05;
 
     private final Pair<Double, Double> moltiplicator;
 
@@ -25,7 +26,7 @@ public abstract class TemplateButton extends JButton {
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.setBackground(bgColor);
         this.setForeground(fontColor);
-        this.setFont(new Font(fontName, fontType, this.calculateFontSize(parentSize)));
+        this.setFont(new Font(fontName, fontType, this.getFontSize(parentSize)));
         this.initialize();
     }
 
@@ -49,12 +50,21 @@ public abstract class TemplateButton extends JButton {
     public void addNotify() {
         super.addNotify();
         if (this.getText() != null && !this.getText().isEmpty()) {
-            SwingUtilities.invokeLater(() -> this.setFont(this.getFont().deriveFont((float) this.calculateFontSize(this.getParent().getSize()))));
+            SwingUtilities.invokeLater(() -> this.setFont(this.getFont().deriveFont((float) this.getFontSize(this.getParent().getSize()))));
         }
     }
 
-    private int calculateFontSize(Dimension size) {
-        return (int) (Math.min(size.getWidth() * this.moltiplicator.getFirst(), size.getHeight() * this.moltiplicator.getSecond()) * PARENT_FONT_PROPORTION);
+    private int getFontSize(Dimension parentSize) {
+        double width = parentSize.getWidth() * this.moltiplicator.getFirst();
+        double height = parentSize.getHeight() * this.moltiplicator.getSecond();
+        double aspectRatio = Math.min(1.2, width / height);
+        int scalingFactor = (int) (Math.sqrt(width * height) * aspectRatio * TEXT_PROPORTION);
+    
+        return Math.max(1, scalingFactor);
     }
+
+    /*private int calculateFontSize(Dimension size) {
+        return (int) (Math.min(size.getWidth() * this.moltiplicator.getFirst(), size.getHeight() * this.moltiplicator.getSecond()) * PARENT_FONT_PROPORTION);
+    }*/
 
 }
