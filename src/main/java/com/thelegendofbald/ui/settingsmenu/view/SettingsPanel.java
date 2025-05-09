@@ -19,6 +19,7 @@ public class SettingsPanel extends AdapterPanel {
 
     public SettingsPanel(Dimension size) {
         super(size);
+        this.setOpaque(true);
         this.setBackground(Color.BLACK);
         this.setLayout(new BorderLayout());
     }
@@ -30,19 +31,17 @@ public class SettingsPanel extends AdapterPanel {
         this.northPanel = new NorthPanel(this.getSize(), this.sem);
     }
 
-    private void updateSize() {
-        Arrays.stream(this.getComponents()).forEach(component -> component.setPreferredSize(this.getSize()));
-        this.revalidate();
-        this.repaint();
-    }
-
     @Override
-    protected void addComponentsToPanel() {
-        this.updateSize();
-
+    public void addComponentsToPanel() {
         this.add(this.backToMainPanel, BorderLayout.WEST);
         this.add(this.northPanel, BorderLayout.NORTH);
         this.add((JPanel) this.sem, BorderLayout.CENTER);
+        this.updateComponentsSize();
+    }
+
+    @Override
+    public void updateComponentsSize() {
+        Arrays.stream(this.getComponents()).forEach(component -> component.setPreferredSize(this.getSize()));
     }
 
 }

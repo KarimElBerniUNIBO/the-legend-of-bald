@@ -26,7 +26,9 @@ import com.thelegendofbald.ui.view.GameWindow;
 
 final class CenterPanel extends JPanel implements InteractivePanel {
 
-    private static final double BUTTONS_PADDING_PROPORTION = 0.05;
+    private static final double BUTTONS_BOTTOM_INSETS_PROPORTION = 0.05;
+    private static final double BUTTONS_LEFT_RIGHT_INSETS_PROPORTION = 0.25;
+
     private static final double DEFAULT_ARC_PROPORTION = 0.2;
 
     private final JButtonFactory buttonFactory = new JButtonFactoryImpl();
@@ -91,7 +93,7 @@ final class CenterPanel extends JPanel implements InteractivePanel {
     public void setPreferredSize(Dimension size) {
         super.setPreferredSize(size);
         this.removeAll();
-        gbc.insets.set(0, 0, (int) (size.getHeight() * BUTTONS_PADDING_PROPORTION), 0);
+        gbc.insets.set(0, (int) (size.getWidth() * BUTTONS_LEFT_RIGHT_INSETS_PROPORTION), (int) (size.getHeight() * BUTTONS_BOTTOM_INSETS_PROPORTION), (int) (size.getWidth() * BUTTONS_LEFT_RIGHT_INSETS_PROPORTION));
         this.addButtonsToPanel();
     }
 

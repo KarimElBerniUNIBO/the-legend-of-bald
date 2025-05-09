@@ -41,6 +41,7 @@ public class MainPanel extends AdapterPanel {
         super(size);
 
         this.setPreferredSize(size);
+        this.setOpaque(true);
         this.setBackground(Color.BLACK);
         this.setLayout(new BorderLayout());
     }
@@ -54,25 +55,19 @@ public class MainPanel extends AdapterPanel {
                 Optional.empty(),
                 Optional.of(TITLE_FONT_NAME));
         centerPanel = new CenterPanel(this.getSize());
-        leftSidePanel = new SidePanel(this.getSize(), new Pair<>(3.5, 1.0));
-        rightSidePanel = new SidePanel(this.getSize(), new Pair<>(3.5, 1.0));
     }
 
-    private void updateSize(Dimension size) {
-        Arrays.stream(this.getComponents()).forEach(component -> component.setPreferredSize(size));
-        /*this.titleLabel.setPreferredSize(size);
-        this.centerPanel.setPreferredSize(size);
-        this.leftSidePanel.setPreferredSize(size);
-        this.rightSidePanel.setPreferredSize(size);*/
+
+    @Override
+    public void addComponentsToPanel() {
+        this.add(titleLabel, BorderLayout.NORTH);
+        this.add(centerPanel, BorderLayout.CENTER);
+        this.updateComponentsSize();
     }
 
     @Override
-    protected void addComponentsToPanel() {
-        this.add(titleLabel, BorderLayout.NORTH);
-        this.add(centerPanel, BorderLayout.CENTER);
-        this.add(leftSidePanel, BorderLayout.EAST);
-        this.add(rightSidePanel, BorderLayout.WEST);
-        this.updateSize(this.getSize());
+    public void updateComponentsSize() {
+        Arrays.stream(this.getComponents()).forEach(component -> component.setPreferredSize(this.getSize()));
     }
 
 }

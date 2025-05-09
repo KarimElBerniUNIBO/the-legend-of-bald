@@ -21,6 +21,9 @@ import com.thelegendofbald.utils.ImageUtils;
 
 public class BackToMainPanel extends AdapterPanel {
 
+    private static final double WIDTH_PROPORTION = 0.1;
+    private static final double HEIGHT_PROPORTION = 0.2;
+
     private static final String PATH = "/images/buttons/back.png";
     private static final double IMAGE_PROPORTION = 0.25;
 
@@ -38,19 +41,13 @@ public class BackToMainPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         this.originalImage = Optional.of(new ImageIcon(this.getClass().getResource(PATH)));
-        var imageProportion = new Fraction(this.getWidth() / this.getHeight());
+        var imageProportion = this.getWidth() > 0 && this.getHeight() > 0 ? new Fraction(this.getWidth() / this.getHeight()) : new Fraction(1, 1);
 
         this.originalImage.ifPresent(image -> this.backButton = Optional.of(jbFactory.createTrasparentButton(this.getImageResized(image), new Dimension(imageProportion.getNumerator(), imageProportion.getDenominator()), Optional.empty(), Optional.of(Color.WHITE))));
         this.backButton.ifPresent(button -> button.addActionListener(e -> {
             GameWindow parent = (GameWindow) SwingUtilities.getWindowAncestor(this);
             new SwitchToOtherPanel(parent, Panels.MAIN_MENU).actionPerformed(e);
         }));
-    }
-
-    private void updateSize() {
-        if (this.getWidth() > 0 && this.getHeight() > 0) {
-            this.originalImage.ifPresent(image -> backButton.ifPresent(button -> button.setIcon(this.getImageResized(image))));
-        }
     }
 
     private ImageIcon getImageResized(ImageIcon image) {
@@ -77,15 +74,22 @@ public class BackToMainPanel extends AdapterPanel {
     }
 
     @Override
-    protected void addComponentsToPanel() {
-        this.updateSize();
+    public void addComponentsToPanel() {
+        this.updateComponentsSize();
         backButton.ifPresent(this::add);
     }
 
     @Override
+    public void updateComponentsSize() {
+        if (this.getWidth() > 0 && this.getHeight() > 0) {
+            this.originalImage.ifPresent(image -> backButton.ifPresent(button -> button.setIcon(this.getImageResized(image))));
+        }
+    }
+
+    @Override
     public void setPreferredSize(Dimension windowSize) {
-        super.setPreferredSize(new Dimension((int) (windowSize.getWidth() * 0.1), (int) (windowSize.getHeight() * 0.2)));
-        this.updateSize();
+        super.setPreferredSize(new Dimension((int) (windowSize.getWidth() * WIDTH_PROPORTION), (int) (windowSize.getHeight() * HEIGHT_PROPORTION)));
+        this.updateComponentsSize();
     }
 
 }

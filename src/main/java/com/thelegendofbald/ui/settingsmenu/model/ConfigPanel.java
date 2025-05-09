@@ -7,18 +7,18 @@ import java.awt.GridBagLayout;
 import java.util.Optional;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 
 import org.apache.commons.math3.util.Pair;
 
+import com.thelegendofbald.ui.api.AdapterPanel;
 import com.thelegendofbald.ui.api.GridBagConstraintsFactory;
 import com.thelegendofbald.ui.mainmenu.model.TitleLabel;
 import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
 import com.thelegendofbald.ui.model.GridBagConstraintsFactoryImpl;
 
-public class ConfigPanel extends JPanel {
+public class ConfigPanel extends AdapterPanel {
 
     private static final double TITLE_PROPORTION = 0.5;
     private static final int UP_DOWN_INSETS = 2;
@@ -34,6 +34,7 @@ public class ConfigPanel extends JPanel {
 
 
     public ConfigPanel(String text, JComponent values) {
+        super(new Dimension(0,0));
         this.text = text;
         this.values = values;
 
@@ -56,29 +57,33 @@ public class ConfigPanel extends JPanel {
         }
     }
 
-    private void initializeComponents() {
+    @Override
+    protected void initializeComponents() {
         this.title = Optional.of(tlFactory.createTitleLabelWithProportion(this.text, this.getSize(), Optional.of(new Pair<>(1.0,1.0)), Optional.empty(), Optional.empty()));
     }
 
-    private void updateSize() {
-        this.title.ifPresent(t -> t.setPreferredSize(this.getSize()));
-        this.values.setPreferredSize(this.getSize());
-    }
-
-    private void addComponentsToPanel() {
-        this.updateSize();
+    @Override
+    public void addComponentsToPanel() {
+        this.updateComponentsSize();
 
         gbc.gridx = 0;
         this.title.ifPresent(t -> this.add(t, gbc));
 
         gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.NONE;
         this.add(values, gbc);
     }
 
     @Override
     public void setPreferredSize(Dimension size) {
         super.setPreferredSize(size);
-        SwingUtilities.invokeLater(this::updateSize);
+        SwingUtilities.invokeLater(this::updateComponentsSize);
+    }
+
+    @Override
+    public void updateComponentsSize() {
+        this.title.ifPresent(t -> t.setPreferredSize(this.getSize()));
+        this.values.setPreferredSize(this.getSize());
     }
 
 }

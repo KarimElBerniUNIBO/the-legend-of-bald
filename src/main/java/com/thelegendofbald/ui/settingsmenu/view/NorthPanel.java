@@ -38,21 +38,26 @@ class NorthPanel extends AdapterPanel {
             
     }
 
-    private void updateSize() {
+    /*private void updateSize() {
         Arrays.stream(this.getComponents()).forEach(component -> component.setPreferredSize(this.getSize()));
-    }
+    }*/
 
     @Override
-    protected void addComponentsToPanel() {
-        this.updateSize();
+    public void addComponentsToPanel() {
         this.add(this.titleLabel, BorderLayout.NORTH);
         this.add(this.categoriesPanel, BorderLayout.CENTER);
+        this.updateComponentsSize();
     }
 
     @Override
     public void setPreferredSize(Dimension size) {
         super.setPreferredSize(new Dimension((int) size.getWidth(), (int) (size.getHeight() * 0.35)));
-        SwingUtilities.invokeLater(this::updateSize);
+        SwingUtilities.invokeLater(this::updateComponentsSize);
+    }
+
+    @Override
+    public void updateComponentsSize() {
+        Arrays.stream(this.getComponents()).forEach(component -> component.setPreferredSize(this.getSize()));
     }
 
 }
