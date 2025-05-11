@@ -25,8 +25,8 @@ public final class GridBagConstraintsFactoryImpl implements GridBagConstraintsFa
     }
 
     @Override
-    public GridBagConstraints createDefaultGridBagConstraint(Insets insets) {
-        var gbc = this.createDefaultGridBagConstraint();
+    public GridBagConstraints createDefaultGridBagConstraint(final Insets insets) {
+        final var gbc = this.createDefaultGridBagConstraint();
         gbc.insets = insets;
         return gbc;
     }
@@ -42,8 +42,8 @@ public final class GridBagConstraintsFactoryImpl implements GridBagConstraintsFa
     }
 
     @Override
-    public GridBagConstraints createVerticalGridBagConstraints(Insets insets) {
-        GridBagConstraints gbc = verticalGBCSupplier.get();
+    public GridBagConstraints createVerticalGridBagConstraints(final Insets insets) {
+        final GridBagConstraints gbc = verticalGBCSupplier.get();
         gbc.insets = insets;
         return gbc;
     }
@@ -59,8 +59,8 @@ public final class GridBagConstraintsFactoryImpl implements GridBagConstraintsFa
     }
 
     @Override
-    public GridBagConstraints createHorizontalGridBagConstraints(Insets insets) {
-        GridBagConstraints gbc = horizontalGBCSupplier.get();
+    public GridBagConstraints createHorizontalGridBagConstraints(final Insets insets) {
+        final GridBagConstraints gbc = horizontalGBCSupplier.get();
         gbc.insets = insets;
         return gbc;
     }
@@ -76,8 +76,8 @@ public final class GridBagConstraintsFactoryImpl implements GridBagConstraintsFa
     }
 
     @Override
-    public GridBagConstraints createBothGridBagConstraints(Insets insets) {
-        GridBagConstraints gbc = bothGBCSupplier.get();
+    public GridBagConstraints createBothGridBagConstraints(final Insets insets) {
+        final GridBagConstraints gbc = bothGBCSupplier.get();
         gbc.insets = insets;
         return gbc;
     }

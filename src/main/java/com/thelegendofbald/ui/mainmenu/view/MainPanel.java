@@ -20,10 +20,12 @@ import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
  * This panel serves as the container for menu components, including the title
  * and central elements.
  */
-public class MainPanel extends AdapterPanel {
+public final class MainPanel extends AdapterPanel {
 
     private static final String TITLE_TEXT = "THE LEGEND OF BALD";
     private static final String TITLE_FONT_NAME = Font.SERIF;
+
+    private static final Pair<Double, Double> TITLE_PROPORTION = new Pair<>(1.0, 0.3);
 
     private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
 
@@ -49,7 +51,7 @@ public class MainPanel extends AdapterPanel {
         titleLabel = tlFactory.createTitleLabelWithProportion(
                 TITLE_TEXT,
                 this.getSize(),
-                Optional.of(new Pair<>(1.0, 0.3)),
+                Optional.of(TITLE_PROPORTION),
                 Optional.empty(),
                 Optional.of(TITLE_FONT_NAME));
         centerPanel = new CenterPanel(this.getSize());

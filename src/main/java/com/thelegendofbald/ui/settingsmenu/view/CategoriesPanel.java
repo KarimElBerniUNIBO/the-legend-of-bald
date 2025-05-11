@@ -28,12 +28,14 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
     private static final double HEIGHT_PROPORTION = 0.1;
     private static final double WIDTH_BUTTONS_PADDING = 0.05;
 
+    private static final Pair<Double, Double> BUTTON_PROPORTION = new Pair<>(1.0, 2.5);
+
     private final JButtonFactory jbFactory = new JButtonFactoryImpl();
     private final List<JButton> buttons = new LinkedList<>();
 
     private final SettingsEditorsManager sem;
 
-    CategoriesPanel(Dimension size, SettingsEditorsManager sem) {
+    CategoriesPanel(final Dimension size, final SettingsEditorsManager sem) {
         this.sem = sem;
         this.setOpaque(false);
     }
@@ -61,14 +63,16 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
 
     private List<JButton> getListOfButtons() {
         return Stream.iterate(0, i -> i <= Settings.getMaxIndex(), i -> i + 1)
-                .map(i -> (JButton) jbFactory.createTrasparentButton(Settings.getSettingByIndex(i).getName(), this.getSize(), Optional.of(new Pair<>(1.0, 2.5)),
+                .map(i -> (JButton) jbFactory.createTrasparentButton(Settings.getSettingByIndex(i).getName(),
+                        this.getSize(), Optional.of(BUTTON_PROPORTION),
                         Optional.of(Font.MONOSPACED), Optional.of(Color.WHITE), Optional.empty()))
                 .toList();
     }
 
     private void connectButtonsWithActionListeners() {
         Stream.iterate(0, i -> i < this.buttons.size(), i -> i + 1)
-                .forEach(i -> this.buttons.get(i).addActionListener(new SwitchToOtherSettingsEditorPanel(sem, Settings.getSettingByIndex(i))));
+                .forEach(i -> this.buttons.get(i)
+                        .addActionListener(new SwitchToOtherSettingsEditorPanel(sem, Settings.getSettingByIndex(i))));
     }
 
     private void addButtonsToPanel() {
@@ -83,12 +87,12 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
     }
 
     private void updateLayout() {
-        var layout = (FlowLayout) this.getLayout();
+        final var layout = (FlowLayout) this.getLayout();
         layout.setHgap((int) (this.getWidth() * WIDTH_BUTTONS_PADDING));
     }
 
     @Override
-    public void setPreferredSize(Dimension size) {
+    public void setPreferredSize(final Dimension size) {
         super.setPreferredSize(new Dimension((int) size.getWidth(), (int) (size.getHeight() * HEIGHT_PROPORTION)));
         SwingUtilities.invokeLater(this::updateLayout);
     }

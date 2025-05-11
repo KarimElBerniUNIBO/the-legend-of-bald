@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 public class LeaderBoardPanel extends JPanel {
 
-    public LeaderBoardPanel(Dimension size) {
+    public LeaderBoardPanel(final Dimension size) {
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
     }

@@ -10,11 +10,12 @@ import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.ui.api.Panels;
 import com.thelegendofbald.ui.api.View;
+import com.thelegendofbald.ui.api.MainView;
 import com.thelegendofbald.ui.leaderboard.view.LeaderBoardPanel;
 import com.thelegendofbald.ui.mainmenu.view.MainPanel;
 import com.thelegendofbald.ui.settingsmenu.view.SettingsPanel;
 
-public class GameWindow extends JFrame implements View {
+public class GameWindow extends JFrame implements View, MainView {
 
     private static final String TITLE = "The Legend of Bald";
     private static Dimension internalSize = new Dimension(1280, 704);
@@ -61,7 +62,7 @@ public class GameWindow extends JFrame implements View {
     }
 
     @Override
-    public void update() {
+    public void updateView() {
         SwingUtilities.invokeLater(() -> {
             this.revalidate();
             this.repaint();

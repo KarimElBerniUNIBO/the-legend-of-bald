@@ -50,14 +50,15 @@ final class CenterPanel extends JPanel implements InteractivePanel {
             SwingUtilities.invokeLater(() -> {
                 this.buttons = this.getListOfButtons(this.getSize());
                 this.connectButtonsWithActionListeners();
-                this.addButtonsToPanel(); 
+                this.addButtonsToPanel();
             });
         }
     }
 
-    private List<JButton> getListOfButtons(Dimension size) {
+    private List<JButton> getListOfButtons(final Dimension size) {
         return Stream.iterate(0, i -> i <= Buttons.getMaxIndex(), i -> i + 1)
-                .map(i -> (JButton) buttonFactory.createRoundedButton(Buttons.getIndex(i).getName(), size, Optional.empty(),
+                .map(i -> (JButton) buttonFactory.createRoundedButton(Buttons.getIndex(i).getName(), size,
+                        Optional.empty(),
                         DEFAULT_ARC_PROPORTION, Optional.empty(), Optional.empty(), Optional.of(Color.BLACK),
                         Optional.empty()))
                 .toList();
@@ -71,7 +72,7 @@ final class CenterPanel extends JPanel implements InteractivePanel {
 
         buttonIndexToPanelIndex.forEach((button, panel) -> {
             buttons.get(button.getIndex()).addActionListener(e -> {
-                GameWindow parent = (GameWindow) SwingUtilities.getWindowAncestor(this);
+                final var parent = (GameWindow) SwingUtilities.getWindowAncestor(this);
                 new SwitchToOtherPanel(parent, panel).actionPerformed(e);
             });
 
@@ -90,10 +91,12 @@ final class CenterPanel extends JPanel implements InteractivePanel {
     }
 
     @Override
-    public void setPreferredSize(Dimension size) {
+    public void setPreferredSize(final Dimension size) {
         super.setPreferredSize(size);
         this.removeAll();
-        gbc.insets.set(0, (int) (size.getWidth() * BUTTONS_LEFT_RIGHT_INSETS_PROPORTION), (int) (size.getHeight() * BUTTONS_BOTTOM_INSETS_PROPORTION), (int) (size.getWidth() * BUTTONS_LEFT_RIGHT_INSETS_PROPORTION));
+        gbc.insets.set(0, (int) (size.getWidth() * BUTTONS_LEFT_RIGHT_INSETS_PROPORTION),
+                (int) (size.getHeight() * BUTTONS_BOTTOM_INSETS_PROPORTION),
+                (int) (size.getWidth() * BUTTONS_LEFT_RIGHT_INSETS_PROPORTION));
         this.addButtonsToPanel();
     }
 

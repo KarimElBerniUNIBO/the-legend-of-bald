@@ -8,15 +8,33 @@ import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.ui.settingsmenu.controller.KeybindingButtonMouseListener;
 
+/**
+ * A {@link KeyAdapter} implementation that handles key press events for {@code KeybindingButton} components.
+ * <p>
+ * When the button is in "changing" mode, this listener captures the pressed key, updates the button's text
+ * to display the key's name, and exits the "changing" mode. It also updates the original text in any associated
+ * {@link KeybindingButtonMouseListener}.
+ * </p>
+ */
 public class KeybindingButtonKeyListener extends KeyAdapter {
 
+    /**
+     * Handles key press events for {@code KeybindingButton} components.
+     * <p>
+     * Subclasses can override this method to provide custom behavior when a key is pressed.
+     * If overridden, ensure that {@code super.keyPressed(KeyEvent)} is called to preserve
+     * the default behavior of handling the "changing" state and updating the button's text.
+     * </p>
+     *
+     * @param e the {@link KeyEvent} triggered by the key press
+     */
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(final KeyEvent e) {
         super.keyPressed(e);
-        var button = (KeybindingButton) e.getSource();
+        final var button = (KeybindingButton) e.getSource();
         if (button.isChanging()) {
-            var keyCode = e.getKeyCode();
-            var keyCodeToString = KeyEvent.getKeyText(keyCode);
+            final var keyCode = e.getKeyCode();
+            final var keyCodeToString = KeyEvent.getKeyText(keyCode);
             SwingUtilities.invokeLater(() -> {
                 button.setText(keyCodeToString);
                 button.setChanging(false);

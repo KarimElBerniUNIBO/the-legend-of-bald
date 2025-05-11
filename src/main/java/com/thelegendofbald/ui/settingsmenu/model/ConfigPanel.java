@@ -18,7 +18,24 @@ import com.thelegendofbald.ui.mainmenu.model.TitleLabel;
 import com.thelegendofbald.ui.mainmenu.model.TitleLabelFactoryImpl;
 import com.thelegendofbald.ui.model.GridBagConstraintsFactoryImpl;
 
-public class ConfigPanel extends AdapterPanel {
+/**
+ * ConfigPanel is a custom Swing panel used for displaying a configuration option
+ * with a title and associated value component. It extends AdapterPanel and arranges
+ * its components using a GridBagLayout. The panel displays a title label and a
+ * configurable value component side by side, with optional insets and a white border.
+ * 
+ * <p>
+ * The title label is created using a TitleLabelFactoryImpl and is initialized
+ * lazily when the panel is added to the component hierarchy. The value component
+ * is provided externally via the constructor.
+ * </p>
+ *
+ * @see AdapterPanel
+ * @see TitleLabel
+ * @see TitleLabelFactoryImpl
+ * @see GridBagConstraintsFactory
+ */
+public final class ConfigPanel extends AdapterPanel {
 
     private static final int UP_DOWN_INSETS = 2;
 
@@ -31,9 +48,19 @@ public class ConfigPanel extends AdapterPanel {
     private final String text;
     private final JComponent values;
 
-
-    public ConfigPanel(String text, JComponent values) {
-        super(new Dimension(0,0));
+    /**
+     * Constructs a ConfigPanel with the specified label text and value component.
+     *
+     * <p>
+     * The panel is initialized with a transparent background, a white matte border
+     * on the top and bottom, and uses a GridBagLayout for arranging its components.
+     * </p>
+     *
+     * @param text   the label or description for this configuration panel
+     * @param values the component containing the configurable values or controls
+     */
+    public ConfigPanel(final String text, final JComponent values) {
+        super(new Dimension(0, 0));
         this.text = text;
         this.values = values;
 
@@ -58,7 +85,8 @@ public class ConfigPanel extends AdapterPanel {
 
     @Override
     protected void initializeComponents() {
-        this.title = Optional.of(tlFactory.createTitleLabelWithProportion(this.text, this.getSize(), Optional.of(new Pair<>(1.0,1.0)), Optional.empty(), Optional.empty()));
+        this.title = Optional.of(tlFactory.createTitleLabelWithProportion(this.text, this.getSize(),
+                Optional.of(new Pair<>(1.0, 1.0)), Optional.empty(), Optional.empty()));
     }
 
     @Override
@@ -74,7 +102,7 @@ public class ConfigPanel extends AdapterPanel {
     }
 
     @Override
-    public void setPreferredSize(Dimension size) {
+    public void setPreferredSize(final Dimension size) {
         super.setPreferredSize(size);
         SwingUtilities.invokeLater(this::updateComponentsSize);
     }

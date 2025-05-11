@@ -19,10 +19,38 @@ import com.thelegendofbald.ui.model.JButtonFactoryImpl;
 import com.thelegendofbald.ui.view.GameWindow;
 import com.thelegendofbald.utils.ImageUtils;
 
-public class BackToMainPanel extends AdapterPanel {
+/**
+ * BackToMainPanel is a custom panel that displays a "Back" button, typically used to return to the main menu.
+ * <p>
+ * The panel is transparent and uses a proportion of its parent container's size to determine its own dimensions.
+ * The "Back" button displays an image, which is resized dynamically based on the panel's size.
+ * When the button is clicked, it triggers a switch to the main menu panel.
+ * </p>
+ *
+ * <ul>
+ *   <li>WIDTH_PROPORTION and HEIGHT_PROPORTION define the panel's size relative to its parent.</li>
+ *   <li>IMAGE_PROPORTION determines the size of the button's image relative to the panel's height.</li>
+ *   <li>The button is created using a JButtonFactory and is styled to be transparent with a white foreground.</li>
+ *   <li>Image resizing maintains the aspect ratio and ensures the image fits within the panel.</li>
+ *   <li>Component sizes and images are updated dynamically when the panel's size changes.</li>
+ * </ul>
+ *
+ * @see AdapterPanel
+ * @see JButtonFactory
+ * @see ImageUtils
+ */
+public final class BackToMainPanel extends AdapterPanel {
 
-    private static final double WIDTH_PROPORTION = 0.1;
-    private static final double HEIGHT_PROPORTION = 0.2;
+    /**
+     * The proportion of the panel's width relative to its parent container.
+     * A value of 0.1 means the panel will occupy 10% of the available width.
+     */
+    public static final double WIDTH_PROPORTION = 0.1;
+    /**
+     * The proportion of the panel's height relative to its parent container.
+     * A value of 0.2 means the panel will occupy 20% of the available height.
+     */
+    public static final double HEIGHT_PROPORTION = 0.2;
 
     private static final String PATH = "/images/buttons/back.png";
     private static final double IMAGE_PROPORTION = 0.25;
@@ -32,7 +60,13 @@ public class BackToMainPanel extends AdapterPanel {
 
     private Optional<ImageIcon> originalImage = Optional.empty();
 
-    public BackToMainPanel(Dimension size) {
+    /**
+     * Constructs a new {@code BackToMainPanel} with the specified size.
+     * The panel is set to be non-opaque and uses a centered {@link FlowLayout}.
+     *
+     * @param size the preferred size of the panel
+     */
+    public BackToMainPanel(final Dimension size) {
         super(size);
         this.setOpaque(false);
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -41,23 +75,28 @@ public class BackToMainPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         this.originalImage = Optional.of(new ImageIcon(this.getClass().getResource(PATH)));
-        var imageProportion = this.getWidth() > 0 && this.getHeight() > 0 ? new Fraction(this.getWidth() / this.getHeight()) : new Fraction(1, 1);
+        final var imageProportion = this.getWidth() > 0 && this.getHeight() > 0
+                ? new Fraction(this.getWidth() / this.getHeight())
+                : new Fraction(1, 1);
 
-        this.originalImage.ifPresent(image -> this.backButton = Optional.of(jbFactory.createTrasparentButton(this.getImageResized(image), new Dimension(imageProportion.getNumerator(), imageProportion.getDenominator()), Optional.empty(), Optional.of(Color.WHITE))));
+        this.originalImage.ifPresent(
+                image -> this.backButton = Optional.of(jbFactory.createTrasparentButton(this.getImageResized(image),
+                        new Dimension(imageProportion.getNumerator(), imageProportion.getDenominator()),
+                        Optional.empty(), Optional.of(Color.WHITE))));
         this.backButton.ifPresent(button -> button.addActionListener(e -> {
-            GameWindow parent = (GameWindow) SwingUtilities.getWindowAncestor(this);
+            final var parent = (GameWindow) SwingUtilities.getWindowAncestor(this);
             new SwitchToOtherPanel(parent, Panels.MAIN_MENU).actionPerformed(e);
         }));
     }
 
-    private ImageIcon getImageResized(ImageIcon image) {
-        var panelWidth = this.getWidth();
-        var panelHeight = this.getHeight();
+    private ImageIcon getImageResized(final ImageIcon image) {
+        final var panelWidth = this.getWidth();
+        final var panelHeight = this.getHeight();
 
-        int originalWidth = image.getIconWidth();
-        int originalHeight = image.getIconHeight();
+        final int originalWidth = image.getIconWidth();
+        final int originalHeight = image.getIconHeight();
 
-        double aspectRatio = originalWidth / originalHeight;
+        final double aspectRatio = originalWidth / originalHeight;
 
         int newWidth = (int) ((panelHeight * IMAGE_PROPORTION) * aspectRatio);
         int newHeight = (int) (panelHeight * IMAGE_PROPORTION);
@@ -67,8 +106,8 @@ public class BackToMainPanel extends AdapterPanel {
             newHeight = (int) (panelWidth / aspectRatio);
         }
 
-        if (newWidth == 0) newWidth = 1;
-        if (newHeight == 0) newHeight = 1;
+        newWidth = Math.max(newWidth, 1);
+        newHeight = Math.max(newHeight, 1);
 
         return ImageUtils.scaleImageIcon(image, newWidth, newHeight);
     }
@@ -82,13 +121,15 @@ public class BackToMainPanel extends AdapterPanel {
     @Override
     public void updateComponentsSize() {
         if (this.getWidth() > 0 && this.getHeight() > 0) {
-            this.originalImage.ifPresent(image -> backButton.ifPresent(button -> button.setIcon(this.getImageResized(image))));
+            this.originalImage
+                    .ifPresent(image -> backButton.ifPresent(button -> button.setIcon(this.getImageResized(image))));
         }
     }
 
     @Override
-    public void setPreferredSize(Dimension windowSize) {
-        super.setPreferredSize(new Dimension((int) (windowSize.getWidth() * WIDTH_PROPORTION), (int) (windowSize.getHeight() * HEIGHT_PROPORTION)));
+    public void setPreferredSize(final Dimension windowSize) {
+        super.setPreferredSize(new Dimension((int) (windowSize.getWidth() * WIDTH_PROPORTION),
+                (int) (windowSize.getHeight() * HEIGHT_PROPORTION)));
         this.updateComponentsSize();
     }
 

@@ -11,13 +11,33 @@ import com.thelegendofbald.ui.api.AdapterPanel;
 import com.thelegendofbald.ui.mainmenu.model.BackToMainPanel;
 import com.thelegendofbald.ui.settingsmenu.api.SettingsEditorsManager;
 
-public class SettingsPanel extends AdapterPanel {
+/**
+ * The {@code SettingsPanel} class represents the main panel for the settings menu UI.
+ * It extends {@link AdapterPanel} and organizes its subcomponents using a {@link BorderLayout}.
+ * <p>
+ * This panel contains:
+ * <ul>
+ *   <li>A {@link BackToMainPanel} component on the west side for navigation back to the main menu.</li>
+ *   <li>A {@link NorthPanel} component at the north, which may contain settings categories or navigation.</li>
+ *   <li>A {@link SettingsEditorsManager} (typically a {@link SettingsEditorPanel}) at the center for editing settings.</li>
+ * </ul>
+ * The panel is opaque and uses a black background.
+ * </p>
+ */
+public final class SettingsPanel extends AdapterPanel {
 
     private BackToMainPanel backToMainPanel;
     private JPanel northPanel;
     private SettingsEditorsManager sem;
 
-    public SettingsPanel(Dimension size) {
+    /**
+     * Constructs a new {@code SettingsPanel} with the specified size.
+     * <p>
+     * The panel is initialized with an opaque black background and uses a {@link BorderLayout}.
+     *
+     * @param size the preferred size of the panel
+     */
+    public SettingsPanel(final Dimension size) {
         super(size);
         this.setOpaque(true);
         this.setBackground(Color.BLACK);

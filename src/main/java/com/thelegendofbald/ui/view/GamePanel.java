@@ -14,6 +14,7 @@ import javax.swing.Timer;
 
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.ui.api.MainView;
 import com.thelegendofbald.ui.api.View;
 
 public class GamePanel extends JPanel {
@@ -26,9 +27,9 @@ public class GamePanel extends JPanel {
     Timer timer = new Timer(16, e -> update());
     private final Set<Integer> pressedKeys = new HashSet<>();
 
-    private final View window;
+    private final MainView window;
 
-    public GamePanel(Dimension size, View window) {
+    public GamePanel(Dimension size, MainView window) {
         this.window = window;
         this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
@@ -92,8 +93,8 @@ public class GamePanel extends JPanel {
     }
 
     private void scaleGraphics(Graphics g) {
-        double scaleX = this.getWidth() / window.getInternalSize().getWidth();
-        double scaleY = this.getHeight() / window.getInternalSize().getHeight();
+        double scaleX = this.getWidth() / ((View) window).getInternalSize().getWidth();
+        double scaleY = this.getHeight() / ((View) window).getInternalSize().getHeight();
         ((Graphics2D) g).scale(scaleX, scaleY);
     }
 }

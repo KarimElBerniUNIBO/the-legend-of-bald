@@ -12,6 +12,19 @@ import com.thelegendofbald.ui.api.GridBagConstraintsFactory;
 import com.thelegendofbald.ui.model.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.ui.settingsmenu.api.Settings;
 
+/**
+ * The {@code SettingsEditor} class is a custom panel for editing application settings.
+ * It extends {@link AdapterPanel} and displays a list of configuration panels,
+ * each representing a configurable setting.
+ * <p>
+ * The panel uses a {@link GridBagLayout} to arrange its child {@link ConfigPanel} components,
+ * which are dynamically created based on the provided {@link Settings} object.
+ * </p>
+ *
+ * @see AdapterPanel
+ * @see Settings
+ * @see ConfigPanel
+ */
 public final class SettingsEditor extends AdapterPanel {
 
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
@@ -20,7 +33,18 @@ public final class SettingsEditor extends AdapterPanel {
     private final Settings settings;
     private final List<ConfigPanel> configsPanels;
 
-    public SettingsEditor(Dimension size, Settings settings) {
+    /**
+     * Constructs a new {@code SettingsEditor} with the specified size and settings.
+     * <p>
+     * Initializes the editor panel with the given dimensions and applies the provided
+     * {@link Settings} instance. The panel is set to be non-opaque and uses a
+     * {@link GridBagLayout} for component arrangement. Configuration panels are
+     * initialized via {@code getConfigsPanels()}.
+     *
+     * @param size      the preferred size of the editor panel
+     * @param settings  the settings object to be edited
+     */
+    public SettingsEditor(final Dimension size, final Settings settings) {
         super(size);
         this.settings = settings;
         this.configsPanels = this.getConfigsPanels();
@@ -30,17 +54,12 @@ public final class SettingsEditor extends AdapterPanel {
 
     @Override
     protected void initializeComponents() {
-        
     }
 
     private List<ConfigPanel> getConfigsPanels() {
         return this.settings.getConfigs().stream()
                 .map(config -> new ConfigPanel(config.getText(), config.getJcomponent())).toList();
     }
-
-    /*private void updateSize(Dimension size) {
-        this.configsPanels.forEach(cp -> cp.setPreferredSize(size));
-    }*/
 
     @Override
     public void addComponentsToPanel() {
@@ -52,7 +71,7 @@ public final class SettingsEditor extends AdapterPanel {
     }
 
     @Override
-    public void setPreferredSize(Dimension size) {
+    public void setPreferredSize(final Dimension size) {
         super.setPreferredSize(size);
         SwingUtilities.invokeLater(() -> {
             this.setMaximumSize(size);

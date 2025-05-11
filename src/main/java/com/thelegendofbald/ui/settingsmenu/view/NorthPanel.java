@@ -17,13 +17,16 @@ import com.thelegendofbald.ui.settingsmenu.api.SettingsEditorsManager;
 
 class NorthPanel extends AdapterPanel {
 
+    private static final String TITLE_TEXT = "SETTINGS";
+    private static final double HEIGHT_PROPORTION = 0.35;
+
     private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
 
     private final SettingsEditorsManager sem;
     private TitleLabel titleLabel;
     private JPanel categoriesPanel;
 
-    public NorthPanel(Dimension size, SettingsEditorsManager sem) {
+    NorthPanel(final Dimension size, final SettingsEditorsManager sem) {
         super(size);
         this.sem = sem;
         this.setOpaque(false);
@@ -32,15 +35,12 @@ class NorthPanel extends AdapterPanel {
 
     @Override
     protected void initializeComponents() {
-        this.titleLabel = tlFactory.createTitleLabelWithProportion("SETTINGS", this.getSize(), Optional.of(new Pair<>(1.0, 0.5)), Optional.empty(),
+        this.titleLabel = tlFactory.createTitleLabelWithProportion(TITLE_TEXT, this.getSize(),
+                Optional.of(new Pair<>(1.0, 0.5)), Optional.empty(),
                 Optional.empty());
         this.categoriesPanel = new CategoriesPanel(this.getSize(), this.sem);
-            
-    }
 
-    /*private void updateSize() {
-        Arrays.stream(this.getComponents()).forEach(component -> component.setPreferredSize(this.getSize()));
-    }*/
+    }
 
     @Override
     public void addComponentsToPanel() {
@@ -50,8 +50,8 @@ class NorthPanel extends AdapterPanel {
     }
 
     @Override
-    public void setPreferredSize(Dimension size) {
-        super.setPreferredSize(new Dimension((int) size.getWidth(), (int) (size.getHeight() * 0.35)));
+    public void setPreferredSize(final Dimension size) {
+        super.setPreferredSize(new Dimension((int) size.getWidth(), (int) (size.getHeight() * HEIGHT_PROPORTION)));
         SwingUtilities.invokeLater(this::updateComponentsSize);
     }
 
