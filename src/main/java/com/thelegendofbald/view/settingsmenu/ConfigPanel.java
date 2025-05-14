@@ -10,13 +10,13 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.view.common.TitleLabel;
 import com.thelegendofbald.view.common.TitleLabelFactoryImpl;
-import com.thelegendofbald.view.contraints.GridBagConstraintsFactoryImpl;
+import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 /**
  * ConfigPanel is a custom Swing panel used for displaying a configuration option
@@ -86,7 +86,8 @@ public final class ConfigPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         this.title = Optional.of(tlFactory.createTitleLabelWithProportion(this.text, this.getSize(),
-                Optional.of(new Pair<>(1.0, 1.0)), Optional.empty(), Optional.empty()));
+                Optional.of(Pair.of(1.0, 1.0)), Optional.empty(), Optional.empty()));
+        super.initializeComponents();
     }
 
     @Override

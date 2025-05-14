@@ -8,14 +8,14 @@ import java.util.Optional;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
 import com.thelegendofbald.view.common.TitleLabel;
 import com.thelegendofbald.view.common.TitleLabelFactoryImpl;
 
-class NorthPanel extends AdapterPanel {
+final class NorthPanel extends AdapterPanel {
 
     private static final String TITLE_TEXT = "SETTINGS";
     private static final double HEIGHT_PROPORTION = 0.35;
@@ -36,10 +36,10 @@ class NorthPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         this.titleLabel = tlFactory.createTitleLabelWithProportion(TITLE_TEXT, this.getSize(),
-                Optional.of(new Pair<>(1.0, 0.5)), Optional.empty(),
+                Optional.of(Pair.of(1.0, 0.5)), Optional.empty(),
                 Optional.empty());
         this.categoriesPanel = new CategoriesPanel(this.getSize(), this.sem);
-
+        super.initializeComponents();
     }
 
     @Override

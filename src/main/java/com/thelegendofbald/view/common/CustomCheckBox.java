@@ -24,7 +24,8 @@ import com.thelegendofbald.utils.ImageUtils;
  * <li>Uses custom icons for checked and unchecked states, loaded from
  * resources.</li>
  * <li>Automatically scales icons based on the component's height.</li>
- * <li>Implements {@link View}, {@link MenuView} and {@link Resizable} interfaces for
+ * <li>Implements {@link View}, {@link MenuView} and {@link Resizable}
+ * interfaces for
  * integration with the menu system and resizing behavior.</li>
  * <li>Handles resizing and updates its view accordingly.</li>
  * <li>Non-opaque and centered alignment for seamless UI integration.</li>
@@ -32,6 +33,8 @@ import com.thelegendofbald.utils.ImageUtils;
  * </p>
  */
 public class CustomCheckBox extends JCheckBox implements View, MenuView, Resizable {
+
+    private static final long serialVersionUID = -4778828542519168670L;
 
     private static final double HEIGHT_PROPORTION = 0.85;
 
@@ -49,17 +52,26 @@ public class CustomCheckBox extends JCheckBox implements View, MenuView, Resizab
     /**
      * Constructs a new {@code CustomCheckBox} with custom UI settings.
      * <p>
-     * This constructor initializes the checkbox to be non-opaque and centers its content
-     * both horizontally and vertically. It also adds a {@link ResizeListener} to handle
-     * resize events and a {@link TemplateButtonMouseListener} to handle mouse interactions.
+     * This constructor initializes the checkbox to be non-opaque and centers its
+     * content
+     * both horizontally and vertically. It also adds a {@link ResizeListener} to
+     * handle
+     * resize events and a {@link TemplateButtonMouseListener} to handle mouse
+     * interactions.
      */
     public CustomCheckBox() {
         super();
-        this.setOpaque(false);
-        this.setHorizontalAlignment(CENTER);
-        this.setVerticalAlignment(CENTER);
-        this.addComponentListener(new ResizeListener(this::onResize));
-        this.addMouseListener(new TemplateButtonMouseListener() {
+        this.initialize();
+    }
+
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setOpaque(false);
+            this.setHorizontalAlignment(CENTER);
+            this.setVerticalAlignment(CENTER);
+            this.addComponentListener(new ResizeListener(this::onResize));
+            this.addMouseListener(new TemplateButtonMouseListener() {
+            });
         });
     }
 
@@ -116,8 +128,10 @@ public class CustomCheckBox extends JCheckBox implements View, MenuView, Resizab
      * Updates the view of the checkbox.
      * <p>
      * Subclasses can override this method to provide custom logic for updating
-     * the checkbox's appearance. If overridden, ensure that {@code super.updateView()}
-     * is called to preserve the default behavior of resizing and repainting the component.
+     * the checkbox's appearance. If overridden, ensure that
+     * {@code super.updateView()}
+     * is called to preserve the default behavior of resizing and repainting the
+     * component.
      * </p>
      */
     @Override
@@ -135,7 +149,8 @@ public class CustomCheckBox extends JCheckBox implements View, MenuView, Resizab
      * Sets the preferred size of the checkbox.
      * <p>
      * Subclasses can override this method to provide custom logic for handling
-     * size changes. If overridden, ensure that {@code super.setPreferredSize(Dimension)}
+     * size changes. If overridden, ensure that
+     * {@code super.setPreferredSize(Dimension)}
      * is called to preserve the default behavior of updating the view.
      * </p>
      *
@@ -166,7 +181,8 @@ public class CustomCheckBox extends JCheckBox implements View, MenuView, Resizab
      * Sets the internal size of the checkbox.
      * <p>
      * Subclasses can override this method to provide custom logic for handling
-     * size changes. If overridden, ensure that {@code super.setInternalSize(Dimension)}
+     * size changes. If overridden, ensure that
+     * {@code super.setInternalSize(Dimension)}
      * is called to preserve the default behavior of updating the view.
      * </p>
      *

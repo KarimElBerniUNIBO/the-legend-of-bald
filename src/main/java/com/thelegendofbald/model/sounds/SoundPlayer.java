@@ -1,12 +1,15 @@
 package com.thelegendofbald.model.sounds;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  * The {@code SoundPlayer} class is responsible for loading and playing audio clips from the application's resources.
@@ -48,7 +51,7 @@ public final class SoundPlayer {
             final AudioInputStream audioStream = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
             clip = Optional.of(AudioSystem.getClip());
             clip.get().open(audioStream);
-        } catch (final Exception e) {
+        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
             // TODO Handle exception
             // TODO Log exception
             System.out.println(e.getMessage());

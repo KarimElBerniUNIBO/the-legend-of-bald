@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -11,7 +12,7 @@ import javax.swing.SwingUtilities;
 import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.api.views.View;
-import com.thelegendofbald.view.contraints.leaderboard.LeaderBoardPanel;
+import com.thelegendofbald.view.leaderboard.LeaderBoardPanel;
 import com.thelegendofbald.view.mainmenu.MainPanel;
 import com.thelegendofbald.view.settingsmenu.SettingsPanel;
 
@@ -26,8 +27,9 @@ public class GameWindow extends JFrame implements View, MainView {
         this.panels.add(new MainPanel(internalSize));
         this.panels.add(new SettingsPanel(internalSize));
         this.panels.add(new LeaderBoardPanel(internalSize));
-        this.panels.add(new GamePanel(internalSize, this)); 
+        this.panels.add(new GamePanel(internalSize, this));
 
+        this.setIconImage(new ImageIcon(this.getClass().getResource("/images/icon.png")).getImage());
         this.setContentPane(this.panels.getFirst());
     }
 

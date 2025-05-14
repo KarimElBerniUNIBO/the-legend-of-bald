@@ -65,7 +65,7 @@ public enum Buttons {
      * @return the maximum index value of all {@code Buttons}, or {@code 0} if none exist
      */
     public static int getMaxIndex() {
-        return Arrays.stream(Buttons.values())
+        return Arrays.stream(values())
                     .mapToInt(Buttons::getIndex)
                     .max()
                     .orElse(0);
@@ -79,7 +79,7 @@ public enum Buttons {
      * @throws IllegalArgumentException if no button with the specified index exists
      */
     public static Buttons getIndex(final int index) {
-        return Arrays.stream(Buttons.values())
+        return Arrays.stream(values())
                 .filter(b -> b.getIndex() == index)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException());

@@ -69,7 +69,7 @@ public enum Panels {
      * @return the maximum index value of all {@code Panels} enum constants, or {@code 0} if none exist
      */
     public static int getMaxIndex() {
-        return Arrays.stream(Panels.values())
+        return Arrays.stream(values())
                     .mapToInt(Panels::getIndex)
                     .max()
                     .orElse(0);

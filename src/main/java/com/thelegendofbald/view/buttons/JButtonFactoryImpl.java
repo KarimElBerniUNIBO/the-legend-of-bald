@@ -1,13 +1,12 @@
 package com.thelegendofbald.view.buttons;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Optional;
 
 import javax.swing.ImageIcon;
 
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.buttons.JButtonFactory;
 
@@ -45,85 +44,85 @@ import com.thelegendofbald.api.buttons.JButtonFactory;
  */
 public final class JButtonFactoryImpl implements JButtonFactory {
 
-        private static final Pair<Double, Double> DEFAULT_MOLTIPLICATOR = new Pair<>(1.0, 1.0);
+        private static final Pair<Double, Double> DEFAULT_MOLTIPLICATOR = Pair.of(1.0, 1.0);
         private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
         private static final Color DEFAULT_FOREGROUND_COLOR = Color.BLACK;
         private static final String DEFAULT_FONT_NAME = Font.SANS_SERIF;
         private static final int DEFAULT_FONT_TYPE = Font.BOLD;
 
         @Override
-        public RectangleButton createRectangleButton(final String text, final Dimension parentSize,
+        public RectangleButton createRectangleButton(final String text,
                         final Optional<Pair<Double, Double>> moltiplicator, final Optional<Color> bgColor,
                         final Optional<String> fontName, final Optional<Color> fontColor, final Optional<Integer> fontType) {
-                return new RectangleButton(text, parentSize, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
+                return new RectangleButton(text, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
                                 bgColor.orElse(DEFAULT_BACKGROUND_COLOR),
                                 fontName.orElse(DEFAULT_FONT_NAME), fontColor.orElse(DEFAULT_FOREGROUND_COLOR),
                                 fontType.orElse(DEFAULT_FONT_TYPE));
         }
 
         @Override
-        public RectangleButton createRectangleButton(final ImageIcon icon, final Dimension parentSize,
+        public RectangleButton createRectangleButton(final ImageIcon icon,
                         final Optional<Pair<Double, Double>> moltiplicator, final Optional<Color> bgColor,
                         final Optional<Color> fgColor) {
-                return new RectangleButton(icon, parentSize, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
+                return new RectangleButton(icon, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
                                 bgColor.orElse(DEFAULT_BACKGROUND_COLOR),
                                 fgColor.orElse(DEFAULT_FOREGROUND_COLOR));
         }
 
         @Override
-        public RoundedButton createRoundedButton(final String text, final Dimension parentSize,
+        public RoundedButton createRoundedButton(final String text,
                         final Optional<Pair<Double, Double>> moltiplicator, final double arcProportion,
                         final Optional<Color> bgColor, final Optional<String> fontName, final Optional<Color> fontColor,
                         final Optional<Integer> fontType) {
-                return new RoundedButton(text, parentSize, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR), arcProportion,
+                return new RoundedButton(text, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR), arcProportion,
                                 bgColor.orElse(DEFAULT_BACKGROUND_COLOR),
                                 fontName.orElse(DEFAULT_FONT_NAME), fontColor.orElse(DEFAULT_FOREGROUND_COLOR),
                                 fontType.orElse(DEFAULT_FONT_TYPE));
         }
 
         @Override
-        public RoundedButton createRoundedButton(final ImageIcon icon, final Dimension parentSize,
+        public RoundedButton createRoundedButton(final ImageIcon icon, 
                         final Optional<Pair<Double, Double>> moltiplicator, final double arcProportion,
                         final Optional<Color> bgColor, final Optional<Color> fgColor) {
-                return new RoundedButton(icon, parentSize, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR), arcProportion,
+                return new RoundedButton(icon, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR), arcProportion,
                                 bgColor.orElse(DEFAULT_BACKGROUND_COLOR),
                                 fgColor.orElse(DEFAULT_FOREGROUND_COLOR));
         }
 
         @Override
-        public TrasparentBackgroundButton createTrasparentButton(final String text, final Dimension parentSize,
+        public TrasparentBackgroundButton createTrasparentButton(final String text, 
                         final Optional<Pair<Double, Double>> moltiplicator, final Optional<String> fontName,
                         final Optional<Color> fontColor, final Optional<Integer> fontType) {
-                return new TrasparentBackgroundButton(text, parentSize, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
+                return new TrasparentBackgroundButton(text, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
                                 DEFAULT_BACKGROUND_COLOR,
                                 fontName.orElse(DEFAULT_FONT_NAME), fontColor.orElse(DEFAULT_FOREGROUND_COLOR),
                                 fontType.orElse(DEFAULT_FONT_TYPE));
         }
 
         @Override
-        public TrasparentBackgroundButton createTrasparentButton(final ImageIcon icon, final Dimension parentSize,
+        public TrasparentBackgroundButton createTrasparentButton(final ImageIcon icon, 
                         final Optional<Pair<Double, Double>> moltiplicator, final Optional<Color> fgColor) {
-                return new TrasparentBackgroundButton(icon, parentSize, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
+                return new TrasparentBackgroundButton(icon, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
                                 DEFAULT_BACKGROUND_COLOR,
                                 fgColor.orElse(DEFAULT_FOREGROUND_COLOR));
         }
 
         @Override
-        public KeybindingButton createKeybindingButton(final String text, final Dimension parentSize,
+        public KeybindingButton createKeybindingButton(final String text, 
                         final Optional<Pair<Double, Double>> moltiplicator, final double arcProportion,
                         final Optional<Color> bgColor, final Optional<String> fontName, final Optional<Color> fontColor,
                         final Optional<Integer> fontType) {
-                return new KeybindingButton(text, parentSize, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
+                return new KeybindingButton(text, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
                                 arcProportion, bgColor.orElse(DEFAULT_BACKGROUND_COLOR),
                                 fontName.orElse(DEFAULT_FONT_NAME), fontColor.orElse(DEFAULT_FOREGROUND_COLOR),
                                 fontType.orElse(DEFAULT_FONT_TYPE));
         }
 
         @Override
-        public KeybindingButton createKeybindingButton(final ImageIcon icon, final Dimension parentSize,
+        public KeybindingButton createKeybindingButton(final ImageIcon icon, 
                         final Optional<Pair<Double, Double>> moltiplicator, final double arcProportion,
                         final Optional<Color> bgColor, final Optional<Color> fgColor) {
-                return new KeybindingButton(icon, parentSize, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
+                return new KeybindingButton(icon, moltiplicator.orElse(DEFAULT_MOLTIPLICATOR),
                                 arcProportion, bgColor.orElse(DEFAULT_BACKGROUND_COLOR),
                                 fgColor.orElse(DEFAULT_FOREGROUND_COLOR));
         }

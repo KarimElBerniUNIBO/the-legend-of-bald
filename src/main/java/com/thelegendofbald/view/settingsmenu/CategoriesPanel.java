@@ -4,18 +4,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.buttons.JButtonFactory;
+import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.panels.InteractivePanel;
 import com.thelegendofbald.api.settingsmenu.Settings;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
@@ -23,38 +22,31 @@ import com.thelegendofbald.controller.ui.settingsmenu.SwitchToOtherSettingsEdito
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.buttons.TrasparentBackgroundButton;
 
-final class CategoriesPanel extends JPanel implements InteractivePanel {
+final class CategoriesPanel extends AdapterPanel implements InteractivePanel {
 
     private static final double HEIGHT_PROPORTION = 0.1;
     private static final double WIDTH_BUTTONS_PADDING = 0.05;
 
-    private static final Pair<Double, Double> BUTTON_PROPORTION = new Pair<>(1.0, 2.5);
+    private static final Pair<Double, Double> BUTTON_PROPORTION = Pair.of(1.0, 2.5);
 
     private final JButtonFactory jbFactory = new JButtonFactoryImpl();
-    private final List<JButton> buttons = new LinkedList<>();
+    private final List<JButton> buttons;
 
     private final SettingsEditorsManager sem;
 
     CategoriesPanel(final Dimension size, final SettingsEditorsManager sem) {
+        super(size);
         this.sem = sem;
+        this.buttons = this.getListOfButtons();
+        ((TrasparentBackgroundButton) this.buttons.getFirst()).select();
         this.setOpaque(false);
+        this.linkJButtonsToButtonsEnum();
+        this.connectButtonsWithActionListeners();
     }
 
     @Override
-    public void addNotify() {
-        super.addNotify();
-        if (this.buttons.isEmpty()) {
-            this.buttons.addAll(this.getListOfButtons());
-            this.linkJButtonsToButtonsEnum();
-            this.connectButtonsWithActionListeners();
-            SwingUtilities.invokeLater(() -> {
-                this.setLayout(new FlowLayout(FlowLayout.CENTER, (int) (this.getWidth() * WIDTH_BUTTONS_PADDING), 0));
-                ((TrasparentBackgroundButton) this.buttons.getFirst()).select();
-                this.addButtonsToPanel();
-                this.revalidate();
-                this.repaint();
-            });
-        }
+    protected void initializeComponents() {
+        this.setLayout(new FlowLayout(FlowLayout.CENTER, (int) (this.getWidth() * WIDTH_BUTTONS_PADDING), 0));
     }
 
     private void linkJButtonsToButtonsEnum() {
@@ -63,20 +55,23 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
 
     private List<JButton> getListOfButtons() {
         return Stream.iterate(0, i -> i <= Settings.getMaxIndex(), i -> i + 1)
-                .map(i -> (JButton) jbFactory.createTrasparentButton(Settings.getSettingByIndex(i).getName(),
-                        this.getSize(), Optional.of(BUTTON_PROPORTION),
+                .map(i -> (JButton) jbFactory.createTrasparentButton(Settings.getSettingByIndex(i).getName(), // NOPMD
+                        Optional.of(BUTTON_PROPORTION),
                         Optional.of(Font.MONOSPACED), Optional.of(Color.WHITE), Optional.empty()))
                 .toList();
     }
+    /*
+     * Suppresses the unchecked cast warning because the
+     * buttonFactory.createTrasparentButton method
+     * returns a TrasparentBackgroundButton, which is a subclass of JButton. The cast is
+     * necessary to maintain compatibility with the List<JButton> type used in this
+     * class.
+     */
 
     private void connectButtonsWithActionListeners() {
         Stream.iterate(0, i -> i < this.buttons.size(), i -> i + 1)
                 .forEach(i -> this.buttons.get(i)
                         .addActionListener(new SwitchToOtherSettingsEditorPanel(sem, Settings.getSettingByIndex(i))));
-    }
-
-    private void addButtonsToPanel() {
-        buttons.forEach(this::add);
     }
 
     @Override
@@ -95,6 +90,15 @@ final class CategoriesPanel extends JPanel implements InteractivePanel {
     public void setPreferredSize(final Dimension size) {
         super.setPreferredSize(new Dimension((int) size.getWidth(), (int) (size.getHeight() * HEIGHT_PROPORTION)));
         SwingUtilities.invokeLater(this::updateLayout);
+    }
+
+    @Override
+    public void updateComponentsSize() {
+    }
+
+    @Override
+    public void addComponentsToPanel() {
+        buttons.forEach(this::add);
     }
 
 }

@@ -1,11 +1,11 @@
 package com.thelegendofbald.view.buttons;
 
 import java.awt.Color;
-import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.buttons.TemplateButton;
 import com.thelegendofbald.controller.ui.listeners.TrasparentBackgroundButtonMouseListener;
@@ -30,6 +30,8 @@ import com.thelegendofbald.controller.ui.listeners.TrasparentBackgroundButtonMou
  */
 public class TrasparentBackgroundButton extends TemplateButton {
 
+    private static final long serialVersionUID = -2907106289164271578L;
+
     private final Color buttonFGColor;
     private final Color buttonFGSelectedColor;
 
@@ -39,43 +41,58 @@ public class TrasparentBackgroundButton extends TemplateButton {
      * Constructs a button with text and custom properties.
      *
      * @param text         the text to display on the button
-     * @param windowSize   the size of the window
      * @param moltiplicator the scaling factor for the button
      * @param bgColor      the background color of the button
      * @param fontName     the name of the font
      * @param fontColor    the color of the font
      * @param fontType     the type of the font (e.g., bold, italic)
      */
-    public TrasparentBackgroundButton(final String text, final Dimension windowSize, final Pair<Double, Double> moltiplicator,
+    public TrasparentBackgroundButton(final String text, final Pair<Double, Double> moltiplicator,
             final Color bgColor, final String fontName,
             final Color fontColor, final int fontType) {
-        super(text, windowSize, moltiplicator, bgColor, fontName, fontColor, fontType);
+        super(text, moltiplicator, bgColor, fontName, fontColor, fontType);
         this.buttonFGColor = fontColor;
         this.buttonFGSelectedColor = Color.YELLOW;
-
-        this.setContentAreaFilled(false);
-        this.setBorderPainted(false);
-        this.addMouseListener(new TrasparentBackgroundButtonMouseListener(this));
+        this.initialize();
     }
 
     /**
      * Constructs a button with an icon and custom properties.
      *
      * @param icon         the icon to display on the button
-     * @param windowSize   the size of the window
      * @param moltiplicator the scaling factor for the button
      * @param bgColor      the background color of the button
      * @param fgColor      the foreground color of the button
      */
-    public TrasparentBackgroundButton(final ImageIcon icon, final Dimension windowSize, final Pair<Double, Double> moltiplicator,
+    public TrasparentBackgroundButton(final ImageIcon icon, final Pair<Double, Double> moltiplicator,
             final Color bgColor, final Color fgColor) {
-        super(icon, windowSize, moltiplicator, bgColor, fgColor);
+        super(icon, moltiplicator, bgColor, fgColor);
         this.buttonFGColor = fgColor;
         this.buttonFGSelectedColor = Color.YELLOW;
+        this.initialize();
+    }
 
-        this.setContentAreaFilled(false);
-        this.setBorderPainted(false);
-        this.addMouseListener(new TrasparentBackgroundButtonMouseListener(this));
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setContentAreaFilled(false);
+            this.setBorderPainted(false);
+            this.addMouseListener(new TrasparentBackgroundButtonMouseListener(this));
+        });
+    }
+
+    /**
+     * Called when the component is added to a container or made displayable.
+     * This override ensures that if the button is currently selected when it is added,
+     * its foreground color is set to the selected color.
+     * <p>
+     * Always calls the superclass implementation first.
+     */
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        if (this.isSelected()) {
+            this.setForeground(buttonFGSelectedColor);
+        }
     }
 
     /**
@@ -83,8 +100,10 @@ public class TrasparentBackgroundButton extends TemplateButton {
      */
     public void select() {
         this.selected = true;
-        this.setForeground(buttonFGSelectedColor);
-        this.repaint();
+        SwingUtilities.invokeLater(() -> {
+            this.setForeground(buttonFGSelectedColor);
+            this.repaint();
+        });
     }
 
     /**
@@ -92,8 +111,10 @@ public class TrasparentBackgroundButton extends TemplateButton {
      */
     public void unselect() {
         this.selected = false;
-        this.setForeground(buttonFGColor);
-        this.repaint();
+        SwingUtilities.invokeLater(() -> {
+            this.setForeground(buttonFGColor);
+            this.repaint();
+        });
     }
 
     /**
@@ -104,16 +125,6 @@ public class TrasparentBackgroundButton extends TemplateButton {
     @Override
     public boolean isSelected() {
         return this.selected;
-    }
-
-    /**
-     * Sets the preferred size of the button.
-     *
-     * @param size the preferred size of the button
-     */
-    @Override
-    public void setPreferredSize(final Dimension size) {
-        super.setPreferredSize(size);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.thelegendofbald.view.buttons;
+package com.thelegendofbald.controller.ui.listeners;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import javax.swing.SwingUtilities;
 
-import com.thelegendofbald.controller.ui.listeners.KeybindingButtonMouseListener;
+import com.thelegendofbald.view.buttons.KeybindingButton;
 
 /**
  * A {@link KeyAdapter} implementation that handles key press events for {@code KeybindingButton} components.

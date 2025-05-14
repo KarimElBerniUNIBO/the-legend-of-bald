@@ -1,6 +1,5 @@
 package com.thelegendofbald.controller.ui.listeners;
 
-import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.util.Optional;
 
@@ -28,8 +27,7 @@ public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouse
 
     private static final double FACTOR_OF_DARKNESS = 0.6;
 
-    private final Color buttonFGColor;
-    private final Color buttonFGHoverColor;
+    private final TrasparentBackgroundButton button;
 
     /**
      * Mouse listener for {@link TrasparentBackgroundButton} that manages the button's foreground color
@@ -38,8 +36,7 @@ public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouse
      * @param button the {@link TrasparentBackgroundButton} to attach the mouse listener to
      */
     public TrasparentBackgroundButtonMouseListener(final TrasparentBackgroundButton button) {
-        this.buttonFGColor = button.getForeground();
-        this.buttonFGHoverColor = ColorUtils.getDarkenColor(buttonFGColor, FACTOR_OF_DARKNESS);
+        this.button = button;
     }
 
     /**
@@ -55,10 +52,9 @@ public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouse
     @Override
     public void mouseEntered(final MouseEvent e) {
         super.mouseEntered(e);
-        final var button = (TrasparentBackgroundButton) e.getSource();
-
-        if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
-            button.setForeground(buttonFGHoverColor);
+        if (Optional.ofNullable(button.getIcon()).isEmpty()) {
+            button.setForeground(ColorUtils.getDarkenColor(button.getForeground(), FACTOR_OF_DARKNESS));
+            button.repaint();
         }
     }
 
@@ -75,10 +71,9 @@ public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouse
     @Override
     public void mouseExited(final MouseEvent e) {
         super.mouseExited(e);
-        final var button = (TrasparentBackgroundButton) e.getSource();
-
-        if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
-            button.setForeground(buttonFGColor);
+        if (Optional.ofNullable(button.getIcon()).isEmpty()) {
+            button.setForeground(ColorUtils.getBrightenColor(button.getForeground(), FACTOR_OF_DARKNESS));
+            button.repaint();
         }
     }
 
@@ -95,8 +90,6 @@ public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouse
     @Override
     public void mousePressed(final MouseEvent e) {
         super.mousePressed(e);
-        final var button = (TrasparentBackgroundButton) e.getSource();
-
         if (!button.isSelected() && Optional.ofNullable(button.getIcon()).isEmpty()) {
             final var parent = (InteractivePanel) button.getParent();
             parent.unselectAllButtons();

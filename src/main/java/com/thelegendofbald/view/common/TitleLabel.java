@@ -1,14 +1,12 @@
 package com.thelegendofbald.view.common;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * A custom JLabel for displaying a title in the main menu UI, with dynamic font sizing and preferred size
@@ -25,6 +23,8 @@ import org.apache.commons.math3.util.Pair;
  * </ul>
  */
 public final class TitleLabel extends JLabel {
+
+    private static final long serialVersionUID = 8944443862403400839L;
 
     private static final double MAX_ASPECTRATIO = 1.2;
     private static final double TEXT_PROPORTION = 0.08;
@@ -46,15 +46,15 @@ public final class TitleLabel extends JLabel {
         this.setText(text);
         this.setForeground(color);
         this.setOpaque(false);
-        this.setHorizontalAlignment(SwingConstants.CENTER);
-        this.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.setAlignmentY(Component.CENTER_ALIGNMENT);
+        this.setHorizontalAlignment(CENTER);
+        this.setAlignmentX(CENTER_ALIGNMENT);
+        this.setAlignmentY(CENTER_ALIGNMENT);
         this.setFont(new Font(fontName, Font.BOLD, this.getFontSize(parentSize)));
     }
 
     private Dimension calculatePreferredSize(final Dimension parentSize) {
-        return new Dimension((int) (parentSize.getWidth() * this.moltiplicator.getFirst()),
-                (int) (parentSize.getHeight() * this.moltiplicator.getSecond()));
+        return new Dimension((int) (parentSize.getWidth() * this.moltiplicator.getLeft()),
+                (int) (parentSize.getHeight() * this.moltiplicator.getRight()));
     }
 
     private int getFontSize(final Dimension parentSize) {

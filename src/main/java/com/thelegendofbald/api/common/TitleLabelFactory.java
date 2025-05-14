@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Optional;
 
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.view.common.TitleLabel;
 

@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.util.Arrays;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
@@ -39,9 +40,15 @@ public final class SettingsPanel extends AdapterPanel {
      */
     public SettingsPanel(final Dimension size) {
         super(size);
-        this.setOpaque(true);
-        this.setBackground(Color.BLACK);
-        this.setLayout(new BorderLayout());
+        this.initialize();
+    }
+
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setOpaque(true);
+            this.setBackground(Color.BLACK);
+            this.setLayout(new BorderLayout());
+        });
     }
 
     @Override
@@ -49,6 +56,7 @@ public final class SettingsPanel extends AdapterPanel {
         this.backToMainPanel = new BackToMainPanel(this.getSize());
         this.sem = new SettingsEditorPanel(this.getSize());
         this.northPanel = new NorthPanel(this.getSize(), this.sem);
+        super.initializeComponents();
     }
 
     @Override

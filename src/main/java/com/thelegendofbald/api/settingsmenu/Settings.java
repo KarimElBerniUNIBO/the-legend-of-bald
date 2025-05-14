@@ -62,12 +62,16 @@ public enum Settings {
     private Optional<JButton> linkedButton;
 
     /**
-     * Constructs a new {@code Settings} instance with the specified configuration options,
+     * Constructs a new {@code Settings} instance with the specified configuration
+     * options,
      * an optional settings editor, and an optional linked button.
      *
-     * @param settings        an array of {@link SettingOption} representing the available settings configurations
-     * @param settingsEditor  an {@link Optional} containing a {@link SettingsEditor} for editing settings, or empty if not available
-     * @param linkedButton    an {@link Optional} containing a {@link JButton} that is linked to these settings, or empty if not available
+     * @param settings       an array of {@link SettingOption} representing the
+     *                       available settings configurations
+     * @param settingsEditor an {@link Optional} containing a {@link SettingsEditor}
+     *                       for editing settings, or empty if not available
+     * @param linkedButton   an {@link Optional} containing a {@link JButton} that
+     *                       is linked to these settings, or empty if not available
      */
     Settings(final SettingOption[] settings, final Optional<SettingsEditor> settingsEditor,
             final Optional<JButton> linkedButton) {
@@ -86,18 +90,22 @@ public enum Settings {
     }
 
     /**
-     * Returns a list of all configuration options available in this settings instance.
+     * Returns a list of all configuration options available in this settings
+     * instance.
      *
-     * @return a {@link List} of {@link SettingOption} representing the current configuration options
+     * @return a {@link List} of {@link SettingOption} representing the current
+     *         configuration options
      */
     public List<SettingOption> getConfigs() {
         return Arrays.stream(configs).toList();
     }
 
     /**
-     * Returns the {@link SettingsEditor} instance associated with this {@code Settings} object.
+     * Returns the {@link SettingsEditor} instance associated with this
+     * {@code Settings} object.
      * <p>
-     * If the {@code settingsEditor} is not present, this method throws a {@link NullPointerException}.
+     * If the {@code settingsEditor} is not present, this method throws a
+     * {@link NullPointerException}.
      *
      * @return the {@code SettingsEditor} instance
      * @throws NullPointerException if the {@code settingsEditor} is not present
@@ -109,7 +117,8 @@ public enum Settings {
     /**
      * Sets the {@link SettingsEditor} instance to be used for editing settings.
      *
-     * @param settingsEditor the {@code SettingsEditor} to associate with this settings object
+     * @param settingsEditor the {@code SettingsEditor} to associate with this
+     *                       settings object
      */
     public void setSettingsEditor(final SettingsEditor settingsEditor) {
         this.settingsEditor = Optional.of(settingsEditor);
@@ -151,30 +160,37 @@ public enum Settings {
      * Returns the maximum index value among all {@code Settings} enum constants.
      * <p>
      * This method iterates through all values of the {@code Settings} enum,
-     * retrieves their index using {@link #getIndex()}, and returns the highest index found.
+     * retrieves their index using {@link #getIndex()}, and returns the highest
+     * index found.
      * If there are no enum constants, it returns {@code 0}.
      *
-     * @return the maximum index value of all {@code Settings} enum constants, or {@code 0} if none exist
+     * @return the maximum index value of all {@code Settings} enum constants, or
+     *         {@code 0} if none exist
      */
     public static int getMaxIndex() {
-        return Arrays.stream(Settings.values())
+        return Arrays.stream(values())
                 .mapToInt(Settings::getIndex)
                 .max()
                 .orElse(0);
     }
 
     /**
-     * Retrieves the {@code Settings} enum constant corresponding to the specified index.
+     * Retrieves the {@code Settings} enum constant corresponding to the specified
+     * index.
      *
-     * <p>This method searches through all available {@code Settings} enum values and returns the one
-     * whose index matches the provided {@code index} parameter.</p>
+     * <p>
+     * This method searches through all available {@code Settings} enum values and
+     * returns the one
+     * whose index matches the provided {@code index} parameter.
+     * </p>
      *
      * @param index the index of the desired {@code Settings} enum constant
      * @return the {@code Settings} enum constant with the specified index
-     * @throws IllegalArgumentException if no {@code Settings} enum constant with the given index exists
+     * @throws IllegalArgumentException if no {@code Settings} enum constant with
+     *                                  the given index exists
      */
     public static Settings getSettingByIndex(final int index) {
-        return Arrays.stream(Settings.values())
+        return Arrays.stream(values())
                 .filter(b -> b.getIndex() == index)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException());

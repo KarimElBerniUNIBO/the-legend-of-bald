@@ -19,9 +19,9 @@ import com.thelegendofbald.api.settingsmenu.Settings;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.common.BackToMainPanel;
-import com.thelegendofbald.view.contraints.GridBagConstraintsFactoryImpl;
+import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
-class SettingsEditorPanel extends AdapterPanel implements SettingsEditorsManager {
+final class SettingsEditorPanel extends AdapterPanel implements SettingsEditorsManager {
 
     private static final double WIDTH_PROPORTION = 0.7;
     private static final double HEIGHT_PROPORTION = 0.65;
@@ -73,9 +73,10 @@ class SettingsEditorPanel extends AdapterPanel implements SettingsEditorsManager
         final var preferredSize = this.calculatePreferredSize(this.getParent().getSize());
         this.settingsEditors.addAll(this.getSettingsEditors(preferredSize));
         this.actualSettingsEditor = Optional.of(this.settingsEditors.getFirst());
-        this.apply = Optional.of(jbFactory.createRoundedButton(APPLY_BUTTON_TEXT, preferredSize, Optional.empty(),
+        this.apply = Optional.of(jbFactory.createRoundedButton(APPLY_BUTTON_TEXT, Optional.empty(),
                 APPLY_BUTTON_ARC_PROPORTION,
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+        super.initializeComponents();
     }
 
     private Dimension calculatePreferredSize(final Dimension parentSize) {
@@ -125,7 +126,7 @@ class SettingsEditorPanel extends AdapterPanel implements SettingsEditorsManager
     @Override
     public void updateComponentsSize() {
         final var preferredSize = this.calculatePreferredSize(this.getSize());
-        this.settingsEditors.forEach(editor -> ((SettingsEditor) editor).setPreferredSize(preferredSize));
+        this.settingsEditors.forEach(editor -> editor.setPreferredSize(preferredSize));
         this.gbc.insets.set(0, (int) ((this.getWidth() * SIDE_INSETS) - (this.getWidth() * BackToMainPanel.WIDTH_PROPORTION)),
                 (int) (this.getHeight() * BOTTOM_INSETS),
                 (int) (this.getWidth() * SIDE_INSETS));

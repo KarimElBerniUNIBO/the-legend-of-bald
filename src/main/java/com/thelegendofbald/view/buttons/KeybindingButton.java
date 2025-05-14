@@ -1,12 +1,13 @@
 package com.thelegendofbald.view.buttons;
 
 import java.awt.Color;
-import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
+import com.thelegendofbald.controller.ui.listeners.KeybindingButtonKeyListener;
 import com.thelegendofbald.controller.ui.listeners.KeybindingButtonMouseListener;
 
 /**
@@ -39,7 +40,6 @@ public class KeybindingButton extends RoundedButton {
      * Constructs a new {@code KeybindingButton} with the specified properties.
      *
      * @param text           the text to display on the button
-     * @param windowSize     the size of the window in which the button is displayed
      * @param moltiplicator  a pair of doubles used to scale the button's size or position
      * @param arcProportion  the proportion of the button's corners to be rounded
      * @param bgColor        the background color of the button
@@ -47,10 +47,10 @@ public class KeybindingButton extends RoundedButton {
      * @param fontColor      the color of the button's text
      * @param fontType       the style of the font (e.g., plain, bold, italic)
      */
-    public KeybindingButton(final String text, final Dimension windowSize, final Pair<Double, Double> moltiplicator,
+    public KeybindingButton(final String text, final Pair<Double, Double> moltiplicator,
             final double arcProportion,
             final Color bgColor, final String fontName, final Color fontColor, final int fontType) {
-        super(text, windowSize, moltiplicator, arcProportion, bgColor, fontName, fontColor, fontType);
+        super(text, moltiplicator, arcProportion, bgColor, fontName, fontColor, fontType);
         this.initialize();
     }
 
@@ -59,21 +59,22 @@ public class KeybindingButton extends RoundedButton {
      * size multipliers, arc proportion, background color, and foreground color.
      *
      * @param icon           the {@link ImageIcon} to display on the button
-     * @param windowSize     the size of the window to which this button belongs
      * @param moltiplicator  a {@link Pair} of {@code Double} values used as size multipliers
      * @param arcProportion  the proportion of the button's arc (for rounded corners)
      * @param bgColor        the background {@link Color} of the button
      * @param fgColor        the foreground {@link Color} of the button
      */
-    public KeybindingButton(final ImageIcon icon, final Dimension windowSize, final Pair<Double, Double> moltiplicator,
+    public KeybindingButton(final ImageIcon icon, final Pair<Double, Double> moltiplicator,
             final double arcProportion, final Color bgColor, final Color fgColor) {
-        super(icon, windowSize, moltiplicator, arcProportion, bgColor, fgColor);
+        super(icon, moltiplicator, arcProportion, bgColor, fgColor);
         this.initialize();
     }
 
     private void initialize() {
-        this.addMouseListener(new KeybindingButtonMouseListener(this));
-        this.addKeyListener(new KeybindingButtonKeyListener());
+        SwingUtilities.invokeLater(() -> {
+            this.addMouseListener(new KeybindingButtonMouseListener(this));
+            this.addKeyListener(new KeybindingButtonKeyListener());
+        });
     }
 
     /**

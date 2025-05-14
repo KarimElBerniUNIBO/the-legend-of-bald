@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Optional;
 
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.TitleLabelFactory;
 
@@ -32,7 +32,7 @@ import com.thelegendofbald.api.common.TitleLabelFactory;
  */
 public final class TitleLabelFactoryImpl implements TitleLabelFactory {
 
-    private static final Pair<Double, Double> DEFAULT_MOLTIPLICATOR = new Pair<>(1.0, 1.0);
+    private static final Pair<Double, Double> DEFAULT_MOLTIPLICATOR = Pair.of(1.0, 1.0);
     private static final Color DEFAULT_FOREGROUND_COLOR = Color.WHITE;
     private static final String DEFAULT_FONT_NAME = Font.MONOSPACED;
 

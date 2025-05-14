@@ -39,7 +39,7 @@ public interface SettingOption {
      * @return the number of setting options as an integer
      */
     static int getSize() {
-        return (int) Settings.getMaxIndex();
+        return Settings.getMaxIndex();
     }
 
 }

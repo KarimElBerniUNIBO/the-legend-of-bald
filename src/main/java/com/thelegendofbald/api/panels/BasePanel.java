@@ -1,5 +1,6 @@
 package com.thelegendofbald.api.panels;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
@@ -21,12 +22,11 @@ import com.thelegendofbald.api.views.View;
  */
 public abstract class BasePanel extends JPanel implements View, MenuView {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -4999726392950384300L;
     private static final double PROPORTION = 0.85;
 
     private final Dimension internalSize;
-    private boolean initialized;
+    private boolean initializedComponets;
 
     /**
      * Constructs a new {@code BasePanel} with the specified size.
@@ -36,13 +36,21 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
     public BasePanel(final Dimension size) {
         super();
         this.internalSize = size;
-        this.setOpaque(false);
-        this.initializeSize();
+        this.initialize();
+    }
+
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.initializeSize();
+            this.setBackground(Color.BLACK);
+            //this.setOpaque(false);
+        });
     }
 
     private void initializeSize() {
         this.setPreferredSize(this.internalSize);
-        this.setMinimumSize(new Dimension((int) (this.internalSize.getWidth()),
+        this.setSize(this.internalSize);
+        this.setMinimumSize(new Dimension((int) this.internalSize.getWidth(),
                 (int) (this.internalSize.getHeight() * PROPORTION)));
         this.setMaximumSize(this.internalSize);
     }
@@ -58,9 +66,11 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
     @Override
     public void addNotify() {
         super.addNotify();
-        if (!this.initialized) {
-            this.initialized = true;
+        if (!this.initializedComponets) {
+            this.initializedComponets = true;
             SwingUtilities.invokeLater(this::initializeComponents);
+        } else {
+            SwingUtilities.invokeLater(this::updateView);
         }
     }
 
@@ -103,8 +113,8 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
      *
      * @return {@code true} if the panel is initialized; {@code false} otherwise.
      */
-    public boolean isInitialized() {
-        return initialized;
+    public boolean isInitializedComponets() {
+        return initializedComponets;
     }
 
     /**

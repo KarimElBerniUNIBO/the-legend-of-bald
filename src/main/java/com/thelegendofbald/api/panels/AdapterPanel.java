@@ -20,14 +20,14 @@ import com.thelegendofbald.controller.ui.listeners.ResizeListener;
  */
 public abstract class AdapterPanel extends BasePanel implements Resizable {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * The proportion constant used to determine the relative size or scaling factor
      * for UI components within the AdapterPanel. A value of 0.85 typically means
      * that the component will occupy 85% of the available space.
      */
     protected static final double PROPORTION = 0.85;
+
+    private static final long serialVersionUID = 6052760600132368821L;
 
     /**
      * Constructs an AdapterPanel with the specified size.
@@ -37,11 +37,22 @@ public abstract class AdapterPanel extends BasePanel implements Resizable {
      */
     public AdapterPanel(final Dimension size) {
         super(size);
-        this.addComponentListener(new ResizeListener(this::onResize));
     }
 
+    /**
+     * Called after the panel is added to a container or made displayable.
+     * <p>
+     * Subclasses can override this method to perform additional initialization
+     * when the panel is added to a parent container. If overridden, ensure
+     * that {@code super.addNotify()} is called at the end of the method
+     * to preserve the default behavior.
+     * </p>
+     */
     @Override
-    protected abstract void initializeComponents();
+    protected void initializeComponents() {
+        this.addComponentListener(new ResizeListener(this::onResize));
+        this.updateView();
+    }
 
     /**
      * Handles resize events for the panel.
@@ -53,7 +64,7 @@ public abstract class AdapterPanel extends BasePanel implements Resizable {
      */
     @Override
     public void onResize() {
-        if (this.isInitialized() && this.getWidth() > 0 && this.getHeight() > 0) {
+        if (this.isInitializedComponets() && this.getWidth() > 0 && this.getHeight() > 0) {
             this.updateView();
         }
     }

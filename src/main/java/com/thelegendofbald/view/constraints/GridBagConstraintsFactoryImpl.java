@@ -1,4 +1,4 @@
-package com.thelegendofbald.view.contraints;
+package com.thelegendofbald.view.constraints;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;

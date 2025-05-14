@@ -1,4 +1,4 @@
-package com.thelegendofbald.view.contraints;
+package com.thelegendofbald.view.constraints;
 
 import java.awt.GridBagConstraints;
 import java.util.function.Supplier;
@@ -9,6 +9,8 @@ import java.util.function.Supplier;
  */
 public final class BothGridBagConstraintsSupplier implements Supplier<GridBagConstraints> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     public GridBagConstraints get() {
         return new BothGridBagConstraints();
@@ -17,8 +19,8 @@ public final class BothGridBagConstraintsSupplier implements Supplier<GridBagCon
     private final class BothGridBagConstraints extends GridBagConstraints {
 
         private BothGridBagConstraints() {
-            this.fill = GridBagConstraints.BOTH;
-            this.anchor = GridBagConstraints.CENTER;
+            this.fill = BOTH;
+            this.anchor = CENTER;
             this.weighty = 1.0;
             this.weightx = 1.0;
         }

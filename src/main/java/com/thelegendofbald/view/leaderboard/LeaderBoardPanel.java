@@ -1,4 +1,4 @@
-package com.thelegendofbald.view.contraints.leaderboard;
+package com.thelegendofbald.view.leaderboard;
 
 import java.awt.Color;
 import java.awt.Dimension;

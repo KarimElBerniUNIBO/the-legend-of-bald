@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.settingsmenu.Settings;
-import com.thelegendofbald.view.contraints.GridBagConstraintsFactoryImpl;
+import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 /**
  * The {@code SettingsEditor} class is a custom panel for editing application settings.
@@ -50,10 +50,6 @@ public final class SettingsEditor extends AdapterPanel {
         this.configsPanels = this.getConfigsPanels();
         this.setOpaque(false);
         this.setLayout(new GridBagLayout());
-    }
-
-    @Override
-    protected void initializeComponents() {
     }
 
     private List<ConfigPanel> getConfigsPanels() {

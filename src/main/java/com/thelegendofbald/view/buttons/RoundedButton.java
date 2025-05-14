@@ -1,14 +1,14 @@
 package com.thelegendofbald.view.buttons;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.buttons.TemplateButton;
 import com.thelegendofbald.controller.ui.listeners.RoundedButtonMouseListener;
@@ -40,14 +40,14 @@ import com.thelegendofbald.controller.ui.listeners.RoundedButtonMouseListener;
  */
 public class RoundedButton extends TemplateButton {
 
+    private static final long serialVersionUID = -649720576764931563L;
+    
     private final double arcProportion;
 
     /**
      * Constructs a new {@code RoundedButton} with the specified properties.
      *
      * @param text          the text to be displayed on the button
-     * @param parentSize    the size of the parent component, used to determine
-     *                      button size
      * @param moltiplicator a pair of multipliers to scale the button's width and
      *                      height relative to the parent
      * @param arcProportion the proportion of the button's arc (corner roundness)
@@ -57,10 +57,10 @@ public class RoundedButton extends TemplateButton {
      * @param fontType      the style of the font (e.g.,
      *                      {@link java.awt.Font#PLAIN}, {@link java.awt.Font#BOLD})
      */
-    public RoundedButton(final String text, final Dimension parentSize, final Pair<Double, Double> moltiplicator,
+    public RoundedButton(final String text, final Pair<Double, Double> moltiplicator,
             final double arcProportion, final Color bgColor, final String fontName,
             final Color fontColor, final int fontType) {
-        super(text, parentSize, moltiplicator, bgColor, fontName, fontColor, fontType);
+        super(text, moltiplicator, bgColor, fontName, fontColor, fontType);
         this.arcProportion = arcProportion;
         this.initialize();
     }
@@ -71,8 +71,6 @@ public class RoundedButton extends TemplateButton {
      * arc proportion for rounded corners, background color, and foreground color.
      *
      * @param icon          the {@link ImageIcon} to display on the button
-     * @param parentSize    the {@link Dimension} representing the size of the
-     *                      parent component
      * @param moltiplicator a {@link Pair} of {@code Double} values used to scale
      *                      the button's size
      * @param arcProportion the proportion (as a double) used to determine the arc
@@ -81,18 +79,20 @@ public class RoundedButton extends TemplateButton {
      * @param fgColor       the foreground {@link Color} (typically the text or icon
      *                      color) of the button
      */
-    public RoundedButton(final ImageIcon icon, final Dimension parentSize, final Pair<Double, Double> moltiplicator,
+    public RoundedButton(final ImageIcon icon, final Pair<Double, Double> moltiplicator,
             final double arcProportion,
             final Color bgColor, final Color fgColor) {
-        super(icon, parentSize, moltiplicator, bgColor, fgColor);
+        super(icon, moltiplicator, bgColor, fgColor);
         this.arcProportion = arcProportion;
         this.initialize();
     }
 
     private void initialize() {
-        this.setBorderPainted(false);
-        this.setContentAreaFilled(false);
-        this.addMouseListener(new RoundedButtonMouseListener(this));
+        SwingUtilities.invokeLater(() -> {
+            this.setBorderPainted(false);
+            this.setContentAreaFilled(false);
+            this.addMouseListener(new RoundedButtonMouseListener(this));
+        });
     }
 
     private int getArcValue() {
