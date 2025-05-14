@@ -8,8 +8,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
+import java.lang.Math;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import com.thelegendofbald.api.views.MainView;
@@ -17,14 +23,15 @@ import com.thelegendofbald.api.views.View;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
 
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel implements Runnable {
 
     private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
     private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
     private final GridPanel gridPanel;
     private final TileMap tileMap;
 
-    Timer timer = new Timer(16, e -> update());
+    private Thread gameThread;
+
     private final Set<Integer> pressedKeys = new HashSet<>();
 
     private final MainView window;
@@ -44,34 +51,100 @@ public class GamePanel extends JPanel {
         this.tileMap = new TileMap(size.width, size.height);
         this.requestFocusInWindow();
 
-        timer.start();
+        setupKeyBindings();
+        this.startGame();
+        
+        SwingUtilities.invokeLater(() -> this.requestFocusInWindow());
+    }
 
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                pressedKeys.add(e.getKeyCode());
-                handleInput();
-            }
+    private void setupKeyBindings() {
+    InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
+    ActionMap am = this.getActionMap();
 
-            @Override
-            public void keyReleased(KeyEvent e) {
-                pressedKeys.remove(e.getKeyCode());
-                handleInput();
+    // Tasti premuti
+    bindKey(im, am, "pressed UP", KeyEvent.VK_UP, true, () -> pressedKeys.add(KeyEvent.VK_UP));
+    bindKey(im, am, "pressed DOWN", KeyEvent.VK_DOWN, true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
+    bindKey(im, am, "pressed LEFT", KeyEvent.VK_LEFT, true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
+    bindKey(im, am, "pressed RIGHT", KeyEvent.VK_RIGHT, true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
+
+    // Tasti rilasciati
+    bindKey(im, am, "released UP", KeyEvent.VK_UP, false, () -> pressedKeys.remove(KeyEvent.VK_UP));
+    bindKey(im, am, "released DOWN", KeyEvent.VK_DOWN, false, () -> pressedKeys.remove(KeyEvent.VK_DOWN));
+    bindKey(im, am, "released LEFT", KeyEvent.VK_LEFT, false, () -> pressedKeys.remove(KeyEvent.VK_LEFT));
+    bindKey(im, am, "released RIGHT", KeyEvent.VK_RIGHT, false, () -> pressedKeys.remove(KeyEvent.VK_RIGHT));
+    }
+
+    private void bindKey(InputMap im, ActionMap am, String name, int key, boolean pressed, Runnable action) {
+        im.put(KeyStroke.getKeyStroke(key, 0, !pressed), name);
+        am.put(name, new AbstractAction() {
+            @Override public void actionPerformed(java.awt.event.ActionEvent e) {
+                action.run();
             }
         });
     }
 
+    private static final double MOVE_SPEED = 2.0;
+
     private void handleInput() {
-        bald.updateAnimation();
-        bald.setSpeedX(pressedKeys.contains(KeyEvent.VK_RIGHT) ? 5 :
-                       pressedKeys.contains(KeyEvent.VK_LEFT) ? -5 : 0);
-        bald.setSpeedY(pressedKeys.contains(KeyEvent.VK_DOWN) ? 5 :
-                       pressedKeys.contains(KeyEvent.VK_UP) ? -5 : 0);
-     
+        double dx = 0;
+        double dy = 0;
+
+        if (pressedKeys.contains(KeyEvent.VK_LEFT))  dx -= 1;
+        if (pressedKeys.contains(KeyEvent.VK_RIGHT)) dx += 1;
+        if (pressedKeys.contains(KeyEvent.VK_UP))    dy -= 1;
+        if (pressedKeys.contains(KeyEvent.VK_DOWN))  dy += 1;
+
+        // Normalizza il vettore per garantire velocità costante
+        double magnitude = Math.hypot(dx, dy); // meglio di sqrt(x^2 + y^2)
+        if (magnitude > 0) {
+            dx = (dx / magnitude) * MOVE_SPEED;
+            dy = (dy / magnitude) * MOVE_SPEED;
+        }
+
+        bald.setSpeedX(dx);
+        bald.setSpeedY(dy);
     }
 
-    
+    public void startGame() {
+        gameThread = new Thread(this);
+        gameThread.start();
+    }
 
+    @Override
+    public void run() {
+
+        System.out.println("Game loop started!");
+
+        long lastTime = System.nanoTime();
+        double interval = 1000000000/60;
+        int drawCount = 0;
+        long timer = 0;
+        double delta = 0;
+
+        while (true) {
+
+            long now = System.nanoTime();
+            timer += (now - lastTime);
+            delta += (now - lastTime) / interval;
+            lastTime = now;
+
+            if(delta >= 1) {
+
+                update();
+                repaint();
+                delta--;
+                drawCount++; //check FPS
+            }
+
+            if(timer >= 1000000000) {
+                System.out.println("FPS:" + drawCount);
+                drawCount = 0;
+                timer = 0;
+            }   
+  
+        }
+    }
+    
     private void update() {
 
         handleInput();
@@ -79,6 +152,7 @@ public class GamePanel extends JPanel {
         dummyenemy.followPlayer(bald);
         dummyenemy.updateAnimation();
         repaint();
+        System.out.printf("dx: %.3f dy: %.3f%n", bald.getSpeedX(), bald.getSpeedY());
     }
 
     @Override

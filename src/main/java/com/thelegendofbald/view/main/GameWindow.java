@@ -49,6 +49,10 @@ public class GameWindow extends JFrame implements View, MainView {
         this.revalidate();
         this.repaint();
         panel.requestFocusInWindow();
+
+        if (panel instanceof GamePanel gamePanel) {
+            gamePanel.startGame(); // <-- solo se è GamePanel
+        }
     }
 
     @Override
