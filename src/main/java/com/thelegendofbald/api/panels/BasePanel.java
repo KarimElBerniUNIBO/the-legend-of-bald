@@ -41,19 +41,21 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
 
     private void initialize() {
         SwingUtilities.invokeLater(() -> {
-            this.initializeSize();
+            //this.initializeSize();
             this.setBackground(Color.BLACK);
             //this.setOpaque(false);
+            this.initializeComponents();
+            this.initializedComponets = true;
         });
     }
 
-    private void initializeSize() {
+    /*private void initializeSize() {
         this.setPreferredSize(this.internalSize);
         this.setSize(this.internalSize);
         this.setMinimumSize(new Dimension((int) this.internalSize.getWidth(),
                 (int) (this.internalSize.getHeight() * PROPORTION)));
         this.setMaximumSize(this.internalSize);
-    }
+    }*/
 
     /**
      * Called when the component is added to a container or made displayable.
@@ -66,12 +68,7 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
     @Override
     public void addNotify() {
         super.addNotify();
-        if (!this.initializedComponets) {
-            this.initializedComponets = true;
-            SwingUtilities.invokeLater(this::initializeComponents);
-        } else {
-            SwingUtilities.invokeLater(this::updateView);
-        }
+        SwingUtilities.invokeLater(this::updateView);
     }
 
     /**

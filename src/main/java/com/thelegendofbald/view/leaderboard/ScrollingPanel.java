@@ -15,6 +15,10 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 class ScrollingPanel extends AdapterPanel {
 
     private static final double WIDTH_INSETS = 0.3;
+    private static final double BOTTOM_INSET = 0.05;
+
+    private static final double VERTICAL_SCROLLBAR_UNIT_INCREMENT = 0.1;
+    private static final double VERTICAL_SCROLLBAR_BLOCK_INCREMENT = 0.25;
 
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
@@ -23,7 +27,7 @@ class ScrollingPanel extends AdapterPanel {
     private Optional<ContentPanel> contentPanel = Optional.empty();
 
     ScrollingPanel(final Dimension size) {
-        super(new Dimension(0, 0));
+        super(size);
         this.setLayout(new GridBagLayout());
     }
 
@@ -40,7 +44,20 @@ class ScrollingPanel extends AdapterPanel {
 
     @Override
     public void updateComponentsSize() {
-        this.gbc.insets.set(0, (int) (this.getWidth() * WIDTH_INSETS - this.getWidth() * BackToMainPanel.WIDTH_PROPORTION), 0, (int) (this.getWidth() * WIDTH_INSETS));
+        var gbcLeft = (int) (this.getWidth() * WIDTH_INSETS - this.getWidth() * BackToMainPanel.WIDTH_PROPORTION);
+        var gbcRight = (int) (this.getWidth() * WIDTH_INSETS);
+        var gbcBottom = (int) (this.getHeight() * BOTTOM_INSET);
+
+        var preferredWith = (int) (this.getWidth() - (gbcRight * 2));
+        var preferredHeight = (int) (this.getHeight() - gbcBottom);
+        var preferedContentPanelSize = new Dimension(preferredWith, preferredHeight);
+        
+        this.gbc.insets.set(0, gbcLeft, gbcBottom, gbcRight);
+        this.contentPanel.ifPresent(cp -> cp.setPreferredSize(preferedContentPanelSize));
+        this.scrollPane.ifPresent(sp -> {
+            sp.getVerticalScrollBar().setUnitIncrement((int) (this.getHeight() * VERTICAL_SCROLLBAR_UNIT_INCREMENT));
+            sp.getVerticalScrollBar().setBlockIncrement((int) (this.getHeight() * VERTICAL_SCROLLBAR_BLOCK_INCREMENT));
+        });
     }
 
     @Override
