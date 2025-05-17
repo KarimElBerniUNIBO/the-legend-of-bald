@@ -20,7 +20,7 @@ import com.thelegendofbald.view.common.BackToMainPanel;
  * <ul>
  *   <li>A {@link BackToMainPanel} component on the west side for navigation back to the main menu.</li>
  *   <li>A {@link NorthPanel} component at the north, which may contain settings categories or navigation.</li>
- *   <li>A {@link SettingsEditorsManager} (typically a {@link SettingsEditorPanel}) at the center for editing settings.</li>
+ *   <li>A {@link SettingsEditorsManager} (typically a {@link SettingsEditorManagerPanel}) at the center for editing settings.</li>
  * </ul>
  * The panel is opaque and uses a black background.
  * </p>
@@ -54,7 +54,7 @@ public final class SettingsPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         this.backToMainPanel = new BackToMainPanel(this.getSize());
-        this.sem = new SettingsEditorPanel(this.getSize());
+        this.sem = new SettingsEditorManagerPanel(this.getSize());
         this.northPanel = new NorthPanel(this.getSize(), this.sem);
         super.initializeComponents();
     }

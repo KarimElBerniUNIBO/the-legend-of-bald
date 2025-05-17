@@ -62,8 +62,8 @@ public final class BackToMainPanel extends AdapterPanel {
 
     private static final String PATH = "/images/buttons/back.png";
 
-    private final JButtonFactory jbFactory = new JButtonFactoryImpl();
-    private Optional<JButton> backButton = Optional.empty();
+    private transient final JButtonFactory jbFactory = new JButtonFactoryImpl();
+    private transient Optional<JButton> backButton = Optional.empty();
 
     /**
      * Constructs a new {@code BackToMainPanel} with the specified size.

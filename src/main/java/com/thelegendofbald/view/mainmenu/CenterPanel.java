@@ -32,9 +32,8 @@ final class CenterPanel extends AdapterPanel implements InteractivePanel {
 
     private static final double DEFAULT_ARC_PROPORTION = 0.2;
 
-    private final JButtonFactory buttonFactory = new JButtonFactoryImpl();
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
-
+    private transient final JButtonFactory buttonFactory = new JButtonFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final List<JButton> buttons = this.getListOfButtons();

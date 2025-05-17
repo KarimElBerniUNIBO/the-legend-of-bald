@@ -22,7 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
  *   <li><b>moltiplicator</b>: Pair of scaling factors for width and height relative to the parent.</li>
  * </ul>
  */
-public final class TitleLabel extends JLabel {
+public final class TextLabel extends JLabel {
 
     private static final long serialVersionUID = 8944443862403400839L;
 
@@ -40,7 +40,7 @@ public final class TitleLabel extends JLabel {
      * @param color         the color of the label's text
      * @param fontName      the name of the font to use for the label's text
      */
-    public TitleLabel(final String text, final Dimension parentSize, final Pair<Double, Double> moltiplicator,
+    public TextLabel(final String text, final Dimension parentSize, final Pair<Double, Double> moltiplicator,
             final Color color, final String fontName) {
         this.moltiplicator = moltiplicator;
         this.setText(text);

@@ -1,7 +1,9 @@
 package com.thelegendofbald.controller.ui.listeners;
 
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import com.thelegendofbald.api.settingsmenu.KeybindsSettings;
 import com.thelegendofbald.view.buttons.KeybindingButton;
 
 /**
@@ -23,7 +25,6 @@ import com.thelegendofbald.view.buttons.KeybindingButton;
 public class KeybindingButtonMouseListener extends RoundedButtonMouseListener {
 
     private final KeybindingButton button;
-    private String originalText;
 
     /**
      * Constructs a new {@code KeybindingButtonMouseListener} for the specified {@link KeybindingButton}.
@@ -35,7 +36,6 @@ public class KeybindingButtonMouseListener extends RoundedButtonMouseListener {
     public KeybindingButtonMouseListener(final KeybindingButton button) {
         super(button);
         this.button = button;
-        this.originalText = button.getText();
     }
 
     /**
@@ -73,22 +73,8 @@ public class KeybindingButtonMouseListener extends RoundedButtonMouseListener {
         super.mouseExited(e);
         if (button.isChanging()) {
             button.setChanging(false);
-            button.setText(originalText);
+            button.setText(KeyEvent.getKeyText(KeybindsSettings.getKeyCode(KeybindsSettings.getKeybind(button))));
         }
-    }
-
-    /**
-     * Sets the original text of the button.
-     * <p>
-     * Subclasses can override this method to provide custom logic for updating the
-     * original text. If overridden, ensure that the new text is consistent with the
-     * button's state.
-     * </p>
-     *
-     * @param originalText the new original text to set
-     */
-    public void setOriginalText(final String originalText) {
-        this.originalText = originalText;
     }
 
 }

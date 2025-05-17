@@ -12,18 +12,18 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
-import com.thelegendofbald.view.common.TitleLabel;
-import com.thelegendofbald.view.common.TitleLabelFactoryImpl;
+import com.thelegendofbald.view.common.TextLabel;
+import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 
 final class NorthPanel extends AdapterPanel {
 
     private static final String TITLE_TEXT = "SETTINGS";
     private static final double HEIGHT_PROPORTION = 0.35;
 
-    private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
+    private final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
 
     private final SettingsEditorsManager sem;
-    private TitleLabel titleLabel;
+    private TextLabel titleLabel;
     private JPanel categoriesPanel;
 
     NorthPanel(final Dimension size, final SettingsEditorsManager sem) {
@@ -35,7 +35,7 @@ final class NorthPanel extends AdapterPanel {
 
     @Override
     protected void initializeComponents() {
-        this.titleLabel = tlFactory.createTitleLabelWithProportion(TITLE_TEXT, this.getSize(),
+        this.titleLabel = tlFactory.createTextLabelWithProportion(TITLE_TEXT, this.getSize(),
                 Optional.of(Pair.of(1.0, 0.5)), Optional.empty(),
                 Optional.empty());
         this.categoriesPanel = new CategoriesPanel(this.getSize(), this.sem);

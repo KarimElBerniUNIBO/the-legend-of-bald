@@ -23,7 +23,6 @@ import com.thelegendofbald.api.views.View;
 public abstract class BasePanel extends JPanel implements View, MenuView {
 
     private static final long serialVersionUID = -4999726392950384300L;
-    private static final double PROPORTION = 0.85;
 
     private final Dimension internalSize;
     private boolean initializedComponets;
@@ -35,27 +34,15 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
      */
     public BasePanel(final Dimension size) {
         super();
-        this.internalSize = size;
+        this.internalSize = size.getSize();
         this.initialize();
     }
 
     private void initialize() {
         SwingUtilities.invokeLater(() -> {
-            //this.initializeSize();
             this.setBackground(Color.BLACK);
-            //this.setOpaque(false);
-            this.initializeComponents();
-            this.initializedComponets = true;
         });
     }
-
-    /*private void initializeSize() {
-        this.setPreferredSize(this.internalSize);
-        this.setSize(this.internalSize);
-        this.setMinimumSize(new Dimension((int) this.internalSize.getWidth(),
-                (int) (this.internalSize.getHeight() * PROPORTION)));
-        this.setMaximumSize(this.internalSize);
-    }*/
 
     /**
      * Called when the component is added to a container or made displayable.
@@ -68,6 +55,10 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
     @Override
     public void addNotify() {
         super.addNotify();
+        if (!this.initializedComponets) {
+            SwingUtilities.invokeLater(this::initializeComponents);
+            this.initializedComponets = true;
+        }
         SwingUtilities.invokeLater(this::updateView);
     }
 
@@ -126,7 +117,7 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
      */
     @Override
     public Dimension getInternalSize() {
-        return this.internalSize;
+        return this.internalSize.getSize();
     }
 
     /**

@@ -9,18 +9,18 @@ import javax.swing.JPanel;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.thelegendofbald.api.common.TitleLabelFactory;
+import com.thelegendofbald.api.common.TextLabelFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.view.common.BackToMainPanel;
-import com.thelegendofbald.view.common.TitleLabel;
-import com.thelegendofbald.view.common.TitleLabelFactoryImpl;
+import com.thelegendofbald.view.common.TextLabel;
+import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 
 public final class LeaderBoardPanel extends AdapterPanel {
 
-    private final TitleLabelFactory titleLabelFactory = new TitleLabelFactoryImpl();
+    private final TextLabelFactory titleLabelFactory = new TextLabelFactoryImpl();
 
     private Optional<BackToMainPanel> backToMainPanel = Optional.empty();
-    private Optional<TitleLabel> titleLabel = Optional.empty();
+    private Optional<TextLabel> titleLabel = Optional.empty();
     private Optional<JPanel> scrollingPanel = Optional.empty();
 
     public LeaderBoardPanel(final Dimension size) {
@@ -32,7 +32,7 @@ public final class LeaderBoardPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         this.backToMainPanel = Optional.of(new BackToMainPanel(this.getSize()));
-        this.titleLabel = Optional.of(titleLabelFactory.createTitleLabelWithProportion("LEADERBOARD",
+        this.titleLabel = Optional.of(titleLabelFactory.createTextLabelWithProportion("LEADERBOARD",
                 this.getSize(), Optional.of(Pair.of(1.0, 0.3)),
                 Optional.empty(), Optional.empty()));
         this.scrollingPanel = Optional.of(new ScrollingPanel(this.getSize()));

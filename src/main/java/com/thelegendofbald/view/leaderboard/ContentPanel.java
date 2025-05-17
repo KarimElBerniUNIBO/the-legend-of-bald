@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -34,32 +33,25 @@ final class ContentPanel extends AdapterPanel {
 
     private List<PlayerTimePanel> getPlayersList() {
         return Stream.iterate(0, i -> i < MAX_PLAYERS, i -> i + 1)
-                .map(i -> new PlayerTimePanel(this.getSize()))
+                .map(i -> new PlayerTimePanel())
                 .toList();
     }
 
     @Override
     public void updateComponentsSize() {
-        this.gbc.insets.set(0, 0, (int) (this.getHeight() * 0.01), 0);
-        Arrays.stream(this.getComponents())
-                .forEach(component -> component.setPreferredSize(this.getSize()));
-    }
-
-    @Override
-    public void updateView() {
-        super.updateView();
         this.players.forEach(player -> {
             player.setPreferredSize(this.getSize());
         });
+        this.gbc.insets.set(0, 0, (int) (this.getHeight() * 0.01), 0);
     }
 
     @Override
     public void addComponentsToPanel() {
+        this.updateComponentsSize();
         players.forEach(player -> {
             this.gbc.gridy = players.indexOf(player);
             this.add(player, gbc);
         });
-        this.updateComponentsSize();
     }
 
     @Override

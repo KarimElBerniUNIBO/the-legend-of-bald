@@ -10,12 +10,10 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
-import com.thelegendofbald.view.common.TitleLabel;
-import com.thelegendofbald.view.common.TitleLabelFactoryImpl;
+import com.thelegendofbald.view.common.TextLabel;
+import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 /**
@@ -31,8 +29,8 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
  * </p>
  *
  * @see AdapterPanel
- * @see TitleLabel
- * @see TitleLabelFactoryImpl
+ * @see TextLabel
+ * @see TextLabelFactoryImpl
  * @see GridBagConstraintsFactory
  */
 public final class ConfigPanel extends AdapterPanel {
@@ -42,9 +40,9 @@ public final class ConfigPanel extends AdapterPanel {
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createHorizontalGridBagConstraints();
 
-    private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
+    private final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
 
-    private Optional<TitleLabel> title = Optional.empty();
+    private Optional<TextLabel> title = Optional.empty();
     private final String text;
     private final JComponent values;
 
@@ -70,23 +68,9 @@ public final class ConfigPanel extends AdapterPanel {
     }
 
     @Override
-    public void addNotify() {
-        super.addNotify();
-        if (this.title.isEmpty()) {
-            SwingUtilities.invokeLater(() -> {
-                this.initializeComponents();
-                this.removeAll();
-                this.addComponentsToPanel();
-                this.revalidate();
-                this.repaint();
-            });
-        }
-    }
-
-    @Override
     protected void initializeComponents() {
-        this.title = Optional.of(tlFactory.createTitleLabelWithProportion(this.text, this.getSize(),
-                Optional.of(Pair.of(1.0, 1.0)), Optional.empty(), Optional.empty()));
+        this.title = Optional.of(tlFactory.createTextLabelWithProportion(this.text, this.getSize(),
+                Optional.empty(), Optional.empty(), Optional.empty()));
         super.initializeComponents();
     }
 
@@ -98,14 +82,13 @@ public final class ConfigPanel extends AdapterPanel {
         this.title.ifPresent(t -> this.add(t, gbc));
 
         gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.NONE;
         this.add(values, gbc);
     }
 
     @Override
     public void setPreferredSize(final Dimension size) {
         super.setPreferredSize(size);
-        SwingUtilities.invokeLater(this::updateComponentsSize);
+        SwingUtilities.invokeLater(this::updateView);
     }
 
     @Override

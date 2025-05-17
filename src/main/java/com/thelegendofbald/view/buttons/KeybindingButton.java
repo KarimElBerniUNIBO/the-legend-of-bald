@@ -73,7 +73,7 @@ public class KeybindingButton extends RoundedButton {
     private void initialize() {
         SwingUtilities.invokeLater(() -> {
             this.addMouseListener(new KeybindingButtonMouseListener(this));
-            this.addKeyListener(new KeybindingButtonKeyListener());
+            this.addKeyListener(new KeybindingButtonKeyListener(this));
         });
     }
 

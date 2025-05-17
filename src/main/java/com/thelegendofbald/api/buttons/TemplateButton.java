@@ -176,7 +176,7 @@ public abstract class TemplateButton extends JButton {
         final int originalWidth = image.getIconWidth();
         final int originalHeight = image.getIconHeight();
 
-        final double aspectRatio = originalWidth / originalHeight;
+        final double aspectRatio = (double) originalWidth / originalHeight;
 
         int newWidth = (int) (panelHeight * IMAGE_PROPORTION * aspectRatio);
         int newHeight = (int) (panelHeight * IMAGE_PROPORTION);

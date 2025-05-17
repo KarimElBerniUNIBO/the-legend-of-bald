@@ -21,7 +21,7 @@ import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.common.BackToMainPanel;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
-final class SettingsEditorPanel extends AdapterPanel implements SettingsEditorsManager {
+final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsEditorsManager {
 
     private static final double WIDTH_PROPORTION = 0.7;
     private static final double HEIGHT_PROPORTION = 0.65;
@@ -44,7 +44,7 @@ final class SettingsEditorPanel extends AdapterPanel implements SettingsEditorsM
     private final JButtonFactory jbFactory = new JButtonFactoryImpl();
     private Optional<JButton> apply = Optional.empty();
 
-    SettingsEditorPanel(final Dimension size) {
+    SettingsEditorManagerPanel(final Dimension size) {
         super(size);
         this.setOpaque(false);
         this.setLayout(new GridBagLayout());

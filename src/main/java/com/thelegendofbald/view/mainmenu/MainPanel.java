@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.panels.AdapterPanel;
-import com.thelegendofbald.view.common.TitleLabel;
-import com.thelegendofbald.view.common.TitleLabelFactoryImpl;
+import com.thelegendofbald.view.common.TextLabel;
+import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 
 /**
  * Represents the main panel of the main menu.
@@ -28,9 +28,9 @@ public final class MainPanel extends AdapterPanel {
 
     private static final Pair<Double, Double> TITLE_PROPORTION = Pair.of(1.0, 0.3);
 
-    private final TitleLabelFactoryImpl tlFactory = new TitleLabelFactoryImpl();
+    private final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
 
-    private Optional<TitleLabel> titleLabel = Optional.empty();
+    private Optional<TextLabel> titleLabel = Optional.empty();
     private Optional<JPanel> centerPanel = Optional.empty();
 
     /**
@@ -47,7 +47,7 @@ public final class MainPanel extends AdapterPanel {
 
     @Override
     protected void initializeComponents() {
-        titleLabel = Optional.of(tlFactory.createTitleLabelWithProportion(
+        titleLabel = Optional.of(tlFactory.createTextLabelWithProportion(
                 TITLE_TEXT,
                 this.getSize(),
                 Optional.of(TITLE_PROPORTION),
