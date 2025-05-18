@@ -41,7 +41,7 @@ import com.thelegendofbald.controller.ui.listeners.RoundedButtonMouseListener;
 public class RoundedButton extends TemplateButton {
 
     private static final long serialVersionUID = -649720576764931563L;
-    
+
     private final double arcProportion;
 
     /**

@@ -20,7 +20,12 @@ public class KeybindingButtonKeyListener extends KeyAdapter {
 
     private final KeybindingButton button;
 
-    public KeybindingButtonKeyListener(KeybindingButton button) {
+    /**
+     * Constructs a new {@code KeybindingButtonKeyListener} with the specified {@link KeybindingButton}.
+     *
+     * @param button the {@link KeybindingButton} associated with this key listener
+     */
+    public KeybindingButtonKeyListener(final KeybindingButton button) {
         this.button = button;
     }
 

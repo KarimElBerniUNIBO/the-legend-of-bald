@@ -90,6 +90,11 @@ public enum KeybindsSettings implements SettingOption {
      * @return the key code as an {@code int}
      * @see KeyEvent
      */
+    /**
+     * Returns the key code associated with this key binding.
+     *
+     * @return the integer value representing the key code
+     */
     public int getKey() {
         return this.key;
     }
@@ -113,21 +118,45 @@ public enum KeybindsSettings implements SettingOption {
         return this.jcomponent;
     }
 
+    /**
+     * Returns the key code associated with the specified {@link KeybindsSettings} instance.
+     *
+     * @param keybind the {@code KeybindsSettings} instance for which to retrieve the key code
+     * @return the integer key code associated with the given keybind
+     */
     public static int getKeyCode(final KeybindsSettings keybind) {
         return keybind.getKey();
     }
 
-    private static void updateButtonText(JButton button, int keycode) {
+    private static void updateButtonText(final JButton button, final int keycode) {
         button.setText(KeyEvent.getKeyText(keycode));
         button.repaint();
 
     }
 
+    /**
+     * Sets the key code for the specified {@link KeybindsSettings} instance and updates the associated button's text
+     * to reflect the new key binding.
+     *
+     * @param keybind the {@code KeybindsSettings} instance whose key code is to be set
+     * @param key the new key code to assign
+     */
     public static void setKeyCode(final KeybindsSettings keybind, final int key) {
         keybind.setKey(key);
         updateButtonText((JButton) keybind.getJcomponent(), key);
     }
 
+    /**
+     * Retrieves the {@code KeybindsSettings} instance associated with the specified {@link KeybindingButton}.
+     * <p>
+     * This method searches through all available {@code KeybindsSettings} values and returns the one whose
+     * display text matches the name of the provided button.
+     * </p>
+     *
+     * @param button the {@code KeybindingButton} for which to find the corresponding keybind setting
+     * @return the matching {@code KeybindsSettings} instance
+     * @throws IllegalArgumentException if no matching keybind setting is found for the given button
+     */
     public static KeybindsSettings getKeybind(final KeybindingButton button) {
         return Arrays.stream(values())
                 .filter(ks -> ks.getText().equals(button.getName()))

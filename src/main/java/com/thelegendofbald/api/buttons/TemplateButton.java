@@ -109,22 +109,17 @@ public abstract class TemplateButton extends JButton {
     @Override
     public void addNotify() {
         super.addNotify();
-        SwingUtilities.invokeLater(() -> {
-            this.text.ifPresent(t -> {
+        this.text.ifPresent(t -> {
             this.setText(t);
-            Optional.ofNullable(this.getParent()).ifPresent(
-                    parent -> {
-                        Optional.ofNullable(this.getFont()).ifPresentOrElse(
-                                font -> this.setFont(font.deriveFont((float) this.getFontSize(parent.getSize()))),
+            Optional.ofNullable(this.getFont()).ifPresentOrElse(
+                                font -> this.setFont(font.deriveFont((float) this.getFontSize(this.getParent().getSize()))),
                                 () -> {
                                     this.setFont(new Font(this.fontName.get(), this.fontType.get(),
-                                            this.getFontSize(parent.getSize())));
+                                    this.getFontSize(this.getParent().getSize())));
                                 });
-                    });
-            });
-            this.icon.ifPresent(i -> SwingUtilities.invokeLater(() -> this.setIcon(this.getImageResized(i))));
-            this.setAlignmentX(CENTER_ALIGNMENT);
         });
+        this.icon.ifPresent(i -> this.setIcon(this.getImageResized(i)));
+        this.setAlignmentX(CENTER_ALIGNMENT);
     }
 
     private void initialize() {

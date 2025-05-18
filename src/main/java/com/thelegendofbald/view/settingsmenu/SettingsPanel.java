@@ -13,14 +13,19 @@ import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
 import com.thelegendofbald.view.common.BackToMainPanel;
 
 /**
- * The {@code SettingsPanel} class represents the main panel for the settings menu UI.
- * It extends {@link AdapterPanel} and organizes its subcomponents using a {@link BorderLayout}.
+ * The {@code SettingsPanel} class represents the main panel for the settings
+ * menu UI.
+ * It extends {@link AdapterPanel} and organizes its subcomponents using a
+ * {@link BorderLayout}.
  * <p>
  * This panel contains:
  * <ul>
- *   <li>A {@link BackToMainPanel} component on the west side for navigation back to the main menu.</li>
- *   <li>A {@link NorthPanel} component at the north, which may contain settings categories or navigation.</li>
- *   <li>A {@link SettingsEditorsManager} (typically a {@link SettingsEditorManagerPanel}) at the center for editing settings.</li>
+ * <li>A {@link BackToMainPanel} component on the west side for navigation back
+ * to the main menu.</li>
+ * <li>A {@link NorthPanel} component at the north, which may contain settings
+ * categories or navigation.</li>
+ * <li>A {@link SettingsEditorsManager} (typically a
+ * {@link SettingsEditorManagerPanel}) at the center for editing settings.</li>
  * </ul>
  * The panel is opaque and uses a black background.
  * </p>
@@ -34,7 +39,8 @@ public final class SettingsPanel extends AdapterPanel {
     /**
      * Constructs a new {@code SettingsPanel} with the specified size.
      * <p>
-     * The panel is initialized with an opaque black background and uses a {@link BorderLayout}.
+     * The panel is initialized with an opaque black background and uses a
+     * {@link BorderLayout}.
      *
      * @param size the preferred size of the panel
      */
