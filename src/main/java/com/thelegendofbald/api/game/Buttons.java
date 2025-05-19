@@ -7,22 +7,25 @@ import java.util.Optional;
 import javax.swing.JButton;
 
 import com.thelegendofbald.api.buttons.JButtonFactory;
+import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 
 public enum Buttons {
-    RESUME("RESUME"),
-    SETTINGS("SETTINGS"),
-    LEAVE("LEAVE");
+    RESUME("RESUME", Optional.empty()),
+    SETTINGS("SETTINGS", Optional.of(Panels.SETTINGS_MENU)),
+    LEAVE("LEAVE", Optional.of(Panels.MAIN_MENU)),;
 
     private static final double DEFAULT_ARC_PROPORTION = 0.2;
 
     private final String text;
+    private final Optional<Panels> panel;
 
     private final JButtonFactory jbFactory = new JButtonFactoryImpl();
     private final JButton button;
 
-    Buttons(final String text) {
+    Buttons(final String text, Optional<Panels> panel) {
         this.text = text;
+        this.panel = panel;
         this.button = jbFactory.createRoundedButton(this.text, Optional.empty(), DEFAULT_ARC_PROPORTION, Optional.empty(),
                 Optional.empty(), Optional.of(Color.BLACK), Optional.empty());
     }
@@ -34,6 +37,15 @@ public enum Buttons {
      */
     public String getText() {
         return this.text;
+    }
+
+    /**
+     * Returns the {@link Panels} associated with this button.
+     *
+     * @return the {@code Panels} associated with this button
+     */
+    public Optional<Panels> getPanel() {
+        return this.panel;
     }
 
     /**

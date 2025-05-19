@@ -12,7 +12,7 @@ import javax.swing.SwingUtilities;
 import com.thelegendofbald.api.buttons.JButtonFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.panels.Panels;
-import com.thelegendofbald.controller.ui.mainmenu.SwitchToOtherPanel;
+import com.thelegendofbald.controller.ui.common.SwitchToOtherPanel;
 import com.thelegendofbald.utils.ImageUtils;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.main.GameWindow;

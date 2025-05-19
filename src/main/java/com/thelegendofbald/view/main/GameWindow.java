@@ -56,7 +56,7 @@ public final class GameWindow extends JFrame implements View, MainView {
         this.repaint();
         panel.requestFocusInWindow();
 
-        if (panel instanceof GamePanel gamePanel) {
+        if (panel instanceof GamePanel gamePanel && !gamePanel.isRunning()) {
             gamePanel.startGame(); // <-- solo se è GamePanel
         }
     }

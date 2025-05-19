@@ -1,4 +1,4 @@
-package com.thelegendofbald.controller.ui.mainmenu;
+package com.thelegendofbald.controller.ui.common;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

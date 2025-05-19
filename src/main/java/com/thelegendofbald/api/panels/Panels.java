@@ -2,6 +2,7 @@ package com.thelegendofbald.api.panels;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.thelegendofbald.api.mainmenu.Buttons;
 import com.thelegendofbald.view.game.GamePanel;
@@ -26,27 +27,28 @@ public enum Panels {
     /**
      * The main menu panel.
      */
-    MAIN_MENU("MAIN", new MainPanel(), Optional.empty()),
+    MAIN_MENU("MAIN", MainPanel::new, Optional.empty()),
     /**
      * The settings menu panel.
      */
-    SETTINGS_MENU("SETTINGS", new SettingsPanel(), Optional.of(Buttons.SETTINGS)),
+    SETTINGS_MENU("SETTINGS", SettingsPanel::new, Optional.of(Buttons.SETTINGS)),
     /**
      * The leaderboard menu panel.
      */
-    LEADERBOARD_MENU("LEADERBOARD", new LeaderBoardPanel(), Optional.of(Buttons.LEADERBOARD)),
+    LEADERBOARD_MENU("LEADERBOARD", LeaderBoardPanel::new, Optional.of(Buttons.LEADERBOARD)),
     /**
      * The game panel.
      */
-    PLAY_MENU("PLAY", new GamePanel(), Optional.of(Buttons.PLAY));
+    PLAY_MENU("PLAY", GamePanel::new, Optional.of(Buttons.PLAY));
 
     private final String name;
-    private final MenuPanel panel;
+    private final Supplier<MenuPanel> panelSupplier;
+    private MenuPanel panel;
     private final Optional<Buttons> enumButton;
 
-    Panels(final String name, final MenuPanel panel, final Optional<Buttons> enumButton) {
+    Panels(final String name, Supplier<MenuPanel> panelSupplier, final Optional<Buttons> enumButton) {
         this.name = name;
-        this.panel = panel;
+        this.panelSupplier = panelSupplier;
         this.enumButton = enumButton;
     }
 
@@ -65,6 +67,9 @@ public enum Panels {
      * @return the {@code MenuPanel} associated with this object
      */
     public MenuPanel getPanel() {
+        if (Optional.ofNullable(this.panel).isEmpty()) {
+            this.panel = this.panelSupplier.get();
+        }
         return this.panel;
     }
 

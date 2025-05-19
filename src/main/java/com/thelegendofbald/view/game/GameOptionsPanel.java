@@ -17,9 +17,11 @@ import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.common.TextLabelFactory;
 import com.thelegendofbald.api.game.Buttons;
 import com.thelegendofbald.api.panels.AdapterPanel;
+import com.thelegendofbald.controller.ui.common.SwitchToOtherPanel;
 import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
+import com.thelegendofbald.view.main.GameWindow;
 
 public class GameOptionsPanel extends AdapterPanel {
 
@@ -48,6 +50,7 @@ public class GameOptionsPanel extends AdapterPanel {
     protected void initializeComponents() {
         this.title = Optional.of(this.tlFactory.createTextLabelWithProportion("OPTIONS", this.getSize(),
                 Optional.of(TITLE_PROPORTION), Optional.empty(), Optional.empty()));
+        this.connectButtonsWithActionListeners();
         super.initializeComponents();
     }
 
@@ -55,6 +58,23 @@ public class GameOptionsPanel extends AdapterPanel {
         return Arrays.stream(Buttons.values())
                 .map(Buttons::getButton)
                 .toList();
+    }
+
+    private void connectButtonsWithActionListeners() {
+        Arrays.stream(Buttons.values())
+                .forEach(enumButton -> {
+                    enumButton.getPanel().ifPresentOrElse(
+                            panel -> enumButton.getButton()
+                                    .addActionListener(e -> {
+                                        new SwitchToOtherPanel((GameWindow) SwingUtilities.getWindowAncestor(this),
+                                                panel).actionPerformed(e);
+                                        if (enumButton == Buttons.LEAVE) {
+                                            ((GamePanel) this.getParent()).stopGame();
+                                            this.setVisible(false);
+                                        }
+                                    }),
+                            () -> enumButton.getButton().addActionListener(e -> this.setVisible(false)));
+                });
     }
 
     @Override
@@ -65,7 +85,8 @@ public class GameOptionsPanel extends AdapterPanel {
 
     @Override
     public void addComponentsToPanel() {
-        this.gbc.insets.set(0, (int) (this.getWidth() * WIDTH_INSETS), (int) (this.getHeight() * HEIGHT_INSETS), (int) (this.getWidth() * WIDTH_INSETS));
+        this.gbc.insets.set(0, (int) (this.getWidth() * WIDTH_INSETS), (int) (this.getHeight() * HEIGHT_INSETS),
+                (int) (this.getWidth() * WIDTH_INSETS));
 
         this.title.ifPresent(t -> {
             this.gbc.gridy = 0;

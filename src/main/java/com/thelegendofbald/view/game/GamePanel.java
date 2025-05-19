@@ -42,6 +42,7 @@ public class GamePanel extends MenuPanel implements Runnable {
     private final JPanel optionsPanel;
 
     private Thread gameThread;
+    private boolean running = false;
 
     private final Set<Integer> pressedKeys = new HashSet<>();
 
@@ -128,7 +129,7 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     @Override
     public void run() {
-
+        running = true;
         System.out.println("Game loop started!");
 
         long lastTime = System.nanoTime();
@@ -208,4 +209,13 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.add(gridPanel);
         this.add(optionsPanel, optionsGBC);
     }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void stopGame() {
+        this.running = false;
+    }
+
 }
