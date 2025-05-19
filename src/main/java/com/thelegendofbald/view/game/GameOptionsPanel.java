@@ -23,7 +23,7 @@ import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.main.GameWindow;
 
-public class GameOptionsPanel extends AdapterPanel {
+public final class GameOptionsPanel extends AdapterPanel {
 
     private static final Color DEFAULT_BG_COLOR = new Color(0, 0, 0, 150);
     private static final Pair<Double, Double> TITLE_PROPORTION = Pair.of(1.0, 0.3);
