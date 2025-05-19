@@ -45,9 +45,7 @@ public final class SoundPlayer {
 
     private void preloadSound() {
         try (InputStream is = this.getClass().getResourceAsStream(path)) {
-            if (is == null) {
-                throw new IllegalArgumentException("Sound file not found: " + path);
-            }
+            Optional.ofNullable(is).orElseThrow(() -> new IllegalArgumentException("Sound file not found: " + path));
             final AudioInputStream audioStream = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
             clip = Optional.of(AudioSystem.getClip());
             clip.get().open(audioStream);

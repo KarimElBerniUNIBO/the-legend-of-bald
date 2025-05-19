@@ -1,7 +1,6 @@
 package com.thelegendofbald.view.leaderboard;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -10,24 +9,18 @@ import javax.swing.JPanel;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.TextLabelFactory;
-import com.thelegendofbald.api.panels.AdapterPanel;
+import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.view.common.BackToMainPanel;
 import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 
-public final class LeaderBoardPanel extends AdapterPanel {
+public final class LeaderBoardPanel extends MenuPanel {
 
     private final TextLabelFactory titleLabelFactory = new TextLabelFactoryImpl();
 
     private Optional<BackToMainPanel> backToMainPanel = Optional.empty();
     private Optional<TextLabel> titleLabel = Optional.empty();
     private Optional<JPanel> scrollingPanel = Optional.empty();
-
-    public LeaderBoardPanel(final Dimension size) {
-        super(size);
-        this.setPreferredSize(size);
-        this.setLayout(new BorderLayout());
-    }
 
     @Override
     protected void initializeComponents() {

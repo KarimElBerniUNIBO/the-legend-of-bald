@@ -1,14 +1,12 @@
 package com.thelegendofbald.view.settingsmenu;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.util.Arrays;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.api.panels.AdapterPanel;
+import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
 import com.thelegendofbald.view.common.BackToMainPanel;
 
@@ -30,32 +28,11 @@ import com.thelegendofbald.view.common.BackToMainPanel;
  * The panel is opaque and uses a black background.
  * </p>
  */
-public final class SettingsPanel extends AdapterPanel {
+public final class SettingsPanel extends MenuPanel {
 
     private BackToMainPanel backToMainPanel;
     private JPanel northPanel;
     private SettingsEditorsManager sem;
-
-    /**
-     * Constructs a new {@code SettingsPanel} with the specified size.
-     * <p>
-     * The panel is initialized with an opaque black background and uses a
-     * {@link BorderLayout}.
-     *
-     * @param size the preferred size of the panel
-     */
-    public SettingsPanel(final Dimension size) {
-        super(size);
-        this.initialize();
-    }
-
-    private void initialize() {
-        SwingUtilities.invokeLater(() -> {
-            this.setOpaque(true);
-            this.setBackground(Color.BLACK);
-            this.setLayout(new BorderLayout());
-        });
-    }
 
     @Override
     protected void initializeComponents() {

@@ -1,6 +1,13 @@
 package com.thelegendofbald.api.panels;
 
 import java.util.Arrays;
+import java.util.Optional;
+
+import com.thelegendofbald.api.mainmenu.Buttons;
+import com.thelegendofbald.view.leaderboard.LeaderBoardPanel;
+import com.thelegendofbald.view.main.GamePanel;
+import com.thelegendofbald.view.mainmenu.MainPanel;
+import com.thelegendofbald.view.settingsmenu.SettingsPanel;
 
 /**
  * Enum representing the different panels available in the application UI.
@@ -19,26 +26,28 @@ public enum Panels {
     /**
      * The main menu panel.
      */
-    MAIN_MENU("main", 0),
+    MAIN_MENU("MAIN", new MainPanel(), Optional.empty()),
     /**
      * The settings menu panel.
      */
-    SETTINGS_MENU("settings", 1),
+    SETTINGS_MENU("SETTINGS", new SettingsPanel(), Optional.of(Buttons.SETTINGS)),
     /**
      * The leaderboard menu panel.
      */
-    LEADERBOARD_MENU("leaderboard", 2),
+    LEADERBOARD_MENU("LEADERBOARD", new LeaderBoardPanel(), Optional.of(Buttons.LEADERBOARD)),
     /**
      * The game panel.
      */
-    PLAY_MENU("play", 3);
+    PLAY_MENU("PLAY", new GamePanel(), Optional.of(Buttons.PLAY));
 
     private final String name;
-    private final int index;
+    private final MenuPanel panel;
+    private final Optional<Buttons> enumButton;
 
-    Panels(final String name, final int index) {
+    Panels(final String name, final MenuPanel panel, final Optional<Buttons> enumButton) {
         this.name = name;
-        this.index = index;
+        this.panel = panel;
+        this.enumButton = enumButton;
     }
 
     /**
@@ -51,12 +60,32 @@ public enum Panels {
     }
 
     /**
-     * Returns the index associated with this instance.
+     * Returns the current instance of {@link MenuPanel}.
      *
-     * @return the index value of this object
+     * @return the {@code MenuPanel} associated with this object
+     */
+    public MenuPanel getPanel() {
+        return this.panel;
+    }
+
+    /**
+     * Returns an {@link Optional} containing the {@link Buttons} instance associated with this object, if present.
+     *
+     * @return an {@code Optional<Buttons>} representing the button, or an empty {@code Optional} if no button is present
+     */
+    public Optional<Buttons> getEnumButton() {
+        return this.enumButton;
+    }
+
+    /**
+     * Returns the index of this panel.
+     * <p>
+     * The index is determined by the ordinal value of the enum constant.
+     *
+     * @return the index of the panel
      */
     public int getIndex() {
-        return this.index;
+        return this.ordinal();
     }
 
     /**

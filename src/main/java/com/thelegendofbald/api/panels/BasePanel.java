@@ -133,6 +133,7 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
     @Override
     public void setInternalSize(final Dimension size) {
         this.internalSize.setSize(size);
+        this.setPreferredSize(size);
     }
 
 }

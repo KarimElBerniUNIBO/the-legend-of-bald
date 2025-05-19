@@ -80,8 +80,7 @@ public final class BackToMainPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         final var originalImage = new ImageIcon(this.getClass().getResource(PATH));
-        this.backButton = Optional
-                .of(jbFactory.createTrasparentButton(originalImage, Optional.empty(), Optional.of(Color.WHITE)));
+        this.backButton = Optional.of(jbFactory.createTrasparentButton(originalImage, Optional.empty(), Optional.of(Color.WHITE)));
         this.backButton.ifPresent(button -> button.addActionListener(e -> {
             final var parent = (GameWindow) SwingUtilities.getWindowAncestor(this);
             new SwitchToOtherPanel(parent, Panels.MAIN_MENU).actionPerformed(e);

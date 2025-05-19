@@ -1,7 +1,6 @@
 package com.thelegendofbald.view.mainmenu;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Arrays;
 import java.util.Optional;
@@ -10,7 +9,7 @@ import javax.swing.JPanel;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.thelegendofbald.api.panels.AdapterPanel;
+import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 
@@ -19,9 +18,7 @@ import com.thelegendofbald.view.common.TextLabelFactoryImpl;
  * This panel serves as the container for menu components, including the title
  * and central elements.
  */
-public final class MainPanel extends AdapterPanel {
-
-    private static final long serialVersionUID = 5314111965396464683L;
+public final class MainPanel extends MenuPanel {
 
     private static final String TITLE_TEXT = "THE LEGEND OF BALD";
     private static final String TITLE_FONT_NAME = Font.SERIF;
@@ -32,18 +29,6 @@ public final class MainPanel extends AdapterPanel {
 
     private Optional<TextLabel> titleLabel = Optional.empty();
     private Optional<JPanel> centerPanel = Optional.empty();
-
-    /**
-     * Constructs the main menu panel with a specified size.
-     *
-     * @param size The preferred dimensions of the panel.
-     */
-    public MainPanel(final Dimension size) {
-        super(size);
-        this.setPreferredSize(size);
-        this.setLayout(new BorderLayout());
-
-    }
 
     @Override
     protected void initializeComponents() {
