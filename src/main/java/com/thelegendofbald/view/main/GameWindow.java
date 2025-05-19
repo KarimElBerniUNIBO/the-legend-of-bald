@@ -13,6 +13,7 @@ import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.api.views.View;
+import com.thelegendofbald.view.game.GamePanel;
 
 public final class GameWindow extends JFrame implements View, MainView {
 
@@ -54,6 +55,10 @@ public final class GameWindow extends JFrame implements View, MainView {
         this.revalidate();
         this.repaint();
         panel.requestFocusInWindow();
+
+        if (panel instanceof GamePanel gamePanel) {
+            gamePanel.startGame(); // <-- solo se è GamePanel
+        }
     }
 
     @Override
