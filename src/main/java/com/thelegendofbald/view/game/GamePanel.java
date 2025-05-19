@@ -1,4 +1,4 @@
-package com.thelegendofbald.view.main;
+package com.thelegendofbald.view.game;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,6 +17,8 @@ import com.thelegendofbald.api.settingsmenu.KeybindsSettings;
 import com.thelegendofbald.api.views.View;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.view.main.GridPanel;
+import com.thelegendofbald.view.main.TileMap;
 
 public class GamePanel extends MenuPanel {
 
@@ -35,7 +37,7 @@ public class GamePanel extends MenuPanel {
         //this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
-        this.setLayout(null);
+        //this.setLayout(null);
 
         this.gridPanel = new GridPanel();
         this.gridPanel.setOpaque(false);

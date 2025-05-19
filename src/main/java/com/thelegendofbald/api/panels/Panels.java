@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import com.thelegendofbald.api.mainmenu.Buttons;
+import com.thelegendofbald.view.game.GamePanel;
 import com.thelegendofbald.view.leaderboard.LeaderBoardPanel;
-import com.thelegendofbald.view.main.GamePanel;
 import com.thelegendofbald.view.mainmenu.MainPanel;
 import com.thelegendofbald.view.settingsmenu.SettingsPanel;
 
