@@ -24,7 +24,6 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
 
     private static final long serialVersionUID = -4999726392950384300L;
 
-    private final Dimension internalSize;
     private boolean initializedComponets;
 
     /**
@@ -34,7 +33,6 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
      */
     public BasePanel(final Dimension size) {
         super();
-        this.internalSize = size.getSize();
         this.initialize();
     }
 
@@ -103,37 +101,6 @@ public abstract class BasePanel extends JPanel implements View, MenuView {
      */
     public boolean isInitializedComponets() {
         return initializedComponets;
-    }
-
-    /**
-     * Retrieves the internal size of the panel.
-     * <p>
-     * Subclasses can override this method to provide custom logic for retrieving
-     * the internal size. If overridden, ensure that the returned size is consistent
-     * with the panel's layout and lifecycle.
-     * </p>
-     *
-     * @return the {@link Dimension} representing the internal size of the panel
-     */
-    @Override
-    public Dimension getInternalSize() {
-        return this.internalSize.getSize();
-    }
-
-    /**
-     * Sets the internal size of the panel.
-     * <p>
-     * Subclasses can override this method to provide custom logic for updating
-     * the internal size. If overridden, ensure that the new size is consistent
-     * with the panel's layout and lifecycle.
-     * </p>
-     *
-     * @param size the {@link Dimension} representing the new internal size of the panel
-     */
-    @Override
-    public void setInternalSize(final Dimension size) {
-        this.internalSize.setSize(size);
-        this.setPreferredSize(size);
     }
 
 }

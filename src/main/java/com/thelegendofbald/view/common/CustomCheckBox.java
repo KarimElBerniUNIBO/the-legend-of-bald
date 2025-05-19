@@ -162,36 +162,4 @@ public class CustomCheckBox extends JCheckBox implements View, MenuView, Resizab
         SwingUtilities.invokeLater(this::updateView);
     }
 
-    /**
-     * Gets the internal size of the checkbox.
-     * <p>
-     * Subclasses can override this method to provide custom logic for retrieving
-     * the internal size. If overridden, ensure that {@code super.getInternalSize()}
-     * is called to preserve the default behavior.
-     * </p>
-     *
-     * @return the preferred size of the checkbox
-     */
-    @Override
-    public Dimension getInternalSize() {
-        return this.getPreferredSize();
-    }
-
-    /**
-     * Sets the internal size of the checkbox.
-     * <p>
-     * Subclasses can override this method to provide custom logic for handling
-     * size changes. If overridden, ensure that
-     * {@code super.setInternalSize(Dimension)}
-     * is called to preserve the default behavior of updating the view.
-     * </p>
-     *
-     * @param size the new internal size of the checkbox
-     */
-    @Override
-    public void setInternalSize(final Dimension size) {
-        this.setPreferredSize(size);
-        SwingUtilities.invokeLater(this::updateView);
-    }
-
 }

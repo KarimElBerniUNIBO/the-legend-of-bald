@@ -61,12 +61,10 @@ public final class GameWindow extends JFrame implements View, MainView {
         }
     }
 
-    @Override
     public Dimension getInternalSize() {
         return internalSize;
     }
 
-    @Override
     public void setInternalSize(Dimension size) {
         GameWindow.internalSize = size;
     }
