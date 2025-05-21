@@ -16,11 +16,15 @@ import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.api.views.View;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.item.Chest;
+import com.thelegendofbald.item.Potion;
 
 public class GamePanel extends JPanel {
 
     private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
     private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
+    private final Chest chest = new Chest(60,180);
+    private final Potion potion = new Potion(100,100);
     private final GridPanel gridPanel;
     private final TileMap tileMap;
 
@@ -67,7 +71,9 @@ public class GamePanel extends JPanel {
                        pressedKeys.contains(KeyEvent.VK_LEFT) ? -5 : 0);
         bald.setSpeedY(pressedKeys.contains(KeyEvent.VK_DOWN) ? 5 :
                        pressedKeys.contains(KeyEvent.VK_UP) ? -5 : 0);
-     
+        if(pressedKeys.contains(KeyEvent.VK_E)){
+            this.chest.setChestOpen();
+        }
     }
 
     
@@ -89,7 +95,9 @@ public class GamePanel extends JPanel {
         tileMap.render(g);           
         gridPanel.paintComponent(g); 
         bald.render(g);              
-        dummyenemy.render(g);        
+        dummyenemy.render(g);    
+        chest.render(g);   
+        potion.render(g); 
     }
 
     private void scaleGraphics(Graphics g) {

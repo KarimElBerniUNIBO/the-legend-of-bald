@@ -7,37 +7,85 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class GameItem {
+public abstract class GameItem{
 
-    protected int x; 
-    protected int y;
-    protected String name;
-    protected BufferedImage sprite;
+    private int x;
+    private int y;
+    private int preferredSizeX;
+    private int preferredSizeY;
+    private String name;
+    private BufferedImage sprite;
 
-    public GameItem(int x,int y,String name,String imagePath){
-        
+    protected GameItem(int x,int y,int preferredSizeX, int preferredSizeY,String name){
         this.x = x;
         this.y = y;
+        this.preferredSizeX = preferredSizeX;
+        this.preferredSizeY = preferredSizeY;
         this.name = name;
-        this.ImageUpload(imagePath);
-
     }
 
-    private void ImageUpload(String path){
+    protected void loadImage(String path) {
         try {
             sprite = ImageIO.read(getClass().getResourceAsStream(path));
-        } catch(IOException e ){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void render(Graphics g){
-        if(sprite != null){
-            g.drawImage(sprite,x,y,50,50,null);
+    public void setImagePath(String path) {
+        loadImage(path);
+    }
+
+    public void render(Graphics g) {
+        if (sprite != null) {
+            g.drawImage(sprite, x, y, preferredSizeX, preferredSizeY, null);
         } else {
             g.setColor(Color.BLUE);
-            g.fillRect(x, y, 50,50);
+            g.fillRect(x, y, preferredSizeX, preferredSizeY);
         }
     }
+    
+    public int getX() {
+        return x;
+    }
+    public void setX(int x) {
+        this.x = x;
+    }
+    public int getY() {
+        return y;
+    }
+    public void setY(int y) {
+        this.y = y;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public BufferedImage getSprite() {
+        return sprite;
+    }
+    public void setSprite(BufferedImage sprite) {
+        this.sprite = sprite;
+    }
+
+    public int getPreferredSizeX() {
+        return preferredSizeX;
+    }
+
+    public int getPreferredSizeY() {
+        return preferredSizeY;
+    }
+
+    public void setPreferredSizeX(int preferredSizeX) {
+        this.preferredSizeX = preferredSizeX;
+    }
+
+    public void setPreferredSizeY(int preferredSizeY) {
+        this.preferredSizeY = preferredSizeY;
+    }
+
+    
 
 }
