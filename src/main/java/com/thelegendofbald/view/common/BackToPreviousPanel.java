@@ -83,7 +83,6 @@ public final class BackToPreviousPanel extends AdapterPanel {
         this.backButton.ifPresent(button -> button.addActionListener(e -> {
             final var parent = (GameWindow) SwingUtilities.getWindowAncestor(this);
             parent.changeMainPanel(parent.getLastPanel().orElse(Panels.MAIN_MENU));
-            //new SwitchToOtherPanel(parent, Panels.MAIN_MENU).actionPerformed(e);
         }));
         super.initializeComponents();
     }

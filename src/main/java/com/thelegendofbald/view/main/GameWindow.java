@@ -29,6 +29,7 @@ public final class GameWindow extends JFrame implements View, MainView {
         Arrays.stream(Panels.values())
                 .map(Panels::getPanel)
                 .forEach(panel -> panel.setPreferredSize(internalSize));
+        this.updateView();
     }
 
     @Override
@@ -62,16 +63,25 @@ public final class GameWindow extends JFrame implements View, MainView {
         }
     }
 
+    @Override
     public Dimension getInternalSize() {
         return internalSize;
     }
 
+    @Override
     public void setInternalSize(Dimension size) {
         GameWindow.internalSize = size;
+        this.updatePanelsSize();
     }
 
+    @Override
     public Optional<Panels> getLastPanel() {
         return lastPanel;
+    }
+
+    @Override
+    public Panels getCurrentPanel() {
+        return currentPanel;
     }
 
 }
