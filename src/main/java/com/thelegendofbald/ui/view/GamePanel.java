@@ -13,16 +13,19 @@ import javax.swing.Timer;
 
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.characters.Entity;
 
 public class GamePanel extends JPanel {
 
+    private static final long ATTACK_COOLDOWN = 1000; // 1 second cooldown for attack
     private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
-    private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
+    private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 60);
     private final GridPanel gridPanel;
     private final TileMap tileMap;
 
     Timer timer = new Timer(16, e -> update());
     private final Set<Integer> pressedKeys = new HashSet<>();
+    private long lastTimeAttack = 0;
 
     public GamePanel(Dimension size) {
         this.setPreferredSize(size);
@@ -61,9 +64,28 @@ public class GamePanel extends JPanel {
                        pressedKeys.contains(KeyEvent.VK_LEFT) ? -5 : 0);
         bald.setSpeedY(pressedKeys.contains(KeyEvent.VK_DOWN) ? 5 :
                        pressedKeys.contains(KeyEvent.VK_UP) ? -5 : 0);
+        
+        if (pressedKeys.contains(KeyEvent.VK_SPACE)) {
+            long currentTime = System.currentTimeMillis();
+           
+            if(currentTime - lastTimeAttack >= ATTACK_COOLDOWN && isNear(dummyenemy))
+            {
+                bald.attack(dummyenemy);
+                lastTimeAttack = currentTime;
+                System.out.println("Attacking!");
+                }
+            
+            }
+        
      
     }
 
+    boolean isNear(Entity target) {
+        int distanceX = Math.abs(bald.getX() - target.getX());
+        int distanceY = Math.abs(bald.getY() - target.getY());
+        return distanceX < 50 && distanceY < 50; // Adjust the threshold as needed
+    }
+    
     
 
     private void update() {
@@ -72,6 +94,7 @@ public class GamePanel extends JPanel {
         bald.move();
         dummyenemy.followPlayer(bald);
         dummyenemy.updateAnimation();
+
         repaint();
     }
 
@@ -81,8 +104,11 @@ public class GamePanel extends JPanel {
 
         tileMap.render(g);           
         gridPanel.paintComponent(g); 
-        bald.render(g);              
-        dummyenemy.render(g);        
+        bald.render(g);  
+        if (dummyenemy.isAlive()){
+            dummyenemy.render(g);
+        }            
+        
     }
 }
 
