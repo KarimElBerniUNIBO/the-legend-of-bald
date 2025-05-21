@@ -2,8 +2,8 @@ package com.thelegendofbald;
 
 import javax.swing.*;
 
-import com.thelegendofbald.ui.model.SoundManager;
-import com.thelegendofbald.ui.view.GameWindow;
+import com.thelegendofbald.model.sounds.SoundManager;
+import com.thelegendofbald.view.main.GameWindow;
 
 public class Main {
     public static void main(String[] args) {
