@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import com.thelegendofbald.api.panels.LifePanel;
 import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.settingsmenu.KeybindsSettings;
 import com.thelegendofbald.api.views.View;
@@ -24,6 +25,7 @@ public class GamePanel extends MenuPanel {
     private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
     private final GridPanel gridPanel;
     private final TileMap tileMap;
+    private final LifePanel lifePanel;
 
     Timer timer = new Timer(16, e -> update());
     private final Set<Integer> pressedKeys = new HashSet<>();
@@ -41,6 +43,10 @@ public class GamePanel extends MenuPanel {
         this.gridPanel.setOpaque(false);
         this.gridPanel.setBounds(0, 0, size.width, size.height);
         this.add(gridPanel);
+
+        this.lifePanel = new LifePanel(new Dimension(200,20), bald.getLifeComponent());
+        this.lifePanel.setBounds(100, 800, 200,20);
+        this.add(lifePanel);
 
         this.tileMap = new TileMap(size.width, size.height);
         this.requestFocusInWindow();
@@ -79,6 +85,7 @@ public class GamePanel extends MenuPanel {
         bald.move();
         dummyenemy.followPlayer(bald);
         dummyenemy.updateAnimation();
+
         repaint();
     }
 
@@ -90,7 +97,9 @@ public class GamePanel extends MenuPanel {
         tileMap.render(g);           
         gridPanel.paintComponent(g); 
         bald.render(g);              
-        dummyenemy.render(g);        
+        dummyenemy.render(g);  
+        this.bald.takeDamage(10);
+        this.lifePanel.paint(g);    
     }
 
     private void scaleGraphics(Graphics g) {
