@@ -8,6 +8,8 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import com.thelegendofbald.life.LifeComponent;
+
 public class Bald extends Entity {
     private int attackPower; // Potenza d'attacco
     private BufferedImage image;
@@ -20,10 +22,9 @@ public class Bald extends Entity {
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
     private boolean facingRight = false; // Direzione in cui Bald sta guardando
 
-    public Bald(int x, int y, int health, String name, int attackPower ) {
-        super(x, y, health, name);
+    public Bald(int x, int y,int maxHealth, String name, int attackPower ) {
+        super(x, y, name , new LifeComponent(maxHealth));
         this.attackPower = attackPower;
-
         loadRunFrames();
     }
 
@@ -52,24 +53,6 @@ public class Bald extends Entity {
     public void setAttackPower(int attackPower) { 
         this.attackPower = attackPower; 
     }
-
-    public void takeDamage(int damage) {
-        this.health -= damage;
-        if (this.health < 0) {
-            this.health = 0; // Health non può essere negativa
-        }
-    }
-
-    public void heal(int amount) {
-        this.health += amount;
-    }
-
-    public void attack(Entity target) {
-
-            target.setHealth(target.getHealth() - attackPower);
-
-    }
-
 
     public void updateAnimation() {
         frameCounter++;
@@ -116,6 +99,14 @@ public class Bald extends Entity {
         
     }
 
+    @Override
+    public void takeDamage(int damage) {
+        this.lifeComponent.damageTaken(damage);
+    }
 
+    @Override
+    public boolean isAlive() {
+        return !this.lifeComponent.isDead();
+    }
 
 }
