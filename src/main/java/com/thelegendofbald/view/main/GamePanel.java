@@ -127,10 +127,14 @@ public class GamePanel extends MenuPanel {
         for (DummyEnemy enemy : enemies){
             enemy.followPlayer(bald);
             enemy.updateAnimation();
-            if (intersects(enemy, bald)){
+            // Cooldown for enemy attacking the player
+            if (intersects(enemy, bald)) {
+                long now = System.currentTimeMillis();
+                if (lastTimeAttack == 0 || now - lastTimeAttack >= ATTACK_COOLDOWN) {
                     bald.takeDamage(enemy.getAttackPower());
                     this.lifePanel.repaint();
-     
+                    lastTimeAttack = now;
+                }
             }
         }
 

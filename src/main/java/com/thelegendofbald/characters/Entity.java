@@ -8,7 +8,7 @@ import com.thelegendofbald.life.LifeComponent;
 public abstract class Entity  {
     protected int x, y; // Posizione
     protected String name; // Nome dell'entità
-    protected LifeComponent lifeComponent;
+    protected  LifeComponent lifeComponent;
 
     public Entity(int x, int y,String name , LifeComponent lifeComponent) {
         this.x = x;
