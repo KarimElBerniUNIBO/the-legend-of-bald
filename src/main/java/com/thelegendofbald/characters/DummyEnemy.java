@@ -5,9 +5,10 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
 
+import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 
-public class DummyEnemy extends Entity {
+public class DummyEnemy extends Entity  implements Combatant{
 
     private BufferedImage spritesheet; 
     private BufferedImage walkFrames[];
@@ -117,7 +118,7 @@ public class DummyEnemy extends Entity {
         
     }
 
-    @Override
+
     public boolean isAlive() {
         return !this.lifeComponent.isDead();
     }

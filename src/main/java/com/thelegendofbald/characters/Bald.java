@@ -8,9 +8,10 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 
-public class Bald extends Entity {
+public class Bald extends Entity implements Combatant{
     private int attackPower; // Potenza d'attacco
     private BufferedImage image;
     private String path = "/images/bald.png"; // Percorso dell'immagine
@@ -27,6 +28,8 @@ public class Bald extends Entity {
         this.attackPower = attackPower;
         loadRunFrames();
     }
+
+
 
     private void loadRunFrames() {
         try {
@@ -102,11 +105,25 @@ public class Bald extends Entity {
     @Override
     public void takeDamage(int damage) {
         this.lifeComponent.damageTaken(damage);
+        System.out.println(lifeComponent.getCurrentHealth());
+        
     }
 
-    @Override
     public boolean isAlive() {
         return !this.lifeComponent.isDead();
+    }
+
+    public boolean canShoot() {
+        return true;
+    }
+
+    public void shootProjectile() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'shootProjectile'");
+    }
+
+    public boolean isFacingRight(){
+        return this.facingRight;
     }
 
 }

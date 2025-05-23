@@ -31,7 +31,7 @@ public class LifeComponent {
     }
 
     public boolean isDead(){
-        return this.currentHealth == 0 ;
+        return this.currentHealth <= 0 ;
     }
 
     public double getPercentage(){
