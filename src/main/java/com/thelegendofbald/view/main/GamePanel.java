@@ -129,6 +129,7 @@ public class GamePanel extends MenuPanel {
             enemy.updateAnimation();
             if (intersects(enemy, bald)){
                     bald.takeDamage(enemy.getAttackPower());
+                    this.lifePanel.repaint();
      
             }
         }

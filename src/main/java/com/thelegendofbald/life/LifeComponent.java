@@ -19,7 +19,7 @@ public class LifeComponent {
     }
 
     public void damageTaken(int damage){
-        this.currentHealth = getCurrentHealth() - damage;
+        this.currentHealth= Math.max(0, this.currentHealth - damage);
     }
 
     public void heal(int amount){
@@ -35,7 +35,7 @@ public class LifeComponent {
     }
 
     public double getPercentage(){
-        return (double) this.currentHealth / this.maxHealth;
+        return (double) currentHealth / maxHealth;
     }
 
 }
