@@ -29,24 +29,23 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GamePanel extends MenuPanel {
 
     private static final long ATTACK_COOLDOWN = 700; // 1 second cooldown for attack
-    private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
+    private final Bald bald = new Bald(60, 60, 100, "Bald", 10);
     
     private final GridPanel gridPanel;
     private final TileMap tileMap;
     private final LifePanel lifePanel;
     private List<DummyEnemy> enemies = new ArrayList<>();
     private List<Projectile> projectiles = new ArrayList<>();
+
     Timer timer = new Timer(16, e -> update());
     private final Set<Integer> pressedKeys = new HashSet<>();
     private long lastTimeAttack = 0;
-    private int num_entities = 3;
-
-    
+    private int num_enemies = 3;
 
     public GamePanel() {
         super();
         Dimension size = new Dimension(1280, 704);
-        this.setPreferredSize(size);
+        //this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
         this.setLayout(null);
@@ -56,21 +55,14 @@ public class GamePanel extends MenuPanel {
         this.gridPanel.setBounds(0, 0, size.width, size.height);
         this.add(gridPanel);
 
-        
+        this.lifePanel = new LifePanel(new Dimension(200,20), bald.getLifeComponent());
+        this.lifePanel.setBounds(100, 800, 200,20);
+        this.add(lifePanel);
 
         this.tileMap = new TileMap(size.width, size.height);
         this.requestFocusInWindow();
 
-
-        this.lifePanel = new LifePanel(new Dimension(200,20), bald.getLifeComponent());
-        this.lifePanel.setBounds(20, 20, 200, 20);
-        this.add(lifePanel);
-        this.setComponentZOrder(lifePanel, 0);
-
-       
-
-
-        for (int i = 0 ; i < num_entities ; i++) {
+        for (int i = 0 ; i < num_enemies ; i++) {
             enemies.add(new DummyEnemy(ThreadLocalRandom.current().nextInt(300, 1000), // x
                                        ThreadLocalRandom.current().nextInt(300, 600),  // y
                                        50, "ZioBilly", 10));
@@ -105,31 +97,30 @@ public class GamePanel extends MenuPanel {
         }
     }
 
-
     public void tryToShoot() {
-    long now = System.currentTimeMillis(); // tempo attuale
+        long now = System.currentTimeMillis(); // tempo attuale
 
-    if (now - lastTimeAttack >= ATTACK_COOLDOWN) {
-        System.out.println("Attacco effettuato!");
-        lastTimeAttack = now;
+        if (now - lastTimeAttack >= ATTACK_COOLDOWN) {
+            System.out.println("Attacco effettuato!");
+            lastTimeAttack = now;
 
-        projectiles.add(new Projectile(bald.getX() + 16, bald.getY() + 16, bald.isFacingRight() ? 1 : 0, 10));
-        
+            projectiles.add(new Projectile(bald.getX() + 16, bald.getY() + 16, bald.isFacingRight() ? 1 : 0, 10));
 
-    } else {
-        System.out.println("Cooldown in corso...");
-    }
+
+        } else {
+            System.out.println("Cooldown in corso...");
+        }
 }
 
     boolean intersects(Combatant e1, Combatant e2) {
         return e1.getBounds().intersects(e2.getBounds());
     }
 
-
-    
-
     private void update() {
-    
+
+        List<Projectile> toRemoveProjectiles = new ArrayList<>();
+        List<Entity> toRemoveEnemies = new ArrayList<>();
+
         handleInput();
         bald.move();
 
@@ -138,17 +129,12 @@ public class GamePanel extends MenuPanel {
             enemy.updateAnimation();
             if (intersects(enemy, bald)){
                     bald.takeDamage(enemy.getAttackPower());
-                    
-                    
-                }
+     
+            }
         }
 
-        // Aggiorna la posizione dei proiettili
-        List<Projectile> toRemoveProjectiles = new ArrayList<>();
-        List<Entity> toRemoveEnemies = new ArrayList<>();
-
         for (Projectile projectile : projectiles) {
-            projectile.update(); // Assicurati che il proiettile si muova
+            projectile.move(); // Assicurati che il proiettile si muova
 
             for (DummyEnemy e : enemies) {
                 // Usa la posizione del proiettile e del nemico per il controllo collisione
@@ -164,26 +150,24 @@ public class GamePanel extends MenuPanel {
         }
         projectiles.removeAll(toRemoveProjectiles);
         enemies.removeAll(toRemoveEnemies);
-
         repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        scaleGraphics(g);
         super.paintComponent(g);
+        this.scaleGraphics(g);
 
-        tileMap.render(g);           
+        tileMap.render(g); 
+        gridPanel.paintComponent(g);          
         bald.render(g);              
         for (DummyEnemy dummyenemy : enemies) {
             dummyenemy.render(g);
         }  
         for (Projectile p : projectiles) {
-            p.draw(g);
+            p.render(g);
         }    
-        gridPanel.paintComponent(g); 
-        //this.bald.takeDamage(10);
-        
+       this.lifePanel.paint(g);    
     }
 
     private void scaleGraphics(Graphics g) {

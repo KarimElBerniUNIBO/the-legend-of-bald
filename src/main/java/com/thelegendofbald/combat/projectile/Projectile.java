@@ -13,7 +13,7 @@ public class Projectile extends Entity implements Combatant {
     public int speed;
     public int direction; // 0 = destra, 1 = sinistra, ecc.
     public boolean active = true;
-    public int damage = 100;
+    public int damage = 10;
 
     public Projectile(int x, int y, int direction, int speed) {
         super(x, y, "bullet", lifeComponent); // Call the appropriate Entity constructor, adjust parameters if needed
@@ -23,13 +23,13 @@ public class Projectile extends Entity implements Combatant {
         this.speed = speed;
     }
 
-    public void update() {
+    public void move() {
         if (direction == 0) x += speed;
         if (direction == 1) x -= speed;
         // aggiungi altre direzioni se vuoi (sopra, sotto)
     }
 
-    public void draw(Graphics g) {
+    public void render(Graphics g) {
         g.setColor(Color.YELLOW);
         g.fillOval(x, y, 6, 6);
     }
