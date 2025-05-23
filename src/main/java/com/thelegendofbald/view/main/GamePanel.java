@@ -54,7 +54,7 @@ public class GamePanel extends MenuPanel {
         this.gridPanel = new GridPanel();
         this.gridPanel.setOpaque(false);
         this.gridPanel.setBounds(0, 0, size.width, size.height);
-        //this.add(gridPanel);
+        this.add(gridPanel);
 
         
 
@@ -138,7 +138,7 @@ public class GamePanel extends MenuPanel {
             enemy.updateAnimation();
             if (intersects(enemy, bald)){
                     bald.takeDamage(enemy.getAttackPower());
-                    lifePanel.repaint();
+                    
                     
                 }
         }
@@ -159,17 +159,13 @@ public class GamePanel extends MenuPanel {
                         toRemoveEnemies.add(e);
                     }
                     break; // Un proiettile colpisce solo un nemico
-
-                }
-
-                
+                }  
             }
         }
         projectiles.removeAll(toRemoveProjectiles);
         enemies.removeAll(toRemoveEnemies);
-        
+
         repaint();
-        lifePanel.repaint();
     }
 
     @Override
@@ -184,10 +180,10 @@ public class GamePanel extends MenuPanel {
         }  
         for (Projectile p : projectiles) {
             p.draw(g);
-        }
-        lifePanel.paint(g);
+        }    
+        gridPanel.paintComponent(g); 
+        //this.bald.takeDamage(10);
         
-        //lifePanel.repaint();
     }
 
     private void scaleGraphics(Graphics g) {

@@ -30,6 +30,7 @@ public class LifePanel extends AdapterPanel {
     @Override
     public void updateView() {
         repaint();
+        
     }
 
     @Override
