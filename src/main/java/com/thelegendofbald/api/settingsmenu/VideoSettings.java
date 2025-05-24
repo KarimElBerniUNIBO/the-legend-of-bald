@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JSlider;
 
 import com.thelegendofbald.view.common.CustomCheckBox;
+import com.thelegendofbald.view.common.CustomJSlider;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -38,7 +39,7 @@ public enum VideoSettings implements SettingOption {
     /**
      * A slider to adjust the frame rate per second.
      */
-    FPS("FRAMERATE PER SECOND", new JSlider(0, 144, 60));
+    FPS("FRAMERATE PER SECOND", new CustomJSlider(JSlider.HORIZONTAL, 0, 144, 60));
 
     private final String text;
     private final JComponent jcomponent;

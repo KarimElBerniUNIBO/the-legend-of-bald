@@ -36,7 +36,7 @@ final class NorthPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         this.titleLabel = tlFactory.createTextLabelWithProportion(TITLE_TEXT, this.getSize(),
-                Optional.of(Pair.of(1.0, 0.5)), Optional.empty(),
+                Optional.of(Pair.of(1.0, 0.5)), Optional.empty(), Optional.empty(),
                 Optional.empty());
         this.categoriesPanel = new CategoriesPanel(this.getSize(), this.sem);
         super.initializeComponents();

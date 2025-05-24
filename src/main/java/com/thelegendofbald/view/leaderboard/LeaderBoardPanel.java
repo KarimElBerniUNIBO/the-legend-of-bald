@@ -26,7 +26,7 @@ public final class LeaderBoardPanel extends MenuPanel {
     protected void initializeComponents() {
         this.backToMainPanel = Optional.of(new BackToMainPanel(this.getSize()));
         this.titleLabel = Optional.of(titleLabelFactory.createTextLabelWithProportion("LEADERBOARD",
-                this.getSize(), Optional.of(Pair.of(1.0, 0.3)),
+                this.getSize(), Optional.of(Pair.of(1.0, 0.3)), Optional.empty(),
                 Optional.empty(), Optional.empty()));
         this.scrollingPanel = Optional.of(new ScrollingPanel(this.getSize()));
         super.initializeComponents();

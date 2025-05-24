@@ -29,7 +29,7 @@ final class PlayerTimePanel extends AdapterPanel {
     private final Random random = new Random();
 
     PlayerTimePanel() {
-        super(new Dimension(0,0));
+        super(new Dimension(0, 0));
         this.setLayout(new GridBagLayout());
     }
 
@@ -37,8 +37,8 @@ final class PlayerTimePanel extends AdapterPanel {
     protected void initializeComponents() {
         this.setBackground(new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
         this.setOpaque(true);
-        this.playerName = Optional.of(tlFactory.createTextLabelWithProportion("???", this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty()));
-        this.playerTime = Optional.of(tlFactory.createTextLabelWithProportion("hh:mm:ss", this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty()));
+        this.playerName = Optional.of(tlFactory.createTextLabelWithProportion("???", this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
+        this.playerTime = Optional.of(tlFactory.createTextLabelWithProportion("hh:mm:ss", this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
         super.initializeComponents();
     }
 

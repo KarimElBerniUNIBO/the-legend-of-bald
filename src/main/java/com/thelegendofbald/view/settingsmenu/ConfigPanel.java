@@ -70,7 +70,7 @@ public final class ConfigPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         this.title = Optional.of(tlFactory.createTextLabelWithProportion(this.text, this.getSize(),
-                Optional.empty(), Optional.empty(), Optional.empty()));
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
         super.initializeComponents();
     }
 
