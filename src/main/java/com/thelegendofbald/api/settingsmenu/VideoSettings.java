@@ -1,8 +1,5 @@
 package com.thelegendofbald.api.settingsmenu;
 
-import java.util.List;
-
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 
@@ -19,7 +16,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * The settings include:
  * <ul>
  *   <li>{@link #FULLSCREEN} - A checkbox to toggle fullscreen mode.</li>
- *   <li>{@link #RESOLUTION} - A combo box to select the screen resolution.</li>
  *   <li>{@link #FPS} - A slider to adjust the frame rate per second.</li>
  * </ul>
  * Each enum constant implements the {@link SettingOption} interface, providing
@@ -29,17 +25,11 @@ public enum VideoSettings implements SettingOption {
     /**
      * A checkbox to toggle fullscreen mode.
      */
-    FULLSCREEN("FULLSCREEN", new CustomCheckBox()),
-    /**
-     * A combo box to select the screen resolution.
-     */
-    RESOLUTION("RESOLUTION", new JComboBox<>(List.of(
-            "900x600",
-            "Altro").toArray())),
+    FULLSCREEN("FULLSCREEN", createFullscreenCheckBox()),
     /**
      * A slider to adjust the frame rate per second.
      */
-    FPS("FRAMERATE PER SECOND", new CustomJSlider(JSlider.HORIZONTAL, 0, 144, 60));
+    FPS("FRAMERATE PER SECOND", createFPSSlider());
 
     private final String text;
     private final JComponent jcomponent;
@@ -61,6 +51,35 @@ public enum VideoSettings implements SettingOption {
     @Override
     public JComponent getJcomponent() {
         return this.jcomponent;
+    }
+
+    private static CustomCheckBox createFullscreenCheckBox() {
+        CustomCheckBox checkBox = new CustomCheckBox();
+        checkBox.addActionListener(e -> {
+            boolean isSelected = checkBox.isSelected();
+            System.out.println("Fullscreen mode: " + isSelected);
+        });
+
+        return checkBox;
+    }
+
+    private static CustomJSlider createFPSSlider() {
+        var customSlider = new CustomJSlider(JSlider.HORIZONTAL, 30, 144, 60);
+        var slider = customSlider.getSlider();
+
+        slider.addChangeListener(e -> {
+            if (!slider.getValueIsAdjusting()) {
+                String value = String.valueOf(slider.getValue());
+                var lastValue = customSlider.getLastValue();
+
+                if (lastValue != slider.getValue()) {
+                    System.out.println("Selected FPS: " + value);
+                    customSlider.setLastValue(slider.getValue());
+                }
+            }
+        });
+
+        return customSlider;
     }
 
 }

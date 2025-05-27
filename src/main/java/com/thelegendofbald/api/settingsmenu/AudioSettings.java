@@ -30,11 +30,11 @@ public enum AudioSettings implements SettingOption {
     /**
      * Represents the master volume setting.
      */
-    MASTER("MASTER VOLUME", new CustomJSlider(JSlider.HORIZONTAL, 0, 100, 50)),
+    MASTER("MASTER VOLUME", createMasterSlider()),
     /**
      * Represents the music volume setting.
      */
-    MUSIC("MUSIC VOLUME", new CustomJSlider(JSlider.HORIZONTAL, 0, 100, 50));
+    MUSIC("MUSIC VOLUME", createMusicSlider());
 
     private final String text;
     private final JComponent jcomponent;
@@ -56,6 +56,44 @@ public enum AudioSettings implements SettingOption {
     @Override
     public JComponent getJcomponent() {
         return this.jcomponent;
+    }
+
+    private static CustomJSlider createMasterSlider() {
+        var customSlider = new CustomJSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        var slider = customSlider.getSlider();
+
+        slider.addChangeListener(e -> {
+            if (!slider.getValueIsAdjusting()) {
+                String value = String.valueOf(slider.getValue());
+                var lastValue = customSlider.getLastValue();
+
+                if (lastValue != slider.getValue()) {
+                    System.out.println("Selected Master Volume: " + value);
+                    customSlider.setLastValue(slider.getValue());
+                }
+            }
+        });
+
+        return customSlider;
+    }
+
+    private static CustomJSlider createMusicSlider() {
+        var customSlider = new CustomJSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        var slider = customSlider.getSlider();
+
+        slider.addChangeListener(e -> {
+            if (!slider.getValueIsAdjusting()) {
+                String value = String.valueOf(slider.getValue());
+                var lastValue = customSlider.getLastValue();
+
+                if (lastValue != slider.getValue()) {
+                    System.out.println("Selected Music Volume: " + value);
+                    customSlider.setLastValue(slider.getValue());
+                }
+            }
+        });
+
+        return customSlider;
     }
 
 }

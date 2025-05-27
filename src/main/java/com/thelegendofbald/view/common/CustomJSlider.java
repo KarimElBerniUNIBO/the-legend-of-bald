@@ -14,47 +14,47 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.common.TextLabelFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
+import com.thelegendofbald.model.sounds.SoundPlayer;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 public class CustomJSlider extends AdapterPanel {
+
+    private static final int MAJOR_TICK_SPACING = 10;
+    private static final int MINOR_TICK_SPACING = 5;
 
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
-
-    private final int orientation;
-    private final int min;
-    private final int max;
+    private final SoundPlayer tickSound = new SoundPlayer("/slider/tick.wav");
+    
+    private final JSlider slider;
     private final int value;
-
-    private Optional<JSlider> slider = Optional.empty();
+    private int lastValue;
     private Optional<TextLabel> text = Optional.empty();
 
     public CustomJSlider(int orientation, int min, int max, int value) {
         super(new Dimension(0, 0));
-        this.orientation = orientation;
-        this.min = min;
-        this.max = max;
         this.value = value;
+        this.lastValue = value;
+        this.slider = new JSlider(orientation, min, max, value);
         this.setLayout(new GridBagLayout());
     }
     
     @Override
     protected void initializeComponents() {
-        this.slider = Optional.of(new JSlider(this.orientation, this.min, this.max, this.value));
         this.text = Optional.of(tlFactory.createTextLabelWithProportion(String.valueOf(this.value), this.getSize(), Optional.empty(), Optional.of(Pair.of(3.0, 1.0)), Optional.empty(), Optional.empty()));
-        this.slider.ifPresent(s -> {
-            s.setMajorTickSpacing(10);
-            s.setMinorTickSpacing(5);
-            s.setPaintTicks(true);
-            s.setSnapToTicks(true);
-            s.addChangeListener(e -> {
-                if (!s.getValueIsAdjusting()) {
-                    this.text.ifPresent(t -> t.setText(String.valueOf(s.getValue())));
-                }
-            });
+        this.slider.setMajorTickSpacing(MAJOR_TICK_SPACING);
+        this.slider.setMinorTickSpacing(MINOR_TICK_SPACING);
+        this.slider.setPaintTicks(true);
+        this.slider.setSnapToTicks(true);
+        this.slider.addChangeListener(e -> {
+            if (this.slider.getValueIsAdjusting() && this.lastValue != this.slider.getValue() && this.slider.getValue() % MINOR_TICK_SPACING == 0) {
+                this.tickSound.play();
+                this.text.ifPresent(t -> t.setText(String.valueOf(this.slider.getValue())));
+            }
         });
+
         super.initializeComponents();
     }
 
@@ -68,7 +68,7 @@ public class CustomJSlider extends AdapterPanel {
     public void addComponentsToPanel() {
         this.gbc.gridx = 0;
         this.gbc.weightx = 0.7;
-        this.slider.ifPresent(s -> this.add(s, this.gbc));
+        this.add(this.slider, this.gbc);
 
         this.gbc.gridx = 1;
         this.gbc.weightx = 0.3;
@@ -81,6 +81,22 @@ public class CustomJSlider extends AdapterPanel {
     public void setPreferredSize(Dimension size) {
         super.setPreferredSize(size);
         SwingUtilities.invokeLater(this::updateView);
+    }
+
+    public JSlider getSlider() {
+        return slider;
+    }
+
+    public Optional<TextLabel> getText() {
+        return text;
+    }
+
+    public int getLastValue() {
+        return lastValue;
+    }
+
+    public void setLastValue(int lastValue) {
+        this.lastValue = lastValue;
     }
 
 }
