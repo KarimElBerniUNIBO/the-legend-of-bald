@@ -49,7 +49,7 @@ public final class GameOptionsPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         this.title = Optional.of(this.tlFactory.createTextLabelWithProportion("OPTIONS", this.getSize(),
-                Optional.of(TITLE_PROPORTION), Optional.empty(), Optional.empty()));
+                Optional.of(TITLE_PROPORTION), Optional.empty(), Optional.empty(), Optional.empty()));
         this.connectButtonsWithActionListeners();
         super.initializeComponents();
     }

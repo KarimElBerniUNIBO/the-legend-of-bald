@@ -1,35 +1,24 @@
 package com.thelegendofbald.api.settingsmenu;
 
+import java.util.Optional;
+
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
 
+import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.view.common.CustomCheckBox;
 import com.thelegendofbald.view.common.CustomJSlider;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-/**
- * The {@code VideoSettings} enum defines the available video-related settings
- * for the application, each associated with a display text and a corresponding
- * Swing {@link JComponent} for user interaction.
- * <p>
- * The settings include:
- * <ul>
- *   <li>{@link #FULLSCREEN} - A checkbox to toggle fullscreen mode.</li>
- *   <li>{@link #FPS} - A slider to adjust the frame rate per second.</li>
- * </ul>
- * Each enum constant implements the {@link SettingOption} interface, providing
- * methods to retrieve the display text and the UI component.
- */
+
 public enum VideoSettings implements SettingOption {
-    /**
-     * A checkbox to toggle fullscreen mode.
-     */
-    FULLSCREEN("FULLSCREEN", createFullscreenCheckBox()),
-    /**
-     * A slider to adjust the frame rate per second.
-     */
-    FPS("FRAMERATE PER SECOND", createFPSSlider());
+
+    WINDOW_MODE("WINDOW MODE", createWindowModeComboBox()),
+    FPS("FRAMERATE PER SECOND", createFPSSlider()),
+    SHOW_FPS("SHOW FPS", createShowFPSCheckBox());
 
     private final String text;
     private final JComponent jcomponent;
@@ -53,14 +42,18 @@ public enum VideoSettings implements SettingOption {
         return this.jcomponent;
     }
 
-    private static CustomCheckBox createFullscreenCheckBox() {
-        CustomCheckBox checkBox = new CustomCheckBox();
-        checkBox.addActionListener(e -> {
-            boolean isSelected = checkBox.isSelected();
-            System.out.println("Fullscreen mode: " + isSelected);
+    private static JComboBox<WindowMode> createWindowModeComboBox() {
+        var comboBox = new JComboBox<>(WindowMode.values());
+        comboBox.setSelectedItem(WindowMode.WINDOW);
+        comboBox.addActionListener(e -> {
+            var selectedMode = (WindowMode) comboBox.getSelectedItem();
+            if (Optional.ofNullable(selectedMode).isPresent()) {
+                System.out.println("Selected Window Mode: " + selectedMode.getText());
+                var window = (MainView) SwingUtilities.getWindowAncestor(comboBox);
+                window.setWindowMode(selectedMode);
+            }
         });
-
-        return checkBox;
+        return comboBox;
     }
 
     private static CustomJSlider createFPSSlider() {
@@ -75,11 +68,24 @@ public enum VideoSettings implements SettingOption {
                 if (lastValue != slider.getValue()) {
                     System.out.println("Selected FPS: " + value);
                     customSlider.setLastValue(slider.getValue());
+                    var window = (MainView) SwingUtilities.getWindowAncestor(slider);
+                    window.setFPS(slider.getValue());
                 }
             }
         });
 
         return customSlider;
+    }
+
+    private static CustomCheckBox createShowFPSCheckBox() {
+        var checkBox = new CustomCheckBox();
+        checkBox.addActionListener(e -> {
+            boolean isSelected = checkBox.isSelected();
+            System.out.println("Show FPS: " + isSelected);
+            var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
+            window.toggleViewFps(isSelected);
+        });
+        return checkBox;
     }
 
 }

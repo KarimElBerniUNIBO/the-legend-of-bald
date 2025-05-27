@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import com.thelegendofbald.api.panels.Panels;
+import com.thelegendofbald.api.settingsmenu.WindowMode;
 import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.api.views.View;
 import com.thelegendofbald.view.game.GamePanel;
@@ -56,7 +57,6 @@ public final class GameWindow extends JFrame implements View, MainView {
         this.setContentPane(currentPanel.getPanel());
         this.revalidate();
         this.repaint();
-        //this.pack();
         currentPanel.getPanel().requestFocusInWindow();
         if (currentPanel.getPanel() instanceof GamePanel gamePanel && !gamePanel.isRunning()) {
             gamePanel.startGame(); // <-- solo se è GamePanel
@@ -82,6 +82,58 @@ public final class GameWindow extends JFrame implements View, MainView {
     @Override
     public Panels getCurrentPanel() {
         return currentPanel;
+    }
+
+    /*@Override
+    public void setFullScreen(boolean fullScreen) {
+        if (fullScreen) {
+            this.dispose();
+            this.setUndecorated(true);
+            this.setExtendedState(MAXIMIZED_BOTH);
+            this.setVisible(true);
+        } else {
+            this.dispose();
+            this.setUndecorated(false);
+            this.pack();
+            this.setVisible(true);
+        }
+        this.updateView();
+    }*/
+
+    @Override
+    public void setWindowMode(WindowMode windowMode) {
+        Optional.ofNullable(windowMode).ifPresent(mode -> {
+            this.dispose();
+            switch (mode) {
+                case FULLSCREEN -> {
+                    this.setUndecorated(true);
+                    this.setExtendedState(MAXIMIZED_BOTH);
+                }
+                case WINDOWED_FULLSCREEN -> {
+                    this.setUndecorated(false);
+                    this.setExtendedState(MAXIMIZED_BOTH);
+                }
+                case WINDOW -> {
+                    this.setUndecorated(false);
+                    this.setExtendedState(NORMAL);
+                    this.pack();
+                }
+            }
+            this.setVisible(true);
+            this.updateView();
+        });
+    }
+
+    @Override
+    public void setFPS(int fps) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void toggleViewFps(boolean showFPS) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

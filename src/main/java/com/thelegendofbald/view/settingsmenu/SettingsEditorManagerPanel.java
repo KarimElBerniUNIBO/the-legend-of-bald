@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.api.buttons.JButtonFactory;
@@ -42,7 +41,6 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
     private final GridBagConstraints gbc = this.gbcFactory.createBothGridBagConstraints();
 
     private final JButtonFactory jbFactory = new JButtonFactoryImpl();
-    private Optional<JButton> apply = Optional.empty();
 
     SettingsEditorManagerPanel(final Dimension size) {
         super(size);
@@ -73,9 +71,6 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
         final var preferredSize = this.calculatePreferredSize(this.getParent().getSize());
         this.settingsEditors.addAll(this.getSettingsEditors(preferredSize));
         this.actualSettingsEditor = Optional.of(this.settingsEditors.getFirst());
-        this.apply = Optional.of(jbFactory.createRoundedButton(APPLY_BUTTON_TEXT, Optional.empty(),
-                APPLY_BUTTON_ARC_PROPORTION,
-                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
         super.initializeComponents();
     }
 
@@ -91,15 +86,7 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
                 .map(Container::getSize)
                 .ifPresent(parentSize -> {
                     this.updateComponentsSize();
-                    this.gbc.gridx = 0;
-                    this.gbc.gridy = 0;
-                    this.gbc.weighty = SETTINGS_EDITOR_WEIGHTY;
                     this.actualSettingsEditor.ifPresent(se -> this.add(se, gbc));
-
-                    this.gbc.gridy = 1;
-                    this.gbc.weighty = APPLY_BUTTON_WEIGHTY;
-                    this.apply.ifPresent(b -> this.add(b, gbc));
-
                     this.revalidate();
                     this.repaint();
                 });

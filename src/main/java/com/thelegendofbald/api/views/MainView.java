@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.util.Optional;
 
 import com.thelegendofbald.api.panels.Panels;
+import com.thelegendofbald.api.settingsmenu.WindowMode;
 
 /**
  * Represents a generic view component in the UI layer.
@@ -53,5 +54,29 @@ public interface MainView {
      * @param internalSize the new internal size to set, represented as a {@link Dimension}
      */
     void setInternalSize(Dimension internalSize);
+
+    /**
+     * Sets the window mode for the view.
+     * This can be used to switch between different display modes such as fullscreen, windowed, or borderless window.
+     * 
+     * @param mode the {@link WindowMode} to set for the view
+     */
+    void setWindowMode(WindowMode mode);
+
+    /**
+     * Sets the frames per second (FPS) for the view.
+     * This can be used to control the refresh rate or animation speed of the view.
+     * 
+     * @param fps
+     */
+    void setFPS(int fps);
+
+    /**
+     * Changes the visibility of the FPS display in the view.
+     * This can be used to toggle whether the frames per second (FPS) is shown on the screen.
+     * 
+     * @param showFPS a boolean indicating whether to show the FPS display; true to show, false to hide
+     */
+    void toggleViewFps(boolean showFPS);
 
 }
