@@ -18,7 +18,7 @@ import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.settingsmenu.Settings;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
-import com.thelegendofbald.view.common.BackToMainPanel;
+import com.thelegendofbald.view.common.BackToPreviousPanel;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsEditorsManager {
@@ -127,7 +127,7 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
     public void updateComponentsSize() {
         final var preferredSize = this.calculatePreferredSize(this.getSize());
         this.settingsEditors.forEach(editor -> editor.setPreferredSize(preferredSize));
-        this.gbc.insets.set(0, (int) ((this.getWidth() * SIDE_INSETS) - (this.getWidth() * BackToMainPanel.WIDTH_PROPORTION)),
+        this.gbc.insets.set(0, (int) ((this.getWidth() * SIDE_INSETS) - (this.getWidth() * BackToPreviousPanel.WIDTH_PROPORTION)),
                 (int) (this.getHeight() * BOTTOM_INSETS),
                 (int) (this.getWidth() * SIDE_INSETS));
     }

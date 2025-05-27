@@ -12,7 +12,6 @@ import javax.swing.SwingUtilities;
 import com.thelegendofbald.api.buttons.JButtonFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.panels.Panels;
-import com.thelegendofbald.controller.ui.mainmenu.SwitchToOtherPanel;
 import com.thelegendofbald.utils.ImageUtils;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.main.GameWindow;
@@ -45,7 +44,7 @@ import com.thelegendofbald.view.main.GameWindow;
  * @see JButtonFactory
  * @see ImageUtils
  */
-public final class BackToMainPanel extends AdapterPanel {
+public final class BackToPreviousPanel extends AdapterPanel {
 
     /**
      * The proportion of the panel's width relative to its parent container.
@@ -71,7 +70,7 @@ public final class BackToMainPanel extends AdapterPanel {
      *
      * @param size the preferred size of the panel
      */
-    public BackToMainPanel(final Dimension size) {
+    public BackToPreviousPanel(final Dimension size) {
         super(size);
         this.setOpaque(false);
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -83,7 +82,7 @@ public final class BackToMainPanel extends AdapterPanel {
         this.backButton = Optional.of(jbFactory.createTrasparentButton(originalImage, Optional.empty(), Optional.of(Color.WHITE)));
         this.backButton.ifPresent(button -> button.addActionListener(e -> {
             final var parent = (GameWindow) SwingUtilities.getWindowAncestor(this);
-            new SwitchToOtherPanel(parent, Panels.MAIN_MENU).actionPerformed(e);
+            parent.changeMainPanel(parent.getLastPanel().orElse(Panels.MAIN_MENU));
         }));
         super.initializeComponents();
     }

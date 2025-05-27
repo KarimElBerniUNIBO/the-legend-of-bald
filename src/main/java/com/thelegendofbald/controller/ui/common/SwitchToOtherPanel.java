@@ -1,4 +1,4 @@
-package com.thelegendofbald.controller.ui.mainmenu;
+package com.thelegendofbald.controller.ui.common;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,7 +31,7 @@ public final class SwitchToOtherPanel implements ActionListener {
      * @param window    the main game window where the panel switch will occur
      * @param panelEnum the enum value representing the panel to switch to
      */
-    public SwitchToOtherPanel(final GameWindow window, final Panels panelEnum) {
+    public SwitchToOtherPanel(final MainView window, final Panels panelEnum) {
         this.window = window;
         this.panelEnum = panelEnum;
     }

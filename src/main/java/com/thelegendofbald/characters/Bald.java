@@ -12,8 +12,16 @@ public class Bald extends Entity {
     private int attackPower; // Potenza d'attacco
     private BufferedImage image;
     private String path = "/images/bald.png"; // Percorso dell'immagine
-    private int speedX = 0; // Velocità lungo l'asse X
-    private int speedY = 0; // Velocità lungo l'asse Y
+    private double speedX = 0.0; // Velocità lungo l'asse X
+    public double getSpeedX() {
+        return speedX;
+    }
+
+    public double getSpeedY() {
+        return speedY;
+    }
+
+    private double speedY = 0.0; // Velocità lungo l'asse Y
     private BufferedImage[] runFrames; // Array di immagini per l'animazione della corsa
     private int currentFrame = 0; // Indice del frame corrente
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
@@ -95,12 +103,12 @@ public class Bald extends Entity {
         }
     }
    
-    public void setSpeedX(int speedX) {
+    public void setSpeedX(double speedX) {
         this.speedX = speedX;
         //this.updateAnimation();
     }
     
-    public void setSpeedY(int speedY) {
+    public void setSpeedY(double speedY) {
         this.speedY = speedY;
         //this.updateAnimation();
     }

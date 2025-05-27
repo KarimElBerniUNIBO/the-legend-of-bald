@@ -2,36 +2,34 @@ package com.thelegendofbald.view.main;
 
 import java.awt.Dimension;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
-import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.api.views.View;
+import com.thelegendofbald.view.game.GamePanel;
 
 public final class GameWindow extends JFrame implements View, MainView {
 
     private static final String TITLE = "The Legend of Bald";
     private static Dimension internalSize = new Dimension(1280, 704);
 
-    private final List<MenuPanel> panels;
+    private Panels currentPanel = Panels.MAIN_MENU;
+    private Optional<Panels> lastPanel = Optional.empty();
 
     public GameWindow() {
         super();
-        this.panels = this.getMenuPanels();
-        this.panels.forEach(panel -> panel.setPreferredSize(internalSize));
-
+        this.updatePanelsSize();
     }
 
-    private List<MenuPanel> getMenuPanels() {
-        return Arrays.stream(Panels.values())
+    private void updatePanelsSize() {
+        Arrays.stream(Panels.values())
                 .map(Panels::getPanel)
-                .toList();
+                .forEach(panel -> panel.setPreferredSize(internalSize));
+        this.updateView();
     }
 
     @Override
@@ -39,7 +37,7 @@ public final class GameWindow extends JFrame implements View, MainView {
         this.setTitle(TITLE);
         this.setIconImage(new ImageIcon(this.getClass().getResource("/images/icon.png")).getImage());
         this.setResizable(true);
-        this.setContentPane(this.panels.getFirst());
+        this.setContentPane(currentPanel.getPanel());
         this.pack();
         this.setLocationByPlatform(true);
         this.setVisible(true);
@@ -48,12 +46,21 @@ public final class GameWindow extends JFrame implements View, MainView {
 
     @Override
     public void changeMainPanel(Panels panelEnum) {
-        JPanel panel = this.panels.get(panelEnum.getIndex());
-        this.setContentPane(panel);
-        //this.pack();
+        lastPanel = Optional.of(currentPanel);
+        currentPanel = panelEnum;
+        this.updateView();
+    }
+
+    @Override
+    public void updateView() {
+        this.setContentPane(currentPanel.getPanel());
         this.revalidate();
         this.repaint();
-        panel.requestFocusInWindow();
+        //this.pack();
+        currentPanel.getPanel().requestFocusInWindow();
+        if (currentPanel.getPanel() instanceof GamePanel gamePanel && !gamePanel.isRunning()) {
+            gamePanel.startGame(); // <-- solo se è GamePanel
+        }
     }
 
     @Override
@@ -64,14 +71,17 @@ public final class GameWindow extends JFrame implements View, MainView {
     @Override
     public void setInternalSize(Dimension size) {
         GameWindow.internalSize = size;
+        this.updatePanelsSize();
     }
 
     @Override
-    public void updateView() {
-        SwingUtilities.invokeLater(() -> {
-            this.revalidate();
-            this.repaint();
-        });
+    public Optional<Panels> getLastPanel() {
+        return lastPanel;
+    }
+
+    @Override
+    public Panels getCurrentPanel() {
+        return currentPanel;
     }
 
 }

@@ -9,7 +9,7 @@ import javax.swing.JScrollPane;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
-import com.thelegendofbald.view.common.BackToMainPanel;
+import com.thelegendofbald.view.common.BackToPreviousPanel;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 class ScrollingPanel extends AdapterPanel {
@@ -44,7 +44,7 @@ class ScrollingPanel extends AdapterPanel {
 
     @Override
     public void updateComponentsSize() {
-        var gbcLeft = (int) (this.getWidth() * WIDTH_INSETS - this.getWidth() * BackToMainPanel.WIDTH_PROPORTION);
+        var gbcLeft = (int) (this.getWidth() * WIDTH_INSETS - this.getWidth() * BackToPreviousPanel.WIDTH_PROPORTION);
         var gbcRight = (int) (this.getWidth() * WIDTH_INSETS);
         var gbcBottom = (int) (this.getHeight() * BOTTOM_INSET);
 

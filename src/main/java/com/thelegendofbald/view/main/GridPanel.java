@@ -6,15 +6,12 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import com.thelegendofbald.api.views.MainView;
-import com.thelegendofbald.api.views.View;
-
 public class GridPanel extends JPanel {
 
     private static final int TILE_SIZE = 32;
 
     @Override
-    protected void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
         drawGrid(g);
     }
@@ -36,6 +33,6 @@ public class GridPanel extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return getParent() != null ? ((View) getParent()).getInternalSize() : new Dimension(1280, 704);
+        return getParent() != null ? getParent().getSize() : new Dimension(1280, 704);
     }
 }

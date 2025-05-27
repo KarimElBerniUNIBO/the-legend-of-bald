@@ -25,20 +25,4 @@ public interface View {
      */
     void updateView();
 
-    /**
-     * Returns the internal size of the view as a {@link Dimension} object.
-     * This typically represents the drawable or usable area within the view,
-     * excluding any borders, padding, or decorations.
-     *
-     * @return the internal {@code Dimension} of the view
-     */
-    Dimension getInternalSize();
-
-    /**
-     * Sets the internal size of the view component.
-     *
-     * @param size the new internal {@link Dimension} to set for the view
-     */
-    void setInternalSize(Dimension size);
-
 }

@@ -18,7 +18,7 @@ import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.panels.InteractivePanel;
 import com.thelegendofbald.api.settingsmenu.Settings;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
-import com.thelegendofbald.controller.ui.settingsmenu.SwitchToOtherSettingsEditorPanel;
+import com.thelegendofbald.controller.ui.common.SwitchToOtherSettingsEditorPanel;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.buttons.TrasparentBackgroundButton;
 
