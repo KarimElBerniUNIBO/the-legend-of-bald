@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import com.thelegendofbald.ui.view.TileMap;
+import com.thelegendofbald.view.main.TileMap;
 
 public class Bald extends Entity {
     public static final String SpeedX = null;
