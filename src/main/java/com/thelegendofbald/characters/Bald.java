@@ -115,11 +115,12 @@ public class Bald extends Entity {
    
     public void setSpeedX(int speedX) {
         this.speedX = speedX;
+        //this.updateAnimation();
     }
     
     public void setSpeedY(int speedY) {
         this.speedY = speedY;
-        
+        //this.updateAnimation();
     }
     
     public void move() {
@@ -141,5 +142,7 @@ public class Bald extends Entity {
     public int getWidth() {
         return 50;
     }
+
+
 
 }

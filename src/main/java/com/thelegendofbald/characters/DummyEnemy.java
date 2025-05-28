@@ -12,8 +12,8 @@ public class DummyEnemy extends Entity {
     private BufferedImage image; // Variable to store the loaded image
 
     private int attackPower; 
-    private int speedY = 2;
-    private int speedX = 2;
+    private int speedY = 1;
+    private int speedX = 1;
 
 
 
@@ -117,6 +117,9 @@ public class DummyEnemy extends Entity {
         }
         
     }
+
+ 
+
 
     
 }
