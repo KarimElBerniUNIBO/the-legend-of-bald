@@ -24,7 +24,7 @@ import com.thelegendofbald.view.settingsmenu.SettingsEditor;
  * <ul>
  * <li>{@link #VIDEO} - Video-related settings.</li>
  * <li>{@link #AUDIO} - Audio-related settings.</li>
- * <li>{@link #KEYBINDS} - Keybinding-related settings.</li>
+ * <li>{@link #CONTROLS} - Keybinding-related settings.</li>
  * </ul>
  *
  * @see SettingOption
@@ -55,7 +55,7 @@ public enum Settings {
      * configurations.
      * </p>
      */
-    KEYBINDS(KeybindsSettings.values(), Optional.empty(), Optional.empty());
+    CONTROLS(ControlsSettings.values(), Optional.empty(), Optional.empty());
 
     private final SettingOption[] configs;
     private Optional<SettingsEditor> settingsEditor;

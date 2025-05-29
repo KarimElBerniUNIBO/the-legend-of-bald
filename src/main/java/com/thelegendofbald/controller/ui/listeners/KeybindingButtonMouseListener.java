@@ -3,7 +3,7 @@ package com.thelegendofbald.controller.ui.listeners;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import com.thelegendofbald.api.settingsmenu.KeybindsSettings;
+import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.view.buttons.KeybindingButton;
 
 /**
@@ -73,7 +73,7 @@ public class KeybindingButtonMouseListener extends RoundedButtonMouseListener {
         super.mouseExited(e);
         if (button.isChanging()) {
             button.setChanging(false);
-            button.setText(KeyEvent.getKeyText(KeybindsSettings.getKeyCode(KeybindsSettings.getKeybind(button))));
+            button.setText(KeyEvent.getKeyText(ControlsSettings.getKeyCode(ControlsSettings.getKeybind(button))));
         }
     }
 

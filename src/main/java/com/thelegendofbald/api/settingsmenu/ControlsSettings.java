@@ -38,7 +38,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @see JButtonFactory
  * @see JComponent
  */
-public enum KeybindsSettings implements SettingOption {
+public enum ControlsSettings implements SettingOption {
     /**
      * Represents the "Up" key binding.
      */
@@ -71,7 +71,7 @@ public enum KeybindsSettings implements SettingOption {
      * @param text the label or description for the keybinding setting
      * @param keycode the key code associated with the keybinding
      */
-    KeybindsSettings(final String text, final int keycode) {
+    ControlsSettings(final String text, final int keycode) {
         this.text = text;
         this.key = keycode;
         this.jcomponent = jbFactory.createKeybindingButton(KeyEvent.getKeyText(keycode), Optional.empty(),
@@ -119,12 +119,12 @@ public enum KeybindsSettings implements SettingOption {
     }
 
     /**
-     * Returns the key code associated with the specified {@link KeybindsSettings} instance.
+     * Returns the key code associated with the specified {@link ControlsSettings} instance.
      *
      * @param keybind the {@code KeybindsSettings} instance for which to retrieve the key code
      * @return the integer key code associated with the given keybind
      */
-    public static int getKeyCode(final KeybindsSettings keybind) {
+    public static int getKeyCode(final ControlsSettings keybind) {
         return keybind.getKey();
     }
 
@@ -135,13 +135,13 @@ public enum KeybindsSettings implements SettingOption {
     }
 
     /**
-     * Sets the key code for the specified {@link KeybindsSettings} instance and updates the associated button's text
+     * Sets the key code for the specified {@link ControlsSettings} instance and updates the associated button's text
      * to reflect the new key binding.
      *
      * @param keybind the {@code KeybindsSettings} instance whose key code is to be set
      * @param key the new key code to assign
      */
-    public static void setKeyCode(final KeybindsSettings keybind, final int key) {
+    public static void setKeyCode(final ControlsSettings keybind, final int key) {
         keybind.setKey(key);
         updateButtonText((JButton) keybind.getJcomponent(), key);
     }
@@ -157,7 +157,7 @@ public enum KeybindsSettings implements SettingOption {
      * @return the matching {@code KeybindsSettings} instance
      * @throws IllegalArgumentException if no matching keybind setting is found for the given button
      */
-    public static KeybindsSettings getKeybind(final KeybindingButton button) {
+    public static ControlsSettings getKeybind(final KeybindingButton button) {
         return Arrays.stream(values())
                 .filter(ks -> ks.getText().equals(button.getName()))
                 .findFirst()

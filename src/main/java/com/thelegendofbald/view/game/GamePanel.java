@@ -20,8 +20,10 @@ import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.MenuPanel;
+import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.view.common.CustomJSlider;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.main.GameWindow;
 import com.thelegendofbald.view.main.GridPanel;
@@ -43,6 +45,7 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     private Thread gameThread;
     private boolean running = false;
+    private int fps = ((CustomJSlider) VideoSettings.FPS.getJcomponent()).getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
 
@@ -133,7 +136,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         System.out.println("Game loop started!");
 
         long lastTime = System.nanoTime();
-        double interval = 1000000000 / 60;
+        double interval = 0;
         int drawCount = 0;
         long timer = 0;
         double delta = 0;
@@ -142,6 +145,7 @@ public class GamePanel extends MenuPanel implements Runnable {
 
             long now = System.nanoTime();
             timer += (now - lastTime);
+            interval = 1e9 / fps;
             delta += (now - lastTime) / interval;
             lastTime = now;
 
@@ -216,6 +220,10 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     public void stopGame() {
         this.running = false;
+    }
+
+    public void setFPS(int fps) {
+        this.fps = fps;
     }
 
 }

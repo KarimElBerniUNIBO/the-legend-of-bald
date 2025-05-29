@@ -13,7 +13,6 @@ import com.thelegendofbald.view.common.CustomJSlider;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-
 public enum VideoSettings implements SettingOption {
 
     WINDOW_MODE("WINDOW MODE", createWindowModeComboBox()),
@@ -33,10 +32,7 @@ public enum VideoSettings implements SettingOption {
         return this.text;
     }
 
-    @SuppressFBWarnings(
-        value = "EI_EXPOSE_REP",
-        justification = "JComponent must be mutable for UI interaction; safe in enum context."
-    )
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "JComponent must be mutable for UI interaction; safe in enum context.")
     @Override
     public JComponent getJcomponent() {
         return this.jcomponent;
@@ -48,7 +44,6 @@ public enum VideoSettings implements SettingOption {
         comboBox.addActionListener(e -> {
             var selectedMode = (WindowMode) comboBox.getSelectedItem();
             if (Optional.ofNullable(selectedMode).isPresent()) {
-                System.out.println("Selected Window Mode: " + selectedMode.getText());
                 var window = (MainView) SwingUtilities.getWindowAncestor(comboBox);
                 window.setWindowMode(selectedMode);
             }
@@ -61,16 +56,11 @@ public enum VideoSettings implements SettingOption {
         var slider = customSlider.getSlider();
 
         slider.addChangeListener(e -> {
-            if (!slider.getValueIsAdjusting()) {
-                String value = String.valueOf(slider.getValue());
-                var lastValue = customSlider.getLastValue();
-
-                if (lastValue != slider.getValue()) {
-                    System.out.println("Selected FPS: " + value);
-                    customSlider.setLastValue(slider.getValue());
-                    var window = (MainView) SwingUtilities.getWindowAncestor(slider);
-                    window.setFPS(slider.getValue());
-                }
+            if (!slider.getValueIsAdjusting()
+                    && customSlider.getLastValue() != customSlider.getValue()) {
+                var window = (MainView) SwingUtilities.getWindowAncestor(customSlider);
+                window.setFPS(slider.getValue());
+                customSlider.setLastValue(slider.getValue());
             }
         });
 
@@ -81,7 +71,6 @@ public enum VideoSettings implements SettingOption {
         var checkBox = new CustomCheckBox();
         checkBox.addActionListener(e -> {
             boolean isSelected = checkBox.isSelected();
-            System.out.println("Show FPS: " + isSelected);
             var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
             window.toggleViewFps(isSelected);
         });

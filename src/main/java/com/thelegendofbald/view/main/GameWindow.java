@@ -84,25 +84,10 @@ public final class GameWindow extends JFrame implements View, MainView {
         return currentPanel;
     }
 
-    /*@Override
-    public void setFullScreen(boolean fullScreen) {
-        if (fullScreen) {
-            this.dispose();
-            this.setUndecorated(true);
-            this.setExtendedState(MAXIMIZED_BOTH);
-            this.setVisible(true);
-        } else {
-            this.dispose();
-            this.setUndecorated(false);
-            this.pack();
-            this.setVisible(true);
-        }
-        this.updateView();
-    }*/
-
     @Override
     public void setWindowMode(WindowMode windowMode) {
         Optional.ofNullable(windowMode).ifPresent(mode -> {
+            System.out.println("Setting window mode to: " + mode.getText());
             this.dispose();
             switch (mode) {
                 case FULLSCREEN -> {
@@ -126,14 +111,15 @@ public final class GameWindow extends JFrame implements View, MainView {
 
     @Override
     public void setFPS(int fps) {
-        // TODO Auto-generated method stub
-        
+        System.out.println("Setting FPS to: " + fps);
+        ((GamePanel) Panels.PLAY_MENU.getPanel()).setFPS(fps);
+        // TODO: Implement FPS setting logic in GamePanel
     }
 
     @Override
     public void toggleViewFps(boolean showFPS) {
-        // TODO Auto-generated method stub
-        
+        System.out.println("Setting show FPS to: " + showFPS);
+        // TODO: Implement FPS display toggle
     }
 
 }

@@ -42,7 +42,7 @@ public final class GameOptionsPanel extends AdapterPanel {
     public GameOptionsPanel(final Dimension size) {
         super(new Dimension(0, 0));
         this.setLayout(new GridBagLayout());
-        this.setVisible(true);
+        this.setVisible(false);
         SwingUtilities.invokeLater(() -> this.setBackground(DEFAULT_BG_COLOR));
     }
 

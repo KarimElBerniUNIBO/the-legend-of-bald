@@ -19,39 +19,38 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 public class CustomJSlider extends AdapterPanel {
 
-    private static final int MAJOR_TICK_SPACING = 10;
     private static final int MINOR_TICK_SPACING = 5;
+    private static final int MAJOR_TICK_SPACING = 2 * MINOR_TICK_SPACING;
 
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
     private final SoundPlayer tickSound = new SoundPlayer("/slider/tick.wav");
-    
+
     private final JSlider slider;
-    private final int value;
     private int lastValue;
     private Optional<TextLabel> text = Optional.empty();
 
     public CustomJSlider(int orientation, int min, int max, int value) {
         super(new Dimension(0, 0));
-        this.value = value;
-        this.lastValue = value;
         this.slider = new JSlider(orientation, min, max, value);
+        this.lastValue = this.slider.getValue();
         this.setLayout(new GridBagLayout());
     }
-    
+
     @Override
     protected void initializeComponents() {
-        this.text = Optional.of(tlFactory.createTextLabelWithProportion(String.valueOf(this.value), this.getSize(), Optional.empty(), Optional.of(Pair.of(3.0, 1.0)), Optional.empty(), Optional.empty()));
+        this.text = Optional.of(tlFactory.createTextLabelWithProportion(String.valueOf(this.getValue()), this.getSize(),
+                Optional.empty(), Optional.of(Pair.of(3.0, 1.0)), Optional.empty(), Optional.empty()));
         this.slider.setMajorTickSpacing(MAJOR_TICK_SPACING);
         this.slider.setMinorTickSpacing(MINOR_TICK_SPACING);
         this.slider.setPaintTicks(true);
         this.slider.setSnapToTicks(true);
         this.slider.addChangeListener(e -> {
-            if (this.slider.getValueIsAdjusting() && this.lastValue != this.slider.getValue() && this.slider.getValue() % MINOR_TICK_SPACING == 0) {
+            if (this.getValue() % MINOR_TICK_SPACING == 0 || this.getValue() == this.slider.getMaximum()) {
                 this.tickSound.play();
-                this.text.ifPresent(t -> t.setText(String.valueOf(this.slider.getValue())));
+                this.text.ifPresent(t -> t.setText(String.valueOf(this.getValue())));
             }
         });
 
@@ -61,7 +60,7 @@ public class CustomJSlider extends AdapterPanel {
     @Override
     public void updateComponentsSize() {
         Arrays.stream(this.getComponents())
-            .forEach(c -> c.setPreferredSize(this.getSize()));
+                .forEach(c -> c.setPreferredSize(this.getSize()));
     }
 
     @Override
@@ -89,6 +88,10 @@ public class CustomJSlider extends AdapterPanel {
 
     public Optional<TextLabel> getText() {
         return text;
+    }
+
+    public int getValue() {
+        return slider.getValue();
     }
 
     public int getLastValue() {

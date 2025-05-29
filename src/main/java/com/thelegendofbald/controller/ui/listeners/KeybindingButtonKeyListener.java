@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.SwingUtilities;
 
-import com.thelegendofbald.api.settingsmenu.KeybindsSettings;
+import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.view.buttons.KeybindingButton;
 
 /**
@@ -46,7 +46,7 @@ public class KeybindingButtonKeyListener extends KeyAdapter {
             final var keyCode = e.getKeyCode();
             button.setChanging(false);
             SwingUtilities.invokeLater(() -> {
-                KeybindsSettings.setKeyCode(KeybindsSettings.getKeybind(button), keyCode);
+                ControlsSettings.setKeyCode(ControlsSettings.getKeybind(button), keyCode);
             });
         }
     }

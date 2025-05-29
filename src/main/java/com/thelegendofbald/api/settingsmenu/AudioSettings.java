@@ -3,6 +3,7 @@ package com.thelegendofbald.api.settingsmenu;
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 
+import com.thelegendofbald.model.sounds.SoundManager;
 import com.thelegendofbald.view.common.CustomJSlider;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -59,18 +60,16 @@ public enum AudioSettings implements SettingOption {
     }
 
     private static CustomJSlider createMasterSlider() {
-        var customSlider = new CustomJSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        var customSlider = new CustomJSlider(JSlider.HORIZONTAL, 0, 100, 100);
         var slider = customSlider.getSlider();
 
         slider.addChangeListener(e -> {
-            if (!slider.getValueIsAdjusting()) {
-                String value = String.valueOf(slider.getValue());
-                var lastValue = customSlider.getLastValue();
-
-                if (lastValue != slider.getValue()) {
-                    System.out.println("Selected Master Volume: " + value);
-                    customSlider.setLastValue(slider.getValue());
-                }
+            if (slider.getValueIsAdjusting()
+                    && customSlider.getLastValue() != customSlider.getValue()) {
+                int value = customSlider.getValue();
+                float volume = value / 100f;
+                SoundManager.setMasterVolume(volume);
+                customSlider.setLastValue(slider.getValue());
             }
         });
 
@@ -88,6 +87,7 @@ public enum AudioSettings implements SettingOption {
 
                 if (lastValue != slider.getValue()) {
                     System.out.println("Selected Music Volume: " + value);
+                    // TODO: Implement music volume setting logic
                     customSlider.setLastValue(slider.getValue());
                 }
             }
