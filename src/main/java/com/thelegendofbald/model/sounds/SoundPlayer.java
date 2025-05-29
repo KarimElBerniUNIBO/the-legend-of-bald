@@ -75,7 +75,6 @@ public final class SoundPlayer {
             clip.get().start();
         }
     }
-
     
     /**
      * Sets the volume of the audio clip.
@@ -95,9 +94,7 @@ public final class SoundPlayer {
         clip.filter(c -> c.isControlSupported(FloatControl.Type.MASTER_GAIN))
                 .ifPresent(c -> {
                     FloatControl gain = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
-                    float min = gain.getMinimum();
-                    float max = gain.getMaximum();
-                    float dB = (float) (min + (max - min) * volume);
+                    float dB = (float) (20 * Math.log10(volume)); // Fomula to convert linear volume to dB
                     gain.setValue(dB);
                 });
     }
@@ -109,6 +106,6 @@ public final class SoundPlayer {
      * prevent resource leaks.
      */
     public void close() {
-        clip.ifPresent(Clip::stop);
+        clip.ifPresent(Clip::close);
     }
 }
