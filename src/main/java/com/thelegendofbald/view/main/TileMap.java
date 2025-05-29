@@ -17,20 +17,17 @@ import javax.imageio.ImageIO;
 public class TileMap {
 
     private final int width, height;
-    private String currentMap;
     private Tile[][] tiles;
     private Image backgroundImage;
     public final int TILE_SIZE = 32; // puoi cambiarlo
     private BufferedImage image;
 
     private final Map<Integer, Tile> tileTypes = new HashMap<>();
-
+  
     public TileMap(int width, int height) {
         this.width = width;
         this.height = height;
-        this.currentMap = "map_1"; // default
         loadTileTypes();
-        loadMap(currentMap);
     }
 
     // Carica i vari tipi di tile (es. erba, muro, acqua)
@@ -54,7 +51,7 @@ public class TileMap {
 
     // Carica una mappa specifica
     private void loadMap(String mapName) {
-        currentMap = mapName;
+        
         int[][] mapData = generateFlatMap(22, 40, 0); // fallback
 
         if (mapName != null) {
@@ -155,10 +152,7 @@ public class TileMap {
         return -1;
     }
 
-    public Tile getTileAt(int x, int y) {
-        int tileX = x / TILE_SIZE;
-        int tileY = y / TILE_SIZE;
-
+    public Tile getTileAt(int tileX, int tileY) {
         if (tileY >= 0 && tileY < tiles.length && tileX >= 0 && tileX < tiles[0].length) {
             return tiles[tileY][tileX];
         }

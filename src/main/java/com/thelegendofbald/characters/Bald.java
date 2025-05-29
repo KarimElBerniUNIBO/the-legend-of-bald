@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import com.thelegendofbald.ui.view.TileMap;
+import com.thelegendofbald.view.main.TileMap;
 
 public class Bald extends Entity {
     public static final String SpeedX = null;
@@ -24,6 +24,8 @@ public class Bald extends Entity {
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
     private boolean facingRight = false; // Direzione in cui Bald sta guardando
+    private int health = 100; // Salute di Bald
+    private String name; // Nome di Bald
 
     public Bald(int x, int y, int health, String name, int attackPower ) {
         super(x, y, health, name);
@@ -36,12 +38,14 @@ public class Bald extends Entity {
         this.tileMap = tileMap;
     }    
 
-    public void setSpawnPosition(int spawnTileId) {
-        // Usa il metodo findSpawnPoint per ottenere le coordinate del tile con ID spawnTileId
+    public void setSpawnPosition(int spawnTileId, int tileSize) {
         Point spawnPoint = tileMap.findSpawnPoint(spawnTileId);
         if (spawnPoint != null) {
-            this.setX(spawnPoint.x); // Imposta la posizione X di Bald
-            this.setY(spawnPoint.y); // Imposta la posizione Y di Bald
+            // Centra i piedi di Bald nel tile di spawn
+            int x = spawnPoint.x + (tileSize - getWidth()) / 2;
+            int y = spawnPoint.y + tileSize - getHeight();
+            this.setX(x);
+            this.setY(y);
         }
     }
 

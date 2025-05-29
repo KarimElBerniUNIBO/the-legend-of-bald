@@ -44,14 +44,15 @@ public class GamePanel extends MenuPanel {
         this.gridPanel.setBounds(0, 0, size.width, size.height);
         this.add(gridPanel);
         this.tileMap = new TileMap(size.width, size.height);
-        tileMap.changeMap("map_1");  
-
+        tileMap.changeMap("map_1");
         bald.setTileMap(tileMap);
-        Point spawn = tileMap.findSpawnPoint(5);
-        if (spawn != null) {
-            bald.setX(spawn.x);
-            bald.setY(spawn.y);
-}
+
+        Point spawnPoint = tileMap.findSpawnPoint(5);
+            if (spawnPoint != null) {
+                int tileSize = tileMap.TILE_SIZE;
+                bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
+                bald.setY(spawnPoint.y - bald.getHeight()); // Piedi sul bordo superiore del tile
+            }  
         
         this.requestFocusInWindow();
 
@@ -84,11 +85,10 @@ public class GamePanel extends MenuPanel {
     
 
     private void update() {
-
         handleInput();
         bald.move();
         dummyenemy.followPlayer(bald);
-        dummyenemy.updateAnimation();    
+        dummyenemy.updateAnimation();
 
         int baldX = bald.getX();
         int baldY = bald.getY();
@@ -96,48 +96,38 @@ public class GamePanel extends MenuPanel {
         int baldH = bald.getHeight();
         int tileSize = tileMap.TILE_SIZE;
 
-        // Calcolo i tile occupati dal rettangolo del personaggio
-        int leftTile = baldX / tileSize;
-        int rightTile = (baldX + baldW - 1) / tileSize;
-        int topTile = baldY / tileSize;
-        int bottomTile = (baldY + baldH - 1) / tileSize;
+        // Calcola la posizione dei piedi di Bald
+        int feetY = baldY + baldH;
+        int tileFeetY = feetY / tileSize;
+        int tileCenterX = (baldX + baldW / 2) / tileSize;
+        Tile tileUnderFeet = tileMap.getTileAt(tileCenterX, tileFeetY);
 
-        for (int x = leftTile; x <= rightTile; x++) {
-            for (int y = topTile; y <= bottomTile; y++) {
-                if (x >= 0 && x < tileMap.getMapWidthInTiles() && y >= 0 && y < tileMap.getMapHeightInTiles()) {
-                    Tile tile = tileMap.getTileAt(x, y);
-                    if (tile != null) {
-                        System.out.println("Tile at (" + x + "," + y + ") = " + tile + ", id = " + tile.getId());
-                    } else {
-                        System.out.println("Tile at (" + x + "," + y + ") is null");
-                    }
-                    if (tile != null && tile.getId() == 4) {
-                        switchToNextMap();
-                        return;  // esce subito dall'update dopo aver cambiato mappa
-                    }
-                }
+        if (tileUnderFeet != null && tileUnderFeet.getId() == 4) {
+            // Cambia mappa solo se i piedi sono esattamente sul bordo superiore del tile
+            if (feetY % tileSize == 0) {
+                switchToNextMap();
+                return;
             }
         }
 
         repaint();
     }
+   
 
 
     public void changeMap(String mapName) {
         currentMapName = mapName;
         tileMap.changeMap(mapName);
         bald.setTileMap(tileMap);
-    
+
         Point spawnPoint = tileMap.findSpawnPoint(5);
         if (spawnPoint != null) {
             int tileSize = tileMap.TILE_SIZE;
-
-            bald.setX(spawnPoint.x + tileSize / 2 - bald.getWidth() / 2);
-            bald.setY(spawnPoint.y + tileSize / 2 - bald.getHeight() / 2);
+            bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
+            bald.setY(spawnPoint.y + tileSize - bald.getHeight());
+        } else {
+            System.out.println("Spawn point not found!");
         }
-
-
-
     }
 
     private void switchToNextMap() {
@@ -152,15 +142,15 @@ public class GamePanel extends MenuPanel {
     
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        this.scaleGraphics(g);
+protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    this.scaleGraphics(g);
 
-        tileMap.paint(g);           
-        gridPanel.paintComponent(g); 
-        bald.render(g);              
-        dummyenemy.render(g);        
-    }
+    tileMap.paint(g);           
+    gridPanel.paintComponent(g); 
+    bald.render(g);              
+    dummyenemy.render(g);
+}
 
     private void scaleGraphics(Graphics g) {
         double scaleX = this.getWidth() / ((View) SwingUtilities.getWindowAncestor(this)).getInternalSize().getWidth();
