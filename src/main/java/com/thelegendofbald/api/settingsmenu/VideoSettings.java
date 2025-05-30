@@ -1,5 +1,6 @@
 package com.thelegendofbald.api.settingsmenu;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.swing.JComboBox;
@@ -9,7 +10,8 @@ import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.view.common.CustomCheckBox;
-import com.thelegendofbald.view.common.CustomJSlider;
+import com.thelegendofbald.view.common.CustomComboBox;
+import com.thelegendofbald.view.common.CustomSlider;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -39,20 +41,21 @@ public enum VideoSettings implements SettingOption {
     }
 
     private static JComboBox<WindowMode> createWindowModeComboBox() {
-        var comboBox = new JComboBox<>(WindowMode.values());
+        var comboBox = new CustomComboBox<>(Arrays.asList(WindowMode.values()));
         comboBox.setSelectedItem(WindowMode.WINDOW);
         comboBox.addActionListener(e -> {
             var selectedMode = (WindowMode) comboBox.getSelectedItem();
-            if (Optional.ofNullable(selectedMode).isPresent()) {
+            if (Optional.ofNullable(selectedMode).isPresent() && selectedMode != comboBox.getLastSelectedItem()) {
                 var window = (MainView) SwingUtilities.getWindowAncestor(comboBox);
                 window.setWindowMode(selectedMode);
+                comboBox.setLastSelectedItem(selectedMode);
             }
         });
         return comboBox;
     }
 
-    private static CustomJSlider createFPSSlider() {
-        var customSlider = new CustomJSlider(JSlider.HORIZONTAL, 30, 144, 60);
+    private static CustomSlider createFPSSlider() {
+        var customSlider = new CustomSlider(JSlider.HORIZONTAL, 30, 144, 60);
         var slider = customSlider.getSlider();
 
         slider.addChangeListener(e -> {

@@ -17,7 +17,7 @@ import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.model.sounds.SoundPlayer;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
-public class CustomJSlider extends AdapterPanel {
+public class CustomSlider extends AdapterPanel {
 
     private static final int MINOR_TICK_SPACING = 5;
     private static final int MAJOR_TICK_SPACING = 2 * MINOR_TICK_SPACING;
@@ -32,7 +32,7 @@ public class CustomJSlider extends AdapterPanel {
     private int lastValue;
     private Optional<TextLabel> text = Optional.empty();
 
-    public CustomJSlider(int orientation, int min, int max, int value) {
+    public CustomSlider(int orientation, int min, int max, int value) {
         super(new Dimension(0, 0));
         this.slider = new JSlider(orientation, min, max, value);
         this.lastValue = this.slider.getValue();

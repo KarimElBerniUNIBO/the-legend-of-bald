@@ -1,9 +1,9 @@
 package com.thelegendofbald.api.settingsmenu;
 
 public enum WindowMode {
+    WINDOW("WINDOW"),
     FULLSCREEN("FULLSCREEN"),
-    WINDOWED_FULLSCREEN("WINDOWED FULLSCREEN"),
-    WINDOW("WINDOW");
+    WINDOWED_FULLSCREEN("WINDOWED FULLSCREEN");
 
     private final String text;
 
@@ -13,5 +13,10 @@ public enum WindowMode {
 
     public String getText() {
         return this.text;
+    }
+
+    @Override
+    public String toString() {
+        return this.getText();
     }
 }

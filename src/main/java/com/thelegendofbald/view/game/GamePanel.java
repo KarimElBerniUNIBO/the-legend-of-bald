@@ -23,7 +23,7 @@ import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
-import com.thelegendofbald.view.common.CustomJSlider;
+import com.thelegendofbald.view.common.CustomSlider;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.main.GameWindow;
 import com.thelegendofbald.view.main.GridPanel;
@@ -45,7 +45,7 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     private Thread gameThread;
     private boolean running = false;
-    private int fps = ((CustomJSlider) VideoSettings.FPS.getJcomponent()).getValue();
+    private int fps = ((CustomSlider) VideoSettings.FPS.getJcomponent()).getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
 

@@ -4,7 +4,7 @@ import javax.swing.JComponent;
 import javax.swing.JSlider;
 
 import com.thelegendofbald.model.sounds.SoundManager;
-import com.thelegendofbald.view.common.CustomJSlider;
+import com.thelegendofbald.view.common.CustomSlider;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -59,8 +59,8 @@ public enum AudioSettings implements SettingOption {
         return this.jcomponent;
     }
 
-    private static CustomJSlider createMasterSlider() {
-        var customSlider = new CustomJSlider(JSlider.HORIZONTAL, 0, 100, 100);
+    private static CustomSlider createMasterSlider() {
+        var customSlider = new CustomSlider(JSlider.HORIZONTAL, 0, 100, 100);
         var slider = customSlider.getSlider();
 
         slider.addChangeListener(e -> {
@@ -76,8 +76,8 @@ public enum AudioSettings implements SettingOption {
         return customSlider;
     }
 
-    private static CustomJSlider createMusicSlider() {
-        var customSlider = new CustomJSlider(JSlider.HORIZONTAL, 0, 100, 50);
+    private static CustomSlider createMusicSlider() {
+        var customSlider = new CustomSlider(JSlider.HORIZONTAL, 0, 100, 50);
         var slider = customSlider.getSlider();
 
         slider.addChangeListener(e -> {

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.thelegendofbald.api.settingsmenu.AudioSettings;
-import com.thelegendofbald.view.common.CustomJSlider;
+import com.thelegendofbald.view.common.CustomSlider;
 
 /**
  * Utility class for managing multiple {@link SoundPlayer} instances.
@@ -17,7 +17,7 @@ import com.thelegendofbald.view.common.CustomJSlider;
 public final class SoundManager {
 
     private static final List<SoundPlayer> SOUNDPLAYERS = new LinkedList<>();
-    private static float masterVolume = ((CustomJSlider) AudioSettings.MASTER.getJcomponent())
+    private static float masterVolume = ((CustomSlider) AudioSettings.MASTER.getJcomponent())
             .getValue() / 100f;
 
     private SoundManager() {
