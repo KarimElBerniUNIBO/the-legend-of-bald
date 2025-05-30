@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.settingsmenu.WindowMode;
 import com.thelegendofbald.api.views.MainView;
@@ -54,11 +55,12 @@ public final class GameWindow extends JFrame implements View, MainView {
 
     @Override
     public void updateView() {
-        this.setContentPane(currentPanel.getPanel());
+        MenuPanel panel = currentPanel.getPanel();
+        this.setContentPane(panel);
         this.revalidate();
         this.repaint();
-        currentPanel.getPanel().requestFocusInWindow();
-        if (currentPanel.getPanel() instanceof GamePanel gamePanel && !gamePanel.isRunning()) {
+        panel.requestFocusInWindow();
+        if (panel instanceof GamePanel gamePanel && !gamePanel.isRunning()) {
             gamePanel.startGame(); // <-- solo se è GamePanel
         }
     }
@@ -112,7 +114,7 @@ public final class GameWindow extends JFrame implements View, MainView {
     @Override
     public void setFPS(int fps) {
         System.out.println("Setting FPS to: " + fps);
-        ((GamePanel) Panels.PLAY_MENU.getPanel()).setFPS(fps);
+        ((GamePanel) Panels.GAME_MENU.getPanel()).setFPS(fps);
         // TODO: Implement FPS setting logic in GamePanel
     }
 

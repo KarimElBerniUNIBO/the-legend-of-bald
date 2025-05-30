@@ -12,7 +12,7 @@ import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 
 public enum Buttons {
     RESUME("RESUME", Optional.empty()),
-    SETTINGS("SETTINGS", Optional.of(Panels.SETTINGS_MENU)),
+    SETTINGS("SETTINGS", Optional.of(Panels.SETTINGS)),
     LEAVE("LEAVE", Optional.of(Panels.MAIN_MENU)),;
 
     private static final double DEFAULT_ARC_PROPORTION = 0.2;

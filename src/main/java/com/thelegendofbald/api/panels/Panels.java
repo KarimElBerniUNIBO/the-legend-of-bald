@@ -16,9 +16,9 @@ import com.thelegendofbald.view.settingsmenu.SettingsPanel;
  *
  * <ul>
  *   <li>{@link #MAIN_MENU} - The main menu panel.</li>
- *   <li>{@link #SETTINGS_MENU} - The settings menu panel.</li>
- *   <li>{@link #LEADERBOARD_MENU} - The leaderboard menu panel.</li>
- *   <li>{@link #PLAY_MENU} - The play menu panel.</li>
+ *   <li>{@link #SETTINGS} - The settings menu panel.</li>
+ *   <li>{@link #LEADERBOARD} - The leaderboard menu panel.</li>
+ *   <li>{@link #GAME_MENU} - The play menu panel.</li>
  * </ul>
  *
  * Provides methods to retrieve the panel's name, index, and the maximum index among all panels.
@@ -27,19 +27,19 @@ public enum Panels {
     /**
      * The main menu panel.
      */
-    MAIN_MENU("MAIN", MainPanel::new, Optional.empty()),
+    MAIN_MENU("MAIN MENU", MainPanel::new, Optional.empty()),
     /**
      * The settings menu panel.
      */
-    SETTINGS_MENU("SETTINGS", SettingsPanel::new, Optional.of(Buttons.SETTINGS)),
+    SETTINGS("SETTINGS", SettingsPanel::new, Optional.of(Buttons.SETTINGS)),
     /**
      * The leaderboard menu panel.
      */
-    LEADERBOARD_MENU("LEADERBOARD", LeaderBoardPanel::new, Optional.of(Buttons.LEADERBOARD)),
+    LEADERBOARD("LEADERBOARD", LeaderBoardPanel::new, Optional.of(Buttons.LEADERBOARD)),
     /**
      * The game panel.
      */
-    PLAY_MENU("PLAY", GamePanel::new, Optional.of(Buttons.PLAY));
+    GAME_MENU("GAME", GamePanel::new, Optional.of(Buttons.PLAY));
 
     private final String name;
     private final Supplier<MenuPanel> panelSupplier;
