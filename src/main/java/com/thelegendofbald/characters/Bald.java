@@ -6,7 +6,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.awt.Rectangle;
+
 import javax.imageio.ImageIO;
+
+import com.thelegendofbald.view.main.TileMap;
 
 public class Bald extends Entity {
     private int attackPower; // Potenza d'attacco
@@ -113,17 +117,74 @@ public class Bald extends Entity {
         //this.updateAnimation();
     }
     
-    public void move() {
-        if (speedX > 0) {
-            facingRight = false; // Bald si muove verso destra
-        } else if (speedX < 0) {
-            facingRight = true; // Bald si muove verso sinistra
-        }
-        this.x += speedX;
-        this.y += speedY;
+    public void move(TileMap tileMap) {
+
+        int hitboxX = 15;
+        int hitboxY = 25;
         
+        //Check for hitbox on x
+        double nextX = x + speedX;
+        Rectangle nextHitboxX = new Rectangle(
+            (int)(nextX + (50 - hitboxX) / 2),
+            (int)(y + (50 - hitboxY) / 2),
+            hitboxX, hitboxY
+        );
+
+        int tileSize = 32;
+        int leftX = nextHitboxX.x / tileSize;
+        int rightX = (nextHitboxX.x + nextHitboxX.width - 1) / tileSize;
+        int topX = nextHitboxX.y / tileSize;
+        int bottomX = (nextHitboxX.y + nextHitboxX.height - 1) / tileSize;
+
+        boolean collisionX = false;
+        for (int tx = leftX; tx <= rightX; tx++) {
+            for (int ty = topX; ty <= bottomX; ty++) {
+                if (tileMap.getTile(tx, ty) == 2) {
+                    collisionX = true;
+                    break;
+                }
+            }
+            if (collisionX) break;
+        }
+
+        if (!collisionX) {
+            x = (int) nextX;
+        }
+
+        //Check for hitbox on y
+        double nextY = y + speedY;
+        Rectangle nextHitboxY = new Rectangle(
+            (int)(x + (50 - hitboxX) / 2),
+            (int)(nextY + (50 - hitboxY) / 2),
+            hitboxX, hitboxY
+        );
+
+        int leftY = nextHitboxY.x / tileSize;
+        int rightY = (nextHitboxY.x + nextHitboxY.width - 1) / tileSize;
+        int topY = nextHitboxY.y / tileSize;
+        int bottomY = (nextHitboxY.y + nextHitboxY.height - 1) / tileSize;
+
+        boolean collisionY = false;
+        for (int tx = leftY; tx <= rightY; tx++) {
+            for (int ty = topY; ty <= bottomY; ty++) {
+                if (tileMap.getTile(tx, ty) == 2) {
+                    collisionY = true;
+                    break;
+                }
+            }
+            if (collisionY) break;
+        }
+
+        if (!collisionY) {
+            y = (int) nextY;
+        }
     }
 
-
-
+    public Rectangle getHitbox() {
+        int width = 15;
+        int height = 25;
+        int offsetX = x + (50 - width) / 2;
+        int offsetY = y + (50 - height) / 2;
+        return new Rectangle(offsetX, offsetY, width, height);
+    }
 }

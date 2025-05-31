@@ -14,12 +14,14 @@ import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.MenuPanel;
+import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
@@ -44,6 +46,7 @@ public class GamePanel extends MenuPanel implements Runnable {
     private final JPanel optionsPanel;
 
     private Thread gameThread;
+    private boolean paused = false;
     private boolean running = false;
     private int fps = ((CustomSlider) VideoSettings.FPS.getJcomponent()).getValue();
 
@@ -76,11 +79,18 @@ public class GamePanel extends MenuPanel implements Runnable {
         InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = this.getActionMap();
 
-        // Tasti premuti
+            // Tasti premuti
         bindKey(im, am, "pressed UP", KeyEvent.VK_UP, true, () -> pressedKeys.add(KeyEvent.VK_UP));
         bindKey(im, am, "pressed DOWN", KeyEvent.VK_DOWN, true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
         bindKey(im, am, "pressed LEFT", KeyEvent.VK_LEFT, true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
         bindKey(im, am, "pressed RIGHT", KeyEvent.VK_RIGHT, true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
+        bindKey(im, am, "pressed ESCAPE", KeyEvent.VK_ESCAPE, true, () -> {
+            if (paused) {
+                closeOptionsPanel();
+            } else {
+                openOptionsPanel();
+            }
+        });
 
         // Tasti rilasciati
         bindKey(im, am, "released UP", KeyEvent.VK_UP, false, () -> pressedKeys.remove(KeyEvent.VK_UP));
@@ -125,14 +135,29 @@ public class GamePanel extends MenuPanel implements Runnable {
         bald.setSpeedY(dy);
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
     public void startGame() {
-        gameThread = new Thread(this);
-        gameThread.start();
+        if (!running) {
+            running = true;
+            gameThread = new Thread(this);
+            gameThread.start();
+        }
+    }
+
+    public void stopGame() {
+        running = false;
+        if (gameThread != null) {
+            gameThread.interrupt();
+            gameThread = null;
+        }
+        this.paused = false; //Reset pausa
     }
 
     @Override
     public void run() {
-        running = true;
         System.out.println("Game loop started!");
 
         long lastTime = System.nanoTime();
@@ -141,7 +166,17 @@ public class GamePanel extends MenuPanel implements Runnable {
         long timer = 0;
         double delta = 0;
 
-        while (true) {
+        while (gameThread != null) {
+
+            if (paused) {
+                
+                try {
+                    Thread.sleep(100); // Riduci uso CPU durante la pausa
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                continue;
+            }
 
             long now = System.nanoTime();
             timer += (now - lastTime);
@@ -169,7 +204,7 @@ public class GamePanel extends MenuPanel implements Runnable {
     private void update() {
 
         handleInput();
-        bald.move();
+        bald.move(tileMap);
         dummyenemy.followPlayer(bald);
         dummyenemy.updateAnimation();
         repaint();
@@ -187,6 +222,12 @@ public class GamePanel extends MenuPanel implements Runnable {
         gridPanel.paintComponent(g2d);
         bald.render(g2d);
         dummyenemy.render(g2d);
+
+        // Disegna la hitbox di Bald
+        Graphics2D g2d2 = (Graphics2D) g.create();
+        g2d2.setColor(new Color(255, 0, 0, 100)); // Rosso semi-trasparente
+        g2d2.draw(bald.getHitbox());
+        g2d2.dispose();
     }
 
     private void scaleGraphics(Graphics g) {
@@ -214,16 +255,30 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.add(optionsPanel, optionsGBC);
     }
 
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void stopGame() {
-        this.running = false;
-    }
-
     public void setFPS(int fps) {
         this.fps = fps;
     }
 
+    public void pauseGame() {
+        this.paused = true;
+    }
+
+    public void resumeGame() {
+        this.paused = false;
+    }
+
+    private void openOptionsPanel() {
+        pauseGame();
+        this.optionsPanel.setVisible(true);
+        this.optionsPanel.requestFocusInWindow();
+        this.repaint();
+    }
+
+    public void closeOptionsPanel() {
+        this.optionsPanel.setVisible(false);
+        pressedKeys.clear(); // Svuota i tasti premuti per evitare stati incoerenti
+        resumeGame();
+        this.requestFocusInWindow();
+        this.repaint();
+    }
 }
