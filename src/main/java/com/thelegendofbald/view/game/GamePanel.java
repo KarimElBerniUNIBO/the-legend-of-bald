@@ -45,7 +45,7 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     private Thread gameThread;
     private boolean running = false;
-    private int fps = ((CustomSlider) VideoSettings.FPS.getJcomponent()).getValue();
+    private int fps = (int) VideoSettings.FPS.getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
 

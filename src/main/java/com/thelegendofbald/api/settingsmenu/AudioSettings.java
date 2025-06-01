@@ -1,9 +1,13 @@
 package com.thelegendofbald.api.settingsmenu;
 
+import java.util.Optional;
+
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 
 import com.thelegendofbald.model.sounds.SoundManager;
+import com.thelegendofbald.view.common.CustomCheckBox;
+import com.thelegendofbald.view.common.CustomComboBox;
 import com.thelegendofbald.view.common.CustomSlider;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -50,12 +54,35 @@ public enum AudioSettings implements SettingOption {
         return this.text;
     }
 
-    @SuppressFBWarnings(
-        value = "EI_EXPOSE_REP",
-        justification = "JComponent must be mutable for UI interaction; safe in enum context."
-    )
     @Override
-    public JComponent getJcomponent() {
+    public Object getValue() {
+        switch (this.jcomponent) {
+            case CustomComboBox<?> combobox -> {
+                return combobox.getSelectedItem();
+            }
+            case CustomSlider slider -> {
+                return slider.getValue();
+            }
+            case CustomCheckBox checkbox -> {
+                return checkbox.isSelected();
+            }
+            default -> {
+                throw new IllegalStateException("Unexpected component type: " + this.jcomponent.getClass().getName());
+            }
+        }
+    }
+
+    @SuppressFBWarnings(
+        value = "EI_EXPOSE_REP", 
+        justification = "The JComponent is used for UI purposes and should not be modified externally."
+    )
+    /**
+     * Returns the {@link JComponent} associated with this audio setting.
+     * 
+     * @return the JComponent for this audio setting
+     */
+    @Override
+    public JComponent getJComponent() {
         return this.jcomponent;
     }
 

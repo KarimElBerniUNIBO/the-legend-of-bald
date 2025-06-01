@@ -2,20 +2,6 @@ package com.thelegendofbald.api.settingsmenu;
 
 import javax.swing.JComponent;
 
-/**
- * Represents a configurable option in the settings menu UI.
- * Implementations of this interface provide the display text and the associated
- * Swing component for the option.
- *
- * <p>
- * Methods:
- * <ul>
- *   <li>{@link #getText()} - Returns the display text for the setting option.</li>
- *   <li>{@link #getJcomponent()} - Returns the Swing {@code JComponent} associated with this option.</li>
- *   <li>{@link #getSize()} - Returns the maximum number of setting options, as defined by {@code Settings.getMaxIndex()}.</li>
- * </ul>
- * </p>
- */
 public interface SettingOption {
 
     /**
@@ -26,19 +12,27 @@ public interface SettingOption {
     String getText();
 
     /**
-     * Returns the Swing {@link JComponent} associated with this setting option.
-     * This component can be used to display or interact with the setting in a user interface.
-     *
-     * @return the {@code JComponent} representing this setting option
+     * Returns the value of the setting option.
+     * The type of the value may vary depending on the specific setting.
+     * 
+     * @return the value of the setting option, which can be of any type
+     * @throws IllegalStateException if the component type is unexpected
      */
-    JComponent getJcomponent();
+    Object getValue() throws IllegalStateException;
+
+    /**
+     * Gets the Swing component associated with this setting option.
+     * 
+     * @return the JComponent that represents the setting option
+     */
+    JComponent getJComponent();
 
     /**
      * Returns the total number of available setting options.
      *
      * @return the number of setting options as an integer
      */
-    static int getSize() {
+    static int getSettingsCount() {
         return Settings.getMaxIndex();
     }
 

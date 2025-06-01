@@ -16,7 +16,6 @@ import com.thelegendofbald.view.common.CustomSlider;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public enum VideoSettings implements SettingOption {
-
     WINDOW_MODE("WINDOW MODE", createWindowModeComboBox()),
     FPS("FRAMERATE PER SECOND", createFPSSlider()),
     SHOW_FPS("SHOW FPS", createShowFPSCheckBox());
@@ -34,9 +33,35 @@ public enum VideoSettings implements SettingOption {
         return this.text;
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "JComponent must be mutable for UI interaction; safe in enum context.")
     @Override
-    public JComponent getJcomponent() {
+    public Object getValue() {
+        switch (this.jcomponent) {
+            case CustomComboBox<?> combobox -> {
+                return combobox.getSelectedItem();
+            }
+            case CustomSlider slider -> {
+                return slider.getValue();
+            }
+            case CustomCheckBox checkbox -> {
+                return checkbox.isSelected();
+            }
+            default -> {
+                throw new IllegalStateException("Unexpected component type: " + this.jcomponent.getClass().getName());
+            }
+        }
+    }
+
+    @SuppressFBWarnings(
+        value = "EI_EXPOSE_REP", 
+        justification = "The JComponent is used for UI purposes and should not be modified externally."
+    )
+    /**
+     * Returns the {@link JComponent} associated with this video setting.
+     *
+     * @return the JComponent for this video setting
+     */
+    @Override
+    public JComponent getJComponent() {
         return this.jcomponent;
     }
 

@@ -13,6 +13,7 @@ import com.thelegendofbald.view.buttons.KeybindingButton;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+
 /**
  * The {@code KeybindsSettings} enum represents the configurable key binding
  * options
@@ -84,16 +85,30 @@ public enum ControlsSettings implements SettingOption {
         return this.text;
     }
 
+    @Override
+    public Object getValue() {
+        return KeyEvent.getKeyText(this.getKey());
+    }
+
+    @SuppressFBWarnings(
+        value = "EI_EXPOSE_REP", 
+        justification = "The JComponent is used for UI purposes and should not be modified externally."
+    )
+    /**
+     * Returns the {@link JComponent} associated with this keybinding setting.
+     *
+     * @return the JComponent for this keybinding setting
+     */
+    @Override
+    public JComponent getJComponent() {
+        return this.jcomponent;
+    }
+
     /**
      * Returns the key code associated with this keybinding setting.
      *
      * @return the key code as an {@code int}
      * @see KeyEvent
-     */
-    /**
-     * Returns the key code associated with this key binding.
-     *
-     * @return the integer value representing the key code
      */
     public int getKey() {
         return this.key;
@@ -102,20 +117,12 @@ public enum ControlsSettings implements SettingOption {
     /**
      * Sets the key code for this keybinding setting.
      *
-     * @param key the new key code to set
+     * @param key the new {@code KeyEvent int} key code to set
+     * @see KeyEvent
      */
     public void setKey(final int key) {
         this.key = key;
         updateButtonText((JButton) this.jcomponent, key);
-    }
-
-    @SuppressFBWarnings(
-        value = "EI_EXPOSE_REP",
-        justification = "JComponent must be mutable for UI interaction; safe in enum context."
-    )
-    @Override
-    public JComponent getJcomponent() {
-        return this.jcomponent;
     }
 
     /**
@@ -143,7 +150,7 @@ public enum ControlsSettings implements SettingOption {
      */
     public static void setKeyCode(final ControlsSettings keybind, final int key) {
         keybind.setKey(key);
-        updateButtonText((JButton) keybind.getJcomponent(), key);
+        updateButtonText((JButton) keybind.getJComponent(), key);
     }
 
     /**

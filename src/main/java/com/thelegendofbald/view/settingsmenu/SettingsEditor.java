@@ -54,7 +54,7 @@ public final class SettingsEditor extends AdapterPanel {
 
     private List<ConfigPanel> getConfigsPanels() {
         return this.settings.getConfigs().stream()
-                .map(config -> new ConfigPanel(config.getText(), config.getJcomponent())).toList();
+                .map(config -> new ConfigPanel(config.getText(), config.getJComponent())).toList();
     }
 
     @Override
