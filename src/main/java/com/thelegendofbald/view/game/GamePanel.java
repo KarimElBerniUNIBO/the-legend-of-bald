@@ -2,6 +2,7 @@ package com.thelegendofbald.view.game;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -23,7 +24,6 @@ import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
-import com.thelegendofbald.view.common.CustomSlider;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.main.GameWindow;
 import com.thelegendofbald.view.main.GridPanel;
@@ -33,6 +33,8 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     private static final double OPTIONS_WIDTH_INSETS = 0.25;
     private static final double OPTIONS_HEIGHT_INSETS = 0.1;
+
+    private static final Font FPS_FONT = new Font(Font.MONOSPACED, Font.BOLD, 20);
 
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints optionsGBC = gbcFactory.createBothGridBagConstraints();
@@ -45,7 +47,9 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     private Thread gameThread;
     private boolean running = false;
-    private int fps = (int) VideoSettings.FPS.getValue();
+    private int maxFPS = (int) VideoSettings.FPS.getValue();
+    private boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
+    private int currentFPS = 0;
 
     private final Set<Integer> pressedKeys = new HashSet<>();
 
@@ -145,7 +149,7 @@ public class GamePanel extends MenuPanel implements Runnable {
 
             long now = System.nanoTime();
             timer += (now - lastTime);
-            interval = 1e9 / fps;
+            interval = 1e9 / maxFPS;
             delta += (now - lastTime) / interval;
             lastTime = now;
 
@@ -157,8 +161,9 @@ public class GamePanel extends MenuPanel implements Runnable {
                 drawCount++; // check FPS
             }
 
-            if (timer >= 1000000000) {
-                // System.out.println("FPS:" + drawCount);
+            if (timer >= 1e9) {
+                //System.out.println("FPS:" + drawCount);
+                currentFPS = drawCount;
                 drawCount = 0;
                 timer = 0;
             }
@@ -178,15 +183,25 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
         Graphics2D g2d = (Graphics2D) g.create();
-        this.scaleGraphics(g2d);
+        super.paintComponent(g2d);
 
+        this.scaleGraphics(g2d);
         tileMap.render(g2d);
         gridPanel.paintComponent(g2d);
         bald.render(g2d);
         dummyenemy.render(g2d);
+        this.drawFPS(g2d);
+
+        g2d.dispose();
+    }
+
+    private void drawFPS(Graphics g) {
+        if (showingFPS) {
+            g.setColor(Color.YELLOW);
+            g.setFont(FPS_FONT);
+            g.drawString("FPS: " + currentFPS, 15, 25);
+        }
     }
 
     private void scaleGraphics(Graphics g) {
@@ -223,7 +238,15 @@ public class GamePanel extends MenuPanel implements Runnable {
     }
 
     public void setFPS(int fps) {
-        this.fps = fps;
+        this.maxFPS = fps;
+    }
+
+    public void setShowingFPS(boolean showingFPS) {
+        this.showingFPS = showingFPS;
+    }
+
+    public boolean isShowingFPS() {
+        return showingFPS;
     }
 
 }

@@ -113,15 +113,16 @@ public final class GameWindow extends JFrame implements View, MainView {
 
     @Override
     public void setFPS(int fps) {
+        GamePanel game = (GamePanel) Panels.GAME_MENU.getPanel();
         System.out.println("Setting FPS to: " + fps);
-        ((GamePanel) Panels.GAME_MENU.getPanel()).setFPS(fps);
-        // TODO: Implement FPS setting logic in GamePanel
+        game.setFPS(fps);
     }
 
     @Override
-    public void toggleViewFps(boolean showFPS) {
-        System.out.println("Setting show FPS to: " + showFPS);
-        // TODO: Implement FPS display toggle
+    public void toggleViewFps(boolean showingFPS) {
+        GamePanel game = (GamePanel) Panels.GAME_MENU.getPanel();
+        System.out.println("Setting show FPS to: " + showingFPS);
+        game.setShowingFPS(showingFPS);
     }
 
 }
