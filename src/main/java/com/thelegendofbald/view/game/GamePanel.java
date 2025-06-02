@@ -72,7 +72,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.gridPanel.setBounds(0, 0, size.width, size.height);
 
         this.optionsPanel = new GameOptionsPanel(size);
-        this.inventoryPanel = new InventoryPanel("INVENTORY", size);
+        this.inventoryPanel = new InventoryPanel("INVENTORY", size, 5, 3);
 
         this.tileMap = new TileMap(size.width, size.height);
         this.requestFocusInWindow();

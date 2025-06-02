@@ -11,25 +11,29 @@ import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 class InventoryContent extends AdapterPanel {
-
-    private static final int MAX_SLOTS_PER_ROW = 5;
-    private static final int MAX_ROWS = 3;
-    private static final int MAX_SLOTS = MAX_SLOTS_PER_ROW * MAX_ROWS;
     
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private final List<Slot> inventorySlots = this.getInventorySlots();
+    private final List<Slot> inventorySlots;
+    private final int maxSlotsPerRow;
+    private final int maxRows;
+    private final int maxSlots;
 
-    InventoryContent(Dimension size) {
+    InventoryContent(Dimension size, int maxSlotsPerRow, int maxRows) {
         super(size);
+        this.maxSlotsPerRow = maxSlotsPerRow;
+        this.maxRows = maxRows;
+        this.maxSlots = this.maxSlotsPerRow * this.maxRows;
+        this.inventorySlots = this.getInventorySlots();
+
         this.setLayout(new GridBagLayout());
         this.setOpaque(false);
     }
 
     private List<Slot> getInventorySlots() {
-        return Stream.iterate(0, i -> i + 1).limit(MAX_SLOTS)
-                .map(i -> new Slot())
+        return Stream.generate(Slot::new)
+                .limit(maxSlots)
                 .toList();
     }
 
@@ -40,7 +44,7 @@ class InventoryContent extends AdapterPanel {
     @Override
     public void addComponentsToPanel() {
         inventorySlots.forEach(slot -> {
-            this.gbc.gridx = inventorySlots.indexOf(slot) % MAX_SLOTS_PER_ROW;
+            this.gbc.gridx = inventorySlots.indexOf(slot) % maxSlotsPerRow;
             this.add(slot, this.gbc);
         });
     }

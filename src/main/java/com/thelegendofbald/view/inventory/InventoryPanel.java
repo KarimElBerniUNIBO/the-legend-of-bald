@@ -32,13 +32,19 @@ public class InventoryPanel extends AdapterPanel {
     private final GridBagConstraints inventoryContentGBC = gbcFactory.createBothGridBagConstraints();
 
     private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+
     private final String titleText;
+    private final int maxSlotsPerRow;
+    private final int maxRows;
+
     private Optional<TextLabel> title = Optional.empty();
     private Optional<JPanel> inventoryContent = Optional.empty();
 
-    public InventoryPanel(String title, Dimension size) {
+    public InventoryPanel(String title, Dimension size, int maxSlotsPerRow, int maxRows) {
         super(size);
         this.titleText = title;
+        this.maxSlotsPerRow = maxSlotsPerRow;
+        this.maxRows = maxRows;
         this.setLayout(new GridBagLayout());
         this.setVisible(true);
         SwingUtilities.invokeLater(() -> this.setBackground(DEFAULT_BG_COLOR));
@@ -48,7 +54,8 @@ public class InventoryPanel extends AdapterPanel {
     protected void initializeComponents() {
         this.title = Optional.of(tlFactory.createTextLabelWithProportion(titleText, this.getSize(),
                 Optional.of(TITLE_PROPORTION), Optional.empty(), Optional.empty(), Optional.empty()));
-        this.inventoryContent = Optional.of(new InventoryContent(this.getSize()));
+        this.inventoryContent = Optional.of(new InventoryContent(this.getSize(), 
+                this.maxSlotsPerRow, this.maxRows));
 
         super.initializeComponents();
     }

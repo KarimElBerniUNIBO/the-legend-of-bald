@@ -32,8 +32,8 @@ final class ContentPanel extends AdapterPanel {
     }
 
     private List<PlayerTimePanel> getPlayersList() {
-        return Stream.iterate(0, i -> i < MAX_PLAYERS, i -> i + 1)
-                .map(i -> new PlayerTimePanel())
+        return Stream.generate(PlayerTimePanel::new)
+                .limit(MAX_PLAYERS)
                 .toList();
     }
 

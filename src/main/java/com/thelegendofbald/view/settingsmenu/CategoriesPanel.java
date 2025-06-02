@@ -69,7 +69,7 @@ final class CategoriesPanel extends AdapterPanel implements InteractivePanel {
      */
 
     private void connectButtonsWithActionListeners() {
-        Stream.iterate(0, i -> i < this.buttons.size(), i -> i + 1)
+        Stream.iterate(0, i -> i + 1).limit(this.buttons.size())
                 .forEach(i -> this.buttons.get(i)
                         .addActionListener(new SwitchToOtherSettingsEditorPanel(sem, Settings.getSettingByIndex(i))));
     }
