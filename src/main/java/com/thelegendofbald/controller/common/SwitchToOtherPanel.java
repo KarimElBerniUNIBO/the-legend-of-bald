@@ -1,4 +1,4 @@
-package com.thelegendofbald.controller.ui.common;
+package com.thelegendofbald.controller.common;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

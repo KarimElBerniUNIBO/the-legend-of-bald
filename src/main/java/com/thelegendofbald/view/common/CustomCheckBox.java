@@ -9,8 +9,8 @@ import javax.swing.SwingUtilities;
 import com.thelegendofbald.api.common.Resizable;
 import com.thelegendofbald.api.views.MenuView;
 import com.thelegendofbald.api.views.View;
-import com.thelegendofbald.controller.ui.listeners.ResizeListener;
-import com.thelegendofbald.controller.ui.listeners.TemplateButtonMouseListener;
+import com.thelegendofbald.controller.listeners.ResizeListener;
+import com.thelegendofbald.controller.listeners.buttons.TemplateButtonMouseListener;
 import com.thelegendofbald.utils.ImageUtils;
 
 /**

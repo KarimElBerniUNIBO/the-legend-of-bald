@@ -17,7 +17,7 @@ import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.common.TextLabelFactory;
 import com.thelegendofbald.api.game.Buttons;
 import com.thelegendofbald.api.panels.AdapterPanel;
-import com.thelegendofbald.controller.ui.common.SwitchToOtherPanel;
+import com.thelegendofbald.controller.common.SwitchToOtherPanel;
 import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;

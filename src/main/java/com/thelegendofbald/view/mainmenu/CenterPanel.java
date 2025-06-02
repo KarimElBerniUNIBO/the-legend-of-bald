@@ -15,7 +15,7 @@ import com.thelegendofbald.api.mainmenu.Buttons;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.panels.InteractivePanel;
 import com.thelegendofbald.api.panels.Panels;
-import com.thelegendofbald.controller.ui.common.SwitchToOtherPanel;
+import com.thelegendofbald.controller.common.SwitchToOtherPanel;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.main.GameWindow;
 

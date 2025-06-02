@@ -1,4 +1,4 @@
-package com.thelegendofbald.controller.ui.listeners;
+package com.thelegendofbald.controller.listeners.buttons;
 
 import java.awt.event.MouseEvent;
 import java.util.Optional;
