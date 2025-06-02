@@ -8,15 +8,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
 import com.thelegendofbald.api.panels.AdapterPanel;
+import com.thelegendofbald.controller.listeners.common.SlotMouseListener;
 
-class Slot extends AdapterPanel {
+public final class Slot extends AdapterPanel {
 
     private static final Color DEFAULT_BG_COLOR = new Color(60, 60, 60, 180);
 
-    Slot() {
+    public Slot() {
         super(new Dimension(0, 0));
         this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         SwingUtilities.invokeLater(() -> this.setBackground(DEFAULT_BG_COLOR));
+        this.addMouseListener(new SlotMouseListener(this));
     }
 
     @Override

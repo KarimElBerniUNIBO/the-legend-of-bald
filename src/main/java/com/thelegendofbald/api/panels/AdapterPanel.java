@@ -3,7 +3,7 @@ package com.thelegendofbald.api.panels;
 import java.awt.Dimension;
 
 import com.thelegendofbald.api.common.Resizable;
-import com.thelegendofbald.controller.listeners.ResizeListener;
+import com.thelegendofbald.controller.listeners.common.ResizeListener;
 
 /**
  * An abstract panel that adapts its layout and components based on resizing events.

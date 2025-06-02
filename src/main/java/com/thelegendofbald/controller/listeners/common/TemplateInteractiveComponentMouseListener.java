@@ -1,4 +1,4 @@
-package com.thelegendofbald.controller.listeners.buttons;
+package com.thelegendofbald.controller.listeners.common;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -7,29 +7,22 @@ import com.thelegendofbald.model.sounds.SoundPlayer;
 
 
 /**
- * An abstract MouseAdapter that provides default sound effects for button mouse events.
+ * An abstract mouse listener class that provides default behavior for mouse events
+ * on UI components, specifically designed to handle sound effects for mouse interactions.
  * <p>
- * This listener plays specific sound effects when the mouse enters, is pressed, or is released
- * on a button component. The sound effect files are expected to be located in the "/button" resource path.
+ * This class extends {@link MouseAdapter} and implements methods to play sound effects
+ * when the mouse enters, presses, or releases a component.
  * </p>
- * <ul>
- *   <li>{@code mouseEntered}: Plays a hover sound effect.</li>
- *   <li>{@code mousePressed}: Plays a pressed sound effect.</li>
- *   <li>{@code mouseReleased}: Plays a released sound effect.</li>
- * </ul>
- * 
- * <p>
- * Subclasses can extend this class to add additional behavior to button mouse events
- * while retaining the default sound feedback.
- * </p>
+ *
+ * @see MouseAdapter
  */
-public abstract class TemplateButtonMouseListener extends MouseAdapter {
+public abstract class TemplateInteractiveComponentMouseListener extends MouseAdapter {
 
     /**
      * The base path used for locating button-related resources within the application.
      * This constant serves as the starting directory for button assets or templates.
      */
-    protected static final String STARTING_PATH = "/button";
+    protected static final String STARTING_PATH = "/interactive-components";
 
     /**
      * The file path to the sound effect that plays when the mouse hovers over a UI element.

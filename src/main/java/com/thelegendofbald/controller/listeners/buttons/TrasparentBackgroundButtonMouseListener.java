@@ -4,6 +4,7 @@ import java.awt.event.MouseEvent;
 import java.util.Optional;
 
 import com.thelegendofbald.api.panels.InteractivePanel;
+import com.thelegendofbald.controller.listeners.common.TemplateInteractiveComponentMouseListener;
 import com.thelegendofbald.utils.ColorUtils;
 import com.thelegendofbald.view.buttons.TrasparentBackgroundButton;
 
@@ -20,10 +21,10 @@ import com.thelegendofbald.view.buttons.TrasparentBackgroundButton;
  * </p>
  *
  * @see TrasparentBackgroundButton
- * @see TemplateButtonMouseListener
+ * @see TemplateInteractiveComponentMouseListener
  * @see InteractivePanel
  */
-public class TrasparentBackgroundButtonMouseListener extends TemplateButtonMouseListener {
+public class TrasparentBackgroundButtonMouseListener extends TemplateInteractiveComponentMouseListener {
 
     private static final double FACTOR_OF_DARKNESS = 0.6;
 

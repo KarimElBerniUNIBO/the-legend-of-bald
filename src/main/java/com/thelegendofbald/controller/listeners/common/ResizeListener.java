@@ -1,4 +1,4 @@
-package com.thelegendofbald.controller.listeners;
+package com.thelegendofbald.controller.listeners.common;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
