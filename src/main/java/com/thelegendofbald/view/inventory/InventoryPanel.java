@@ -40,11 +40,11 @@ public class InventoryPanel extends AdapterPanel {
     private Optional<TextLabel> title = Optional.empty();
     private Optional<JPanel> inventoryContent = Optional.empty();
 
-    public InventoryPanel(String title, Dimension size, int maxSlotsPerRow, int maxRows) {
+    public InventoryPanel(String title, Dimension size, int columns, int rows) {
         super(size);
         this.titleText = title;
-        this.maxSlotsPerRow = maxSlotsPerRow;
-        this.maxRows = maxRows;
+        this.maxSlotsPerRow = columns;
+        this.maxRows = rows;
         this.setLayout(new GridBagLayout());
         this.setVisible(true);
         SwingUtilities.invokeLater(() -> this.setBackground(DEFAULT_BG_COLOR));
