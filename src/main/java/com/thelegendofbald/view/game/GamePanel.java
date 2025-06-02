@@ -25,6 +25,7 @@ import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
+import com.thelegendofbald.view.inventory.InventoryPanel;
 import com.thelegendofbald.view.main.GameWindow;
 import com.thelegendofbald.view.main.GridPanel;
 import com.thelegendofbald.view.main.TileMap;
@@ -34,16 +35,21 @@ public class GamePanel extends MenuPanel implements Runnable {
     private static final double OPTIONS_WIDTH_INSETS = 0.25;
     private static final double OPTIONS_HEIGHT_INSETS = 0.1;
 
+    private static final double INVENTORY_WIDTH_INSETS = 0.25;
+    private static final double INVENTORY_HEIGHT_INSETS = 0.25;
+
     private static final Font FPS_FONT = new Font(Font.MONOSPACED, Font.BOLD, 20);
 
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints optionsGBC = gbcFactory.createBothGridBagConstraints();
+    private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
 
     private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
     private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
     private final GridPanel gridPanel;
     private final TileMap tileMap;
     private final JPanel optionsPanel;
+    private final JPanel inventoryPanel;
 
     private Thread gameThread;
     private boolean running = false;
@@ -66,6 +72,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.gridPanel.setBounds(0, 0, size.width, size.height);
 
         this.optionsPanel = new GameOptionsPanel(size);
+        this.inventoryPanel = new InventoryPanel("INVENTORY", size);
 
         this.tileMap = new TileMap(size.width, size.height);
         this.requestFocusInWindow();
@@ -220,6 +227,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         optionsGBC.insets.set((int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
                 (int) (this.getWidth() * OPTIONS_WIDTH_INSETS), (int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
                 (int) (this.getWidth() * OPTIONS_WIDTH_INSETS));
+        inventoryGBC.insets.set((int) (this.getHeight() * INVENTORY_HEIGHT_INSETS), (int) (this.getWidth() * INVENTORY_WIDTH_INSETS), (int) (this.getHeight() * INVENTORY_HEIGHT_INSETS), (int) (this.getWidth() * INVENTORY_WIDTH_INSETS));
     }
 
     @Override
@@ -227,6 +235,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.updateComponentsSize();
         this.add(gridPanel);
         this.add(optionsPanel, optionsGBC);
+        this.add(inventoryPanel, inventoryGBC);
     }
 
     public boolean isRunning() {

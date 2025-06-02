@@ -35,7 +35,7 @@ public final class GameOptionsPanel extends AdapterPanel {
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
-    private Optional<TextLabel> title;
+    private Optional<TextLabel> title = Optional.empty();
 
     private final List<JButton> buttons = this.getButtonsList();
 
