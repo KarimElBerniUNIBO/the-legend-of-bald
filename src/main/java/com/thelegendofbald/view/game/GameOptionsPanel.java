@@ -25,7 +25,7 @@ import com.thelegendofbald.view.main.GameWindow;
 
 public final class GameOptionsPanel extends AdapterPanel {
 
-    private static final Color DEFAULT_BG_COLOR = new Color(0, 0, 0, 150);
+    private static final Color DEFAULT_BG_COLOR = new Color(0, 0, 0, 180);
     private static final Pair<Double, Double> TITLE_PROPORTION = Pair.of(1.0, 0.3);
 
     private static final double WIDTH_INSETS = 0.1;

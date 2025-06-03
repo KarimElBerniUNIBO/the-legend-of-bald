@@ -13,8 +13,6 @@ import com.thelegendofbald.view.common.CustomCheckBox;
 import com.thelegendofbald.view.common.CustomComboBox;
 import com.thelegendofbald.view.common.CustomSlider;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 public enum VideoSettings implements SettingOption {
     WINDOW_MODE("WINDOW MODE", createWindowModeComboBox()),
     FPS("FRAMERATE PER SECOND", createFPSSlider()),
@@ -50,13 +48,10 @@ public enum VideoSettings implements SettingOption {
             }
         }
     }
-
-    @SuppressFBWarnings(
-        value = "EI_EXPOSE_REP", 
-        justification = "The JComponent is used for UI purposes and should not be modified externally."
-    )
+    
     /**
      * Returns the {@link JComponent} associated with this video setting.
+     * <b>Note:</b> The component should not be modified externally as it is intended for UI purposes only.
      *
      * @return the JComponent for this video setting
      */

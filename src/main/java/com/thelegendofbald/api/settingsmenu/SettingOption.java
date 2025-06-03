@@ -22,6 +22,7 @@ public interface SettingOption {
 
     /**
      * Gets the Swing component associated with this setting option.
+     * <b>Note:</b> The component should not be modified externally as it is intended for UI purposes only.
      * 
      * @return the JComponent that represents the setting option
      */

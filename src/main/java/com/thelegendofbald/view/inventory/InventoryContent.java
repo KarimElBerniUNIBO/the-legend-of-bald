@@ -15,25 +15,25 @@ class InventoryContent extends AdapterPanel {
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private final List<Slot> slots;
-    private final int columns;
-    private final int rows;
-    private final int totalSlots;
+    private final List<Slot> inventorySlots;
+    private final int maxSlotsPerRow;
+    private final int maxRows;
+    private final int maxSlots;
 
     InventoryContent(Dimension size, int columns, int rows) {
         super(size);
-        this.columns = columns;
-        this.rows = rows;
-        this.totalSlots = this.columns * this.rows;
-        this.slots = this.getSlots();
+        this.maxSlotsPerRow = columns;
+        this.maxRows = rows;
+        this.maxSlots = this.maxSlotsPerRow * this.maxRows;
+        this.inventorySlots = this.getInventorySlots();
 
         this.setLayout(new GridBagLayout());
         this.setOpaque(false);
     }
 
-    private List<Slot> getSlots() {
+    private List<Slot> getInventorySlots() {
         return Stream.generate(Slot::new)
-                .limit(totalSlots)
+                .limit(maxSlots)
                 .toList();
     }
 
@@ -43,8 +43,8 @@ class InventoryContent extends AdapterPanel {
 
     @Override
     public void addComponentsToPanel() {
-        slots.forEach(slot -> {
-            this.gbc.gridx = slots.indexOf(slot) % columns;
+        inventorySlots.forEach(slot -> {
+            this.gbc.gridx = inventorySlots.indexOf(slot) % maxSlotsPerRow;
             this.add(slot, this.gbc);
         });
     }

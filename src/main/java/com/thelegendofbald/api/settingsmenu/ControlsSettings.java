@@ -11,8 +11,6 @@ import com.thelegendofbald.api.buttons.JButtonFactory;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.buttons.KeybindingButton;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 
 /**
  * The {@code KeybindsSettings} enum represents the configurable key binding
@@ -90,12 +88,9 @@ public enum ControlsSettings implements SettingOption {
         return KeyEvent.getKeyText(this.getKey());
     }
 
-    @SuppressFBWarnings(
-        value = "EI_EXPOSE_REP", 
-        justification = "The JComponent is used for UI purposes and should not be modified externally."
-    )
     /**
      * Returns the {@link JComponent} associated with this keybinding setting.
+     * <b>Note:</b> The component should not be modified externally as it is intended for UI purposes only.
      *
      * @return the JComponent for this keybinding setting
      */

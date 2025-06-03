@@ -1,7 +1,5 @@
 package com.thelegendofbald.api.settingsmenu;
 
-import java.util.Optional;
-
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 
@@ -9,8 +7,6 @@ import com.thelegendofbald.model.sounds.SoundManager;
 import com.thelegendofbald.view.common.CustomCheckBox;
 import com.thelegendofbald.view.common.CustomComboBox;
 import com.thelegendofbald.view.common.CustomSlider;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * The {@code AudioSettings} enum defines audio-related settings options for the
@@ -72,12 +68,9 @@ public enum AudioSettings implements SettingOption {
         }
     }
 
-    @SuppressFBWarnings(
-        value = "EI_EXPOSE_REP", 
-        justification = "The JComponent is used for UI purposes and should not be modified externally."
-    )
     /**
      * Returns the {@link JComponent} associated with this audio setting.
+     * <b>Note:</b> The component should not be modified externally as it is intended for UI purposes only.
      * 
      * @return the JComponent for this audio setting
      */
