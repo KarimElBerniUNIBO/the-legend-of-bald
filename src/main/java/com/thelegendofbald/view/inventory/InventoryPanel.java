@@ -46,7 +46,7 @@ public class InventoryPanel extends AdapterPanel {
         this.maxSlotsPerRow = columns;
         this.maxRows = rows;
         this.setLayout(new GridBagLayout());
-        this.setVisible(true);
+        this.setVisible(false);
         SwingUtilities.invokeLater(() -> this.setBackground(DEFAULT_BG_COLOR));
     }
 

@@ -16,7 +16,8 @@ import com.thelegendofbald.view.common.CustomSlider;
 public enum VideoSettings implements SettingOption {
     WINDOW_MODE("WINDOW MODE", createWindowModeComboBox()),
     FPS("FRAMERATE PER SECOND", createFPSSlider()),
-    SHOW_FPS("SHOW FPS", createShowFPSCheckBox());
+    SHOW_FPS("SHOW FPS", createShowFPSCheckBox()),
+    SHOW_TIMER("SHOW TIMER", createShowTimerCheckBox());
 
     private final String text;
     private final JComponent jcomponent;
@@ -97,6 +98,12 @@ public enum VideoSettings implements SettingOption {
             var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
             window.toggleViewFps(isSelected);
         });
+        return checkBox;
+    }
+
+    private static CustomCheckBox createShowTimerCheckBox() {
+        var checkBox = new CustomCheckBox();
+        // TODO: Implement show timer functionality
         return checkBox;
     }
 
