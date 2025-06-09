@@ -59,6 +59,7 @@ public final class SettingsEditor extends AdapterPanel {
 
     @Override
     public void addComponentsToPanel() {
+        this.updateComponentsSize();
         this.configsPanels.stream()
                 .forEach(cp -> {
                     gbc.gridy = configsPanels.indexOf(cp);
@@ -69,16 +70,13 @@ public final class SettingsEditor extends AdapterPanel {
     @Override
     public void setPreferredSize(final Dimension size) {
         super.setPreferredSize(size);
-        SwingUtilities.invokeLater(() -> {
-            this.setMaximumSize(size);
-            this.updateComponentsSize();
-            this.addComponentsToPanel();
-        });
+        SwingUtilities.invokeLater(this::updateView);
     }
 
     @Override
     public void updateComponentsSize() {
-        this.configsPanels.forEach(cp -> cp.setPreferredSize(this.getSize()));
+        final var preferredSize = new Dimension(this.getWidth(), (int) (this.getHeight() / this.configsPanels.size()));
+        this.configsPanels.forEach(cp -> cp.setPreferredSize(preferredSize));
     }
 
 }

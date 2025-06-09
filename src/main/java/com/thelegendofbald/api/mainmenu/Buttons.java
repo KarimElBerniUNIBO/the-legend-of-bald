@@ -1,6 +1,13 @@
 package com.thelegendofbald.api.mainmenu;
 
+import java.awt.Color;
 import java.util.Arrays;
+import java.util.Optional;
+
+import javax.swing.JButton;
+
+import com.thelegendofbald.api.buttons.JButtonFactory;
+import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 
 /**
  * Enum representing the main menu buttons in the application.
@@ -19,22 +26,27 @@ public enum Buttons {
     /**
      * Button to start the game.
      */
-    PLAY("PLAY", 0),
+    PLAY("PLAY"),
     /**
      * Button to access settings.
      */
-    SETTINGS("SETTINGS", 1),
+    SETTINGS("SETTINGS"),
     /**
      * Button to view the leaderboard.
      */
-    LEADERBOARD("LEADERBOARD", 2);
+    LEADERBOARD("LEADERBOARD");
 
-    private final String name;
-    private final int index;
+    private static final double DEFAULT_ARC_PROPORTION = 0.2;
 
-    Buttons(final String name, final int index) {
-        this.name = name;
-        this.index = index;
+    private final String text;
+
+    private final JButtonFactory jbFactory = new JButtonFactoryImpl();
+    private final JButton button;
+
+    Buttons(final String text) {
+        this.text = text;
+        this.button = jbFactory.createRoundedButton(this.text, Optional.empty(), DEFAULT_ARC_PROPORTION, Optional.empty(),
+                Optional.empty(), Optional.of(Color.BLACK), Optional.empty());
     }
 
     /**
@@ -42,8 +54,8 @@ public enum Buttons {
      *
      * @return the name of the button
      */
-    public String getName() {
-        return this.name;
+    public String getText() {
+        return this.text;
     }
 
     /**
@@ -52,7 +64,16 @@ public enum Buttons {
      * @return the index value of this object
      */
     public int getIndex() {
-        return this.index;
+        return this.ordinal();
+    }
+
+    /**
+     * Returns the underlying {@link JButton} instance associated with this object.
+     *
+     * @return the {@code JButton} managed by this class
+     */
+    public JButton getButton() {
+        return this.button;
     }
 
     /**

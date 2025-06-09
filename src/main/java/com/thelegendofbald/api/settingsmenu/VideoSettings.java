@@ -8,6 +8,8 @@ import javax.swing.JSlider;
 
 import com.thelegendofbald.view.common.CustomCheckBox;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * The {@code VideoSettings} enum defines the available video-related settings
  * for the application, each associated with a display text and a corresponding
@@ -51,6 +53,10 @@ public enum VideoSettings implements SettingOption {
         return this.text;
     }
 
+    @SuppressFBWarnings(
+        value = "EI_EXPOSE_REP",
+        justification = "JComponent must be mutable for UI interaction; safe in enum context."
+    )
     @Override
     public JComponent getJcomponent() {
         return this.jcomponent;

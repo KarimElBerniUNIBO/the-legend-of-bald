@@ -9,17 +9,18 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import com.thelegendofbald.api.views.MainView;
+import com.thelegendofbald.api.panels.MenuPanel;
+import com.thelegendofbald.api.settingsmenu.KeybindsSettings;
 import com.thelegendofbald.api.views.View;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.item.Chest;
 import com.thelegendofbald.item.Potion;
 
-public class GamePanel extends JPanel {
+public class GamePanel extends MenuPanel {
 
     private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
     private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
@@ -31,11 +32,11 @@ public class GamePanel extends JPanel {
     Timer timer = new Timer(16, e -> update());
     private final Set<Integer> pressedKeys = new HashSet<>();
 
-    private final MainView window;
 
-    public GamePanel(Dimension size, MainView window) {
-        this.window = window;
-        this.setPreferredSize(size);
+    public GamePanel() {
+        super();
+        Dimension size = new Dimension(1280, 704);
+        //this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
         this.setLayout(null);
@@ -67,13 +68,11 @@ public class GamePanel extends JPanel {
 
     private void handleInput() {
         bald.updateAnimation();
-        bald.setSpeedX(pressedKeys.contains(KeyEvent.VK_RIGHT) ? 5 :
-                       pressedKeys.contains(KeyEvent.VK_LEFT) ? -5 : 0);
-        bald.setSpeedY(pressedKeys.contains(KeyEvent.VK_DOWN) ? 5 :
-                       pressedKeys.contains(KeyEvent.VK_UP) ? -5 : 0);
-        if(pressedKeys.contains(KeyEvent.VK_E)){
-            this.chest.setChestOpen();
-        }
+        bald.setSpeedX(pressedKeys.contains(KeybindsSettings.RIGHT.getKey()) ? 5 :
+                       pressedKeys.contains(KeybindsSettings.LEFT.getKey()) ? -5 : 0);
+        bald.setSpeedY(pressedKeys.contains(KeybindsSettings.DOWN.getKey()) ? 5 :
+                       pressedKeys.contains(KeybindsSettings.UP.getKey()) ? -5 : 0);
+     
     }
 
     
@@ -101,9 +100,17 @@ public class GamePanel extends JPanel {
     }
 
     private void scaleGraphics(Graphics g) {
-        double scaleX = this.getWidth() / ((View) window).getInternalSize().getWidth();
-        double scaleY = this.getHeight() / ((View) window).getInternalSize().getHeight();
+        double scaleX = this.getWidth() / ((View) SwingUtilities.getWindowAncestor(this)).getInternalSize().getWidth();
+        double scaleY = this.getHeight() / ((View) SwingUtilities.getWindowAncestor(this)).getInternalSize().getHeight();
         ((Graphics2D) g).scale(scaleX, scaleY);
+    }
+
+    @Override
+    public void updateComponentsSize() {
+    }
+
+    @Override
+    public void addComponentsToPanel() {
     }
 }
 

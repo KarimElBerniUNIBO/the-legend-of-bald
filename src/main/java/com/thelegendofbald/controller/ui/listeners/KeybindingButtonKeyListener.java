@@ -2,10 +2,10 @@ package com.thelegendofbald.controller.ui.listeners;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 
 import javax.swing.SwingUtilities;
 
+import com.thelegendofbald.api.settingsmenu.KeybindsSettings;
 import com.thelegendofbald.view.buttons.KeybindingButton;
 
 /**
@@ -17,6 +17,17 @@ import com.thelegendofbald.view.buttons.KeybindingButton;
  * </p>
  */
 public class KeybindingButtonKeyListener extends KeyAdapter {
+
+    private final KeybindingButton button;
+
+    /**
+     * Constructs a new {@code KeybindingButtonKeyListener} with the specified {@link KeybindingButton}.
+     *
+     * @param button the {@link KeybindingButton} associated with this key listener
+     */
+    public KeybindingButtonKeyListener(final KeybindingButton button) {
+        this.button = button;
+    }
 
     /**
      * Handles key press events for {@code KeybindingButton} components.
@@ -31,18 +42,11 @@ public class KeybindingButtonKeyListener extends KeyAdapter {
     @Override
     public void keyPressed(final KeyEvent e) {
         super.keyPressed(e);
-        final var button = (KeybindingButton) e.getSource();
         if (button.isChanging()) {
             final var keyCode = e.getKeyCode();
-            final var keyCodeToString = KeyEvent.getKeyText(keyCode);
+            button.setChanging(false);
             SwingUtilities.invokeLater(() -> {
-                button.setText(keyCodeToString);
-                button.setChanging(false);
-                Arrays.stream(button.getKeyListeners())
-                        .filter(kl -> kl instanceof KeybindingButtonMouseListener)
-                        .map(kl -> (KeybindingButtonMouseListener) kl)
-                        .findFirst()
-                        .ifPresent(listener -> listener.setOriginalText(keyCodeToString));
+                KeybindsSettings.setKeyCode(KeybindsSettings.getKeybind(button), keyCode);
             });
         }
     }

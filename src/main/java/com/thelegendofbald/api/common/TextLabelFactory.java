@@ -6,10 +6,10 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.thelegendofbald.view.common.TitleLabel;
+import com.thelegendofbald.view.common.TextLabel;
 
 /**
- * Factory interface for creating {@link TitleLabel} instances with customizable properties.
+ * Factory interface for creating {@link TextLabel} instances with customizable properties.
  * <p>
  * Implementations of this interface are responsible for constructing {@code TitleLabel}
  * objects based on the provided parameters, allowing for flexible configuration of
@@ -18,10 +18,10 @@ import com.thelegendofbald.view.common.TitleLabel;
  *
  * @author 
  */
-public interface TitleLabelFactory {
+public interface TextLabelFactory {
 
     /**
-     * Creates a TitleLabel with the specified text and size, allowing optional customization
+     * Creates a TextLabel with the specified text and size, allowing optional customization
      * of size proportion, foreground color, and font name.
      *
      * @param text           the text to display in the title label
@@ -29,9 +29,9 @@ public interface TitleLabelFactory {
      * @param moltiplicator  an optional pair of doubles representing width and height multipliers for the size
      * @param fgColor        an optional foreground color for the label text
      * @param fontName       an optional font name to use for the label text
-     * @return               a TitleLabel instance configured with the provided parameters
+     * @return               a TextLabel instance configured with the provided parameters
      */
-    TitleLabel createTitleLabelWithProportion(String text, Dimension size, Optional<Pair<Double, Double>> moltiplicator,
+    TextLabel createTextLabelWithProportion(String text, Dimension size, Optional<Pair<Double, Double>> moltiplicator,
             Optional<Color> fgColor,
             Optional<String> fontName);
 

@@ -1,7 +1,7 @@
 package com.thelegendofbald.view.main;
 
 import java.awt.Dimension;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -9,34 +9,37 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.api.views.View;
-import com.thelegendofbald.view.leaderboard.LeaderBoardPanel;
-import com.thelegendofbald.view.mainmenu.MainPanel;
-import com.thelegendofbald.view.settingsmenu.SettingsPanel;
 
-public class GameWindow extends JFrame implements View, MainView {
+public final class GameWindow extends JFrame implements View, MainView {
 
     private static final String TITLE = "The Legend of Bald";
     private static Dimension internalSize = new Dimension(1280, 704);
 
-    private final List<JPanel> panels = new LinkedList<>();
+    private final List<MenuPanel> panels;
 
     public GameWindow() {
-        this.panels.add(new MainPanel(internalSize));
-        this.panels.add(new SettingsPanel(internalSize));
-        this.panels.add(new LeaderBoardPanel(internalSize));
-        this.panels.add(new GamePanel(internalSize, this));
+        super();
+        this.panels = this.getMenuPanels();
+        this.panels.forEach(panel -> panel.setPreferredSize(internalSize));
 
-        this.setIconImage(new ImageIcon(this.getClass().getResource("/images/icon.png")).getImage());
-        this.setContentPane(this.panels.getFirst());
+    }
+
+    private List<MenuPanel> getMenuPanels() {
+        return Arrays.stream(Panels.values())
+                .map(Panels::getPanel)
+                .toList();
     }
 
     @Override
     public void display() {
         this.setTitle(TITLE);
+        this.setIconImage(new ImageIcon(this.getClass().getResource("/images/icon.png")).getImage());
         this.setResizable(true);
+        this.setContentPane(this.panels.getFirst());
         this.pack();
         this.setLocationByPlatform(true);
         this.setVisible(true);

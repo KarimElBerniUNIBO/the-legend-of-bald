@@ -88,16 +88,19 @@ final class CategoriesPanel extends AdapterPanel implements InteractivePanel {
 
     @Override
     public void setPreferredSize(final Dimension size) {
-        super.setPreferredSize(new Dimension((int) size.getWidth(), (int) (size.getHeight() * HEIGHT_PROPORTION)));
-        SwingUtilities.invokeLater(this::updateLayout);
+        final var preferredSize = new Dimension((int) size.getWidth(), (int) (size.getHeight() * HEIGHT_PROPORTION));
+        super.setPreferredSize(preferredSize);
+        SwingUtilities.invokeLater(this::updateView);
     }
 
     @Override
     public void updateComponentsSize() {
+        this.updateLayout();
     }
 
     @Override
     public void addComponentsToPanel() {
+        this.updateComponentsSize();
         buttons.forEach(this::add);
     }
 
