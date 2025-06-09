@@ -8,7 +8,10 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-public class Bald extends Entity {
+import com.thelegendofbald.combat.Combatant;
+import com.thelegendofbald.life.LifeComponent;
+
+public class Bald extends Entity implements Combatant{
     private int attackPower; // Potenza d'attacco
     private BufferedImage image;
     private String path = "/images/bald.png"; // Percorso dell'immagine
@@ -20,12 +23,13 @@ public class Bald extends Entity {
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
     private boolean facingRight = false; // Direzione in cui Bald sta guardando
 
-    public Bald(int x, int y, int health, String name, int attackPower ) {
-        super(x, y, health, name);
+    public Bald(int x, int y,int maxHealth, String name, int attackPower ) {
+        super(x, y, name , new LifeComponent(maxHealth));
         this.attackPower = attackPower;
-
         loadRunFrames();
     }
+
+
 
     private void loadRunFrames() {
         try {
@@ -52,24 +56,6 @@ public class Bald extends Entity {
     public void setAttackPower(int attackPower) { 
         this.attackPower = attackPower; 
     }
-
-    public void takeDamage(int damage) {
-        this.health -= damage;
-        if (this.health < 0) {
-            this.health = 0; // Health non può essere negativa
-        }
-    }
-
-    public void heal(int amount) {
-        this.health += amount;
-    }
-
-    public void attack(Entity target) {
-
-            target.setHealth(target.getHealth() - attackPower);
-
-    }
-
 
     public void updateAnimation() {
         frameCounter++;
@@ -116,6 +102,28 @@ public class Bald extends Entity {
         
     }
 
+    @Override
+    public void takeDamage(int damage) {
+        this.lifeComponent.damageTaken(damage);
+        System.out.println(lifeComponent.getCurrentHealth());
+        
+    }
 
+    public boolean isAlive() {
+        return !this.lifeComponent.isDead();
+    }
+
+    public boolean canShoot() {
+        return true;
+    }
+
+    public void shootProjectile() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'shootProjectile'");
+    }
+
+    public boolean isFacingRight(){
+        return this.facingRight;
+    }
 
 }

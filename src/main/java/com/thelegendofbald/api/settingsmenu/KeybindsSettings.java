@@ -54,7 +54,11 @@ public enum KeybindsSettings implements SettingOption {
     /**
      * Represents the "Right" key binding.
      */
-    RIGHT("RIGHT", KeyEvent.VK_RIGHT);
+    RIGHT("RIGHT", KeyEvent.VK_RIGHT),
+    /**
+     * Represents the "Right" key binding.
+     */
+    SPACE("SPACE", KeyEvent.VK_SPACE);
 
     private static final double BUTTONS_ARC_PROPORTION = 0.05;
 
