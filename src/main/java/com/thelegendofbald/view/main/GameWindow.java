@@ -119,10 +119,17 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     @Override
-    public void toggleViewFps(boolean showingFPS) {
+    public void toggleViewFps(boolean showFPS) {
         GamePanel game = (GamePanel) Panels.GAME_MENU.getPanel();
-        System.out.println("Setting show FPS to: " + showingFPS);
-        game.setShowingFPS(showingFPS);
+        System.out.println("Setting show FPS to: " + showFPS);
+        game.setShowingFPS(showFPS);
+    }
+
+    @Override
+    public void toggleViewTimer(boolean showTimer) {
+        GamePanel game = (GamePanel) Panels.GAME_MENU.getPanel();
+        System.out.println("Setting show timer to: " + showTimer);
+        game.setShowingTimer(showTimer);
     }
 
 }

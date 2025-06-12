@@ -103,7 +103,12 @@ public enum VideoSettings implements SettingOption {
 
     private static CustomCheckBox createShowTimerCheckBox() {
         var checkBox = new CustomCheckBox();
-        // TODO: Implement show timer functionality
+        checkBox.setSelected(true);
+        checkBox.addActionListener(e -> {
+            boolean isSelected = checkBox.isSelected();
+            var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
+            window.toggleViewTimer(isSelected);
+        });
         return checkBox;
     }
 

@@ -19,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
@@ -38,7 +40,10 @@ public class GamePanel extends MenuPanel implements Runnable {
     private static final double INVENTORY_WIDTH_INSETS = 0.25;
     private static final double INVENTORY_HEIGHT_INSETS = 0.25;
 
-    private static final Font FPS_FONT = new Font(Font.MONOSPACED, Font.BOLD, 20);
+    private static final Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 20);
+
+    private static final Pair<Integer, Integer> FPS_POSITION = Pair.of(15, 25);
+    private static final Pair<Integer, Integer> TIMER_POSITION = Pair.of(1085, 25);
 
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints optionsGBC = gbcFactory.createBothGridBagConstraints();
@@ -53,9 +58,14 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     private Thread gameThread;
     private boolean running = false;
+
     private int maxFPS = (int) VideoSettings.FPS.getValue();
     private boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
     private int currentFPS = 0;
+
+    private long startTime = 0;
+    private long elapsedTime = 0;
+    private boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
 
@@ -144,6 +154,7 @@ public class GamePanel extends MenuPanel implements Runnable {
     @Override
     public void run() {
         running = true;
+        startTime = System.currentTimeMillis();
         System.out.println("Game loop started!");
 
         long lastTime = System.nanoTime();
@@ -161,7 +172,7 @@ public class GamePanel extends MenuPanel implements Runnable {
             lastTime = now;
 
             if (delta >= 1) {
-
+                elapsedTime = System.currentTimeMillis() - startTime;
                 update();
                 repaint();
                 delta--;
@@ -169,7 +180,7 @@ public class GamePanel extends MenuPanel implements Runnable {
             }
 
             if (timer >= 1e9) {
-                //System.out.println("FPS:" + drawCount);
+                // System.out.println("FPS:" + drawCount);
                 currentFPS = drawCount;
                 drawCount = 0;
                 timer = 0;
@@ -199,6 +210,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         bald.render(g2d);
         dummyenemy.render(g2d);
         this.drawFPS(g2d);
+        this.drawTimer(g2d);
 
         g2d.dispose();
     }
@@ -206,8 +218,24 @@ public class GamePanel extends MenuPanel implements Runnable {
     private void drawFPS(Graphics g) {
         if (showingFPS) {
             g.setColor(Color.YELLOW);
-            g.setFont(FPS_FONT);
-            g.drawString("FPS: " + currentFPS, 15, 25);
+            g.setFont(DEFAULT_FONT);
+            g.drawString("FPS: " + currentFPS, FPS_POSITION.getLeft(), FPS_POSITION.getRight());
+        }
+    }
+
+    private void drawTimer(Graphics g) {
+        if (showingTimer) {
+            g.setColor(Color.WHITE);
+            g.setFont(DEFAULT_FONT);
+
+            long seconds = elapsedTime / 1000;
+            long minutes = seconds / 60;
+            long hours = minutes / 60;
+            seconds %= 60;
+            minutes %= 60;
+
+            g.drawString(String.format("Timer: %02d:%02d:%02d", hours, minutes, seconds), TIMER_POSITION.getLeft(),
+                    TIMER_POSITION.getRight());
         }
     }
 
@@ -227,7 +255,9 @@ public class GamePanel extends MenuPanel implements Runnable {
         optionsGBC.insets.set((int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
                 (int) (this.getWidth() * OPTIONS_WIDTH_INSETS), (int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
                 (int) (this.getWidth() * OPTIONS_WIDTH_INSETS));
-        inventoryGBC.insets.set((int) (this.getHeight() * INVENTORY_HEIGHT_INSETS), (int) (this.getWidth() * INVENTORY_WIDTH_INSETS), (int) (this.getHeight() * INVENTORY_HEIGHT_INSETS), (int) (this.getWidth() * INVENTORY_WIDTH_INSETS));
+        inventoryGBC.insets.set((int) (this.getHeight() * INVENTORY_HEIGHT_INSETS),
+                (int) (this.getWidth() * INVENTORY_WIDTH_INSETS), (int) (this.getHeight() * INVENTORY_HEIGHT_INSETS),
+                (int) (this.getWidth() * INVENTORY_WIDTH_INSETS));
     }
 
     @Override
@@ -256,6 +286,14 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     public boolean isShowingFPS() {
         return showingFPS;
+    }
+
+    public void setShowingTimer(boolean showingTimer) {
+        this.showingTimer = showingTimer;
+    }
+
+    public boolean isShowingTimer() {
+        return showingTimer;
     }
 
 }
