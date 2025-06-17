@@ -8,9 +8,12 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -22,10 +25,15 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
+import com.thelegendofbald.api.panels.LifePanel;
 import com.thelegendofbald.api.panels.MenuPanel;
+import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.characters.Entity;
+import com.thelegendofbald.combat.Combatant;
+import com.thelegendofbald.combat.projectile.Projectile;
 import com.thelegendofbald.model.common.Timer;
 import com.thelegendofbald.model.common.Timer.TimeData;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
@@ -52,12 +60,18 @@ public class GamePanel extends MenuPanel implements Runnable {
     private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
 
     private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
-    private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
+    private static final long ATTACK_COOLDOWN = 700; // 1 second cooldown for attack
     private final GridPanel gridPanel;
     private final TileMap tileMap;
+    private final LifePanel lifePanel;
+    private List<DummyEnemy> enemies = new ArrayList<>();
+    private List<Projectile> projectiles = new ArrayList<>();
     private final JPanel optionsPanel;
     private final JPanel inventoryPanel;
     private final Timer timer = new Timer();
+
+    private long lastTimeAttack = 0;
+    private int num_enemies = 3;
 
     private Thread gameThread;
     private boolean running = false;
@@ -81,11 +95,21 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.gridPanel.setOpaque(false);
         this.gridPanel.setBounds(0, 0, size.width, size.height);
 
+        this.lifePanel = new LifePanel(new Dimension(200,20), bald.getLifeComponent());
+        this.lifePanel.setBounds(100, 800, 200,20);
+        this.add(lifePanel);
+
         this.optionsPanel = new GameOptionsPanel(size);
         this.inventoryPanel = new InventoryPanel("INVENTORY", size, 5, 3);
 
         this.tileMap = new TileMap(size.width, size.height);
         this.requestFocusInWindow();
+
+        for (int i = 0 ; i < num_enemies ; i++) {
+            enemies.add(new DummyEnemy(ThreadLocalRandom.current().nextInt(300, 1000), // x
+                                       ThreadLocalRandom.current().nextInt(300, 600),  // y
+                                       50, "ZioBilly", 10));
+        }
 
         setupKeyBindings();
         // this.startGame();
@@ -135,6 +159,10 @@ public class GamePanel extends MenuPanel implements Runnable {
         if (pressedKeys.contains(KeyEvent.VK_DOWN))
             dy += 1;
 
+        if (pressedKeys.contains(ControlsSettings.SPACE.getKey())) {
+            tryToShoot();
+        }
+
         // Normalizza il vettore per garantire velocità costante
         double magnitude = Math.hypot(dx, dy); // meglio di sqrt(x^2 + y^2)
         if (magnitude > 0) {
@@ -144,6 +172,25 @@ public class GamePanel extends MenuPanel implements Runnable {
 
         bald.setSpeedX(dx);
         bald.setSpeedY(dy);
+    }
+
+    public void tryToShoot() {
+        long now = System.currentTimeMillis(); // tempo attuale
+
+        if (now - lastTimeAttack >= ATTACK_COOLDOWN) {
+            System.out.println("Attacco effettuato!");
+            lastTimeAttack = now;
+
+            projectiles.add(new Projectile(bald.getX() + 16, bald.getY() + 16, bald.isFacingRight() ? 1 : 0, 10));
+
+
+        } else {
+            System.out.println("Cooldown in corso...");
+        }
+}
+
+    boolean intersects(Combatant e1, Combatant e2) {
+        return e1.getBounds().intersects(e2.getBounds());
     }
 
     public void startGame() {
@@ -190,10 +237,44 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     private void update() {
 
+        List<Projectile> toRemoveProjectiles = new ArrayList<>();
+        List<Entity> toRemoveEnemies = new ArrayList<>();
+
         handleInput();
         bald.move();
-        dummyenemy.followPlayer(bald);
-        dummyenemy.updateAnimation();
+
+        for (DummyEnemy enemy : enemies){
+            enemy.followPlayer(bald);
+            enemy.updateAnimation();
+            // Cooldown for enemy attacking the player
+            if (intersects(enemy, bald)) {
+                long now = System.currentTimeMillis();
+                if (lastTimeAttack == 0 || now - lastTimeAttack >= ATTACK_COOLDOWN) {
+                    bald.takeDamage(enemy.getAttackPower());
+                    this.lifePanel.repaint();
+                    lastTimeAttack = now;
+                }
+            }
+        }
+
+        for (Projectile projectile : projectiles) {
+            projectile.move(); // Assicurati che il proiettile si muova
+
+            for (DummyEnemy e : enemies) {
+                // Usa la posizione del proiettile e del nemico per il controllo collisione
+                if (intersects(projectile,e)) {
+                    e.takeDamage(projectile.getAttackPower());
+                    toRemoveProjectiles.add(projectile); // Rimuovi il proiettile dopo il colpo
+                    if (e.getLifeComponent().isDead()) {
+                        toRemoveEnemies.add(e);
+                    }
+                    break; // Un proiettile colpisce solo un nemico
+                }  
+            }
+        }
+        projectiles.removeAll(toRemoveProjectiles);
+        enemies.removeAll(toRemoveEnemies);
+
         repaint();
         // System.out.printf("dx: %.3f dy: %.3f%n", bald.getSpeedX(), bald.getSpeedY());
     }
@@ -207,7 +288,13 @@ public class GamePanel extends MenuPanel implements Runnable {
         tileMap.render(g2d);
         gridPanel.paintComponent(g2d);
         bald.render(g2d);
-        dummyenemy.render(g2d);
+        for (DummyEnemy dummyenemy : enemies) {
+            dummyenemy.render(g);
+        }  
+        for (Projectile p : projectiles) {
+            p.render(g);
+        }    
+       this.lifePanel.paint(g);
         this.drawFPS(g2d);
         this.drawTimer(g2d);
 
