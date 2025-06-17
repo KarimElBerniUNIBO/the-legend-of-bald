@@ -1,12 +1,10 @@
 package com.thelegendofbald.view.leaderboard;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Random;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -26,8 +24,6 @@ final class PlayerTimePanel extends AdapterPanel {
     private Optional<TextLabel> playerName = Optional.empty();
     private Optional<TextLabel> playerTime = Optional.empty();
 
-    private final Random random = new Random();
-
     PlayerTimePanel() {
         super(new Dimension(0, 0));
         this.setLayout(new GridBagLayout());
@@ -35,7 +31,6 @@ final class PlayerTimePanel extends AdapterPanel {
 
     @Override
     protected void initializeComponents() {
-        this.setBackground(new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
         this.setOpaque(true);
         this.playerName = Optional.of(tlFactory.createTextLabelWithProportion("???", this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
         this.playerTime = Optional.of(tlFactory.createTextLabelWithProportion("hh:mm:ss", this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));

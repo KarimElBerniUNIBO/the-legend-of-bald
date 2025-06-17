@@ -14,7 +14,7 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 class ScrollingPanel extends AdapterPanel {
 
-    private static final double WIDTH_INSETS = 0.3;
+    private static final double WIDTH_INSETS = 0.25;
     private static final double BOTTOM_INSET = 0.05;
 
     private static final double VERTICAL_SCROLLBAR_UNIT_INCREMENT = 0.1;
