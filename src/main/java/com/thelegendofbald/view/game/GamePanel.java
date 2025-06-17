@@ -26,6 +26,8 @@ import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.model.common.Timer;
+import com.thelegendofbald.model.common.Timer.TimeData;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.inventory.InventoryPanel;
 import com.thelegendofbald.view.main.GameWindow;
@@ -55,6 +57,7 @@ public class GamePanel extends MenuPanel implements Runnable {
     private final TileMap tileMap;
     private final JPanel optionsPanel;
     private final JPanel inventoryPanel;
+    private final Timer timer = new Timer();
 
     private Thread gameThread;
     private boolean running = false;
@@ -62,9 +65,6 @@ public class GamePanel extends MenuPanel implements Runnable {
     private int maxFPS = (int) VideoSettings.FPS.getValue();
     private boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
     private int currentFPS = 0;
-
-    private long startTime = 0;
-    private long elapsedTime = 0;
     private boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
@@ -149,41 +149,40 @@ public class GamePanel extends MenuPanel implements Runnable {
     public void startGame() {
         gameThread = new Thread(this);
         gameThread.start();
+        timer.start();
     }
 
     @Override
     public void run() {
         running = true;
-        startTime = System.currentTimeMillis();
         System.out.println("Game loop started!");
 
         long lastTime = System.nanoTime();
         double interval = 0;
         int drawCount = 0;
-        long timer = 0;
+        long updateInterval = 0;
         double delta = 0;
 
         while (true) {
 
             long now = System.nanoTime();
-            timer += (now - lastTime);
+            updateInterval += (now - lastTime);
             interval = 1e9 / maxFPS;
             delta += (now - lastTime) / interval;
             lastTime = now;
 
             if (delta >= 1) {
-                elapsedTime = System.currentTimeMillis() - startTime;
                 update();
                 repaint();
                 delta--;
                 drawCount++; // check FPS
             }
 
-            if (timer >= 1e9) {
+            if (updateInterval >= 1e9) {
                 // System.out.println("FPS:" + drawCount);
                 currentFPS = drawCount;
                 drawCount = 0;
-                timer = 0;
+                updateInterval = 0;
             }
 
         }
@@ -225,17 +224,14 @@ public class GamePanel extends MenuPanel implements Runnable {
 
     private void drawTimer(Graphics g) {
         if (showingTimer) {
+            TimeData timeData = timer.getFormattedTime();
+
             g.setColor(Color.WHITE);
             g.setFont(DEFAULT_FONT);
 
-            long seconds = elapsedTime / 1000;
-            long minutes = seconds / 60;
-            long hours = minutes / 60;
-            seconds %= 60;
-            minutes %= 60;
-
-            g.drawString(String.format("Timer: %02d:%02d:%02d", hours, minutes, seconds), TIMER_POSITION.getLeft(),
-                    TIMER_POSITION.getRight());
+            g.drawString(
+                    String.format("Timer: %02d:%02d:%02d", timeData.hours(), timeData.minutes(), timeData.seconds()),
+                    TIMER_POSITION.getLeft(), TIMER_POSITION.getRight());
         }
     }
 
