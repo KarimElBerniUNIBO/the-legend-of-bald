@@ -20,17 +20,6 @@ import com.thelegendofbald.api.settingsmenu.KeybindsSettings;
 import com.thelegendofbald.api.views.View;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
-<<<<<<< HEAD
-import com.thelegendofbald.item.Chest;
-import com.thelegendofbald.item.Potion;
-
-public class GamePanel extends MenuPanel {
-
-    private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
-    private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
-    private final Chest chest = new Chest(60,180);
-    private final Potion potion = new Potion(100,100);
-=======
 import com.thelegendofbald.characters.Entity;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.combat.projectile.Projectile;
@@ -42,7 +31,6 @@ public class GamePanel extends MenuPanel {
     private static final long ATTACK_COOLDOWN = 700; // 1 second cooldown for attack
     private final Bald bald = new Bald(60, 60, 100, "Bald", 10);
     
->>>>>>> feature/Health
     private final GridPanel gridPanel;
     private final TileMap tileMap;
     private final LifePanel lifePanel;
@@ -178,11 +166,6 @@ public class GamePanel extends MenuPanel {
         tileMap.render(g); 
         gridPanel.paintComponent(g);          
         bald.render(g);              
-<<<<<<< HEAD
-        dummyenemy.render(g);    
-        chest.render(g);   
-        potion.render(g); 
-=======
         for (DummyEnemy dummyenemy : enemies) {
             dummyenemy.render(g);
         }  
@@ -190,7 +173,6 @@ public class GamePanel extends MenuPanel {
             p.render(g);
         }    
        this.lifePanel.paint(g);    
->>>>>>> feature/Health
     }
 
     private void scaleGraphics(Graphics g) {
