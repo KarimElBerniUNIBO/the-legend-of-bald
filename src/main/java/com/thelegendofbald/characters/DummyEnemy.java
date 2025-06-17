@@ -5,7 +5,10 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
 
-public class DummyEnemy extends Entity {
+import com.thelegendofbald.combat.Combatant;
+import com.thelegendofbald.life.LifeComponent;
+
+public class DummyEnemy extends Entity  implements Combatant{
 
     private BufferedImage spritesheet; 
     private BufferedImage walkFrames[];
@@ -30,7 +33,7 @@ public class DummyEnemy extends Entity {
     
 
     public DummyEnemy(int x, int y, int health, String name, int attackPower) {
-        super(x, y, health, name);
+        super(x, y ,name, new LifeComponent(health));
         this.attackPower = attackPower;
 
         loadRunFrames();
@@ -64,14 +67,11 @@ public class DummyEnemy extends Entity {
 
 
     public void takeDamage(int damage) {
-        this.health -= damage;
-        if (this.health < 0) {
-            this.health = 0; // Health non può essere negativa
-        }
+       this.lifeComponent.damageTaken(damage);
     }
 
     public void heal(int amount) {
-        this.health += amount;
+        this.lifeComponent.heal(amount);
     }
 
 
@@ -116,6 +116,11 @@ public class DummyEnemy extends Entity {
             y -= speedY;
         }
         
+    }
+
+
+    public boolean isAlive() {
+        return !this.lifeComponent.isDead();
     }
 
  
