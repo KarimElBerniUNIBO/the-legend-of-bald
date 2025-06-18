@@ -126,6 +126,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         bindKey(im, am, "pressed DOWN", KeyEvent.VK_DOWN, true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
         bindKey(im, am, "pressed LEFT", KeyEvent.VK_LEFT, true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
         bindKey(im, am, "pressed RIGHT", KeyEvent.VK_RIGHT, true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
+        bindKey(im, am, "pressed SPACE", ControlsSettings.SPACE.getKey(), true, this::tryToShoot);
 
         // Tasti rilasciati
         bindKey(im, am, "released UP", KeyEvent.VK_UP, false, () -> pressedKeys.remove(KeyEvent.VK_UP));
@@ -289,12 +290,12 @@ public class GamePanel extends MenuPanel implements Runnable {
         gridPanel.paintComponent(g2d);
         bald.render(g2d);
         for (DummyEnemy dummyenemy : enemies) {
-            dummyenemy.render(g);
+            dummyenemy.render(g2d);
         }  
         for (Projectile p : projectiles) {
-            p.render(g);
+            p.render(g2d);
         }    
-       this.lifePanel.paint(g);
+        this.lifePanel.paint(g2d);
         this.drawFPS(g2d);
         this.drawTimer(g2d);
 
