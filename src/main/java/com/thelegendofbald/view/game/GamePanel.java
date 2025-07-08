@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.characters.Entity;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.combat.projectile.Projectile;
+import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.Timer;
 import com.thelegendofbald.model.common.Timer.TimeData;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
@@ -60,7 +62,6 @@ public class GamePanel extends MenuPanel implements Runnable {
     private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
 
     private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
-    private static final long ATTACK_COOLDOWN = 700; // 1 second cooldown for attack
     private final GridPanel gridPanel;
     private final TileMap tileMap;
     private final LifePanel lifePanel;
@@ -69,8 +70,10 @@ public class GamePanel extends MenuPanel implements Runnable {
     private final JPanel optionsPanel;
     private final JPanel inventoryPanel;
     private final Timer timer = new Timer();
+    private final CombatManager combatManager;
 
     private long lastTimeAttack = 0;
+    private Rectangle attackArea = new Rectangle(0, 0, 0, 0); // Area of the last attack
     private int num_enemies = 3;
 
     private Thread gameThread;
@@ -103,12 +106,15 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.inventoryPanel = new InventoryPanel("INVENTORY", size, 5, 3);
 
         this.tileMap = new TileMap(size.width, size.height);
+
+        this.combatManager = new CombatManager(bald, enemies);
+
         this.requestFocusInWindow();
 
         for (int i = 0 ; i < num_enemies ; i++) {
             enemies.add(new DummyEnemy(ThreadLocalRandom.current().nextInt(300, 1000), // x
                                        ThreadLocalRandom.current().nextInt(300, 600),  // y
-                                       50, "ZioBilly", 10));
+                                       100, "ZioBilly", 10));
         }
 
         setupKeyBindings();
@@ -126,7 +132,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         bindKey(im, am, "pressed DOWN", KeyEvent.VK_DOWN, true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
         bindKey(im, am, "pressed LEFT", KeyEvent.VK_LEFT, true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
         bindKey(im, am, "pressed RIGHT", KeyEvent.VK_RIGHT, true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
-        bindKey(im, am, "pressed SPACE", ControlsSettings.SPACE.getKey(), true, this::tryToShoot);
+        bindKey(im, am, "pressed SPACE", ControlsSettings.SPACE.getKey(), true, combatManager::tryToAttack);
 
         // Tasti rilasciati
         bindKey(im, am, "released UP", KeyEvent.VK_UP, false, () -> pressedKeys.remove(KeyEvent.VK_UP));
@@ -161,7 +167,7 @@ public class GamePanel extends MenuPanel implements Runnable {
             dy += 1;
 
         if (pressedKeys.contains(ControlsSettings.SPACE.getKey())) {
-            tryToShoot();
+            combatManager.tryToAttack();
         }
 
         // Normalizza il vettore per garantire velocità costante
@@ -175,7 +181,41 @@ public class GamePanel extends MenuPanel implements Runnable {
         bald.setSpeedY(dy);
     }
 
-    public void tryToShoot() {
+    /*public void tryToAttack() {
+        Optional<Weapon> weapon = bald.getWeapon();
+        long now = System.currentTimeMillis();
+        long cooldown = now - lastTimeAttack;
+
+        if (cooldown < ATTACK_COOLDOWN) {
+            System.out.println("Cooldown in corso...");
+            return;
+        }
+
+        weapon.ifPresentOrElse(w -> {
+            int attackX = bald.getX() + bald.getWidth() / 2;
+            int attackY = bald.getY();
+            int width = w.getPreferredSizeX();
+            int height = w.getPreferredSizeY();
+
+            if (bald.isFacingRight()) {
+                attackArea = new Rectangle(attackX, attackY, width, height);
+            } else {
+                attackArea = new Rectangle(attackX - width, attackY, width, height);
+            }
+
+            // Checks if enemy in attack area
+            enemies.stream()
+                .filter(enemy -> enemy.isAlive() && attackArea.intersects(enemy.getBounds()))
+                .forEach(enemy -> w.attack(enemy));
+
+            lastTimeAttack = now;
+        },
+        () -> {
+            System.out.println("No weapon equipped. Cannot attack.");
+        });
+    }*/
+
+    /*public void tryToShoot() {
         long now = System.currentTimeMillis(); // tempo attuale
 
         if (now - lastTimeAttack >= ATTACK_COOLDOWN) {
@@ -188,7 +228,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         } else {
             System.out.println("Cooldown in corso...");
         }
-}
+}*/
 
     boolean intersects(Combatant e1, Combatant e2) {
         return e1.getBounds().intersects(e2.getBounds());
@@ -242,21 +282,17 @@ public class GamePanel extends MenuPanel implements Runnable {
         List<Entity> toRemoveEnemies = new ArrayList<>();
 
         handleInput();
+        bald.updateAnimation();
         bald.move();
 
-        for (DummyEnemy enemy : enemies){
+        combatManager.checkEnemyAttacks();
+
+        enemies.removeIf(enemy -> !enemy.isAlive());
+        enemies.forEach(enemy -> {
             enemy.followPlayer(bald);
             enemy.updateAnimation();
-            // Cooldown for enemy attacking the player
-            if (intersects(enemy, bald)) {
-                long now = System.currentTimeMillis();
-                if (lastTimeAttack == 0 || now - lastTimeAttack >= ATTACK_COOLDOWN) {
-                    bald.takeDamage(enemy.getAttackPower());
-                    this.lifePanel.repaint();
-                    lastTimeAttack = now;
-                }
-            }
-        }
+        });
+
 
         for (Projectile projectile : projectiles) {
             projectile.move(); // Assicurati che il proiettile si muova

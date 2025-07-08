@@ -6,7 +6,6 @@ import java.awt.Rectangle;
 
 import com.thelegendofbald.characters.Entity;
 import com.thelegendofbald.combat.Combatant;
-import com.thelegendofbald.life.LifeComponent;
 
 
 public class Projectile extends Entity implements Combatant {
@@ -17,7 +16,7 @@ public class Projectile extends Entity implements Combatant {
     public int damage = 10;
 
     public Projectile(int x, int y, int direction, int speed) {
-        super(x, y, "bullet", null); // Pass null or a valid LifeComponent instance if available
+        super(x, y, 6, 6, "bullet", null); // Pass null or a valid LifeComponent instance if available
         this.x = x;
         this.y = y;
         this.direction = direction;

@@ -15,7 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.common.TextLabelFactory;
-import com.thelegendofbald.api.game.Buttons;
+import com.thelegendofbald.api.game_options.Buttons;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.controller.common.SwitchToOtherPanel;
 import com.thelegendofbald.view.common.TextLabel;

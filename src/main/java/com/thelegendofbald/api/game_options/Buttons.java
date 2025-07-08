@@ -1,4 +1,4 @@
-package com.thelegendofbald.api.game;
+package com.thelegendofbald.api.game_options;
 
 import java.awt.Color;
 import java.util.Arrays;
