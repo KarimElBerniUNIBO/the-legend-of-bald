@@ -44,12 +44,11 @@ public class CombatManager {
 
         enemies.stream()
             .filter(enemy -> enemy.isAlive() && enemy.getBounds().intersects(bald.getBounds()))
+            .filter(enemy -> now - enemy.getLastAttackTime() >= ENEMY_ATTACK_COOLDOWN)
             .forEach(enemy -> {
-                if (now - enemy.getLastAttackTime() >= ENEMY_ATTACK_COOLDOWN) {
-                    bald.takeDamage(enemy.getAttackPower());
-                    enemy.setLastAttackTime(now);
-                }
+                bald.takeDamage(enemy.getAttackPower());
+                enemy.setLastAttackTime(now);
             });
     }
-
+    
 }

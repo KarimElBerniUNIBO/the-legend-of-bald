@@ -38,6 +38,7 @@ import com.thelegendofbald.combat.projectile.Projectile;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.Timer;
 import com.thelegendofbald.model.common.Timer.TimeData;
+import com.thelegendofbald.model.weapons.MeleeWeapon;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.inventory.InventoryPanel;
 import com.thelegendofbald.view.main.GameWindow;
@@ -57,6 +58,8 @@ public class GamePanel extends MenuPanel implements Runnable {
     private static final Pair<Integer, Integer> FPS_POSITION = Pair.of(15, 25);
     private static final Pair<Integer, Integer> TIMER_POSITION = Pair.of(1085, 25);
 
+    private static final Color ATTACK_AREA_COLOR = new Color(200, 200, 200, 100);
+
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints optionsGBC = gbcFactory.createBothGridBagConstraints();
     private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
@@ -72,8 +75,6 @@ public class GamePanel extends MenuPanel implements Runnable {
     private final Timer timer = new Timer();
     private final CombatManager combatManager;
 
-    private long lastTimeAttack = 0;
-    private Rectangle attackArea = new Rectangle(0, 0, 0, 0); // Area of the last attack
     private int num_enemies = 3;
 
     private Thread gameThread;
@@ -114,7 +115,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         for (int i = 0 ; i < num_enemies ; i++) {
             enemies.add(new DummyEnemy(ThreadLocalRandom.current().nextInt(300, 1000), // x
                                        ThreadLocalRandom.current().nextInt(300, 600),  // y
-                                       100, "ZioBilly", 10));
+                                       60, "ZioBilly", 10));
         }
 
         setupKeyBindings();
@@ -132,7 +133,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         bindKey(im, am, "pressed DOWN", KeyEvent.VK_DOWN, true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
         bindKey(im, am, "pressed LEFT", KeyEvent.VK_LEFT, true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
         bindKey(im, am, "pressed RIGHT", KeyEvent.VK_RIGHT, true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
-        bindKey(im, am, "pressed SPACE", ControlsSettings.SPACE.getKey(), true, combatManager::tryToAttack);
+        bindKey(im, am, "pressed SPACE", ControlsSettings.ATTACK.getKey(), true, combatManager::tryToAttack);
 
         // Tasti rilasciati
         bindKey(im, am, "released UP", KeyEvent.VK_UP, false, () -> pressedKeys.remove(KeyEvent.VK_UP));
@@ -166,7 +167,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         if (pressedKeys.contains(KeyEvent.VK_DOWN))
             dy += 1;
 
-        if (pressedKeys.contains(ControlsSettings.SPACE.getKey())) {
+        if (pressedKeys.contains(ControlsSettings.ATTACK.getKey())) {
             combatManager.tryToAttack();
         }
 
@@ -180,55 +181,6 @@ public class GamePanel extends MenuPanel implements Runnable {
         bald.setSpeedX(dx);
         bald.setSpeedY(dy);
     }
-
-    /*public void tryToAttack() {
-        Optional<Weapon> weapon = bald.getWeapon();
-        long now = System.currentTimeMillis();
-        long cooldown = now - lastTimeAttack;
-
-        if (cooldown < ATTACK_COOLDOWN) {
-            System.out.println("Cooldown in corso...");
-            return;
-        }
-
-        weapon.ifPresentOrElse(w -> {
-            int attackX = bald.getX() + bald.getWidth() / 2;
-            int attackY = bald.getY();
-            int width = w.getPreferredSizeX();
-            int height = w.getPreferredSizeY();
-
-            if (bald.isFacingRight()) {
-                attackArea = new Rectangle(attackX, attackY, width, height);
-            } else {
-                attackArea = new Rectangle(attackX - width, attackY, width, height);
-            }
-
-            // Checks if enemy in attack area
-            enemies.stream()
-                .filter(enemy -> enemy.isAlive() && attackArea.intersects(enemy.getBounds()))
-                .forEach(enemy -> w.attack(enemy));
-
-            lastTimeAttack = now;
-        },
-        () -> {
-            System.out.println("No weapon equipped. Cannot attack.");
-        });
-    }*/
-
-    /*public void tryToShoot() {
-        long now = System.currentTimeMillis(); // tempo attuale
-
-        if (now - lastTimeAttack >= ATTACK_COOLDOWN) {
-            System.out.println("Attacco effettuato!");
-            lastTimeAttack = now;
-
-            projectiles.add(new Projectile(bald.getX() + 16, bald.getY() + 16, bald.isFacingRight() ? 1 : 0, 10));
-
-
-        } else {
-            System.out.println("Cooldown in corso...");
-        }
-}*/
 
     boolean intersects(Combatant e1, Combatant e2) {
         return e1.getBounds().intersects(e2.getBounds());
@@ -334,8 +286,21 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.lifePanel.paint(g2d);
         this.drawFPS(g2d);
         this.drawTimer(g2d);
+        this.drawAttackArea(g2d);
 
         g2d.dispose();
+    }
+
+    private void drawAttackArea(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        
+        bald.getWeapon().ifPresent(weapon -> {
+            if (bald.isAttacking() && weapon instanceof MeleeWeapon) {
+                Rectangle attackArea = ((MeleeWeapon) weapon).getAttackArea();
+                g2d.setColor(ATTACK_AREA_COLOR);
+                g2d.fill(attackArea);
+            }
+        });
     }
 
     private void drawFPS(Graphics g) {

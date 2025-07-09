@@ -9,6 +9,7 @@ import com.thelegendofbald.combat.Combatant;
 public abstract class MeleeWeapon extends Weapon {
 
     protected int attackRange;
+    private Rectangle attackArea = new Rectangle();
 
     protected MeleeWeapon(int x, int y, int preferredSizeX, int preferredSizeY, String name, int damage, int attackCooldown, int attackRange) {
         super(x, y, preferredSizeX, preferredSizeY, name, damage, attackCooldown);
@@ -21,8 +22,8 @@ public abstract class MeleeWeapon extends Weapon {
         int attackX = entityAttacker.getX() + entityAttacker.getWidth() / 2;
         int attackY = entityAttacker.getY();
         int width = this.attackRange;
-        int height = width;
-        Rectangle attackArea;
+        int height = entityAttacker.getHeight();
+        //Rectangle attackArea;
 
         if (entityAttacker.isFacingRight()) {
             attackArea = new Rectangle(attackX, attackY, width, height);
@@ -37,6 +38,10 @@ public abstract class MeleeWeapon extends Weapon {
 
     public int getAttackRange() {
         return attackRange;
+    }
+
+    public Rectangle getAttackArea() {
+        return attackArea;
     }
 
 }

@@ -5,13 +5,16 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
-import com.thelegendofbald.item.weapons.Axe;
+import com.thelegendofbald.item.weapons.Sword;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.weapons.Weapon;
 
@@ -20,7 +23,7 @@ public class Bald extends Entity implements Combatant{
     private static final int WIDTH = 50; // Larghezza del frame
     private static final int HEIGHT = 50; // Altezza del frame
 
-    private final Optional<Weapon> weapon = Optional.of(new Axe(0, 0, 50, 50));
+    private final Optional<Weapon> weapon = Optional.of(new Sword(0, 0, 50, 50));
 
     private int attackPower; // Potenza d'attacco
     private BufferedImage image;
@@ -36,7 +39,8 @@ public class Bald extends Entity implements Combatant{
 
     private double speedY = 0.0; // Velocità lungo l'asse Y
     private BufferedImage[] runFrames; // Array di immagini per l'animazione della corsa
-    private BufferedImage[] attackFrames; // Array di immagini per l'animazione dell'attacco
+    private Map<String, BufferedImage[]> attackFrames = new HashMap<>(); // Mappa per i frame di attacco
+    private BufferedImage[] actualAttackFrames;
     private int currentFrame = 0; // Indice del frame corrente
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
@@ -47,36 +51,43 @@ public class Bald extends Entity implements Combatant{
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(maxHealth));
         this.attackPower = attackPower;
         loadRunFrames();
-        loadAttackFrames();
+        loadAllAttackFrames();
     }
 
     public void startAttackAnimation() {
         isAttacking = true;
+        weapon.ifPresent(w -> actualAttackFrames = attackFrames.get(w.getName().toLowerCase()));
         currentAttackFrame = 0;
     }
 
-    private void loadAttackFrames() {
-        final String startingPath = "/images/bald_attack/sword";
+    private void loadAllAttackFrames() {
+        final String defaultPath = "/images/bald_attack";
+        List<String> weaponNames = List.of("sword", "axe");
         int numFrames = 8;
-        attackFrames = new BufferedImage[numFrames];
 
+        weaponNames.forEach(name -> {
+            String startingPath = defaultPath + "/" + name;
+            BufferedImage[] frames = new BufferedImage[numFrames];
 
-        Stream.iterate(0, i -> i + 1).limit(numFrames).forEach(i -> {
-            String framePath = startingPath + String.format("/frame_%d.png", i);
-            InputStream inputStream = this.getClass().getResourceAsStream(framePath);
-            
-            Optional.ofNullable(inputStream).ifPresentOrElse(is -> {
-                try {
-                    attackFrames[i] = ImageIO.read(is);
+            Stream.iterate(0, i -> i + 1).limit(numFrames).forEach(i -> {
+                String framePath = startingPath + String.format("/frame_%d.png", i);
+                InputStream inputStream = this.getClass().getResourceAsStream(framePath);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Optional.ofNullable(inputStream).ifPresentOrElse(is -> {
+                    try {
+                        frames[i] = ImageIO.read(is);
 
-            }, () -> {
-                System.err.println("Frame " + framePath + " not found");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }, () -> System.err.println("Frame " + framePath + " not found"));
             });
+
+            attackFrames.put(name, frames);
         });
+
+        System.out.println("Attack frames loaded: " + attackFrames.size());
     }
 
     private void loadRunFrames() {
@@ -112,7 +123,7 @@ public class Bald extends Entity implements Combatant{
 
             if (isAttacking) {
                 currentAttackFrame++;
-                if (currentAttackFrame >= attackFrames.length) {
+                if (currentAttackFrame >= actualAttackFrames.length) {
                     isAttacking = false;
                     currentAttackFrame = 0;
                 }
@@ -125,13 +136,13 @@ public class Bald extends Entity implements Combatant{
     }
 
     public void render(Graphics g) {
-        if (isAttacking && attackFrames != null && attackFrames[currentAttackFrame] != null) {
+        if (isAttacking && actualAttackFrames != null && actualAttackFrames[currentAttackFrame] != null) {
             if (!facingRight) {
                 // Disegna normalmente se Bald è girato verso destra
-                g.drawImage(attackFrames[currentAttackFrame], x, y, 50, 50, null);
+                g.drawImage(actualAttackFrames[currentAttackFrame], x, y, 50, 50, null);
             } else {
                 // Disegna riflettendo l'immagine orizzontalmente
-                g.drawImage(attackFrames[currentAttackFrame], x + 50, y, -50, 50, null);
+                g.drawImage(actualAttackFrames[currentAttackFrame], x + 50, y, -50, 50, null);
             }
         }
         else if (runFrames != null && runFrames[currentFrame] != null) {
@@ -192,6 +203,10 @@ public class Bald extends Entity implements Combatant{
 
     public Optional<Weapon> getWeapon() {
         return weapon;
+    }
+
+    public boolean isAttacking() {
+        return isAttacking;
     }
 
 }

@@ -13,29 +13,13 @@ import com.thelegendofbald.view.buttons.KeybindingButton;
 
 
 /**
- * The {@code KeybindsSettings} enum represents the configurable key binding
- * options
- * available in the settings menu of the application. Each enum constant
- * corresponds
- * to a directional control (UP, DOWN, LEFT, RIGHT) and provides associated
- * display text,
- * button text, and a Swing {@link JComponent} for UI representation.
+ * Represents the keybinding settings for the game controls.
+ * This enum defines various keybindings such as UP, DOWN, LEFT, RIGHT, and ATTACK,
+ * each associated with a specific key code.
  * <p>
- * Each keybind setting is initialized with a display label and the default key
- * text,
- * and constructs a keybinding button using a {@link JButtonFactory}.
+ * Each enum constant provides a button component that can be used in the UI to display
+ * and modify the keybinding settings.
  * </p>
- *
- * <ul>
- * <li>{@link #UP} - Represents the "Up" key binding.</li>
- * <li>{@link #DOWN} - Represents the "Down" key binding.</li>
- * <li>{@link #LEFT} - Represents the "Left" key binding.</li>
- * <li>{@link #RIGHT} - Represents the "Right" key binding.</li>
- * </ul>
- *
- * @see SettingOption
- * @see JButtonFactory
- * @see JComponent
  */
 public enum ControlsSettings implements SettingOption {
     /**
@@ -55,9 +39,9 @@ public enum ControlsSettings implements SettingOption {
      */
     RIGHT("RIGHT", KeyEvent.VK_RIGHT),
     /**
-     * Represents the "Right" key binding.
+     * Represents the "Attack" key binding.
      */
-    SPACE("SPACE", KeyEvent.VK_SPACE);
+    ATTACK("ATTACK", KeyEvent.VK_SPACE);
 
     private static final double BUTTONS_ARC_PROPORTION = 0.05;
 
