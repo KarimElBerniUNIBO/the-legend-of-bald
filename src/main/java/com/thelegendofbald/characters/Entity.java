@@ -33,7 +33,7 @@ public abstract class Entity  {
     public void setHeight(int height) { this.height = height; }
 
     public boolean isFacingRight() {
-        return facingRight; // Restituisce 1 se sta guardando a destra, -1 altrimenti
+        return facingRight;
     }
 
     public void setFacingRight(boolean facingRight) {

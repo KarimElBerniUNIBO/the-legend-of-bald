@@ -13,14 +13,15 @@ public class Projectile extends Entity implements Combatant {
     public int speed;
     public int direction; // 0 = destra, 1 = sinistra, ecc.
     public boolean active = true;
-    public int damage = 10;
+    public final int damage;
 
-    public Projectile(int x, int y, int direction, int speed) {
+    public Projectile(int x, int y, int direction, int speed, int damage) {
         super(x, y, 6, 6, "bullet", null); // Pass null or a valid LifeComponent instance if available
         this.x = x;
         this.y = y;
         this.direction = direction;
         this.speed = speed;
+        this.damage = damage;
     }
 
     public void move() {

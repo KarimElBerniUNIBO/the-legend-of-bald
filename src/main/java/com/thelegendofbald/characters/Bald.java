@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
-import com.thelegendofbald.item.weapons.Sword;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.weapons.Weapon;
 
@@ -23,7 +22,7 @@ public class Bald extends Entity implements Combatant{
     private static final int WIDTH = 50; // Larghezza del frame
     private static final int HEIGHT = 50; // Altezza del frame
 
-    private final Optional<Weapon> weapon = Optional.of(new Sword(0, 0, 50, 50));
+    private Optional<Weapon> weapon = Optional.empty();
 
     private int attackPower; // Potenza d'attacco
     private BufferedImage image;
@@ -203,6 +202,10 @@ public class Bald extends Entity implements Combatant{
 
     public Optional<Weapon> getWeapon() {
         return weapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = Optional.ofNullable(weapon);
     }
 
     public boolean isAttacking() {

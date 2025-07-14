@@ -1,18 +1,19 @@
 package com.thelegendofbald.model.weapons;
 
-import java.awt.Rectangle;
+import java.awt.geom.Arc2D;
 import java.util.List;
 
 import com.thelegendofbald.characters.Entity;
 import com.thelegendofbald.combat.Combatant;
+import com.thelegendofbald.model.combat.CombatManager;
 
 public abstract class MeleeWeapon extends Weapon {
 
     protected int attackRange;
-    private Rectangle attackArea = new Rectangle();
+    private Arc2D attackArea;
 
-    protected MeleeWeapon(int x, int y, int preferredSizeX, int preferredSizeY, String name, int damage, int attackCooldown, int attackRange) {
-        super(x, y, preferredSizeX, preferredSizeY, name, damage, attackCooldown);
+    protected MeleeWeapon(int x, int y, int preferredSizeX, int preferredSizeY, String name, int damage, int attackCooldown, CombatManager combatManager, int attackRange) {
+        super(x, y, preferredSizeX, preferredSizeY, name, damage, attackCooldown, combatManager);
         this.attackRange = attackRange;
     }
 
@@ -23,12 +24,12 @@ public abstract class MeleeWeapon extends Weapon {
         int attackY = entityAttacker.getY();
         int width = this.attackRange;
         int height = entityAttacker.getHeight();
-        //Rectangle attackArea;
+        int correction = 22;
 
         if (entityAttacker.isFacingRight()) {
-            attackArea = new Rectangle(attackX, attackY, width, height);
+            attackArea = new Arc2D.Double(attackX - correction, attackY, width, height, 270, 180, Arc2D.PIE);
         } else {
-            attackArea = new Rectangle(attackX - width, attackY, width, height);
+            attackArea = new Arc2D.Double(attackX - width + correction, attackY, width, height, 90, 180, Arc2D.PIE);
         }
 
         targets.stream()
@@ -40,7 +41,7 @@ public abstract class MeleeWeapon extends Weapon {
         return attackRange;
     }
 
-    public Rectangle getAttackArea() {
+    public Arc2D getAttackArea() {
         return attackArea;
     }
 

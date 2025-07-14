@@ -7,8 +7,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,9 +32,9 @@ import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
-import com.thelegendofbald.characters.Entity;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.combat.projectile.Projectile;
+import com.thelegendofbald.item.weapons.Magic;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.Timer;
 import com.thelegendofbald.model.common.Timer.TimeData;
@@ -69,7 +69,6 @@ public class GamePanel extends MenuPanel implements Runnable {
     private final TileMap tileMap;
     private final LifePanel lifePanel;
     private List<DummyEnemy> enemies = new ArrayList<>();
-    private List<Projectile> projectiles = new ArrayList<>();
     private final JPanel optionsPanel;
     private final JPanel inventoryPanel;
     private final Timer timer = new Timer();
@@ -109,6 +108,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.tileMap = new TileMap(size.width, size.height);
 
         this.combatManager = new CombatManager(bald, enemies);
+        this.bald.setWeapon(new Magic(0, 0, 50, 50, combatManager));
 
         this.requestFocusInWindow();
 
@@ -229,10 +229,6 @@ public class GamePanel extends MenuPanel implements Runnable {
     }
 
     private void update() {
-
-        List<Projectile> toRemoveProjectiles = new ArrayList<>();
-        List<Entity> toRemoveEnemies = new ArrayList<>();
-
         handleInput();
         bald.updateAnimation();
         bald.move();
@@ -245,27 +241,10 @@ public class GamePanel extends MenuPanel implements Runnable {
             enemy.updateAnimation();
         });
 
-
-        for (Projectile projectile : projectiles) {
-            projectile.move(); // Assicurati che il proiettile si muova
-
-            for (DummyEnemy e : enemies) {
-                // Usa la posizione del proiettile e del nemico per il controllo collisione
-                if (intersects(projectile,e)) {
-                    e.takeDamage(projectile.getAttackPower());
-                    toRemoveProjectiles.add(projectile); // Rimuovi il proiettile dopo il colpo
-                    if (e.getLifeComponent().isDead()) {
-                        toRemoveEnemies.add(e);
-                    }
-                    break; // Un proiettile colpisce solo un nemico
-                }  
-            }
-        }
-        projectiles.removeAll(toRemoveProjectiles);
-        enemies.removeAll(toRemoveEnemies);
+        combatManager.getProjectiles().forEach(Projectile::move);
+        combatManager.checkProjectiles();
 
         repaint();
-        // System.out.printf("dx: %.3f dy: %.3f%n", bald.getSpeedX(), bald.getSpeedY());
     }
 
     @Override
@@ -279,10 +258,8 @@ public class GamePanel extends MenuPanel implements Runnable {
         bald.render(g2d);
         for (DummyEnemy dummyenemy : enemies) {
             dummyenemy.render(g2d);
-        }  
-        for (Projectile p : projectiles) {
-            p.render(g2d);
-        }    
+        }
+        this.combatManager.getProjectiles().forEach(p -> p.render(g2d));   
         this.lifePanel.paint(g2d);
         this.drawFPS(g2d);
         this.drawTimer(g2d);
@@ -296,7 +273,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         
         bald.getWeapon().ifPresent(weapon -> {
             if (bald.isAttacking() && weapon instanceof MeleeWeapon) {
-                Rectangle attackArea = ((MeleeWeapon) weapon).getAttackArea();
+                Arc2D attackArea = ((MeleeWeapon) weapon).getAttackArea();
                 g2d.setColor(ATTACK_AREA_COLOR);
                 g2d.fill(attackArea);
             }

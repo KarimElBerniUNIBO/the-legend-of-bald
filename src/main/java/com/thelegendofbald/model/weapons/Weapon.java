@@ -4,17 +4,20 @@ import java.util.List;
 
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.item.GameItem;
+import com.thelegendofbald.model.combat.CombatManager;
 
 public abstract class Weapon extends GameItem {
 
     protected final int damage;
     protected final int attackCooldown;
+    protected CombatManager combatManager;
 
     protected Weapon(int x, int y, int preferredSizeX, int preferredSizeY, String name, int damage, 
-                     int attackCooldown) {
+                     int attackCooldown, CombatManager combatManager) {
         super(x, y, preferredSizeX, preferredSizeY, name);
         this.damage = damage;
         this.attackCooldown = attackCooldown;
+        this.combatManager = combatManager;
     }
 
     public void equip() {
