@@ -36,6 +36,7 @@ public class CombatManager {
             }
 
             // bald.startAttackAnimation();
+            bald.attack();
             w.performAttack(bald, enemies);
             lastAttackTime = now;
 

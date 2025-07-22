@@ -17,7 +17,7 @@ import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.weapons.Weapon;
 
-public class Bald extends Entity implements Combatant{
+public class Bald extends Entity implements Combatant {
 
     private static final int WIDTH = 50; // Larghezza del frame
     private static final int HEIGHT = 50; // Altezza del frame
@@ -28,6 +28,7 @@ public class Bald extends Entity implements Combatant{
     private BufferedImage image;
     private String path = "/images/bald.png"; // Percorso dell'immagine
     private double speedX = 0.0; // Velocità lungo l'asse X
+
     public double getSpeedX() {
         return speedX;
     }
@@ -46,7 +47,7 @@ public class Bald extends Entity implements Combatant{
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
 
-    public Bald(int x, int y,int maxHealth, String name, int attackPower ) {
+    public Bald(int x, int y, int maxHealth, String name, int attackPower) {
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(maxHealth));
         this.attackPower = attackPower;
         loadRunFrames();
@@ -54,18 +55,18 @@ public class Bald extends Entity implements Combatant{
     }
 
     public void startAttackAnimation() {
-        isAttacking = true;
-        weapon.ifPresent(w -> actualAttackFrames = attackFrames.get(w.getName().toLowerCase()));
+        weapon.ifPresent(w -> actualAttackFrames = attackFrames.getOrDefault(w.getName().toLowerCase(),
+                attackFrames.get("def")));
         currentAttackFrame = 0;
     }
 
     private void loadAllAttackFrames() {
         final String defaultPath = "/images/bald_attack";
-        List<String> weaponNames = List.of("sword", "axe");
+        List<String> weaponNames = List.of("def", "sword", "axe");
         int numFrames = 8;
 
-        weaponNames.forEach(name -> {
-            String startingPath = defaultPath + "/" + name;
+        weaponNames.forEach(weaponName -> {
+            String startingPath = defaultPath + "/" + weaponName;
             BufferedImage[] frames = new BufferedImage[numFrames];
 
             Stream.iterate(0, i -> i + 1).limit(numFrames).forEach(i -> {
@@ -83,7 +84,7 @@ public class Bald extends Entity implements Combatant{
                 }, () -> System.err.println("Frame " + framePath + " not found"));
             });
 
-            attackFrames.put(name, frames);
+            attackFrames.put(weaponName, frames);
         });
 
         System.out.println("Attack frames loaded: " + attackFrames.size());
@@ -94,7 +95,8 @@ public class Bald extends Entity implements Combatant{
             int numFrames = 9; // Supponiamo di avere 6 frame
             runFrames = new BufferedImage[numFrames];
             for (int i = 0; i < numFrames; i++) {
-                String framePath = String.format("/images/bald_run/PS_BALD GUY_Run_00%d.png", i + 1); // Percorso dei frame
+                String framePath = String.format("/images/bald_run/PS_BALD GUY_Run_00%d.png", i + 1); // Percorso dei
+                                                                                                      // frame
                 InputStream is = getClass().getResourceAsStream(framePath);
                 if (is != null) {
                     runFrames[i] = ImageIO.read(is);
@@ -107,12 +109,12 @@ public class Bald extends Entity implements Combatant{
         }
     }
 
-    public int getAttackPower() { 
-        return attackPower; 
+    public int getAttackPower() {
+        return attackPower;
     }
 
-    public void setAttackPower(int attackPower) { 
-        this.attackPower = attackPower; 
+    public void setAttackPower(int attackPower) {
+        this.attackPower = attackPower;
     }
 
     public void updateAnimation() {
@@ -120,7 +122,7 @@ public class Bald extends Entity implements Combatant{
         if (frameCounter >= frameDelay) {
             frameCounter = 0;
 
-            if (isAttacking) {
+            if (isAttacking && actualAttackFrames != null) {
                 currentAttackFrame++;
                 if (currentAttackFrame >= actualAttackFrames.length) {
                     isAttacking = false;
@@ -131,7 +133,7 @@ public class Bald extends Entity implements Combatant{
                 currentFrame = (currentFrame + 1) % runFrames.length; // Cicla tra i frame
             }
         }
-        
+
     }
 
     public void render(Graphics g) {
@@ -143,8 +145,7 @@ public class Bald extends Entity implements Combatant{
                 // Disegna riflettendo l'immagine orizzontalmente
                 g.drawImage(actualAttackFrames[currentAttackFrame], x + 50, y, -50, 50, null);
             }
-        }
-        else if (runFrames != null && runFrames[currentFrame] != null) {
+        } else if (runFrames != null && runFrames[currentFrame] != null) {
             if (!facingRight) {
                 // Disegna normalmente se Bald è girato verso destra
                 g.drawImage(runFrames[currentFrame], x, y, 50, 50, null);
@@ -158,17 +159,17 @@ public class Bald extends Entity implements Combatant{
             g.fillRect(x, y, 50, 50);
         }
     }
-   
+
     public void setSpeedX(double speedX) {
         this.speedX = speedX;
-        //this.updateAnimation();
+        // this.updateAnimation();
     }
-    
+
     public void setSpeedY(double speedY) {
         this.speedY = speedY;
-        //this.updateAnimation();
+        // this.updateAnimation();
     }
-    
+
     public void move() {
         if (speedX > 0) {
             facingRight = true; // Bald si muove verso destra
@@ -177,14 +178,14 @@ public class Bald extends Entity implements Combatant{
         }
         this.x += speedX;
         this.y += speedY;
-        
+
     }
 
     @Override
     public void takeDamage(int damage) {
         this.lifeComponent.damageTaken(damage);
         System.out.println(lifeComponent.getCurrentHealth());
-        
+
     }
 
     public boolean isAlive() {
@@ -210,6 +211,11 @@ public class Bald extends Entity implements Combatant{
 
     public boolean isAttacking() {
         return isAttacking;
+    }
+
+    public void attack() {
+        this.isAttacking = true;
+        this.startAttackAnimation();
     }
 
 }
