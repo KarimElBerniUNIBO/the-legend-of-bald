@@ -12,7 +12,7 @@ public class CustomComboBox<X> extends JComboBox<X> {
         items.forEach(this::addItem);
         this.setRenderer(new CustomComboBoxRenderer(this));
         this.setSelectedItem(items.getFirst());
-        this.lastSelectedItem = (X) this.getSelectedItem();
+        this.lastSelectedItem = this.getItemAt(this.getSelectedIndex());
     }
 
     public X getLastSelectedItem() {

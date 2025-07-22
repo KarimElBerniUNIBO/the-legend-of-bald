@@ -14,7 +14,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.common.TextLabelFactory;
+import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.api.panels.AdapterPanel;
+import com.thelegendofbald.model.inventory.InventoryManager;
 import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
@@ -36,6 +38,7 @@ public class InventoryPanel extends AdapterPanel {
     private final String titleText;
     private final int maxSlotsPerRow;
     private final int maxRows;
+    private final Inventory inventoryManager;
 
     private Optional<TextLabel> title = Optional.empty();
     private Optional<JPanel> inventoryContent = Optional.empty();
@@ -45,8 +48,10 @@ public class InventoryPanel extends AdapterPanel {
         this.titleText = title;
         this.maxSlotsPerRow = columns;
         this.maxRows = rows;
+        this.inventoryManager = new InventoryManager(rows, columns);
+
         this.setLayout(new GridBagLayout());
-        this.setVisible(false);
+        this.setVisible(true);
         SwingUtilities.invokeLater(() -> this.setBackground(DEFAULT_BG_COLOR));
     }
 
@@ -84,6 +89,10 @@ public class InventoryPanel extends AdapterPanel {
         });
 
         this.updateComponentsSize();
+    }
+
+    public Inventory getInventory() {
+        return inventoryManager;
     }
 
 }

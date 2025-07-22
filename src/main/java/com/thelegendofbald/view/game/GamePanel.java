@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
+import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.api.panels.LifePanel;
 import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.settingsmenu.ControlsSettings;
@@ -34,11 +35,14 @@ import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.combat.projectile.Projectile;
+import com.thelegendofbald.item.weapons.Axe;
 import com.thelegendofbald.item.weapons.Magic;
+import com.thelegendofbald.item.weapons.Sword;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.Timer;
 import com.thelegendofbald.model.common.Timer.TimeData;
 import com.thelegendofbald.model.weapons.MeleeWeapon;
+import com.thelegendofbald.model.weapons.Weapon;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.inventory.InventoryPanel;
 import com.thelegendofbald.view.main.GameWindow;
@@ -70,9 +74,11 @@ public class GamePanel extends MenuPanel implements Runnable {
     private final LifePanel lifePanel;
     private List<DummyEnemy> enemies = new ArrayList<>();
     private final JPanel optionsPanel;
-    private final JPanel inventoryPanel;
     private final Timer timer = new Timer();
     private final CombatManager combatManager;
+
+    private final JPanel inventoryPanel;
+    private final Inventory inventory;
 
     private int num_enemies = 3;
 
@@ -104,11 +110,13 @@ public class GamePanel extends MenuPanel implements Runnable {
 
         this.optionsPanel = new GameOptionsPanel(size);
         this.inventoryPanel = new InventoryPanel("INVENTORY", size, 5, 3);
+        this.inventory = ((InventoryPanel) this.inventoryPanel).getInventory();
 
         this.tileMap = new TileMap(size.width, size.height);
 
         this.combatManager = new CombatManager(bald, enemies);
         this.bald.setWeapon(new Magic(0, 0, 50, 50, combatManager));
+        this.addWeaponsToInventory();
 
         this.requestFocusInWindow();
 
@@ -122,6 +130,15 @@ public class GamePanel extends MenuPanel implements Runnable {
         // this.startGame();
 
         SwingUtilities.invokeLater(() -> this.requestFocusInWindow());
+    }
+
+    private void addWeaponsToInventory() {
+        List<Weapon> weapons = List.of(new Magic(0, 0, 50, 50, combatManager),
+                                       new Sword(0, 0, 50, 50, combatManager),
+                                       new Axe(0, 0, 50, 50, combatManager));
+        
+
+        weapons.forEach(inventory::add);
     }
 
     private void setupKeyBindings() {
