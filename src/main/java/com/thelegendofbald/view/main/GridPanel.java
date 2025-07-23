@@ -6,7 +6,6 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.api.views.View;
 
 public class GridPanel extends JPanel {

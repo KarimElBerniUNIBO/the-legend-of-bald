@@ -8,6 +8,7 @@ import java.util.Objects;
 
 public class Tile {
     private final BufferedImage image;
+    private final BufferedImage overlayImage;
     private final int width;
     private final int height;
     private final int id;
@@ -16,7 +17,7 @@ public class Tile {
     private final boolean walkable;
 
     // Costruttore principale
-    public Tile(BufferedImage image, int width, int height, int id, boolean solid, boolean resize, boolean isSpawn, boolean walkable) {
+    public Tile(BufferedImage image, int width, int height, int id, boolean solid, boolean resize, boolean isSpawn, boolean walkable, BufferedImage overlayImage) {
         this.width = width;
         this.height = height;
         this.id = id;
@@ -37,11 +38,12 @@ public class Tile {
         } else {
             this.image = null;
         }
+        this.overlayImage = overlayImage;
     }
 
     // Costruttore secondario semplificato
     public Tile(BufferedImage image, int width, int height) {
-        this(image, width, height, 0, false, false, false, false);
+        this(image, width, height, 0, false, false, false, false, null);
     }
 
     public BufferedImage getImage() {
@@ -76,10 +78,18 @@ public class Tile {
         return id != -1;
     }
 
+    public BufferedImage getOverlayImage() {
+    return overlayImage;
+}
+
     public void render(Graphics g, int x, int y) {
         if (image != null) {
             g.drawImage(image, x, y, null);
         } 
+
+        if (overlayImage != null) {
+            g.drawImage(overlayImage, x, y, null);
+        }
     }
 
     @Override
@@ -107,67 +117,6 @@ public class Tile {
                 ", isSpawn=" + isSpawn +
                 ", walkable=" + walkable +
                 '}';
-    }
-
-    public boolean isDummy() {
-        return id == -1; // Considera un tile senza ID come un "dummy"
-    }
-    public boolean isEmpty() {
-        return image == null || (width == 0 && height == 0);
-    }
-    public boolean isValid() {
-        return image != null && width > 0 && height > 0;
-    }
-    public boolean isValidTile() {
-        return isValid() && !isDummy() && !isEmpty();
-    }
-    public boolean isSolidTile() {
-        return isValidTile() && solid;
-    }
-    public boolean isSpawnTile() {
-        return isValidTile() && isSpawn;
-    }
-    public boolean isWalkableTile() {
-        return isValidTile() && walkable;
-    }
-    public boolean isNonWalkableTile() {
-        return isValidTile() && !walkable;
-    }
-    public boolean isSpawnOrWalkableTile() {
-        return isValidTile() && (isSpawn || walkable);
-    }
-    public boolean isSpawnAndWalkableTile() {
-        return isValidTile() && isSpawn && walkable;
-    }
-    public boolean isSpawnOrSolidTile() {
-        return isValidTile() && (isSpawn || solid);
-    }
-    public boolean isSpawnAndSolidTile() {
-        return isValidTile() && isSpawn && solid;
-    }
-    public boolean isSpawnOrSolidOrWalkableTile() {
-        return isValidTile() && (isSpawn || solid || walkable);
-    }
-    public boolean isSpawnAndSolidAndWalkableTile() {
-        return isValidTile() && isSpawn && solid && walkable;
-    }
-    public boolean isSpawnOrSolidAndWalkableTile() {
-        return isValidTile() && (isSpawn || (solid && walkable));
-    }
-    public boolean isSpawnAndSolidOrWalkableTile() {
-        return isValidTile() && (isSpawn && solid) || walkable;
-    }
-    public boolean isSpawnOrSolidAndNonWalkableTile() {
-        return isValidTile() && (isSpawn || (solid && !walkable));
-    }
-    public boolean isSpawnAndSolidOrNonWalkableTile() {
-        return isValidTile() && (isSpawn && solid) || !walkable;
-    }
-    public boolean isSpawnOrWalkableAndNonSolidTile() {
-        return isValidTile() && (isSpawn || (walkable && !solid));
-    }
-    public boolean isSpawnAndWalkableOrNonSolidTile() {
-        return isValidTile() && (isSpawn && walkable) || !solid;
     }
       
 }

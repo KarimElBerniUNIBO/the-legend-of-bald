@@ -18,15 +18,15 @@ public class TileMap {
 
     private final int width, height;
     private Tile[][] tiles;
-    private Image backgroundImage;
-    public final int TILE_SIZE = 32; // puoi cambiarlo
-    private BufferedImage image;
+    private  Image backgroundImage;
+    public final int TILE_SIZE;
 
     private final Map<Integer, Tile> tileTypes = new HashMap<>();
   
-    public TileMap(int width, int height) {
+    public TileMap(int width, int height, int TILE_SIZE){
         this.width = width;
         this.height = height;
+        this.TILE_SIZE = 32;
         loadTileTypes();
     }
 
@@ -36,13 +36,15 @@ public class TileMap {
             // Carica le immagini per i vari tipi di tile
             BufferedImage floor = ImageIO.read(getClass().getResource("/images/map_png/floor-tiles.png"));
             BufferedImage wall = ImageIO.read(getClass().getResource("/images/map_png/BrickGrey.png"));
+            BufferedImage shop = ImageIO.read(getClass().getResource("/images/map_png/shop.png"));
 
             // Aggiungi i vari tipi di tile con il costruttore aggiornato
-            tileTypes.put(0, new Tile(null, TILE_SIZE, TILE_SIZE, 0, false, false, false, false));  // Tile vuoto
-            tileTypes.put(1, new Tile(floor, TILE_SIZE, TILE_SIZE, 1, false, true, false, true));  // Tile per il pavimento
-            tileTypes.put(2, new Tile(wall, TILE_SIZE, TILE_SIZE, 2, false, true, false, false));    // Tile per il muro (solido)
-            tileTypes.put(4, new Tile(floor, TILE_SIZE, TILE_SIZE, 4, false, true, false, true));
-            tileTypes.put(5, new Tile(floor, TILE_SIZE, TILE_SIZE, 5, false, true, true, true)); // Un altro tile pavimento (opzionale)
+            tileTypes.put(0, new Tile(null, TILE_SIZE, TILE_SIZE, 0, false, false, false, false, null));  // Tile vuoto
+            tileTypes.put(1, new Tile(floor, TILE_SIZE, TILE_SIZE, 1, false, true, false, true, null));  // Tile per il pavimento
+            tileTypes.put(2, new Tile(wall, TILE_SIZE, TILE_SIZE, 2, false, true, false, false, null));    // Tile per il muro (solido)
+            tileTypes.put(4, new Tile(floor, TILE_SIZE, TILE_SIZE, 4, false, true, false, true, null));
+            tileTypes.put(5, new Tile(floor, TILE_SIZE, TILE_SIZE, 5, false, true, true, true, null)); // Un altro tile pavimento (opzionale)
+            tileTypes.put(6, new Tile(floor, TILE_SIZE, TILE_SIZE, 5, false, true, true, true, shop)); 
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,7 +86,8 @@ public class TileMap {
                         baseTile.isSolid(),
                         false,
                         baseTile.isWalkable(),
-                        baseTile.isSpawn()
+                        baseTile.isSpawn(),
+                        baseTile.getOverlayImage()
                     );
                 } else {
                     tiles[y][x] = null;
