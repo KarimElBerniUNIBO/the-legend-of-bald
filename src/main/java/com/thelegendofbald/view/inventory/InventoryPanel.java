@@ -60,7 +60,7 @@ public class InventoryPanel extends AdapterPanel {
         this.title = Optional.of(tlFactory.createTextLabelWithProportion(titleText, this.getSize(),
                 Optional.of(TITLE_PROPORTION), Optional.empty(), Optional.empty(), Optional.empty()));
         this.inventoryContent = Optional.of(new InventoryContent(this.getSize(), 
-                this.maxSlotsPerRow, this.maxRows, this.inventoryManager));
+                this.maxSlotsPerRow, this.inventoryManager));
 
         super.initializeComponents();
     }

@@ -32,11 +32,9 @@ public class SlotMouseListener extends TemplateInteractiveComponentMouseListener
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        super.mouseClicked(e);
-        SlotPanel slot = (SlotPanel) e.getSource();
-        inventoryManager.select(slot.getSlot());
-        
+    public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        inventoryManager.select(slotPanel.getSlot());
     }
 
 }

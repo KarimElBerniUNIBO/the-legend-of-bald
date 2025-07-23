@@ -8,6 +8,8 @@ import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.thelegendofbald.api.common.TextLabelFactory;
 import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.api.panels.AdapterPanel;
@@ -37,7 +39,7 @@ public final class SlotPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         slot.getItem().ifPresent(item -> {
-            this.itemLabel = Optional.of(tlFactory.createTextLabelWithProportion(item.getName(), this.getSize(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+            this.itemLabel = Optional.of(tlFactory.createTextLabelWithProportion(item.getName(), this.getSize(), Optional.of(Pair.of(0.5, 0.5)), Optional.of(Pair.of(2.0, 2.0)), Optional.empty(), Optional.empty()));
         });
         super.initializeComponents();
     }
@@ -53,6 +55,7 @@ public final class SlotPanel extends AdapterPanel {
 
     @Override
     public void addComponentsToPanel() {
+        this.updateComponentsSize();
         this.itemLabel.ifPresent(this::add);
     }
 
