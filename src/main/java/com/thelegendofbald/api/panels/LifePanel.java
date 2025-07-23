@@ -1,8 +1,8 @@
 package com.thelegendofbald.api.panels;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Color;
 
 import com.thelegendofbald.life.LifeComponent;
 
@@ -13,7 +13,6 @@ public class LifePanel extends AdapterPanel {
     public LifePanel(Dimension size, LifeComponent lifeComponent) {
         super(size);
         this.lifeComponent = lifeComponent;
-        initializeComponents();
     }
 
     @Override
@@ -34,7 +33,7 @@ public class LifePanel extends AdapterPanel {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         double perc = lifeComponent.getPercentage(); 

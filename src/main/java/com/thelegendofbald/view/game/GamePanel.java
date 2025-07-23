@@ -111,7 +111,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
         this.lifePanel = new LifePanel(new Dimension(200,20), bald.getLifeComponent());
         this.lifePanel.setBounds(100, 800, 200,20);
-        this.add(lifePanel);
 
         this.optionsPanel = new GameOptionsPanel(size);
         this.inventoryPanel = new InventoryPanel("INVENTORY", size, 5, 3);
@@ -306,7 +305,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         bald.render(g2d);
         enemies.forEach(enemy -> enemy.render(g2d));
         this.combatManager.getProjectiles().forEach(p -> p.render(g2d));   
-        this.lifePanel.paint(g2d);
+        this.lifePanel.paintComponent(g2d);
         this.drawFPS(g2d);
         this.drawTimer(g2d);
         this.drawAttackArea(g2d);
@@ -371,7 +370,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     @Override
     public void addComponentsToPanel() {
         this.updateComponentsSize();
-        this.add(gridPanel);
+        //this.add(gridPanel);
         this.add(optionsPanel, optionsGBC);
         this.add(inventoryPanel, inventoryGBC);
     }
