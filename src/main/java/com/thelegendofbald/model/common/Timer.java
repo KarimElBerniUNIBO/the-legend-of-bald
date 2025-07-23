@@ -2,7 +2,12 @@ package com.thelegendofbald.model.common;
 
 public class Timer {
 
-    public static record TimeData(int hours, int minutes, int seconds) {}
+    public static record TimeData(int hours, int minutes, int seconds) {
+        @Override
+        public String toString() {
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        }
+    }
 
     private long startTime;
     private long elapsedTime;

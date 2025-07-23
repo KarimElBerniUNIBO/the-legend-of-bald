@@ -15,6 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.common.TextLabelFactory;
+import com.thelegendofbald.api.game.Game;
 import com.thelegendofbald.api.game_options.Buttons;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.controller.common.SwitchToOtherPanel;
@@ -69,7 +70,7 @@ public final class GameOptionsPanel extends AdapterPanel {
                                         new SwitchToOtherPanel((GameWindow) SwingUtilities.getWindowAncestor(this),
                                                 panel).actionPerformed(e);
                                         if (enumButton == Buttons.LEAVE) {
-                                            ((GamePanel) this.getParent()).stopGame();
+                                            ((Game) this.getParent()).stopGame();
                                             this.setVisible(false);
                                         }
                                     }),

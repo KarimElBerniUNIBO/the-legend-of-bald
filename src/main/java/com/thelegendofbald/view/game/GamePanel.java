@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
+import com.thelegendofbald.api.game.Game;
 import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.api.panels.LifePanel;
 import com.thelegendofbald.api.panels.MenuPanel;
@@ -39,6 +40,8 @@ import com.thelegendofbald.item.weapons.Axe;
 import com.thelegendofbald.item.weapons.Magic;
 import com.thelegendofbald.item.weapons.Sword;
 import com.thelegendofbald.model.combat.CombatManager;
+import com.thelegendofbald.model.common.DataManager;
+import com.thelegendofbald.model.common.GameRun;
 import com.thelegendofbald.model.common.Timer;
 import com.thelegendofbald.model.common.Timer.TimeData;
 import com.thelegendofbald.model.weapons.MeleeWeapon;
@@ -49,7 +52,7 @@ import com.thelegendofbald.view.main.GameWindow;
 import com.thelegendofbald.view.main.GridPanel;
 import com.thelegendofbald.view.main.TileMap;
 
-public class GamePanel extends MenuPanel implements Runnable {
+public class GamePanel extends MenuPanel implements Runnable, Game {
 
     private static final double OPTIONS_WIDTH_INSETS = 0.25;
     private static final double OPTIONS_HEIGHT_INSETS = 0.1;
@@ -75,7 +78,9 @@ public class GamePanel extends MenuPanel implements Runnable {
     private List<DummyEnemy> enemies = new ArrayList<>();
     private final JPanel optionsPanel;
     private final Timer timer = new Timer();
+    private GameRun gameRun;
     private final CombatManager combatManager;
+    private final DataManager saveDataManager = new DataManager();
 
     private final JPanel inventoryPanel;
     private final Inventory inventory;
@@ -203,10 +208,36 @@ public class GamePanel extends MenuPanel implements Runnable {
         return e1.getBounds().intersects(e2.getBounds());
     }
 
+    public GameRun getGameRun() {
+        return gameRun;
+    }
+
+    private void setPlayerName() {
+        String nickname = "";
+
+        // TODO: Mettere in pausa il gioco e mostrare un dialogo per inserire il nome
+
+        while (Optional.ofNullable(nickname).isEmpty() || nickname.isBlank()) {
+            nickname = javax.swing.JOptionPane.showInputDialog("Enter your nickname:");
+        }
+        gameRun = new GameRun(nickname, timer.getFormattedTime());
+
+        System.out.println("Game started with player nickname: " + gameRun.name() + " at time: " + gameRun.timedata());
+        // TODO: Continua il gioco
+    }
+
+    @Override
     public void startGame() {
         gameThread = new Thread(this);
         gameThread.start();
         timer.start();
+        this.setPlayerName();
+    }
+
+    @Override
+    public void finishGame() {
+        gameRun = new GameRun(gameRun.name(), timer.getFormattedTime());
+        saveDataManager.saveGameRun(gameRun);
     }
 
     @Override
@@ -273,9 +304,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         tileMap.render(g2d);
         gridPanel.paintComponent(g2d);
         bald.render(g2d);
-        for (DummyEnemy dummyenemy : enemies) {
-            dummyenemy.render(g2d);
-        }
+        enemies.forEach(enemy -> enemy.render(g2d));
         this.combatManager.getProjectiles().forEach(p -> p.render(g2d));   
         this.lifePanel.paint(g2d);
         this.drawFPS(g2d);
@@ -347,18 +376,22 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.add(inventoryPanel, inventoryGBC);
     }
 
+    @Override
     public boolean isRunning() {
         return running;
     }
 
+    @Override
     public void stopGame() {
         this.running = false;
     }
 
+    @Override
     public void setFPS(int fps) {
         this.maxFPS = fps;
     }
 
+    @Override
     public void setShowingFPS(boolean showingFPS) {
         this.showingFPS = showingFPS;
     }

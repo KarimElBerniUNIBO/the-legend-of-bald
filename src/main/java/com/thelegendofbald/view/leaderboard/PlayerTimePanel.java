@@ -21,19 +21,25 @@ final class PlayerTimePanel extends AdapterPanel {
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
-    private Optional<TextLabel> playerName = Optional.empty();
-    private Optional<TextLabel> playerTime = Optional.empty();
 
-    PlayerTimePanel() {
+    private final String playerName;
+    private final String playerTime;
+
+    private Optional<TextLabel> playerNameText = Optional.empty();
+    private Optional<TextLabel> playerTimeText = Optional.empty();
+
+    PlayerTimePanel(String playerName, String playerTime) {
         super(new Dimension(0, 0));
         this.setLayout(new GridBagLayout());
+        this.playerName = playerName;
+        this.playerTime = playerTime;
     }
 
     @Override
     protected void initializeComponents() {
         this.setOpaque(true);
-        this.playerName = Optional.of(tlFactory.createTextLabelWithProportion("???", this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
-        this.playerTime = Optional.of(tlFactory.createTextLabelWithProportion("hh:mm:ss", this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
+        this.playerNameText = Optional.of(tlFactory.createTextLabelWithProportion(playerName, this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
+        this.playerTimeText = Optional.of(tlFactory.createTextLabelWithProportion(playerTime, this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
         super.initializeComponents();
     }
 
@@ -46,12 +52,12 @@ final class PlayerTimePanel extends AdapterPanel {
     @Override
     public void addComponentsToPanel() {
         this.gbc.gridx = 0;
-        this.playerName.ifPresent(name -> {
+        this.playerNameText.ifPresent(name -> {
             this.add(name, gbc);
         });
 
         this.gbc.gridx = 1;
-        this.playerTime.ifPresent(time -> {
+        this.playerTimeText.ifPresent(time -> {
             this.add(time, gbc);
         });
 
