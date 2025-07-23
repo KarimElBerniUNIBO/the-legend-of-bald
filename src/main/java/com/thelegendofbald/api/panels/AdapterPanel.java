@@ -44,7 +44,7 @@ public abstract class AdapterPanel extends BasePanel implements Resizable {
      * <p>
      * Subclasses can override this method to perform additional initialization
      * when the panel is added to a parent container. If overridden, ensure
-     * that {@code super.addNotify()} is called at the end of the method
+     * that {@code super.initializeComponents()} is called at the end of the method
      * to preserve the default behavior.
      * </p>
      */

@@ -111,6 +111,7 @@ public class GamePanel extends MenuPanel implements Runnable {
         this.optionsPanel = new GameOptionsPanel(size);
         this.inventoryPanel = new InventoryPanel("INVENTORY", size, 5, 3);
         this.inventory = ((InventoryPanel) this.inventoryPanel).getInventory();
+        this.inventory.setBald(bald);
 
         this.tileMap = new TileMap(size.width, size.height);
 
@@ -136,7 +137,6 @@ public class GamePanel extends MenuPanel implements Runnable {
         List<Weapon> weapons = List.of(new Magic(0, 0, 50, 50, combatManager),
                                        new Sword(0, 0, 50, 50, combatManager),
                                        new Axe(0, 0, 50, 50, combatManager));
-        
 
         weapons.forEach(inventory::add);
     }
@@ -292,7 +292,7 @@ public class GamePanel extends MenuPanel implements Runnable {
             if (bald.isAttacking() && weapon instanceof MeleeWeapon) {
                 Arc2D attackArea = ((MeleeWeapon) weapon).getAttackArea();
                 g2d.setColor(ATTACK_AREA_COLOR);
-                g2d.fill(attackArea);
+                Optional.ofNullable(attackArea).ifPresent(g2d::fill);
             }
         });
     }

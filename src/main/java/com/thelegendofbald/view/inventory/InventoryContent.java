@@ -4,9 +4,9 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.List;
-import java.util.stream.Stream;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
+import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
@@ -15,15 +15,17 @@ class InventoryContent extends AdapterPanel {
     private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private final List<Slot> inventorySlots;
+    private final List<SlotPanel> inventorySlots;
     private final int maxSlotsPerRow;
     private final int maxRows;
     private final int maxSlots;
+    private final Inventory inventoryManager;
 
-    InventoryContent(Dimension size, int columns, int rows) {
+    InventoryContent(Dimension size, int columns, int rows, Inventory inventoryManager) {
         super(size);
         this.maxSlotsPerRow = columns;
         this.maxRows = rows;
+        this.inventoryManager = inventoryManager;
         this.maxSlots = this.maxSlotsPerRow * this.maxRows;
         this.inventorySlots = this.getInventorySlots();
 
@@ -31,9 +33,9 @@ class InventoryContent extends AdapterPanel {
         this.setOpaque(false);
     }
 
-    private List<Slot> getInventorySlots() {
-        return Stream.generate(Slot::new)
-                .limit(maxSlots)
+    private List<SlotPanel> getInventorySlots() {
+        return inventoryManager.getSlots().stream()
+                .map(slot -> new SlotPanel(slot, inventoryManager))
                 .toList();
     }
 

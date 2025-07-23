@@ -1,17 +1,21 @@
 package com.thelegendofbald.model.inventory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.thelegendofbald.api.inventory.Inventory;
+import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.item.GameItem;
+import com.thelegendofbald.model.weapons.Weapon;
 
 public class InventoryManager implements Inventory {
 
     private final int rows;
     private final int columns;
     private final List<Slot> inventory;
+    private Bald bald;
 
     public InventoryManager(int rows, int columns) {
         this.rows = rows;
@@ -23,6 +27,10 @@ public class InventoryManager implements Inventory {
         return Stream.generate(() -> new Slot(null))
                 .limit(slots)
                 .collect(Collectors.toList());
+    }
+
+    public void setBald(Bald bald) {
+        this.bald = bald;
     }
 
     @Override
@@ -68,13 +76,37 @@ public class InventoryManager implements Inventory {
         return inventory.get(index);
     }
 
+    private void handleItemSelection(Slot slot) {
+        slot.getItem().ifPresent(item -> {
+            System.out.println("Selected item: " + item.getName());
+
+            if (item instanceof Weapon weapon) {
+                Optional.ofNullable(bald).ifPresent(b -> b.setWeapon(weapon));
+            }
+        });
+    }
+
     @Override
     public void select(int row, int column) {
         Slot slot = this.get(row, column);
-        slot.getItem().ifPresent(item -> {
-            // Handle item selection logic here
-            System.out.println("Selected item: " + item.getName());
-        });
+        this.select(slot);
     }
+
+    @Override
+    public void select(int index) {
+        Slot slot = inventory.get(index);
+        this.select(slot);
+    }
+
+    @Override
+    public void select(Slot slot) {
+        this.handleItemSelection(slot);
+    }
+
+    @Override
+    public List<Slot> getSlots() {
+        return this.inventory;
+    }
+
 
 }

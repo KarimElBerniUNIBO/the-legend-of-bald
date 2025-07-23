@@ -5,7 +5,7 @@ import com.thelegendofbald.model.weapons.RangedWeapon;
 
 public class Magic extends RangedWeapon {
 
-    private static final String NAME = "Bow";
+    private static final String NAME = "Magic";
     private static final int DAMAGE = 10;
     private static final int ATTACK_COOLDOWN = 300; // milliseconds
 
