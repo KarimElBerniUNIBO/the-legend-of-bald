@@ -2,11 +2,10 @@ package com.thelegendofbald.characters;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.awt.Rectangle;
 
 import javax.imageio.ImageIO;
 
@@ -26,6 +25,7 @@ public class Bald extends Entity {
     }
 
     private double speedY = 0.0; // Velocità lungo l'asse Y
+    private double posX, posY;
     private BufferedImage[] runFrames; // Array di immagini per l'animazione della corsa
     private int currentFrame = 0; // Indice del frame corrente
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
@@ -35,7 +35,8 @@ public class Bald extends Entity {
     public Bald(int x, int y, int health, String name, int attackPower ) {
         super(x, y, health, name);
         this.attackPower = attackPower;
-
+        this.posX = x;
+        this.posY = y;
         loadRunFrames();
     }
 
@@ -123,10 +124,10 @@ public class Bald extends Entity {
         int hitboxY = 25;
         
         //Check for hitbox on x
-        double nextX = x + speedX;
+        double nextX = posX + speedX;
         Rectangle nextHitboxX = new Rectangle(
             (int)(nextX + (50 - hitboxX) / 2),
-            (int)(y + (50 - hitboxY) / 2),
+            (int)(posY + (50 - hitboxY) / 2),
             hitboxX, hitboxY
         );
 
@@ -148,13 +149,13 @@ public class Bald extends Entity {
         }
 
         if (!collisionX) {
-            x = (int) nextX;
+            posX = nextX;
         }
 
         //Check for hitbox on y
-        double nextY = y + speedY;
+        double nextY = posY + speedY;
         Rectangle nextHitboxY = new Rectangle(
-            (int)(x + (50 - hitboxX) / 2),
+            (int)(posX + (50 - hitboxX) / 2),
             (int)(nextY + (50 - hitboxY) / 2),
             hitboxX, hitboxY
         );
@@ -176,8 +177,11 @@ public class Bald extends Entity {
         }
 
         if (!collisionY) {
-            y = (int) nextY;
+            posY = nextY;
         }
+
+        x = (int) posX;
+        y = (int) posY;
     }
 
     public Rectangle getHitbox() {

@@ -14,14 +14,12 @@ import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.MenuPanel;
-import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
@@ -223,11 +221,9 @@ public class GamePanel extends MenuPanel implements Runnable {
         bald.render(g2d);
         dummyenemy.render(g2d);
 
-        // Disegna la hitbox di Bald
-        Graphics2D g2d2 = (Graphics2D) g.create();
-        g2d2.setColor(new Color(255, 0, 0, 100)); // Rosso semi-trasparente
-        g2d2.draw(bald.getHitbox());
-        g2d2.dispose();
+        g2d.setColor(new Color(255, 0, 0, 100)); // Rosso semi-trasparente
+        g2d.draw(bald.getHitbox());
+        g2d.dispose();
     }
 
     private void scaleGraphics(Graphics g) {
