@@ -31,6 +31,7 @@ public class Bald extends Entity {
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
     private boolean facingRight = false; // Direzione in cui Bald sta guardando
+    private int MOVE_SPEED = 60; // Velocità di movimento in pixel al secondo
 
     public Bald(int x, int y, int health, String name, int attackPower ) {
         super(x, y, health, name);
@@ -118,13 +119,12 @@ public class Bald extends Entity {
         //this.updateAnimation();
     }
     
-    public void move(TileMap tileMap) {
+    public void move(TileMap tileMap, double deltaTime) {
 
         int hitboxX = 15;
         int hitboxY = 25;
-        
-        //Check for hitbox on x
-        double nextX = posX + speedX;
+
+        double nextX = posX + speedX * deltaTime * MOVE_SPEED; // deltaTime per rendere il movimento costante al variare degli FPS
         Rectangle nextHitboxX = new Rectangle(
             (int)(nextX + (50 - hitboxX) / 2),
             (int)(posY + (50 - hitboxY) / 2),
@@ -152,8 +152,7 @@ public class Bald extends Entity {
             posX = nextX;
         }
 
-        //Check for hitbox on y
-        double nextY = posY + speedY;
+        double nextY = posY + speedY * deltaTime * MOVE_SPEED;
         Rectangle nextHitboxY = new Rectangle(
             (int)(posX + (50 - hitboxX) / 2),
             (int)(nextY + (50 - hitboxY) / 2),

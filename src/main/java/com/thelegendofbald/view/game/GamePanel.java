@@ -159,17 +159,12 @@ public class GamePanel extends MenuPanel implements Runnable {
         System.out.println("Game loop started!");
 
         long lastTime = System.nanoTime();
-        double interval = 0;
-        int drawCount = 0;
-        long timer = 0;
-        double delta = 0;
 
         while (gameThread != null) {
-
+            
             if (paused) {
-                
                 try {
-                    Thread.sleep(100); // Riduci uso CPU durante la pausa
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -177,36 +172,21 @@ public class GamePanel extends MenuPanel implements Runnable {
             }
 
             long now = System.nanoTime();
-            timer += (now - lastTime);
-            interval = 1e9 / fps;
-            delta += (now - lastTime) / interval;
+            double deltaTime = (now - lastTime) / 1e9 ; // secondi
             lastTime = now;
 
-            if (delta >= 1) {
-
-                update();
-                repaint();
-                delta--;
-                drawCount++; // check FPS
-            }
-
-            if (timer >= 1000000000) {
-                // System.out.println("FPS:" + drawCount);
-                drawCount = 0;
-                timer = 0;
-            }
-
+            update(deltaTime);
+            repaint();
         }
     }
 
-    private void update() {
+    private void update(double deltaTime) {
 
         handleInput();
-        bald.move(tileMap);
-        dummyenemy.followPlayer(bald);
+        bald.move(tileMap, deltaTime);
+        dummyenemy.followPlayer(bald, tileMap, deltaTime);
         dummyenemy.updateAnimation();
         repaint();
-        // System.out.printf("dx: %.3f dy: %.3f%n", bald.getSpeedX(), bald.getSpeedY());
     }
 
     @Override
