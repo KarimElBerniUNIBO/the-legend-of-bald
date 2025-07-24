@@ -7,6 +7,8 @@ import com.thelegendofbald.controller.listeners.common.TemplateInteractiveCompon
 import com.thelegendofbald.utils.ColorUtils;
 import com.thelegendofbald.view.inventory.SlotPanel;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class SlotMouseListener extends TemplateInteractiveComponentMouseListener {
 
     private static final double CHANGING_FACTOR = 0.75;
@@ -14,6 +16,10 @@ public class SlotMouseListener extends TemplateInteractiveComponentMouseListener
     private final SlotPanel slotPanel;
     private final Inventory inventoryManager;
 
+    @SuppressFBWarnings(
+        value = {"EI2"},
+        justification = "This is a listener that needs to be instantiated with the slot panel and inventory manager."
+    )
     public SlotMouseListener(SlotPanel slotPanel, Inventory inventoryManager) {
         this.slotPanel = slotPanel;
         this.inventoryManager = inventoryManager;

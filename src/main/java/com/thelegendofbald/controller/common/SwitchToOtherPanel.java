@@ -9,6 +9,8 @@ import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.view.main.GameWindow;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * An {@link ActionListener} implementation that switches the main panel of the application window
  * to a specified panel when an action is performed.
@@ -31,6 +33,10 @@ public final class SwitchToOtherPanel implements ActionListener {
      * @param window    the main game window where the panel switch will occur
      * @param panelEnum the enum value representing the panel to switch to
      */
+    @SuppressFBWarnings(
+        value = {"EI2" },
+        justification = "This constructor is intended to be used for initializing the action listener with a specific panel enum."
+    )
     public SwitchToOtherPanel(final MainView window, final Panels panelEnum) {
         this.window = window;
         this.panelEnum = panelEnum;

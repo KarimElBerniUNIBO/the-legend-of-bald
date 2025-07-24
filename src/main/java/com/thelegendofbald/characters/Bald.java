@@ -49,7 +49,7 @@ public class Bald extends Entity implements Combatant {
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
-    private boolean facingRight = false; // Direzione in cui Bald sta guardando
+    private boolean facingRight = true; // Direzione in cui Bald sta guardando
     private int health = 100; // Salute di Bald
     private String name; // Nome di Bald
 

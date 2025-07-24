@@ -9,6 +9,8 @@ import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.combat.projectile.Projectile;
 import com.thelegendofbald.model.weapons.Weapon;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class CombatManager {
 
     private static final int ENEMY_ATTACK_COOLDOWN = 700; // milliseconds
@@ -19,6 +21,10 @@ public class CombatManager {
 
     private long lastAttackTime = 0;
 
+    @SuppressFBWarnings(
+        value = {"EI2"},
+        justification = "This constructor is intended to be used for initializing the CombatManager instance without throwing exceptions."
+    )
     public CombatManager(Bald bald, List<DummyEnemy> enemies) {
         this.bald = bald;
         this.enemies = enemies;

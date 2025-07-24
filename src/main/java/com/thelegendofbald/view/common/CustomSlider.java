@@ -17,6 +17,8 @@ import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.model.sounds.SoundPlayer;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class CustomSlider extends AdapterPanel {
 
     private static final int MINOR_TICK_SPACING = 5;
@@ -82,6 +84,10 @@ public class CustomSlider extends AdapterPanel {
         SwingUtilities.invokeLater(this::updateView);
     }
 
+    @SuppressFBWarnings(
+        value = {"EI"},
+        justification = "This method is designed to return the JSlider instance without throwing exceptions."
+    )
     public JSlider getSlider() {
         return slider;
     }

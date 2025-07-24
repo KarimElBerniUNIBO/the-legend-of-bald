@@ -11,6 +11,8 @@ import com.thelegendofbald.api.buttons.JButtonFactory;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.buttons.KeybindingButton;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 
 /**
  * Represents the keybinding settings for the game controls.
@@ -82,6 +84,10 @@ public enum ControlsSettings implements SettingOption {
      *
      * @return the JComponent for this keybinding setting
      */
+    @SuppressFBWarnings(
+        value = {"EI"},
+        justification = "This method is intended to return a UI component for display purposes only."
+    )
     @Override
     public JComponent getJComponent() {
         return this.jcomponent;
@@ -104,8 +110,10 @@ public enum ControlsSettings implements SettingOption {
      * @see KeyEvent
      */
     public void setKey(final int key) {
-        this.key = key;
-        updateButtonText((JButton) this.jcomponent, key);
+        if (Optional.ofNullable(key).isPresent() && this.key != key) {
+            this.key = key;
+            updateButtonText((JButton) this.jcomponent, key);
+        }
     }
 
     /**

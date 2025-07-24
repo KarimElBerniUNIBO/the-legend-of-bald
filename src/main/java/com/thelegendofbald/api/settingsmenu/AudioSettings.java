@@ -8,6 +8,8 @@ import com.thelegendofbald.view.common.CustomCheckBox;
 import com.thelegendofbald.view.common.CustomComboBox;
 import com.thelegendofbald.view.common.CustomSlider;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * The {@code AudioSettings} enum defines audio-related settings options for the
  * application,
@@ -74,6 +76,10 @@ public enum AudioSettings implements SettingOption {
      * 
      * @return the JComponent for this audio setting
      */
+    @SuppressFBWarnings(
+        value = {"EI"},
+        justification = "This method is intended to return a UI component for display purposes only."
+    )
     @Override
     public JComponent getJComponent() {
         return this.jcomponent;

@@ -73,36 +73,35 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
     private static final Color ATTACK_AREA_COLOR = new Color(200, 200, 200, 100);
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints optionsGBC = gbcFactory.createBothGridBagConstraints();
     private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
 
-    private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
-    private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
+    private transient final Bald bald = new Bald(60, 60, 100, "Bald", 50);
 
     private String currentMapName = "map_1";
     private final GridPanel gridPanel;
-    private final TileMap tileMap;
+    private transient final TileMap tileMap;
     private final LifePanel lifePanel;
-    private List<DummyEnemy> enemies = new ArrayList<>();
+    private transient List<DummyEnemy> enemies = new ArrayList<>();
     private final JPanel optionsPanel;
-    private final Timer timer = new Timer();
-    private GameRun gameRun;
-    private final CombatManager combatManager;
-    private final DataManager saveDataManager = new DataManager();
+    private transient final Timer timer = new Timer();
+    private transient GameRun gameRun;
+    private transient final CombatManager combatManager;
+    private transient final DataManager saveDataManager = new DataManager();
 
     private final JPanel inventoryPanel;
-    private final Inventory inventory;
+    private transient final Inventory inventory;
 
     private int num_enemies = 3;
 
-    private Thread gameThread;
-    private boolean running = false;
+    private transient Thread gameThread;
+    private volatile boolean running = false;
 
-    private int maxFPS = (int) VideoSettings.FPS.getValue();
-    private boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
-    private int currentFPS = 0;
-    private boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
+    private volatile int maxFPS = (int) VideoSettings.FPS.getValue();
+    private volatile boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
+    private volatile int currentFPS = 0;
+    private volatile boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
 
@@ -154,8 +153,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
         this.addWeaponsToInventory();
 
-        this.requestFocusInWindow();
-
         for (int i = 0 ; i < num_enemies ; i++) {
             enemies.add(new DummyEnemy(ThreadLocalRandom.current().nextInt(300, 1000), // x
                                        ThreadLocalRandom.current().nextInt(300, 600),  // y
@@ -163,9 +160,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         }
 
         setupKeyBindings();
-        // this.startGame();
-
-        SwingUtilities.invokeLater(() -> this.requestFocusInWindow());
     }
 
     private void addWeaponsToInventory() {
@@ -228,6 +222,12 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         if (magnitude > 0) {
             dx = (dx / magnitude) * MOVE_SPEED;
             dy = (dy / magnitude) * MOVE_SPEED;
+        }
+
+        if (dx > 0) {
+            bald.setFacingRight(true);
+        } else if (dx < 0) {
+            bald.setFacingRight(false);
         }
 
         bald.setSpeedX(dx);
@@ -314,9 +314,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         handleInput();
         bald.updateAnimation();
         bald.move();
-
-        dummyenemy.followPlayer(bald);
-        dummyenemy.updateAnimation();
 
         int baldX = bald.getX();
         int baldY = bald.getY();

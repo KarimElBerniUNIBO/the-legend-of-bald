@@ -27,11 +27,11 @@ final class ContentPanel extends AdapterPanel {
     private static final Color BRONZE_COLOR = new Color(205, 127, 50);
     private static final Color DEFAULT_COLOR = new Color(80, 80, 80);
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final List<PlayerTimePanel> players = new ArrayList<>(MAX_PLAYERS);
-    private final DataManager dataManager = new DataManager();
+    private transient final DataManager dataManager = new DataManager();
 
     ContentPanel(final Dimension size) {
         super(size);

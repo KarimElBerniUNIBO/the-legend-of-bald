@@ -10,6 +10,8 @@ import com.thelegendofbald.view.leaderboard.LeaderBoardPanel;
 import com.thelegendofbald.view.mainmenu.MainPanel;
 import com.thelegendofbald.view.settingsmenu.SettingsPanel;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Enum representing the different panels available in the application UI.
  * Each panel has a unique name and index.
@@ -66,6 +68,10 @@ public enum Panels {
      *
      * @return the {@code MenuPanel} associated with this object
      */
+    @SuppressFBWarnings(
+        value = {"EI" },
+        justification = "This method is designed to return the MenuPanel instance without throwing exceptions."
+    )
     public MenuPanel getPanel() {
         if (Optional.ofNullable(this.panel).isEmpty()) {
             this.panel = this.panelSupplier.get();

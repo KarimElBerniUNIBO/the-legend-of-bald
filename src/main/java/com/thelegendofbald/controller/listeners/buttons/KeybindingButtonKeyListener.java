@@ -8,6 +8,8 @@ import javax.swing.SwingUtilities;
 import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.view.buttons.KeybindingButton;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * A {@link KeyAdapter} implementation that handles key press events for {@code KeybindingButton} components.
  * <p>
@@ -25,6 +27,10 @@ public class KeybindingButtonKeyListener extends KeyAdapter {
      *
      * @param button the {@link KeybindingButton} associated with this key listener
      */
+    @SuppressFBWarnings(
+        value = {"EI2"},
+        justification = "KeybindingButtonKeyListener is designed to be used with KeybindingButton instances only."
+    )
     public KeybindingButtonKeyListener(final KeybindingButton button) {
         this.button = button;
     }

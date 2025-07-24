@@ -10,6 +10,8 @@ import com.thelegendofbald.api.buttons.JButtonFactory;
 import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public enum Buttons {
     RESUME("RESUME", Optional.empty()),
     SETTINGS("SETTINGS", Optional.of(Panels.SETTINGS)),
@@ -62,6 +64,10 @@ public enum Buttons {
      *
      * @return the {@code JButton} managed by this class
      */
+    @SuppressFBWarnings(
+        value = {"EI" },
+        justification = "This method is designed to return the JButton instance without throwing exceptions."
+    )
     public JButton getButton() {
         return this.button;
     }

@@ -18,8 +18,8 @@ import com.thelegendofbald.view.game.GamePanel;
 public final class GameWindow extends JFrame implements View, MainView {
 
     private static final String TITLE = "The Legend of Bald";
-    private static Dimension internalSize = new Dimension(1280, 704);
 
+    private Dimension internalSize = new Dimension(1280, 704);
     private Panels currentPanel = Panels.MAIN_MENU;
     private transient Optional<Panels> lastPanel = Optional.empty();
 
@@ -63,17 +63,18 @@ public final class GameWindow extends JFrame implements View, MainView {
         panel.requestFocusInWindow();
         if (panel instanceof GamePanel gamePanel && !gamePanel.isRunning()) {
             gamePanel.startGame(); // <-- solo se è GamePanel
+            gamePanel.requestFocusInWindow();
         }
     }
 
     @Override
-    public Dimension getInternalSize() {
+    public synchronized Dimension getInternalSize() {
         return (Dimension) internalSize.clone();
     }
 
     @Override
-    public void setInternalSize(Dimension size) {
-        GameWindow.internalSize = (Dimension) size.clone();
+    public synchronized void setInternalSize(Dimension size) {
+        internalSize = (Dimension) size.clone();
         this.updatePanelsSize();
     }
 

@@ -32,11 +32,11 @@ public final class GameOptionsPanel extends AdapterPanel {
     private static final double WIDTH_INSETS = 0.1;
     private static final double HEIGHT_INSETS = 0.05;
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
-    private Optional<TextLabel> title = Optional.empty();
+    private transient final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+    private transient Optional<TextLabel> title = Optional.empty();
 
     private final List<JButton> buttons = this.getButtonsList();
 

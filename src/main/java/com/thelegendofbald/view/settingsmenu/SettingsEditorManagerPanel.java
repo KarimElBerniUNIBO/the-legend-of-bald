@@ -11,12 +11,10 @@ import java.util.Optional;
 
 import javax.swing.SwingUtilities;
 
-import com.thelegendofbald.api.buttons.JButtonFactory;
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.settingsmenu.Settings;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
-import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.common.BackToPreviousPanel;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
@@ -28,19 +26,11 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
     private static final double BOTTOM_INSETS = 0.05;
     private static final double SIDE_INSETS = 0.2;
 
-    private static final double SETTINGS_EDITOR_WEIGHTY = 0.9;
-    private static final double APPLY_BUTTON_WEIGHTY = 0.1;
-
-    private static final String APPLY_BUTTON_TEXT = "Apply";
-    private static final double APPLY_BUTTON_ARC_PROPORTION = 0.1;
-
     private final List<SettingsEditor> settingsEditors = new ArrayList<>();
-    private Optional<SettingsEditor> actualSettingsEditor = Optional.empty();
+    private transient Optional<SettingsEditor> actualSettingsEditor = Optional.empty();
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = this.gbcFactory.createBothGridBagConstraints();
-
-    private final JButtonFactory jbFactory = new JButtonFactoryImpl();
 
     SettingsEditorManagerPanel(final Dimension size) {
         super(size);

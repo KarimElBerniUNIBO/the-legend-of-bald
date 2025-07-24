@@ -19,7 +19,7 @@ class InventoryContent extends AdapterPanel {
 
     private final List<SlotPanel> inventorySlots;
     private final int maxSlotsPerRow;
-    private final Inventory inventoryManager;
+    private transient final Inventory inventoryManager;
 
     InventoryContent(Dimension size, int columns, Inventory inventoryManager) {
         super(size);

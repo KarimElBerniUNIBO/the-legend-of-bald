@@ -16,6 +16,8 @@ import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * ConfigPanel is a custom Swing panel used for displaying a configuration option
  * with a title and associated value component. It extends AdapterPanel and arranges
@@ -57,6 +59,10 @@ public final class ConfigPanel extends AdapterPanel {
      * @param text   the label or description for this configuration panel
      * @param values the component containing the configurable values or controls
      */
+    @SuppressFBWarnings(
+        value = {"EI2"},
+        justification = "This constructor is intended to be used for creating a ConfigPanel with a title and values."
+    )
     public ConfigPanel(final String text, final JComponent values) {
         super(new Dimension(0, 0));
         this.text = text;

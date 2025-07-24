@@ -9,8 +9,8 @@ import com.thelegendofbald.model.combat.CombatManager;
 
 public abstract class MeleeWeapon extends Weapon {
 
+    protected Arc2D attackArea = new Arc2D.Double(0, 0, 0, 0, 0, 0, Arc2D.PIE);
     protected int attackRange;
-    private Arc2D attackArea;
 
     protected MeleeWeapon(int x, int y, int preferredSizeX, int preferredSizeY, String name, int damage, int attackCooldown, CombatManager combatManager, int attackRange) {
         super(x, y, preferredSizeX, preferredSizeY, name, damage, attackCooldown, combatManager);

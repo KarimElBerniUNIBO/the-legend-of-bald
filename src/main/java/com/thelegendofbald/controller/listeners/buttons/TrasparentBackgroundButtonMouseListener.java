@@ -8,6 +8,8 @@ import com.thelegendofbald.controller.listeners.common.TemplateInteractiveCompon
 import com.thelegendofbald.utils.ColorUtils;
 import com.thelegendofbald.view.buttons.TrasparentBackgroundButton;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * A mouse listener for {@link TrasparentBackgroundButton} that handles foreground color changes
  * and selection logic based on mouse events. When the mouse enters or exits the button,
@@ -36,6 +38,10 @@ public class TrasparentBackgroundButtonMouseListener extends TemplateInteractive
      *
      * @param button the {@link TrasparentBackgroundButton} to attach the mouse listener to
      */
+    @SuppressFBWarnings(
+        value = {"EI2"},
+        justification = "This class is designed to be used with TrasparentBackgroundButton instances only."
+    )
     public TrasparentBackgroundButtonMouseListener(final TrasparentBackgroundButton button) {
         this.button = button;
     }

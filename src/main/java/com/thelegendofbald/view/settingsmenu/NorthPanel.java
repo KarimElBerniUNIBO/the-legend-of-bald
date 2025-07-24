@@ -20,7 +20,7 @@ final class NorthPanel extends AdapterPanel {
     private static final String TITLE_TEXT = "SETTINGS";
     private static final double HEIGHT_PROPORTION = 0.35;
 
-    private final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
+    private transient final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
 
     private final SettingsEditorsManager sem;
     private TextLabel titleLabel;

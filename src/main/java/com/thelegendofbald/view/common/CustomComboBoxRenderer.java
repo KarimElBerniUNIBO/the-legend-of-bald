@@ -11,6 +11,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.TextLabelFactory;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class CustomComboBoxRenderer extends DefaultListCellRenderer {
 
     private static final double HEIGHT_PROPORTION = 0.2;
@@ -19,6 +21,10 @@ public class CustomComboBoxRenderer extends DefaultListCellRenderer {
     private transient final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
     private final CustomComboBox<?> comboBox;
 
+    @SuppressFBWarnings(
+        value = {"EI2"},
+        justification = "This constructor is designed to initialize the renderer with a CustomComboBox instance."
+    )
     public CustomComboBoxRenderer(CustomComboBox<?> comboBox) {
         super();
         this.comboBox = comboBox;

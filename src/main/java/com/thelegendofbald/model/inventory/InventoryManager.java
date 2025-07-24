@@ -10,6 +10,8 @@ import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.item.GameItem;
 import com.thelegendofbald.model.weapons.Weapon;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class InventoryManager implements Inventory {
 
     private final int rows;
@@ -20,7 +22,7 @@ public class InventoryManager implements Inventory {
     public InventoryManager(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
-        this.inventory = this.getInventory(rows * columns);
+        this.inventory = this.getInventory(this.rows * this.columns);
     }
 
     private List<Slot> getInventory(int slots) {
@@ -29,6 +31,11 @@ public class InventoryManager implements Inventory {
                 .collect(Collectors.toList());
     }
 
+    @SuppressFBWarnings(
+        value = {"EI2"},
+        justification = "This method is designed to set the Bald instance for the InventoryManager."
+    )
+    @Override
     public void setBald(Bald bald) {
         this.bald = bald;
     }
@@ -103,6 +110,10 @@ public class InventoryManager implements Inventory {
         this.handleItemSelection(slot);
     }
 
+    @SuppressFBWarnings(
+        value = {"EI"},
+        justification = "This method is designed to return the list of slots in the inventory without throwing exceptions."
+    )
     @Override
     public List<Slot> getSlots() {
         return this.inventory;

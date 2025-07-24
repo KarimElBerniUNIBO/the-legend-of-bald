@@ -20,11 +20,11 @@ class ScrollingPanel extends AdapterPanel {
     private static final double VERTICAL_SCROLLBAR_UNIT_INCREMENT = 0.1;
     private static final double VERTICAL_SCROLLBAR_BLOCK_INCREMENT = 0.25;
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private Optional<JScrollPane> scrollPane = Optional.empty();
-    private Optional<ContentPanel> contentPanel = Optional.empty();
+    private transient Optional<JScrollPane> scrollPane = Optional.empty();
+    private transient Optional<ContentPanel> contentPanel = Optional.empty();
 
     ScrollingPanel(final Dimension size) {
         super(size);

@@ -25,10 +25,10 @@ public final class MainPanel extends MenuPanel {
 
     private static final Pair<Double, Double> TITLE_PROPORTION = Pair.of(1.0, 0.3);
 
-    private final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
+    private transient final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
 
-    private Optional<TextLabel> titleLabel = Optional.empty();
-    private Optional<JPanel> centerPanel = Optional.empty();
+    private transient Optional<TextLabel> titleLabel = Optional.empty();
+    private transient Optional<JPanel> centerPanel = Optional.empty();
 
     @Override
     protected void initializeComponents() {

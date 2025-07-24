@@ -16,11 +16,11 @@ import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 
 public final class LeaderBoardPanel extends MenuPanel {
 
-    private final TextLabelFactory titleLabelFactory = new TextLabelFactoryImpl();
+    private transient final TextLabelFactory titleLabelFactory = new TextLabelFactoryImpl();
 
-    private Optional<BackToPreviousPanel> backToMainPanel = Optional.empty();
-    private Optional<TextLabel> titleLabel = Optional.empty();
-    private Optional<JPanel> scrollingPanel = Optional.empty();
+    private transient Optional<BackToPreviousPanel> backToMainPanel = Optional.empty();
+    private transient Optional<TextLabel> titleLabel = Optional.empty();
+    private transient Optional<JPanel> scrollingPanel = Optional.empty();
 
     @Override
     protected void initializeComponents() {

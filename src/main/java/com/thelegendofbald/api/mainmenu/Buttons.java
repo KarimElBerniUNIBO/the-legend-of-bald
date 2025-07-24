@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import com.thelegendofbald.api.buttons.JButtonFactory;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Enum representing the main menu buttons in the application.
  * Each button has a display name and an associated index.
@@ -72,6 +74,10 @@ public enum Buttons {
      *
      * @return the {@code JButton} managed by this class
      */
+    @SuppressFBWarnings(
+        value = {"EI" },
+        justification = "This method is designed to return the JButton instance without throwing exceptions."
+    )
     public JButton getButton() {
         return this.button;
     }

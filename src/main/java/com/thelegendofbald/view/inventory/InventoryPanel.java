@@ -21,6 +21,8 @@ import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class InventoryPanel extends AdapterPanel {
 
     private static final Color DEFAULT_BG_COLOR = new Color(0, 0, 0, 180);
@@ -29,26 +31,26 @@ public class InventoryPanel extends AdapterPanel {
     private static final double INVENTORY_CONTENT_WIDTH_INSETS = 0.05;
     private static final double INVENTORY_CONTENT_HEIGHT_INSETS = 0.05;
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
     private final GridBagConstraints inventoryContentGBC = gbcFactory.createBothGridBagConstraints();
 
-    private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+    private transient final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
 
     private final String titleText;
-    private final int maxSlotsPerRow;
-    private final int maxRows;
-    private final Inventory inventoryManager;
+    private final int columns;
+    private final int rows;
+    private transient final Inventory inventoryManager;
 
-    private Optional<TextLabel> title = Optional.empty();
-    private Optional<JPanel> inventoryContent = Optional.empty();
+    private transient Optional<TextLabel> title = Optional.empty();
+    private transient Optional<JPanel> inventoryContent = Optional.empty();
 
     public InventoryPanel(String title, Dimension size, int columns, int rows) {
         super(size);
         this.titleText = title;
-        this.maxSlotsPerRow = columns;
-        this.maxRows = rows;
-        this.inventoryManager = new InventoryManager(rows, columns);
+        this.columns = columns;
+        this.rows = rows;
+        this.inventoryManager = new InventoryManager(this.rows, this.columns);
 
         this.setLayout(new GridBagLayout());
         this.setVisible(true);
@@ -60,7 +62,7 @@ public class InventoryPanel extends AdapterPanel {
         this.title = Optional.of(tlFactory.createTextLabelWithProportion(titleText, this.getSize(),
                 Optional.of(TITLE_PROPORTION), Optional.empty(), Optional.empty(), Optional.empty()));
         this.inventoryContent = Optional.of(new InventoryContent(this.getSize(), 
-                this.maxSlotsPerRow, this.inventoryManager));
+                this.columns, this.inventoryManager));
 
         super.initializeComponents();
     }
@@ -91,6 +93,10 @@ public class InventoryPanel extends AdapterPanel {
         this.updateComponentsSize();
     }
 
+    @SuppressFBWarnings(
+        value = {"EI"},
+        justification = "This method is intended to be used by the InventoryManager to access the inventory."
+    )
     public Inventory getInventory() {
         return inventoryManager;
     }

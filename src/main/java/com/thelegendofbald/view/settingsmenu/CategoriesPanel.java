@@ -29,7 +29,7 @@ final class CategoriesPanel extends AdapterPanel implements InteractivePanel {
 
     private static final Pair<Double, Double> BUTTON_PROPORTION = Pair.of(1.0, 2.5);
 
-    private final JButtonFactory jbFactory = new JButtonFactoryImpl();
+    private transient final JButtonFactory jbFactory = new JButtonFactoryImpl();
     private final List<JButton> buttons;
 
     private final SettingsEditorsManager sem;
