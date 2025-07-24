@@ -37,6 +37,7 @@ public final class MainPanel extends MenuPanel {
                 this.getSize(),
                 Optional.of(TITLE_PROPORTION),
                 Optional.empty(),
+                Optional.empty(),
                 Optional.of(TITLE_FONT_NAME)));
         centerPanel = Optional.of(new CenterPanel(this.getSize()));
         super.initializeComponents();

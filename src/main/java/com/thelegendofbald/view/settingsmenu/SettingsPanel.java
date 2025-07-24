@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
-import com.thelegendofbald.view.common.BackToMainPanel;
+import com.thelegendofbald.view.common.BackToPreviousPanel;
 
 /**
  * The {@code SettingsPanel} class represents the main panel for the settings
@@ -18,7 +18,7 @@ import com.thelegendofbald.view.common.BackToMainPanel;
  * <p>
  * This panel contains:
  * <ul>
- * <li>A {@link BackToMainPanel} component on the west side for navigation back
+ * <li>A {@link BackToPreviousPanel} component on the west side for navigation back
  * to the main menu.</li>
  * <li>A {@link NorthPanel} component at the north, which may contain settings
  * categories or navigation.</li>
@@ -30,13 +30,13 @@ import com.thelegendofbald.view.common.BackToMainPanel;
  */
 public final class SettingsPanel extends MenuPanel {
 
-    private BackToMainPanel backToMainPanel;
+    private BackToPreviousPanel backToMainPanel;
     private JPanel northPanel;
     private SettingsEditorsManager sem;
 
     @Override
     protected void initializeComponents() {
-        this.backToMainPanel = new BackToMainPanel(this.getSize());
+        this.backToMainPanel = new BackToPreviousPanel(this.getSize());
         this.sem = new SettingsEditorManagerPanel(this.getSize());
         this.northPanel = new NorthPanel(this.getSize(), this.sem);
         super.initializeComponents();

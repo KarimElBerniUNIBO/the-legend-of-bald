@@ -8,7 +8,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.buttons.TemplateButton;
-import com.thelegendofbald.controller.ui.listeners.TrasparentBackgroundButtonMouseListener;
+import com.thelegendofbald.controller.listeners.buttons.TrasparentBackgroundButtonMouseListener;
 
 /**
  * A custom button with a transparent background and selectable foreground

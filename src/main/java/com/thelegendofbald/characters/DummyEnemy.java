@@ -1,11 +1,20 @@
 package com.thelegendofbald.characters;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.imageio.ImageIO;
 
-public class DummyEnemy extends Entity {
+import com.thelegendofbald.combat.Combatant;
+import com.thelegendofbald.life.LifeComponent;
+
+public class DummyEnemy extends Entity  implements Combatant{
+
+    private static final int WIDTH = 128; // Larghezza del frame
+    private static final int HEIGHT = 128; // Altezza del frame
 
     private BufferedImage spritesheet; 
     private BufferedImage walkFrames[];
@@ -15,22 +24,15 @@ public class DummyEnemy extends Entity {
     private int speedY = 1;
     private int speedX = 1;
 
-
-
-    private int width = 128; // Larghezza del frame
-    private int height = 128; // Altezza del frame
-
     private BufferedImage[] runFrames; // Array di immagini per l'animazione della corsa
     private int currentFrame = 0; // Indice del frame corrente
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
 
-    private boolean facingRight = false; // Direzione in cui Bald sta guardando
-
-    
+    private long lastAttackTime = 0; // Tempo dell'ultimo attacco
 
     public DummyEnemy(int x, int y, int health, String name, int attackPower) {
-        super(x, y, health, name);
+        super(x, y, WIDTH, HEIGHT, name, new LifeComponent(health));
         this.attackPower = attackPower;
 
         loadRunFrames();
@@ -64,14 +66,11 @@ public class DummyEnemy extends Entity {
 
 
     public void takeDamage(int damage) {
-        this.health -= damage;
-        if (this.health < 0) {
-            this.health = 0; // Health non può essere negativa
-        }
+       this.lifeComponent.damageTaken(damage);
     }
 
     public void heal(int amount) {
-        this.health += amount;
+        this.lifeComponent.heal(amount);
     }
 
 
@@ -118,8 +117,19 @@ public class DummyEnemy extends Entity {
         
     }
 
- 
 
+    public boolean isAlive() {
+        return !this.lifeComponent.isDead();
+    }
+
+ 
+    public long getLastAttackTime() {
+        return lastAttackTime;
+    }
+
+    public void setLastAttackTime(long time) {
+        this.lastAttackTime = time;
+    }
 
     
 }

@@ -1,5 +1,5 @@
 package com.thelegendofbald.game;
 
-public class GameEngine {
-    
-}
+
+public class GameEngine {}
+

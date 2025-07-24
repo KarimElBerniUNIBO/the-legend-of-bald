@@ -3,7 +3,10 @@ package com.thelegendofbald.api.settingsmenu;
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.thelegendofbald.model.sounds.SoundManager;
+import com.thelegendofbald.view.common.CustomCheckBox;
+import com.thelegendofbald.view.common.CustomComboBox;
+import com.thelegendofbald.view.common.CustomSlider;
 
 /**
  * The {@code AudioSettings} enum defines audio-related settings options for the
@@ -28,11 +31,11 @@ public enum AudioSettings implements SettingOption {
     /**
      * Represents the master volume setting.
      */
-    MASTER("MASTER VOLUME", new JSlider(0, 100, 50)),
+    MASTER("MASTER VOLUME", createMasterSlider()),
     /**
      * Represents the music volume setting.
      */
-    MUSIC("MUSIC VOLUME", new JSlider(0, 100, 50));
+    MUSIC("MUSIC VOLUME", createMusicSlider());
 
     private final String text;
     private final JComponent jcomponent;
@@ -47,13 +50,70 @@ public enum AudioSettings implements SettingOption {
         return this.text;
     }
 
-    @SuppressFBWarnings(
-        value = "EI_EXPOSE_REP",
-        justification = "JComponent must be mutable for UI interaction; safe in enum context."
-    )
     @Override
-    public JComponent getJcomponent() {
+    public Object getValue() {
+        switch (this.jcomponent) {
+            case CustomComboBox<?> combobox -> {
+                return combobox.getSelectedItem();
+            }
+            case CustomSlider slider -> {
+                return slider.getValue();
+            }
+            case CustomCheckBox checkbox -> {
+                return checkbox.isSelected();
+            }
+            default -> {
+                throw new IllegalStateException("Unexpected component type: " + this.jcomponent.getClass().getName());
+            }
+        }
+    }
+
+    /**
+     * Returns the {@link JComponent} associated with this audio setting.
+     * <b>Note:</b> The component should not be modified externally as it is intended for UI purposes only.
+     * 
+     * @return the JComponent for this audio setting
+     */
+    @Override
+    public JComponent getJComponent() {
         return this.jcomponent;
+    }
+
+    private static CustomSlider createMasterSlider() {
+        var customSlider = new CustomSlider(JSlider.HORIZONTAL, 0, 100, 100);
+        var slider = customSlider.getSlider();
+
+        slider.addChangeListener(e -> {
+            if (slider.getValueIsAdjusting()
+                    && customSlider.getLastValue() != customSlider.getValue()) {
+                int value = customSlider.getValue();
+                float volume = value / 100f;
+                SoundManager.setMasterVolume(volume);
+                customSlider.setLastValue(slider.getValue());
+            }
+        });
+
+        return customSlider;
+    }
+
+    private static CustomSlider createMusicSlider() {
+        var customSlider = new CustomSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        var slider = customSlider.getSlider();
+
+        slider.addChangeListener(e -> {
+            if (!slider.getValueIsAdjusting()) {
+                String value = String.valueOf(slider.getValue());
+                var lastValue = customSlider.getLastValue();
+
+                if (lastValue != slider.getValue()) {
+                    System.out.println("Selected Music Volume: " + value);
+                    // TODO: Implement music volume setting logic
+                    customSlider.setLastValue(slider.getValue());
+                }
+            }
+        });
+
+        return customSlider;
     }
 
 }

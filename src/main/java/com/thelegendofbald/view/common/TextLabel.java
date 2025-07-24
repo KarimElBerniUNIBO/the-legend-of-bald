@@ -29,6 +29,7 @@ public final class TextLabel extends JLabel {
     private static final double MAX_ASPECTRATIO = 1.2;
     private static final double TEXT_PROPORTION = 0.08;
 
+    private final Pair<Double, Double> proportion;
     private final Pair<Double, Double> moltiplicator;
 
     /**
@@ -36,12 +37,14 @@ public final class TextLabel extends JLabel {
      *
      * @param text          the text to be displayed by the label
      * @param parentSize    the size of the parent component, used to determine the font size
-     * @param moltiplicator a pair of scaling factors for width and height
+     * @param proportion    a pair of scaling factors for width and height relative to the parent size
+     * @param moltiplicator a pair of scaling factors for width and height for the font size calculation
      * @param color         the color of the label's text
      * @param fontName      the name of the font to use for the label's text
      */
-    public TextLabel(final String text, final Dimension parentSize, final Pair<Double, Double> moltiplicator,
-            final Color color, final String fontName) {
+    public TextLabel(final String text, final Dimension parentSize, final Pair<Double, Double> proportion,
+            final Pair<Double, Double> moltiplicator, final Color color, final String fontName) {
+        this.proportion = proportion;
         this.moltiplicator = moltiplicator;
         this.setText(text);
         this.setForeground(color);
@@ -53,13 +56,13 @@ public final class TextLabel extends JLabel {
     }
 
     private Dimension calculatePreferredSize(final Dimension parentSize) {
-        return new Dimension((int) (parentSize.getWidth() * this.moltiplicator.getLeft()),
-                (int) (parentSize.getHeight() * this.moltiplicator.getRight()));
+        return new Dimension((int) (parentSize.getWidth() * this.proportion.getLeft()),
+                (int) (parentSize.getHeight() * this.proportion.getRight()));
     }
 
     private int getFontSize(final Dimension parentSize) {
-        final double width = parentSize.getWidth();
-        final double height = parentSize.getHeight();
+        final double width = parentSize.getWidth() * this.moltiplicator.getLeft();
+        final double height = parentSize.getHeight() * this.moltiplicator.getRight();
         final double aspectRatio = Math.min(MAX_ASPECTRATIO, width / height);
         final int scalingFactor = (int) (Math.sqrt(width * height) * aspectRatio * TEXT_PROPORTION);
 

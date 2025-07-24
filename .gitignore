@@ -18,3 +18,9 @@ bin/
 
 # Ignore Mac storage files
 .DS_Store
+
+# Ignore log files
+*.log
+
+# Ignore local runs data
+game_data/runs/users_data.yml
