@@ -41,6 +41,10 @@ public enum ControlsSettings implements SettingOption {
      */
     RIGHT("RIGHT", KeyEvent.VK_RIGHT),
     /**
+     * Represents the "Opening Inventory" key binding.
+     */
+    INVENTORY("INVENTORY", KeyEvent.VK_E),
+    /**
      * Represents the "Attack" key binding.
      */
     ATTACK("ATTACK", KeyEvent.VK_SPACE);
