@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
@@ -20,6 +21,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -51,6 +54,8 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.inventory.InventoryPanel;
 import com.thelegendofbald.view.main.GameWindow;
 import com.thelegendofbald.view.main.GridPanel;
+import com.thelegendofbald.view.main.ShopPanel;
+import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
 public class GamePanel extends MenuPanel implements Runnable, Game {
@@ -73,6 +78,9 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
 
     private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
+    private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
+
+    private String currentMapName = "map_1";
     private final GridPanel gridPanel;
     private final TileMap tileMap;
     private final LifePanel lifePanel;
@@ -101,7 +109,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     public GamePanel() {
         super();
         Dimension size = new Dimension(1280, 704);
-        // this.setPreferredSize(size);
+        //this.setPreferredSize(size);
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
         this.setLayout(new GridBagLayout());
@@ -118,10 +126,32 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.inventory = ((InventoryPanel) this.inventoryPanel).getInventory();
         this.inventory.setBald(bald);
 
-        this.tileMap = new TileMap(size.width, size.height);
+        this.tileMap = new TileMap(size.width, size.height, 32);
 
         this.combatManager = new CombatManager(bald, enemies);
         this.bald.setWeapon(new Magic(0, 0, 50, 50, combatManager));
+
+        JButton shopButton = new JButton("Shop");
+        shopButton.setBounds(100, 100, 120, 40);
+        shopButton.setVisible(true);
+        shopButton.setBackground(Color.YELLOW);
+        shopButton.setOpaque(true);
+        shopButton.addActionListener(e -> {
+            ShopPanel shopPanel = new ShopPanel();
+            JOptionPane.showMessageDialog(this, shopPanel, "Negozio", JOptionPane.PLAIN_MESSAGE);
+        });
+        this.add(shopButton);
+
+        tileMap.changeMap("map_1");
+        bald.setTileMap(tileMap);
+
+        Point spawnPoint = tileMap.findSpawnPoint(5);
+        if (spawnPoint != null) {
+            int tileSize = tileMap.TILE_SIZE;
+            bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
+            bald.setY(spawnPoint.y - bald.getHeight());
+        }
+
         this.addWeaponsToInventory();
 
         this.requestFocusInWindow();
@@ -285,6 +315,29 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         bald.updateAnimation();
         bald.move();
 
+        dummyenemy.followPlayer(bald);
+        dummyenemy.updateAnimation();
+
+        int baldX = bald.getX();
+        int baldY = bald.getY();
+        int baldW = bald.getWidth();
+        int baldH = bald.getHeight();
+        int tileSize = tileMap.TILE_SIZE;
+
+        // Calcola la posizione dei piedi di Bald
+        int feetY = baldY + baldH;
+        int tileFeetY = feetY / tileSize;
+        int tileCenterX = (baldX + baldW / 2) / tileSize;
+
+        // --- LOGICA CAMBIO MAPPA ---
+        Tile tileUnderFeet = tileMap.getTileAt(tileCenterX, tileFeetY);
+        System.out.println("Tile sotto i piedi: " + (tileUnderFeet != null ? tileUnderFeet.getId() : "null") + " at (" + tileCenterX + "," + tileFeetY + ")");
+        if (tileUnderFeet != null && tileUnderFeet.getId() == 4) {
+            if (feetY % tileSize == 0) {
+                switchToNextMap();
+                return;
+            }
+        }
         combatManager.checkEnemyAttacks();
 
         enemies.removeIf(enemy -> !enemy.isAlive());
@@ -299,13 +352,38 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         repaint();
     }
 
+    public void changeMap(String mapName) {
+        currentMapName = mapName;
+        tileMap.changeMap(mapName);
+        bald.setTileMap(tileMap);
+
+        Point spawnPoint = tileMap.findSpawnPoint(5);
+        if (spawnPoint != null) {
+            int tileSize = tileMap.TILE_SIZE;
+            bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
+            bald.setY(spawnPoint.y + tileSize - bald.getHeight());
+        } else {
+            System.out.println("Spawn point not found!");
+        }
+    }
+
+    private void switchToNextMap() {
+        if (currentMapName.equals("map_1")) {
+            changeMap("map_2");
+        } else if (currentMapName.equals("map_2")) {
+            changeMap("map_3");
+        } else {
+            System.out.println("Nessuna mappa successiva definita.");
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
         super.paintComponent(g2d);
 
         this.scaleGraphics(g2d);
-        tileMap.render(g2d);
+        tileMap.paint(g2d);
         gridPanel.paintComponent(g2d);
         bald.render(g2d);
         enemies.forEach(enemy -> enemy.render(g2d));

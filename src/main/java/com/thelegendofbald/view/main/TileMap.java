@@ -2,129 +2,214 @@ package com.thelegendofbald.view.main;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
 public class TileMap {
 
-    private static final int TILE_SIZE = 32;
-    private final int[][] mapData;
-    private final int tilesX, tilesY;
+    private final int width, height;
+    private Tile[][] tiles;
+    private  Image backgroundImage;
+    public final int TILE_SIZE;
 
-    // Array di immagini per i vari tipi di tile
-    private final Image[] tileImages = new Image[3];
-
-    private static final int[][] Map_1 = {
-        {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 0},
-        {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 0},
-        {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 0},
-        {2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-    };
-
-    private static final int[][] Map_2 = {
-        {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2},
-        {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 0},
-        {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 0},
-        {0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 0},
-        {2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-        {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-    };
-
-    public TileMap(int width, int height) {
-        this.tilesX = width / TILE_SIZE;
-        this.tilesY = height / TILE_SIZE;
-        this.mapData = new int[tilesY][tilesX];
-
-        loadTileImages();
-        loadCustomMap();
+    private final Map<Integer, Tile> tileTypes = new HashMap<>();
+  
+    public TileMap(int width, int height, int TILE_SIZE){
+        this.width = width;
+        this.height = height;
+        this.TILE_SIZE = 32;
+        loadTileTypes();
     }
 
-
-    private void loadCustomMap() {
-        for (int y = 0; y < Map_2.length && y < tilesY; y++) {
-            for (int x = 0; x < Map_2[y].length && x < tilesX; x++) {
-                mapData[y][x] = Map_2[y][x];
-            }
-        }
-    }
-
-    private void loadTileImages() {
+    // Carica i vari tipi di tile (es. erba, muro, acqua)
+    private void loadTileTypes() {
         try {
-            tileImages[0] = null; // Vuoto
-            tileImages[1] = loadImage("/images/map_png/floor-tiles.png");
-            tileImages[2] = loadImage("/images/map_png/BrickGrey.png");
-        } catch (Exception e) {
+            // Carica le immagini per i vari tipi di tile
+            BufferedImage floor = ImageIO.read(getClass().getResource("/images/map_png/floor-tiles.png"));
+            BufferedImage wall = ImageIO.read(getClass().getResource("/images/map_png/BrickGrey.png"));
+            BufferedImage shop = ImageIO.read(getClass().getResource("/images/map_png/shop.png"));
+
+            // Aggiungi i vari tipi di tile con il costruttore aggiornato
+            tileTypes.put(0, new Tile(null, TILE_SIZE, TILE_SIZE, 0, false, false, false, false, null));  // Tile vuoto
+            tileTypes.put(1, new Tile(floor, TILE_SIZE, TILE_SIZE, 1, false, true, false, true, null));  // Tile per il pavimento
+            tileTypes.put(2, new Tile(wall, TILE_SIZE, TILE_SIZE, 2, false, true, false, false, null));    // Tile per il muro (solido)
+            tileTypes.put(4, new Tile(floor, TILE_SIZE, TILE_SIZE, 4, false, true, false, true, null));
+            tileTypes.put(5, new Tile(floor, TILE_SIZE, TILE_SIZE, 5, false, true, true, true, null)); // Un altro tile pavimento (opzionale)
+            tileTypes.put(6, new Tile(floor, TILE_SIZE, TILE_SIZE, 5, false, true, true, true, shop)); 
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private Image loadImage(String path) {
-        try {
-            InputStream is = getClass().getResourceAsStream(path);
-            if (is == null) {
-                System.err.println("Immagine non trovata: " + path);
-                return null;
+    // Carica una mappa specifica
+    private void loadMap(String mapName) {
+        
+        int[][] mapData = generateFlatMap(22, 40, 0); // fallback
+
+        if (mapName != null) {
+            switch (mapName) {
+                case "map_1":
+                    mapData = loadMapFromFile("map_1.txt");
+                    backgroundImage = loadImage("/images/map_png/castle.png");
+                    break;
+                case "map_2":
+                    mapData = loadMapFromFile("map_2.txt");
+                    break;
+                case "map_3":
+                    mapData = loadMapFromFile("map_3.txt");
+                    break;
             }
-            return ImageIO.read(is);
+        }
+
+        tiles = new Tile[mapData.length][mapData[0].length];
+        for (int y = 0; y < mapData.length; y++) {
+            for (int x = 0; x < mapData[y].length; x++) {
+                int tileId = mapData[y][x];
+                Tile baseTile = tileTypes.get(tileId);
+
+                if (baseTile != null) {
+                    tiles[y][x] = new Tile(
+                        baseTile.getImage(),
+                        baseTile.getWidth(),
+                        baseTile.getHeight(),
+                        tileId,
+                        baseTile.isSolid(),
+                        false,
+                        baseTile.isWalkable(),
+                        baseTile.isSpawn(),
+                        baseTile.getOverlayImage()
+                    );
+                } else {
+                    tiles[y][x] = null;
+                }
+            }
+        }
+    }
+
+    // Carica una mappa da file txt in resources/map
+    private int[][] loadMapFromFile(String fileName) {
+        List<int[]> rows = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream("/map/" + fileName)))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty()) continue; // Salta le righe vuote
+                String[] tokens = line.split("\\s+|,");
+                int[] row = new int[tokens.length];
+                for (int i = 0; i < tokens.length; i++) {
+                    row[i] = Integer.parseInt(tokens[i]);
+                }
+                rows.add(row);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int[][] map = new int[rows.size()][];
+        for (int i = 0; i < rows.size(); i++) {
+            map[i] = rows.get(i);
+        }
+
+        return map;
+    }
+
+    private BufferedImage loadImage(String path) {
+        try {
+            return ImageIO.read(getClass().getResourceAsStream(path));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public void render(Graphics g) {
-        for (int y = 0; y < tilesY; y++) {
-            for (int x = 0; x < tilesX; x++) {
-                int tile = mapData[y][x];
+    private int[][] generateFlatMap(int rows, int cols, int tileType) {
+        int[][] map = new int[rows][cols];
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < cols; x++) {
+                map[y][x] = tileType;
+            }
+        }
+        return map;
+    }
 
-                if (tile >= 0 && tile < tileImages.length && tileImages[tile] != null) {
-                    g.drawImage(tileImages[tile], x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
+    public int getTileIdAt(int x, int y) {
+        int tileX = x / TILE_SIZE;
+        int tileY = y / TILE_SIZE;
+
+        if (tileY >= 0 && tileY < tiles.length && tileX >= 0 && tileX < tiles[0].length) {
+            Tile tile = tiles[tileY][tileX];
+            return tile != null ? tile.getId() : -1;
+        }
+        return -1;
+    }
+
+    public Tile getTileAt(int tileX, int tileY) {
+        if (tileY >= 0 && tileY < tiles.length && tileX >= 0 && tileX < tiles[0].length) {
+            return tiles[tileY][tileX];
+        }
+        return null;
+    }
+
+    public int getMapWidthInTiles() {
+        if (tiles != null && tiles.length > 0) {
+            return tiles[0].length;
+        }
+        return 0;
+    }
+
+    public int getMapHeightInTiles() {
+        if (tiles != null) {
+            return tiles.length;
+        }
+        return 0;
+    }
+
+    // Metodo pubblico per cambiare mappa
+    public void changeMap(String mapName) {
+        loadMap(mapName);
+    }
+
+    public Point findSpawnPoint(int spawnTileId) {
+        for (int y = 0; y < tiles.length; y++) {
+            for (int x = 0; x < tiles[y].length; x++) {
+                Tile tile = tiles[y][x];
+                if (tile != null && tile.getId() == spawnTileId) {
+                    return new Point(x * TILE_SIZE, y * TILE_SIZE);
+                }
+            }
+        }
+        return null;
+    }
+
+    // Disegna mappa e background
+    public void paint(Graphics g) {
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, width, height, null);
+        }
+
+        if (tiles == null) return;
+        for (int row = 0; row < tiles.length; row++) {
+            for (int col = 0; col < tiles[row].length; col++) {
+                Tile tile = tiles[row][col];
+                if (tile != null) {
+                    tile.render(g, col * TILE_SIZE, row * TILE_SIZE);
                 }
             }
         }
     }
+} 
 
-    public int getTile(int x, int y) {
-        return mapData[y][x];
-    }
-
-    public void setTile(int x, int y, int value) {
-        mapData[y][x] = value;
-    }
-}
+    
+       

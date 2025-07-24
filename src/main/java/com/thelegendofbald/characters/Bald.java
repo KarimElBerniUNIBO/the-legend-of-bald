@@ -2,6 +2,7 @@ package com.thelegendofbald.characters;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,7 @@ import javax.imageio.ImageIO;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.weapons.Weapon;
+import com.thelegendofbald.view.main.TileMap;
 
 public class Bald extends Entity implements Combatant {
 
@@ -23,7 +25,8 @@ public class Bald extends Entity implements Combatant {
     private static final int HEIGHT = 50; // Altezza del frame
 
     private Optional<Weapon> weapon = Optional.empty();
-
+    public static final String SpeedX = null;
+    private TileMap tileMap;
     private int attackPower; // Potenza d'attacco
     private BufferedImage image;
     private String path = "/images/bald.png"; // Percorso dell'immagine
@@ -46,6 +49,9 @@ public class Bald extends Entity implements Combatant {
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
+    private boolean facingRight = false; // Direzione in cui Bald sta guardando
+    private int health = 100; // Salute di Bald
+    private String name; // Nome di Bald
 
     public Bald(int x, int y, int maxHealth, String name, int attackPower) {
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(maxHealth));
@@ -88,6 +94,21 @@ public class Bald extends Entity implements Combatant {
         });
 
         System.out.println("Attack frames loaded: " + attackFrames.size());
+    }
+
+    public void setTileMap(TileMap tileMap) {
+        this.tileMap = tileMap;
+    }    
+
+    public void setSpawnPosition(int spawnTileId, int tileSize) {
+        Point spawnPoint = tileMap.findSpawnPoint(spawnTileId);
+        if (spawnPoint != null) {
+            // Centra i piedi di Bald nel tile di spawn
+            int x = spawnPoint.x + (tileSize - getWidth()) / 2;
+            int y = spawnPoint.y + tileSize - getHeight();
+            this.setX(x);
+            this.setY(y);
+        }
     }
 
     private void loadRunFrames() {
@@ -148,10 +169,10 @@ public class Bald extends Entity implements Combatant {
         } else if (runFrames != null && runFrames[currentFrame] != null) {
             if (!facingRight) {
                 // Disegna normalmente se Bald è girato verso destra
-                g.drawImage(runFrames[currentFrame], x, y, 50, 50, null);
+                g.drawImage(runFrames[currentFrame], x, y, getWidth(), getHeight(), null);
             } else {
                 // Disegna riflettendo l'immagine orizzontalmente
-                g.drawImage(runFrames[currentFrame], x + 50, y, -50, 50, null);
+                g.drawImage(runFrames[currentFrame], x + 50, y, -50, getHeight(), null);
             }
         } else {
             // Fallback al quadrato rosso se i frame non sono caricati
@@ -176,9 +197,19 @@ public class Bald extends Entity implements Combatant {
         } else if (speedX < 0) {
             facingRight = false; // Bald si muove verso sinistra
         }
+    
+        // Spostamento
         this.x += speedX;
         this.y += speedY;
 
+    }
+
+    public int getHeight() {
+        return 50;
+    }
+
+    public int getWidth() {
+        return 50;
     }
 
     @Override
