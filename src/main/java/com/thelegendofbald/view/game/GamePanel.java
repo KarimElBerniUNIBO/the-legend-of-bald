@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Arc2D;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -76,6 +77,9 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
 
     private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
+    private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
+
+    private String currentMapName = "map_1";
     private final GridPanel gridPanel;
     private final TileMap tileMap;
     private final LifePanel lifePanel;
@@ -121,11 +125,12 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.inventory = ((InventoryPanel) this.inventoryPanel).getInventory();
         this.inventory.setBald(bald);
 
-        this.tileMap = new TileMap(size.width, size.height);
+        this.tileMap = new TileMap(size.width, size.height, 32);
 
         this.combatManager = new CombatManager(bald, enemies);
         this.bald.setWeapon(new Magic(0, 0, 50, 50, combatManager));
-        
+
+        JButton shopButton = new JButton("Shop");
         shopButton.setBounds(100, 100, 120, 40);
         shopButton.setVisible(true);
         shopButton.setBackground(Color.YELLOW);
@@ -373,7 +378,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         super.paintComponent(g2d);
 
         this.scaleGraphics(g2d);
-        tileMap.render(g2d);
+        tileMap.paint(g2d);
         gridPanel.paintComponent(g2d);
         bald.render(g2d);
         enemies.forEach(enemy -> enemy.render(g2d));

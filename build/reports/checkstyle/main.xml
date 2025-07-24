@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="10.21.2">
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\buttons\JButtonFactory.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\buttons\TemplateButton.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\common\GridBagConstraintsFactory.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\common\Resizable.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\common\TextLabelFactory.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\mainmenu\Buttons.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\panels\AdapterPanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\panels\BasePanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\panels\InteractivePanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\panels\MenuPanel.java">
+<error line="6" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="8" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\panels\Panels.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\settingsmenu\AudioSettings.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\settingsmenu\KeybindsSettings.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\settingsmenu\SettingOption.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\settingsmenu\Settings.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\settingsmenu\SettingsEditorsManager.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\settingsmenu\VideoSettings.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\views\MainView.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\views\MenuView.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\api\views\View.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\characters\Bald.java">
+<error line="14" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="15" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck"/>
+<error line="15" column="32" severity="error" message="Name &apos;SpeedX&apos; must match pattern &apos;^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck"/>
+<error line="20" column="5" severity="error" message="Variable access definition in wrong order." source="com.puppycrawl.tools.checkstyle.checks.coding.DeclarationOrderCheck"/>
+<error line="20" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck"/>
+<error line="20" column="16" severity="error" message="Variable &apos;speedX&apos; explicitly initialized to &apos;0&apos; (default value for its type)." source="com.puppycrawl.tools.checkstyle.checks.coding.ExplicitInitializationCheck"/>
+<error line="20" column="16" severity="error" message="Variable &apos;speedX&apos; must be private and have accessor methods." source="com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck"/>
+<error line="21" column="5" severity="error" message="Variable access definition in wrong order." source="com.puppycrawl.tools.checkstyle.checks.coding.DeclarationOrderCheck"/>
+<error line="21" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck"/>
+<error line="21" column="16" severity="error" message="Variable &apos;speedY&apos; explicitly initialized to &apos;0&apos; (default value for its type)." source="com.puppycrawl.tools.checkstyle.checks.coding.ExplicitInitializationCheck"/>
+<error line="21" column="16" severity="error" message="Variable &apos;speedY&apos; must be private and have accessor methods." source="com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck"/>
+<error line="23" column="17" severity="error" message="Variable &apos;currentFrame&apos; explicitly initialized to &apos;0&apos; (default value for its type)." source="com.puppycrawl.tools.checkstyle.checks.coding.ExplicitInitializationCheck"/>
+<error line="24" column="30" severity="error" message="&apos;5&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="25" column="17" severity="error" message="Variable &apos;frameCounter&apos; explicitly initialized to &apos;0&apos; (default value for its type)." source="com.puppycrawl.tools.checkstyle.checks.coding.ExplicitInitializationCheck"/>
+<error line="26" column="21" severity="error" message="Variable &apos;facingRight&apos; explicitly initialized to &apos;false&apos; (default value for its type)." source="com.puppycrawl.tools.checkstyle.checks.coding.ExplicitInitializationCheck"/>
+<error line="28" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="28" column="17" severity="error" message="Parameter x should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="28" column="21" severity="error" message="Variable &apos;x&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="28" column="24" severity="error" message="Parameter y should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="28" column="28" severity="error" message="Variable &apos;y&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="28" column="31" severity="error" message="Parameter health should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="28" column="35" severity="error" message="Variable &apos;health&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="28" column="43" severity="error" message="Parameter name should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="28" column="50" severity="error" message="Variable &apos;name&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="28" column="56" severity="error" message="Parameter attackPower should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="28" column="60" severity="error" message="Variable &apos;attackPower&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="28" column="72" severity="error" message="&apos;)&apos; is preceded with whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"/>
+<error line="35" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;setTileMap&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;setTileMap&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="35" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="35" column="28" severity="error" message="Parameter tileMap should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="35" column="36" severity="error" message="Variable &apos;tileMap&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="37" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="39" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;setSpawnPosition&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;setSpawnPosition&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="39" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="39" column="34" severity="error" message="Parameter spawnTileId should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="39" column="38" severity="error" message="Variable &apos;spawnTileId&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="41" column="15" severity="error" message="Variable &apos;spawnPoint&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="50" column="17" severity="error" message="Variable &apos;numFrames&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="50" column="29" severity="error" message="&apos;9&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="53" column="24" severity="error" message="Variable &apos;framePath&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="54" column="29" severity="error" message="Variable &apos;is&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="61" column="30" severity="error" message="Variable &apos;e&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="66" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;getAttackPower&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;getAttackPower&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="66" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="70" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;setAttackPower&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;setAttackPower&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="70" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="70" column="32" severity="error" message="Parameter attackPower should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="70" column="36" severity="error" message="Variable &apos;attackPower&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="74" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;takeDamage&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;takeDamage&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="74" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="74" column="28" severity="error" message="Parameter damage should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="74" column="32" severity="error" message="Variable &apos;damage&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="81" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;heal&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;heal&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="81" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="81" column="22" severity="error" message="Parameter amount should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="81" column="26" severity="error" message="Variable &apos;amount&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="85" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;attack&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;attack&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="85" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="85" column="24" severity="error" message="Parameter target should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="85" column="31" severity="error" message="Variable &apos;target&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="92" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;updateAnimation&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;updateAnimation&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="92" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="100" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;render&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;render&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="100" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="100" column="24" severity="error" message="Parameter g should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="100" column="33" severity="error" message="Variable &apos;g&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="107" column="58" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="107" column="65" severity="error" message="&apos;-50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="112" column="30" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="112" column="34" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="115" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="116" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;setSpeedX&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;setSpeedX&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="116" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="116" column="27" severity="error" message="Parameter speedX should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="116" column="31" severity="error" message="Variable &apos;speedX&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="120" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="121" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;setSpeedY&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;setSpeedY&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="121" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="121" column="27" severity="error" message="Parameter speedY should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="121" column="31" severity="error" message="Variable &apos;speedY&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="125" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="126" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;move&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;move&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="126" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="132" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="138" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;getHeight&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;getHeight&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="138" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="139" column="16" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="142" column="5" severity="error" message="Class &apos;Bald&apos; looks like designed for extension (can be subclassed), but the method &apos;getWidth&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Bald&apos; final or making the method &apos;getWidth&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="142" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="143" column="16" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\characters\DummyEnemy.java">
+<error line="3" column="16" severity="error" message="Using the &apos;.*&apos; form of import should be avoided - java.awt.*." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStarImportCheck"/>
+<error line="5" column="15" severity="error" message="Using the &apos;.*&apos; form of import should be avoided - java.io.*." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStarImportCheck"/>
+<error line="8" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="11" column="37" severity="error" message="Array brackets at illegal position." source="com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheck"/>
+<error line="20" column="25" severity="error" message="&apos;128&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="21" column="26" severity="error" message="&apos;128&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="24" column="17" severity="error" message="Variable &apos;currentFrame&apos; explicitly initialized to &apos;0&apos; (default value for its type)." source="com.puppycrawl.tools.checkstyle.checks.coding.ExplicitInitializationCheck"/>
+<error line="25" column="30" severity="error" message="&apos;5&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="26" column="17" severity="error" message="Variable &apos;frameCounter&apos; explicitly initialized to &apos;0&apos; (default value for its type)." source="com.puppycrawl.tools.checkstyle.checks.coding.ExplicitInitializationCheck"/>
+<error line="28" column="21" severity="error" message="Variable &apos;facingRight&apos; explicitly initialized to &apos;false&apos; (default value for its type)." source="com.puppycrawl.tools.checkstyle.checks.coding.ExplicitInitializationCheck"/>
+<error line="30" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="32" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="32" column="23" severity="error" message="Parameter x should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="32" column="27" severity="error" message="Variable &apos;x&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="32" column="30" severity="error" message="Parameter y should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="32" column="34" severity="error" message="Variable &apos;y&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="32" column="37" severity="error" message="Parameter health should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="32" column="41" severity="error" message="Variable &apos;health&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="32" column="49" severity="error" message="Parameter name should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="32" column="56" severity="error" message="Variable &apos;name&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="32" column="62" severity="error" message="Parameter attackPower should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="32" column="66" severity="error" message="Variable &apos;attackPower&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="38" column="5" severity="error" message="Instance variable definition in wrong order." source="com.puppycrawl.tools.checkstyle.checks.coding.DeclarationOrderCheck"/>
+<error line="45" column="17" severity="error" message="Variable &apos;numFrames&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="45" column="29" severity="error" message="&apos;9&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="48" column="24" severity="error" message="Variable &apos;framePath&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="49" column="29" severity="error" message="Variable &apos;is&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="56" column="30" severity="error" message="Variable &apos;e&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="61" column="5" severity="error" message="Class &apos;DummyEnemy&apos; looks like designed for extension (can be subclassed), but the method &apos;getAttackPower&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;DummyEnemy&apos; final or making the method &apos;getAttackPower&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="61" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="66" column="5" severity="error" message="Class &apos;DummyEnemy&apos; looks like designed for extension (can be subclassed), but the method &apos;takeDamage&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;DummyEnemy&apos; final or making the method &apos;takeDamage&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="66" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="66" column="28" severity="error" message="Parameter damage should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="66" column="32" severity="error" message="Variable &apos;damage&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="73" column="5" severity="error" message="Class &apos;DummyEnemy&apos; looks like designed for extension (can be subclassed), but the method &apos;heal&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;DummyEnemy&apos; final or making the method &apos;heal&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="73" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="73" column="22" severity="error" message="Parameter amount should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="73" column="26" severity="error" message="Variable &apos;amount&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="79" column="5" severity="error" message="Class &apos;DummyEnemy&apos; looks like designed for extension (can be subclassed), but the method &apos;updateAnimation&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;DummyEnemy&apos; final or making the method &apos;updateAnimation&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="79" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="87" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="88" column="5" severity="error" message="Class &apos;DummyEnemy&apos; looks like designed for extension (can be subclassed), but the method &apos;render&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;DummyEnemy&apos; final or making the method &apos;render&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="88" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="88" column="24" severity="error" message="Parameter g should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="88" column="33" severity="error" message="Variable &apos;g&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="92" column="60" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="92" column="64" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="95" column="58" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="95" column="65" severity="error" message="&apos;-50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="95" column="70" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="100" column="30" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="100" column="34" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="104" column="5" severity="error" message="Class &apos;DummyEnemy&apos; looks like designed for extension (can be subclassed), but the method &apos;followPlayer&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;DummyEnemy&apos; final or making the method &apos;followPlayer&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="104" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="104" column="30" severity="error" message="Parameter bald should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="104" column="35" severity="error" message="Variable &apos;bald&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="105" column="34" severity="error" message="&apos;)&apos; is preceded with whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"/>
+<error line="108" column="41" severity="error" message="&apos;)&apos; is preceded with whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"/>
+<error line="112" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="113" column="34" severity="error" message="&apos;)&apos; is preceded with whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"/>
+<error line="115" column="41" severity="error" message="&apos;)&apos; is preceded with whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"/>
+<error line="118" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="124" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\characters\Entity.java">
+<error line="5" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="6" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck"/>
+<error line="6" column="19" severity="error" message="Variable &apos;x&apos; must be private and have accessor methods." source="com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck"/>
+<error line="6" column="22" severity="error" message="Variable &apos;y&apos; must be private and have accessor methods." source="com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck"/>
+<error line="7" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck"/>
+<error line="7" column="19" severity="error" message="Variable &apos;health&apos; must be private and have accessor methods." source="com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck"/>
+<error line="8" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck"/>
+<error line="8" column="22" severity="error" message="Variable &apos;name&apos; must be private and have accessor methods." source="com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck"/>
+<error line="10" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="10" column="19" severity="error" message="Parameter x should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="10" column="23" severity="error" message="Variable &apos;x&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="10" column="26" severity="error" message="Parameter y should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="10" column="30" severity="error" message="Variable &apos;y&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="10" column="33" severity="error" message="Parameter health should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="10" column="37" severity="error" message="Variable &apos;health&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="10" column="45" severity="error" message="Parameter name should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="10" column="52" severity="error" message="Variable &apos;name&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="17" column="5" severity="error" message="Class &apos;Entity&apos; looks like designed for extension (can be subclassed), but the method &apos;getX&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Entity&apos; final or making the method &apos;getX&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="17" column="23" severity="error" message="&apos;{&apos; at column 23 should have line break after." source="com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"/>
+<error line="18" column="5" severity="error" message="Class &apos;Entity&apos; looks like designed for extension (can be subclassed), but the method &apos;setX&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Entity&apos; final or making the method &apos;setX&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="18" column="22" severity="error" message="Parameter x should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="18" column="26" severity="error" message="Variable &apos;x&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="18" column="29" severity="error" message="&apos;{&apos; at column 29 should have line break after." source="com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"/>
+<error line="19" column="5" severity="error" message="Class &apos;Entity&apos; looks like designed for extension (can be subclassed), but the method &apos;getY&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Entity&apos; final or making the method &apos;getY&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="19" column="23" severity="error" message="&apos;{&apos; at column 23 should have line break after." source="com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"/>
+<error line="20" column="5" severity="error" message="Class &apos;Entity&apos; looks like designed for extension (can be subclassed), but the method &apos;setY&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Entity&apos; final or making the method &apos;setY&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="20" column="22" severity="error" message="Parameter y should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="20" column="26" severity="error" message="Variable &apos;y&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="20" column="29" severity="error" message="&apos;{&apos; at column 29 should have line break after." source="com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"/>
+<error line="21" column="5" severity="error" message="Class &apos;Entity&apos; looks like designed for extension (can be subclassed), but the method &apos;getHealth&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Entity&apos; final or making the method &apos;getHealth&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="21" column="28" severity="error" message="&apos;{&apos; at column 28 should have line break after." source="com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"/>
+<error line="22" column="5" severity="error" message="Class &apos;Entity&apos; looks like designed for extension (can be subclassed), but the method &apos;setHealth&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Entity&apos; final or making the method &apos;setHealth&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="22" column="27" severity="error" message="Parameter health should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="22" column="31" severity="error" message="Variable &apos;health&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="22" column="39" severity="error" message="&apos;{&apos; at column 39 should have line break after." source="com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"/>
+<error line="22" column="39" severity="error" message="&apos;{&apos; is not followed by whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"/>
+<error line="22" column="60" severity="error" message="&apos;;&apos; is not followed by whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"/>
+<error line="22" column="61" severity="error" message="&apos;}&apos; is not preceded with whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"/>
+<error line="24" column="5" severity="error" message="Class &apos;Entity&apos; looks like designed for extension (can be subclassed), but the method &apos;isAlive&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Entity&apos; final or making the method &apos;isAlive&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="24" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="27" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\combat\Combatant.java">
+<error line="3" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="4" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="5" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="6" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\combat\CombatManager.java">
+<error line="1" severity="error" message="File does not end with a newline." source="com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck"/>
+<error line="5" column="8" severity="error" message="Unused import - com.thelegendofbald.characters.Entity." source="com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck"/>
+<error line="7" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="9" column="5" severity="error" message="Class &apos;CombatManager&apos; looks like designed for extension (can be subclassed), but the method &apos;handleAttack&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;CombatManager&apos; final or making the method &apos;handleAttack&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="9" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="9" column="30" severity="error" message="Parameter bald should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="9" column="35" severity="error" message="Variable &apos;bald&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="9" column="41" severity="error" message="Parameter enemy should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="9" column="52" severity="error" message="Variable &apos;enemy&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="10" column="13" severity="error" message="Variable &apos;attackRange&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="10" column="27" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="16" column="36" severity="error" message="Parameter bald should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="16" column="41" severity="error" message="Variable &apos;bald&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="16" column="47" severity="error" message="Parameter enemy should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="16" column="58" severity="error" message="Variable &apos;enemy&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="17" column="13" severity="error" message="Variable &apos;distanceX&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="18" column="13" severity="error" message="Variable &apos;distanceY&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="19" column="29" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="19" column="48" severity="error" message="&apos;50&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\controller\ui\listeners\KeybindingButtonKeyListener.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\controller\ui\listeners\KeybindingButtonMouseListener.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\controller\ui\listeners\ResizeListener.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\controller\ui\listeners\RoundedButtonMouseListener.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\controller\ui\listeners\TemplateButtonMouseListener.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\controller\ui\listeners\TrasparentBackgroundButtonMouseListener.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\controller\ui\mainmenu\SwitchToOtherPanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\controller\ui\settingsmenu\SwitchToOtherSettingsEditorPanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\game\GameEngine.java">
+<error line="3" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="4" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\Main.java">
+<error line="3" column="19" severity="error" message="Using the &apos;.*&apos; form of import should be avoided - javax.swing.*." source="com.puppycrawl.tools.checkstyle.checks.imports.AvoidStarImportCheck"/>
+<error line="8" column="1" severity="error" message="Utility classes should not have a public or default constructor." source="com.puppycrawl.tools.checkstyle.checks.design.HideUtilityClassConstructorCheck"/>
+<error line="8" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="9" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="9" column="29" severity="error" message="Parameter args should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="9" column="38" severity="error" message="Variable &apos;args&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\model\sounds\SoundManager.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\model\sounds\SoundPlayer.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\utils\ColorUtils.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\utils\ImageUtils.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\utils\MathUtils.java">
+<error line="3" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="4" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\buttons\JButtonFactoryImpl.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\buttons\KeybindingButton.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\buttons\RectangleButton.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\buttons\RoundedButton.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\buttons\TrasparentBackgroundButton.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\common\BackToMainPanel.java">
+<error line="83" severity="error" message="Line is longer than 130 characters (found 131)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\common\CustomCheckBox.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\common\TextLabel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\common\TextLabelFactoryImpl.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\constraints\BothGridBagConstraintsSupplier.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\constraints\GridBagConstraintsFactoryImpl.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\constraints\HorizontalGridBagConstraintsSupplier.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\constraints\VerticalGridBagConstraintsSupplier.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\leaderboard\ContentPanel.java">
+<error line="20" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="45" column="61" severity="error" message="&apos;0.01&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="59" column="13" severity="error" message="Variable &apos;preferredSize&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="59" column="92" severity="error" message="&apos;2.25&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\leaderboard\LeaderBoardPanel.java">
+<error line="17" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="29" column="58" severity="error" message="&apos;0.3&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\leaderboard\PlayerTimePanel.java">
+<error line="32" column="30" severity="error" message="&apos;,&apos; is not followed by whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"/>
+<error line="38" column="53" severity="error" message="&apos;256&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="38" column="74" severity="error" message="&apos;256&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="38" column="95" severity="error" message="&apos;256&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="40" severity="error" message="Line is longer than 130 characters (found 170)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="41" severity="error" message="Line is longer than 130 characters (found 175)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\leaderboard\ScrollingPanel.java">
+<error line="47" column="13" severity="error" message="Variable &apos;gbcLeft&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="48" column="13" severity="error" message="Variable &apos;gbcRight&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="49" column="13" severity="error" message="Variable &apos;gbcBottom&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="51" column="13" severity="error" message="Variable &apos;preferredWith&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="52" column="13" severity="error" message="Variable &apos;preferredHeight&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="53" column="13" severity="error" message="Variable &apos;preferedContentPanelSize&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="54" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\main\GamePanel.java">
+<error line="22" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="30" column="5" severity="error" message="Variable access definition in wrong order." source="com.puppycrawl.tools.checkstyle.checks.coding.DeclarationOrderCheck"/>
+<error line="30" column="11" severity="error" message="Variable &apos;timer&apos; must be private and have accessor methods." source="com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck"/>
+<error line="34" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="36" column="19" severity="error" message="Variable &apos;size&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="36" column="40" severity="error" message="&apos;1280&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="36" column="46" severity="error" message="&apos;704&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="47" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="50" column="15" severity="error" message="Variable &apos;spawn&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="50" column="46" severity="error" message="&apos;5&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="55" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="62" column="36" severity="error" message="Parameter e should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="62" column="45" severity="error" message="Variable &apos;e&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="68" column="37" severity="error" message="Parameter e should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="68" column="46" severity="error" message="Variable &apos;e&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="77" column="80" severity="error" message="&apos;5&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="77" column="82" severity="error" message="&apos;:&apos; should be on a new line." source="com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"/>
+<error line="78" column="79" severity="error" message="&apos;-5&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="79" column="79" severity="error" message="&apos;5&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="79" column="81" severity="error" message="&apos;:&apos; should be on a new line." source="com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"/>
+<error line="80" column="77" severity="error" message="&apos;-5&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="81" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="84" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="91" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="93" column="13" severity="error" message="Variable &apos;baldX&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="94" column="13" severity="error" message="Variable &apos;baldY&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="95" column="13" severity="error" message="Variable &apos;baldW&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="96" column="13" severity="error" message="Variable &apos;baldH&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="97" column="13" severity="error" message="Variable &apos;tileSize&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="100" column="13" severity="error" message="Variable &apos;leftTile&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="101" column="13" severity="error" message="Variable &apos;rightTile&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="102" column="13" severity="error" message="Variable &apos;topTile&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="103" column="13" severity="error" message="Variable &apos;bottomTile&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="108" column="26" severity="error" message="Variable &apos;tile&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="126" column="5" severity="error" message="Class &apos;GamePanel&apos; looks like designed for extension (can be subclassed), but the method &apos;changeMap&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;GamePanel&apos; final or making the method &apos;changeMap&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="126" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="126" column="27" severity="error" message="Parameter mapName should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="126" column="34" severity="error" message="Variable &apos;mapName&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="130" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="131" column="15" severity="error" message="Variable &apos;spawnPoint&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="131" column="51" severity="error" message="&apos;5&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="133" column="17" severity="error" message="Variable &apos;tileSize&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="144" column="34" severity="error" message="String literal expressions should be on the left side of an equals comparison." source="com.puppycrawl.tools.checkstyle.checks.coding.EqualsAvoidNullCheck"/>
+<error line="146" column="41" severity="error" message="String literal expressions should be on the left side of an equals comparison." source="com.puppycrawl.tools.checkstyle.checks.coding.EqualsAvoidNullCheck"/>
+<error line="152" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="154" column="5" severity="error" message="Class &apos;GamePanel&apos; looks like designed for extension (can be subclassed), but the method &apos;paintComponent&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;GamePanel&apos; final or making the method &apos;paintComponent&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="155" column="35" severity="error" message="Parameter g should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="155" column="44" severity="error" message="Variable &apos;g&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="159" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="161" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="162" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="165" column="32" severity="error" message="Parameter g should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="165" column="41" severity="error" message="Variable &apos;g&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="166" column="16" severity="error" message="Variable &apos;scaleX&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="167" column="16" severity="error" message="Variable &apos;scaleY&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\main\GameWindow.java">
+<error line="17" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="20" column="59" severity="error" message="&apos;1280&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="20" column="65" severity="error" message="&apos;704&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="24" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="50" column="33" severity="error" message="Parameter panelEnum should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="50" column="40" severity="error" message="Variable &apos;panelEnum&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="51" column="16" severity="error" message="Variable &apos;panel&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="65" column="33" severity="error" message="Parameter size should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="65" column="43" severity="error" message="Variable &apos;size&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\main\GridPanel.java">
+<error line="9" column="8" severity="error" message="Unused import - com.thelegendofbald.api.views.MainView." source="com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck"/>
+<error line="12" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="16" column="5" severity="error" message="Class &apos;GridPanel&apos; looks like designed for extension (can be subclassed), but the method &apos;paintComponent&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;GridPanel&apos; final or making the method &apos;paintComponent&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="17" column="35" severity="error" message="Parameter g should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="17" column="44" severity="error" message="Variable &apos;g&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="22" column="27" severity="error" message="Parameter g should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="22" column="36" severity="error" message="Variable &apos;g&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="23" column="13" severity="error" message="Variable &apos;width&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="24" column="13" severity="error" message="Variable &apos;height&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="26" column="30" severity="error" message="&apos;255&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="26" column="35" severity="error" message="&apos;255&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="26" column="40" severity="error" message="&apos;255&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="26" column="45" severity="error" message="&apos;40&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="37" column="5" severity="error" message="Class &apos;GridPanel&apos; looks like designed for extension (can be subclassed), but the method &apos;getPreferredSize&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;GridPanel&apos; final or making the method &apos;getPreferredSize&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="39" column="93" severity="error" message="&apos;1280&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="39" column="99" severity="error" message="&apos;704&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\main\Tile.java">
+<error line="1" severity="error" message="File does not end with a newline." source="com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck"/>
+<error line="1" severity="error" message="CRLF and CR line endings are prohibited, but this file uses them." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpMultilineCheck"/>
+<error line="9" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="15" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="19" severity="error" message="Line is longer than 130 characters (found 135)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="19" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="19" column="17" severity="error" message="Parameter image should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="19" column="31" severity="error" message="Variable &apos;image&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="19" column="38" severity="error" message="Parameter width should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="19" column="42" severity="error" message="Variable &apos;width&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="19" column="49" severity="error" message="Parameter height should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="19" column="53" severity="error" message="Variable &apos;height&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="19" column="61" severity="error" message="Parameter id should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="19" column="65" severity="error" message="Variable &apos;id&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="19" column="69" severity="error" message="Parameter solid should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="19" column="77" severity="error" message="Variable &apos;solid&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="19" column="84" severity="error" message="Parameter resize should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="19" column="92" severity="error" message="Variable &apos;resize&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="19" column="100" severity="error" message="Parameter isSpawn should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="19" column="108" severity="error" message="Variable &apos;isSpawn&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="19" column="117" severity="error" message="Parameter walkable should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="19" column="125" severity="error" message="Variable &apos;walkable&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="29" column="28" severity="error" message="Variable &apos;g&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="43" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="43" column="17" severity="error" message="Parameter image should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="43" column="31" severity="error" message="Variable &apos;image&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="43" column="38" severity="error" message="Parameter width should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="43" column="42" severity="error" message="Variable &apos;width&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="43" column="49" severity="error" message="Parameter height should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="43" column="53" severity="error" message="Variable &apos;height&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="47" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;getImage&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;getImage&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="47" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="51" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;getWidth&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;getWidth&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="51" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="55" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;getHeight&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;getHeight&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="55" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="59" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;getId&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;getId&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="59" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="63" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSolid&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSolid&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="63" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="67" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawn&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawn&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="67" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="71" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isWalkable&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isWalkable&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="71" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="75" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;hasId&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;hasId&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="75" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="79" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;render&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;render&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="79" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="79" column="24" severity="error" message="Parameter g should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="79" column="33" severity="error" message="Variable &apos;g&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="79" column="36" severity="error" message="Parameter x should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="79" column="40" severity="error" message="Variable &apos;x&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="79" column="43" severity="error" message="Parameter y should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="79" column="47" severity="error" message="Variable &apos;y&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="85" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;equals&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;equals&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="86" column="27" severity="error" message="Parameter obj should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="86" column="34" severity="error" message="Variable &apos;obj&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="87" column="9" severity="error" message="&apos;if&apos; construct must use &apos;{}&apos;s." source="com.puppycrawl.tools.checkstyle.checks.blocks.NeedBracesCheck"/>
+<error line="88" column="9" severity="error" message="&apos;if&apos; construct must use &apos;{}&apos;s." source="com.puppycrawl.tools.checkstyle.checks.blocks.NeedBracesCheck"/>
+<error line="89" column="14" severity="error" message="Variable &apos;other&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="93" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;hashCode&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;hashCode&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="98" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isResizeable&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isResizeable&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="98" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="102" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;toString&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;toString&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="104" column="24" severity="error" message="&apos;+&apos; should be on a new line." source="com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"/>
+<error line="105" column="28" severity="error" message="&apos;+&apos; should be on a new line." source="com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"/>
+<error line="106" column="36" severity="error" message="&apos;+&apos; should be on a new line." source="com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"/>
+<error line="107" column="40" severity="error" message="&apos;+&apos; should be on a new line." source="com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"/>
+<error line="108" column="42" severity="error" message="&apos;+&apos; should be on a new line." source="com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"/>
+<error line="112" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isDummy&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isDummy&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="112" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="115" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isEmpty&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isEmpty&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="115" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="118" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isValid&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isValid&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="118" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="121" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isValidTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isValidTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="121" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="124" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSolidTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSolidTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="124" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="127" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="127" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="130" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isWalkableTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isWalkableTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="130" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="133" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isNonWalkableTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isNonWalkableTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="133" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="136" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnOrWalkableTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnOrWalkableTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="136" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="139" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnAndWalkableTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnAndWalkableTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="139" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="142" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnOrSolidTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnOrSolidTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="142" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="145" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnAndSolidTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnAndSolidTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="145" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="148" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnOrSolidOrWalkableTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnOrSolidOrWalkableTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="148" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="151" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnAndSolidAndWalkableTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnAndSolidAndWalkableTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="151" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="154" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnOrSolidAndWalkableTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnOrSolidAndWalkableTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="154" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="157" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnAndSolidOrWalkableTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnAndSolidOrWalkableTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="157" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="160" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnOrSolidAndNonWalkableTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnOrSolidAndNonWalkableTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="160" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="163" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnAndSolidOrNonWalkableTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnAndSolidOrNonWalkableTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="163" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="166" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnOrWalkableAndNonSolidTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnOrWalkableAndNonSolidTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="166" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="169" column="5" severity="error" message="Class &apos;Tile&apos; looks like designed for extension (can be subclassed), but the method &apos;isSpawnAndWalkableOrNonSolidTile&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;Tile&apos; final or making the method &apos;isSpawnAndWalkableOrNonSolidTile&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="169" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="172" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\main\TileMap.java">
+<error line="17" column="1" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck"/>
+<error line="22" column="5" severity="error" message="Variable access definition in wrong order." source="com.puppycrawl.tools.checkstyle.checks.coding.DeclarationOrderCheck"/>
+<error line="22" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck"/>
+<error line="22" column="22" severity="error" message="Variable &apos;TILE_SIZE&apos; must be private and have accessor methods." source="com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck"/>
+<error line="22" column="22" severity="error" message="Name &apos;TILE_SIZE&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="27" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="27" column="20" severity="error" message="Parameter width should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="27" column="24" severity="error" message="Variable &apos;width&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="27" column="31" severity="error" message="Parameter height should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="27" column="35" severity="error" message="Variable &apos;height&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="37" column="27" severity="error" message="Variable &apos;floor&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="38" column="27" severity="error" message="Variable &apos;wall&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="45" severity="error" message="Line is longer than 130 characters (found 135)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="45" column="27" severity="error" message="&apos;5&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="45" column="68" severity="error" message="&apos;5&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="47" column="30" severity="error" message="Variable &apos;e&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="53" column="26" severity="error" message="Parameter mapName should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="53" column="33" severity="error" message="Variable &apos;mapName&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="54" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="55" column="43" severity="error" message="&apos;22&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="55" column="47" severity="error" message="&apos;40&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+<error line="75" column="21" severity="error" message="Variable &apos;tileId&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="76" column="22" severity="error" message="Variable &apos;baseTile&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="97" column="37" severity="error" message="Parameter fileName should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="97" column="44" severity="error" message="Variable &apos;fileName&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="98" column="21" severity="error" message="Variable &apos;rows&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="105" column="17" severity="error" message="&apos;if&apos; construct must use &apos;{}&apos;s." source="com.puppycrawl.tools.checkstyle.checks.blocks.NeedBracesCheck"/>
+<error line="106" column="26" severity="error" message="Variable &apos;tokens&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="107" column="23" severity="error" message="Variable &apos;row&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="113" column="30" severity="error" message="Variable &apos;e&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="117" column="17" severity="error" message="Variable &apos;map&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="125" column="37" severity="error" message="Parameter path should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="125" column="44" severity="error" message="Variable &apos;path&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="128" column="30" severity="error" message="Variable &apos;e&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="134" column="37" severity="error" message="Parameter rows should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="134" column="41" severity="error" message="Variable &apos;rows&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="134" column="47" severity="error" message="Parameter cols should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="134" column="51" severity="error" message="Variable &apos;cols&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="134" column="57" severity="error" message="Parameter tileType should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="134" column="61" severity="error" message="Variable &apos;tileType&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="135" column="17" severity="error" message="Variable &apos;map&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="144" column="5" severity="error" message="Class &apos;TileMap&apos; looks like designed for extension (can be subclassed), but the method &apos;getTileIdAt&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;TileMap&apos; final or making the method &apos;getTileIdAt&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="144" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="144" column="28" severity="error" message="Parameter x should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="144" column="32" severity="error" message="Variable &apos;x&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="144" column="35" severity="error" message="Parameter y should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="144" column="39" severity="error" message="Variable &apos;y&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="145" column="13" severity="error" message="Variable &apos;tileX&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="146" column="13" severity="error" message="Variable &apos;tileY&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="149" column="18" severity="error" message="Variable &apos;tile&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="155" column="5" severity="error" message="Class &apos;TileMap&apos; looks like designed for extension (can be subclassed), but the method &apos;getTileAt&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;TileMap&apos; final or making the method &apos;getTileAt&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="155" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="155" column="27" severity="error" message="Parameter x should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="155" column="31" severity="error" message="Variable &apos;x&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="155" column="34" severity="error" message="Parameter y should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="155" column="38" severity="error" message="Variable &apos;y&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="156" column="13" severity="error" message="Variable &apos;tileX&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="157" column="13" severity="error" message="Variable &apos;tileY&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="165" column="5" severity="error" message="Class &apos;TileMap&apos; looks like designed for extension (can be subclassed), but the method &apos;getMapWidthInTiles&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;TileMap&apos; final or making the method &apos;getMapWidthInTiles&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="165" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="172" column="5" severity="error" message="Class &apos;TileMap&apos; looks like designed for extension (can be subclassed), but the method &apos;getMapHeightInTiles&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;TileMap&apos; final or making the method &apos;getMapHeightInTiles&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="172" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="180" column="5" severity="error" message="Class &apos;TileMap&apos; looks like designed for extension (can be subclassed), but the method &apos;changeMap&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;TileMap&apos; final or making the method &apos;changeMap&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="180" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="180" column="27" severity="error" message="Parameter mapName should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="180" column="34" severity="error" message="Variable &apos;mapName&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="184" column="5" severity="error" message="Class &apos;TileMap&apos; looks like designed for extension (can be subclassed), but the method &apos;findSpawnPoint&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;TileMap&apos; final or making the method &apos;findSpawnPoint&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="184" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="184" column="33" severity="error" message="Parameter spawnTileId should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="184" column="37" severity="error" message="Variable &apos;spawnTileId&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="187" column="22" severity="error" message="Variable &apos;tile&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="197" column="5" severity="error" message="Class &apos;TileMap&apos; looks like designed for extension (can be subclassed), but the method &apos;paint&apos; does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class &apos;TileMap&apos; final or making the method &apos;paint&apos; static/final/abstract/empty, or adding allowed annotation for the method." source="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck"/>
+<error line="197" column="5" severity="error" message="Missing a Javadoc comment." source="com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck"/>
+<error line="197" column="23" severity="error" message="Parameter g should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+<error line="197" column="32" severity="error" message="Variable &apos;g&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="202" column="9" severity="error" message="&apos;if&apos; construct must use &apos;{}&apos;s." source="com.puppycrawl.tools.checkstyle.checks.blocks.NeedBracesCheck"/>
+<error line="205" column="22" severity="error" message="Variable &apos;tile&apos; should be declared final." source="com.puppycrawl.tools.checkstyle.checks.coding.FinalLocalVariableCheck"/>
+<error line="214" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+<error line="215" severity="error" message="Line has trailing spaces." source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"/>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\mainmenu\CenterPanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\mainmenu\MainPanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\settingsmenu\CategoriesPanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\settingsmenu\ConfigPanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\settingsmenu\NorthPanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\settingsmenu\SettingsEditor.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\settingsmenu\SettingsEditorManagerPanel.java">
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\main\java\com\thelegendofbald\view\settingsmenu\SettingsPanel.java">
+</file>
+</checkstyle>
