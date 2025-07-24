@@ -22,15 +22,15 @@ public class CustomSlider extends AdapterPanel {
     private static final int MINOR_TICK_SPACING = 5;
     private static final int MAJOR_TICK_SPACING = 2 * MINOR_TICK_SPACING;
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
-    private final SoundPlayer tickSound = new SoundPlayer("/slider/tick.wav");
+    private transient final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+    private transient final SoundPlayer tickSound = new SoundPlayer("/slider/tick.wav");
 
     private final JSlider slider;
     private int lastValue;
-    private Optional<TextLabel> text = Optional.empty();
+    private transient Optional<TextLabel> text = Optional.empty();
 
     public CustomSlider(int orientation, int min, int max, int value) {
         super(new Dimension(0, 0));

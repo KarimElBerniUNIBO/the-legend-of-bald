@@ -21,7 +21,7 @@ public final class GameWindow extends JFrame implements View, MainView {
     private static Dimension internalSize = new Dimension(1280, 704);
 
     private Panels currentPanel = Panels.MAIN_MENU;
-    private Optional<Panels> lastPanel = Optional.empty();
+    private transient Optional<Panels> lastPanel = Optional.empty();
 
     public GameWindow() {
         super();
@@ -68,12 +68,12 @@ public final class GameWindow extends JFrame implements View, MainView {
 
     @Override
     public Dimension getInternalSize() {
-        return internalSize;
+        return (Dimension) internalSize.clone();
     }
 
     @Override
     public void setInternalSize(Dimension size) {
-        GameWindow.internalSize = size;
+        GameWindow.internalSize = (Dimension) size.clone();
         this.updatePanelsSize();
     }
 

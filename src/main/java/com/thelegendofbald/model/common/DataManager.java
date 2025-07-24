@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,7 @@ public class DataManager {
         return runs;
     }
 
-    public void saveGameRun(GameRun gameRun) {
+    public void saveGameRun(GameRun gameRun) throws IOException {
         List<GameRun> gameRuns = loadGameRuns();
         gameRuns.add(gameRun);
 
@@ -96,15 +97,14 @@ public class DataManager {
 
         if (Optional.ofNullable(parentDir).isPresent() && !parentDir.exists()) {
             if (!parentDir.mkdirs()) {
-                throw new RuntimeException("Failed to create directory: " + parentDir.getAbsolutePath());
+                throw new IOException("Failed to create directory: " + parentDir.getAbsolutePath());
             }
         }
 
-        try (FileWriter writer = new FileWriter(saveFile)) {
+        try (FileWriter writer = new FileWriter(saveFile, StandardCharsets.UTF_8)) {
             yaml.dump(gameRuns, writer);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Failed to save game run: " + e.getMessage(), e);
         }
     
     }

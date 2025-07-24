@@ -14,7 +14,7 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 class InventoryContent extends AdapterPanel {
     
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final List<SlotPanel> inventorySlots;

@@ -37,12 +37,12 @@ public final class ConfigPanel extends AdapterPanel {
 
     private static final int UP_DOWN_INSETS = 2;
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createHorizontalGridBagConstraints();
 
-    private final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
+    private transient final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
 
-    private Optional<TextLabel> title = Optional.empty();
+    private transient Optional<TextLabel> title = Optional.empty();
     private final String text;
     private final JComponent values;
 

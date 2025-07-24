@@ -75,7 +75,7 @@ public class CombatManager {
     }
 
     public List<Projectile> getProjectiles() {
-        return projectiles;
+        return List.copyOf(projectiles);
     }
 
 }

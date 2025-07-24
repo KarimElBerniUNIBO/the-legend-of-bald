@@ -1,6 +1,5 @@
 package com.thelegendofbald.view.common;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.util.Optional;
 
@@ -17,7 +16,7 @@ public class CustomComboBoxRenderer extends DefaultListCellRenderer {
     private static final double HEIGHT_PROPORTION = 0.2;
     private static final Pair<Double, Double> TEXT_MULTIPLIER = Pair.of(1.0, 2.0);
 
-    private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+    private transient final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
     private final CustomComboBox<?> comboBox;
 
     public CustomComboBoxRenderer(CustomComboBox<?> comboBox) {

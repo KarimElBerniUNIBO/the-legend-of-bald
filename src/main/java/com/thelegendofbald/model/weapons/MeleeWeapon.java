@@ -42,7 +42,7 @@ public abstract class MeleeWeapon extends Weapon {
     }
 
     public Arc2D getAttackArea() {
-        return attackArea;
+        return (Arc2D) attackArea.clone();
     }
 
 }

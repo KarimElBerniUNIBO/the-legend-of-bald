@@ -9,11 +9,11 @@ import com.thelegendofbald.combat.Combatant;
 
 
 public class Projectile extends Entity implements Combatant {
-    public int x, y;
-    public int speed;
-    public int direction; // 0 = destra, 1 = sinistra, ecc.
-    public boolean active = true;
-    public final int damage;
+    private int x, y;
+    private int speed;
+    private int direction; // 0 = destra, 1 = sinistra, ecc.
+    private boolean active = true;
+    private final int damage;
 
     public Projectile(int x, int y, int direction, int speed, int damage) {
         super(x, y, 6, 6, "bullet", null); // Pass null or a valid LifeComponent instance if available

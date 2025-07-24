@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Arc2D;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -236,7 +237,11 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     @Override
     public void finishGame() {
         gameRun = new GameRun(gameRun.name(), timer.getFormattedTime());
-        saveDataManager.saveGameRun(gameRun);
+        try {
+            saveDataManager.saveGameRun(gameRun);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -319,8 +324,10 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         bald.getWeapon().ifPresent(weapon -> {
             if (bald.isAttacking() && weapon instanceof MeleeWeapon) {
                 Arc2D attackArea = ((MeleeWeapon) weapon).getAttackArea();
-                g2d.setColor(ATTACK_AREA_COLOR);
-                Optional.ofNullable(attackArea).ifPresent(g2d::fill);
+                Optional.ofNullable(attackArea).ifPresent(atk -> {
+                    g2d.setColor(ATTACK_AREA_COLOR);
+                    g2d.fill(atk);
+                });
             }
         });
     }

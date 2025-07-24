@@ -22,10 +22,10 @@ public final class SlotPanel extends AdapterPanel {
 
     private static final Color DEFAULT_BG_COLOR = new Color(60, 60, 60, 180);
 
-    private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
-    private Optional<TextLabel> itemLabel = Optional.empty();
+    private transient final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+    private transient Optional<TextLabel> itemLabel = Optional.empty();
 
-    private final Slot slot;
+    private transient final Slot slot;
 
     public SlotPanel(Slot slot, Inventory inventoryManager) {
         super(new Dimension(0, 0));

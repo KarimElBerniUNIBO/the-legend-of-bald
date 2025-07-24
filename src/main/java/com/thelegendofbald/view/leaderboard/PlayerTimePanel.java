@@ -17,16 +17,16 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 final class PlayerTimePanel extends AdapterPanel {
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+    private transient final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
 
     private final String playerName;
     private final String playerTime;
 
-    private Optional<TextLabel> playerNameText = Optional.empty();
-    private Optional<TextLabel> playerTimeText = Optional.empty();
+    private transient Optional<TextLabel> playerNameText = Optional.empty();
+    private transient Optional<TextLabel> playerTimeText = Optional.empty();
 
     PlayerTimePanel(String playerName, String playerTime) {
         super(new Dimension(0, 0));
