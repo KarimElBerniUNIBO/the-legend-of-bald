@@ -12,9 +12,22 @@ import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * Enum representing the buttons available in the game options.
+ * Each button has a text label and an associated panel (if applicable).
+ */
 public enum Buttons {
+    /**
+     * Button to resume the game.
+     */
     RESUME("RESUME", Optional.empty()),
+    /**
+     * Button to open the settings menu.
+     */
     SETTINGS("SETTINGS", Optional.of(Panels.SETTINGS)),
+    /**
+     * Button to leave the game and return to the main menu.
+     */
     LEAVE("LEAVE", Optional.of(Panels.MAIN_MENU)),;
 
     private static final double DEFAULT_ARC_PROPORTION = 0.2;
@@ -25,7 +38,7 @@ public enum Buttons {
     private final JButtonFactory jbFactory = new JButtonFactoryImpl();
     private final JButton button;
 
-    Buttons(final String text, Optional<Panels> panel) {
+    Buttons(final String text, final Optional<Panels> panel) {
         this.text = text;
         this.panel = panel;
         this.button = jbFactory.createRoundedButton(this.text, Optional.empty(), DEFAULT_ARC_PROPORTION, Optional.empty(),
@@ -65,7 +78,7 @@ public enum Buttons {
      * @return the {@code JButton} managed by this class
      */
     @SuppressFBWarnings(
-        value = {"EI" },
+        value = "EI",
         justification = "This method is designed to return the JButton instance without throwing exceptions."
     )
     public JButton getButton() {

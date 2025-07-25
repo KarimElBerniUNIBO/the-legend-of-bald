@@ -48,7 +48,7 @@ public enum Panels {
     private MenuPanel panel;
     private final Optional<Buttons> enumButton;
 
-    Panels(final String name, Supplier<MenuPanel> panelSupplier, final Optional<Buttons> enumButton) {
+    Panels(final String name, final Supplier<MenuPanel> panelSupplier, final Optional<Buttons> enumButton) {
         this.name = name;
         this.panelSupplier = panelSupplier;
         this.enumButton = enumButton;
@@ -69,7 +69,7 @@ public enum Panels {
      * @return the {@code MenuPanel} associated with this object
      */
     @SuppressFBWarnings(
-        value = {"EI" },
+        value = "EI",
         justification = "This method is designed to return the MenuPanel instance without throwing exceptions."
     )
     public MenuPanel getPanel() {

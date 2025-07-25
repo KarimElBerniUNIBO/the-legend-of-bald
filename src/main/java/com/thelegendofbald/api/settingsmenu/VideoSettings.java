@@ -15,10 +15,26 @@ import com.thelegendofbald.view.common.CustomSlider;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * Enum representing video settings in the application.
+ * Each setting is associated with a specific UI component for user interaction.
+ */
 public enum VideoSettings implements SettingOption {
+    /**
+     * Represents the window mode setting.
+     */
     WINDOW_MODE("WINDOW MODE", createWindowModeComboBox()),
+    /**
+     * Represents the framerate setting.
+     */
     FPS("FRAMERATE PER SECOND", createFPSSlider()),
+    /**
+     * Represents the show FPS setting.
+     */
     SHOW_FPS("SHOW FPS", createShowFPSCheckBox()),
+    /**
+     * Represents the show timer setting.
+     */
     SHOW_TIMER("SHOW TIMER", createShowTimerCheckBox());
 
     private final String text;
@@ -51,15 +67,16 @@ public enum VideoSettings implements SettingOption {
             }
         }
     }
-    
+
     /**
      * Returns the {@link JComponent} associated with this video setting.
-     * <b>Note:</b> The component should not be modified externally as it is intended for UI purposes only.
+     * <b>Note:</b> The component should not be modified externally as it is
+     * intended for UI purposes only.
      *
      * @return the JComponent for this video setting
      */
     @SuppressFBWarnings(
-        value = {"EI"},
+        value = "EI",
         justification = "This method is intended to return a UI component for display purposes only."
     )
     @Override
@@ -68,12 +85,12 @@ public enum VideoSettings implements SettingOption {
     }
 
     private static JComboBox<WindowMode> createWindowModeComboBox() {
-        var comboBox = new CustomComboBox<>(Arrays.asList(WindowMode.values()));
+        final var comboBox = new CustomComboBox<>(Arrays.asList(WindowMode.values()));
         comboBox.setSelectedItem(WindowMode.WINDOW);
         comboBox.addActionListener(e -> {
-            var selectedMode = (WindowMode) comboBox.getSelectedItem();
+            final var selectedMode = (WindowMode) comboBox.getSelectedItem();
             if (Optional.ofNullable(selectedMode).isPresent() && selectedMode != comboBox.getLastSelectedItem()) {
-                var window = (MainView) SwingUtilities.getWindowAncestor(comboBox);
+                final var window = (MainView) SwingUtilities.getWindowAncestor(comboBox);
                 window.setWindowMode(selectedMode);
                 comboBox.setLastSelectedItem(selectedMode);
             }
@@ -82,13 +99,13 @@ public enum VideoSettings implements SettingOption {
     }
 
     private static CustomSlider createFPSSlider() {
-        var customSlider = new CustomSlider(JSlider.HORIZONTAL, 30, 144, 60);
-        var slider = customSlider.getSlider();
+        final var customSlider = new CustomSlider(JSlider.HORIZONTAL, 30, 144, 60);
+        final var slider = customSlider.getSlider();
 
         slider.addChangeListener(e -> {
             if (!slider.getValueIsAdjusting()
                     && customSlider.getLastValue() != customSlider.getValue()) {
-                var window = (MainView) SwingUtilities.getWindowAncestor(customSlider);
+                final var window = (MainView) SwingUtilities.getWindowAncestor(customSlider);
                 window.setFPS(slider.getValue());
                 customSlider.setLastValue(slider.getValue());
             }
@@ -98,21 +115,21 @@ public enum VideoSettings implements SettingOption {
     }
 
     private static CustomCheckBox createShowFPSCheckBox() {
-        var checkBox = new CustomCheckBox();
+        final var checkBox = new CustomCheckBox();
         checkBox.addActionListener(e -> {
-            boolean isSelected = checkBox.isSelected();
-            var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
+            final boolean isSelected = checkBox.isSelected();
+            final var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
             window.toggleViewFps(isSelected);
         });
         return checkBox;
     }
 
     private static CustomCheckBox createShowTimerCheckBox() {
-        var checkBox = new CustomCheckBox();
+        final var checkBox = new CustomCheckBox();
         checkBox.setSelected(true);
         checkBox.addActionListener(e -> {
-            boolean isSelected = checkBox.isSelected();
-            var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
+            final boolean isSelected = checkBox.isSelected();
+            final var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
             window.toggleViewTimer(isSelected);
         });
         return checkBox;

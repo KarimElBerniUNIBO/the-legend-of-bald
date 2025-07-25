@@ -20,6 +20,10 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 final class ContentPanel extends AdapterPanel {
 
+    private static final double BOTTOM_PADDING = 0.01;
+
+    private static final long serialVersionUID = 1L;
+
     private static final int MAX_PLAYERS = 10;
 
     private static final Color GOLD_COLOR = new Color(255, 215, 0);
@@ -27,14 +31,14 @@ final class ContentPanel extends AdapterPanel {
     private static final Color BRONZE_COLOR = new Color(205, 127, 50);
     private static final Color DEFAULT_COLOR = new Color(80, 80, 80);
 
-    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final List<PlayerTimePanel> players = new ArrayList<>(MAX_PLAYERS);
-    private transient final DataManager dataManager = new DataManager();
+    private final transient DataManager dataManager = new DataManager();
 
-    ContentPanel(final Dimension size) {
-        super(size);
+    ContentPanel() {
+        super();
     }
 
     @Override
@@ -46,9 +50,9 @@ final class ContentPanel extends AdapterPanel {
         super.initializeComponents();
     }
 
-    private void applyRankingColors(List<PlayerTimePanel> players) {
+    private void applyRankingColors(final List<PlayerTimePanel> players) {
         players.forEach(p -> {
-            int index = players.indexOf(p);
+            final int index = players.indexOf(p);
             switch (index) {
                 case 0 -> SwingUtilities.invokeLater(() -> p.setBackground(GOLD_COLOR));
                 case 1 -> SwingUtilities.invokeLater(() -> p.setBackground(SILVER_COLOR));
@@ -60,27 +64,28 @@ final class ContentPanel extends AdapterPanel {
     }
 
     private void setPlayersListFromData() {
-        List<GameRun> runs = dataManager.loadGameRuns();
-        runs.sort(Comparator.comparing(GameRun::timedata, this::compareTimeData));
+        final List<GameRun> gameRuns = dataManager.loadGameRuns();
+        gameRuns.sort(Comparator.comparing(GameRun::timedata, this::compareTimeData));
 
         players.addAll(
                 Stream.concat(
-                        runs.stream()
+                        gameRuns.stream()
                                 .limit(MAX_PLAYERS)
                                 .map(run -> new PlayerTimePanel(run.name(), run.timedata().toString())),
                         Stream.generate(() -> new PlayerTimePanel("???", "hh:mm:ss"))
-                                .limit(Math.max(0, MAX_PLAYERS - runs.size())))
+                                .limit(Math.max(0, MAX_PLAYERS - gameRuns.size())))
                 .toList());
     }
 
-    // Confronta TimeData
-    private int compareTimeData(TimeData t1, TimeData t2) {
-        int h = Integer.compare(t1.hours(), t2.hours());
-        if (h != 0)
+    private int compareTimeData(final TimeData t1, final TimeData t2) {
+        final int h = Integer.compare(t1.hours(), t2.hours());
+        if (h != 0) {
             return h;
-        int m = Integer.compare(t1.minutes(), t2.minutes());
-        if (m != 0)
+        }
+        final int m = Integer.compare(t1.minutes(), t2.minutes());
+        if (m != 0) {
             return m;
+        }
         return Integer.compare(t1.seconds(), t2.seconds());
     }
 
@@ -89,7 +94,7 @@ final class ContentPanel extends AdapterPanel {
         this.players.forEach(player -> {
             player.setPreferredSize(this.getSize());
         });
-        this.gbc.insets.set(0, 0, (int) (this.getHeight() * 0.01), 0);
+        this.gbc.insets.set(0, 0, (int) (this.getHeight() * BOTTOM_PADDING), 0);
     }
 
     @Override
@@ -103,7 +108,7 @@ final class ContentPanel extends AdapterPanel {
 
     @Override
     public void setPreferredSize(final Dimension size) {
-        var preferredSize = new Dimension((int) size.getWidth(), (int) (size.getHeight() * 2.25));
+        final var preferredSize = new Dimension((int) size.getWidth(), (int) (size.getHeight() * 2.25));
         super.setPreferredSize(preferredSize);
     }
 

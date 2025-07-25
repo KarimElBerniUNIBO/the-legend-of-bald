@@ -1,7 +1,5 @@
 package com.thelegendofbald.api.panels;
 
-import java.awt.Dimension;
-
 import com.thelegendofbald.api.common.Resizable;
 import com.thelegendofbald.controller.listeners.common.ResizeListener;
 
@@ -27,16 +25,15 @@ public abstract class AdapterPanel extends BasePanel implements Resizable {
      */
     protected static final double PROPORTION = 0.85;
 
-    private static final long serialVersionUID = 6052760600132368821L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructs an AdapterPanel with the specified size.
      * Initializes the panel and adds a component listener to handle resize events.
      *
-     * @param size the initial size of the panel
      */
-    public AdapterPanel(final Dimension size) {
-        super(size);
+    public AdapterPanel() {
+        super();
     }
 
     /**

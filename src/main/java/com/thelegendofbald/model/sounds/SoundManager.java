@@ -56,7 +56,6 @@ public final class SoundManager {
         if (volume < 0 || volume > 1) {
             throw new IllegalArgumentException("Volume must be between 0 and 1");
         }
-        System.out.println(String.format("Setting master volume to %.0f %%", volume * 100));
         SOUNDPLAYERS.forEach(player -> player.setVolume(volume));
         masterVolume = volume;
     }

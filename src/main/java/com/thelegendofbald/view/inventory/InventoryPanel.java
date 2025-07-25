@@ -1,7 +1,6 @@
 package com.thelegendofbald.view.inventory;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Arrays;
@@ -23,7 +22,13 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class InventoryPanel extends AdapterPanel {
+/**
+ * The InventoryPanel class represents a panel that displays the inventory of the game.
+ * It includes a title and a grid layout for the inventory items.
+ */
+public final class InventoryPanel extends AdapterPanel {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Color DEFAULT_BG_COLOR = new Color(0, 0, 0, 180);
     private static final Pair<Double, Double> TITLE_PROPORTION = Pair.of(1.0, 0.3);
@@ -31,38 +36,51 @@ public class InventoryPanel extends AdapterPanel {
     private static final double INVENTORY_CONTENT_WIDTH_INSETS = 0.05;
     private static final double INVENTORY_CONTENT_HEIGHT_INSETS = 0.05;
 
-    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
     private final GridBagConstraints inventoryContentGBC = gbcFactory.createBothGridBagConstraints();
 
-    private transient final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+    private final transient TextLabelFactory tlFactory = new TextLabelFactoryImpl();
 
     private final String titleText;
     private final int columns;
     private final int rows;
-    private transient final Inventory inventoryManager;
+    private final transient Inventory inventoryManager;
 
     private transient Optional<TextLabel> title = Optional.empty();
     private transient Optional<JPanel> inventoryContent = Optional.empty();
 
-    public InventoryPanel(String title, Dimension size, int columns, int rows) {
-        super(size);
+    /**
+     * Constructs an InventoryPanel with the specified title, number of columns, and rows.
+     *
+     * @param title   the title of the inventory panel
+     * @param columns the number of columns in the inventory grid
+     * @param rows    the number of rows in the inventory grid
+     */
+    public InventoryPanel(final String title, final int columns, final int rows) {
+        super();
         this.titleText = title;
         this.columns = columns;
         this.rows = rows;
         this.inventoryManager = new InventoryManager(this.rows, this.columns);
 
-        this.setLayout(new GridBagLayout());
-        this.setVisible(true);
-        SwingUtilities.invokeLater(() -> this.setBackground(DEFAULT_BG_COLOR));
+        this.initialize();
+    }
+
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setLayout(new GridBagLayout());
+            this.setVisible(true);
+            this.setBackground(DEFAULT_BG_COLOR);
+        });
     }
 
     @Override
     protected void initializeComponents() {
         this.title = Optional.of(tlFactory.createTextLabelWithProportion(titleText, this.getSize(),
                 Optional.of(TITLE_PROPORTION), Optional.empty(), Optional.empty(), Optional.empty()));
-        this.inventoryContent = Optional.of(new InventoryContent(this.getSize(), 
-                this.columns, this.inventoryManager));
+        this.inventoryContent = Optional.of(new InventoryContent(this.columns, 
+                this.inventoryManager));
 
         super.initializeComponents();
     }
@@ -93,8 +111,13 @@ public class InventoryPanel extends AdapterPanel {
         this.updateComponentsSize();
     }
 
+    /**
+     * Returns the inventory manager associated with this panel.
+     *
+     * @return the inventory manager
+     */
     @SuppressFBWarnings(
-        value = {"EI"},
+        value = "EI",
         justification = "This method is intended to be used by the InventoryManager to access the inventory."
     )
     public Inventory getInventory() {

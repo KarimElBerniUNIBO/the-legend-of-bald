@@ -2,6 +2,12 @@ package com.thelegendofbald.api.settingsmenu;
 
 import javax.swing.JComponent;
 
+/**
+ * The {@code SettingOption} interface defines the contract for setting options
+ * in the application settings menu.
+ * Each setting option must provide a display text, a value, and a Swing component
+ * for user interaction.
+ */
 public interface SettingOption {
 
     /**
@@ -16,9 +22,8 @@ public interface SettingOption {
      * The type of the value may vary depending on the specific setting.
      * 
      * @return the value of the setting option, which can be of any type
-     * @throws IllegalStateException if the component type is unexpected
      */
-    Object getValue() throws IllegalStateException;
+    Object getValue();
 
     /**
      * Gets the Swing component associated with this setting option.

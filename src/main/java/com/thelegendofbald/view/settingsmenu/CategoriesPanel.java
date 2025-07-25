@@ -24,18 +24,20 @@ import com.thelegendofbald.view.buttons.TrasparentBackgroundButton;
 
 final class CategoriesPanel extends AdapterPanel implements InteractivePanel {
 
+    private static final long serialVersionUID = 1L;
+
     private static final double HEIGHT_PROPORTION = 0.1;
     private static final double WIDTH_BUTTONS_PADDING = 0.05;
 
     private static final Pair<Double, Double> BUTTON_PROPORTION = Pair.of(1.0, 2.5);
 
-    private transient final JButtonFactory jbFactory = new JButtonFactoryImpl();
+    private final transient JButtonFactory jbFactory = new JButtonFactoryImpl();
     private final List<JButton> buttons;
 
     private final SettingsEditorsManager sem;
 
-    CategoriesPanel(final Dimension size, final SettingsEditorsManager sem) {
-        super(size);
+    CategoriesPanel(final SettingsEditorsManager sem) {
+        super();
         this.sem = sem;
         this.buttons = this.getListOfButtons();
         ((TrasparentBackgroundButton) this.buttons.getFirst()).select();

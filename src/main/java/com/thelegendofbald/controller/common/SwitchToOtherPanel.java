@@ -34,7 +34,7 @@ public final class SwitchToOtherPanel implements ActionListener {
      * @param panelEnum the enum value representing the panel to switch to
      */
     @SuppressFBWarnings(
-        value = {"EI2" },
+        value = "EI2",
         justification = "This constructor is intended to be used for initializing the action listener with a specific panel enum."
     )
     public SwitchToOtherPanel(final MainView window, final Panels panelEnum) {

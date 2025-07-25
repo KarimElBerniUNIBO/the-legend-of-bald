@@ -18,17 +18,29 @@ import com.thelegendofbald.model.inventory.Slot;
 import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 
+/**
+ * A panel representing a single inventory slot.
+ * It displays the item contained in the slot, if any.
+ */
 public final class SlotPanel extends AdapterPanel {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Color DEFAULT_BG_COLOR = new Color(60, 60, 60, 180);
 
-    private transient final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+    private final transient TextLabelFactory tlFactory = new TextLabelFactoryImpl();
     private transient Optional<TextLabel> itemLabel = Optional.empty();
 
-    private transient final Slot slot;
+    private final transient Slot slot;
 
-    public SlotPanel(Slot slot, Inventory inventoryManager) {
-        super(new Dimension(0, 0));
+    /**
+     * Constructs a SlotPanel for the given slot and inventory manager.
+     *
+     * @param slot the slot to be represented by this panel
+     * @param inventoryManager the inventory manager to handle interactions
+     */
+    public SlotPanel(final Slot slot, final Inventory inventoryManager) {
+        super();
         this.slot = slot;
 
         this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
@@ -39,11 +51,18 @@ public final class SlotPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         slot.getItem().ifPresent(item -> {
-            this.itemLabel = Optional.of(tlFactory.createTextLabelWithProportion(item.getName(), this.getSize(), Optional.of(Pair.of(0.5, 0.5)), Optional.of(Pair.of(2.0, 2.0)), Optional.empty(), Optional.empty()));
+            this.itemLabel = Optional.of(tlFactory.createTextLabelWithProportion(item.getName(), this.getSize(),
+                    Optional.of(Pair.of(0.5, 0.5)), Optional.of(Pair.of(2.0, 2.0)), Optional.empty(),
+                    Optional.empty()));
         });
         super.initializeComponents();
     }
 
+    /**
+     * Returns the slot associated with this panel.
+     *
+     * @return the slot
+     */
     public Slot getSlot() {
         return slot;
     }
@@ -60,7 +79,7 @@ public final class SlotPanel extends AdapterPanel {
     }
 
     @Override
-    public void setPreferredSize(Dimension size) {
+    public void setPreferredSize(final Dimension size) {
         super.setPreferredSize(size);
         SwingUtilities.invokeLater(this::updateView);
     }

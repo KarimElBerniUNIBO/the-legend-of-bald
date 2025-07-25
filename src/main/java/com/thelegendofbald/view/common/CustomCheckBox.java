@@ -34,7 +34,7 @@ import com.thelegendofbald.utils.ImageUtils;
  */
 public final class CustomCheckBox extends JCheckBox implements View, MenuView, Resizable {
 
-    private static final long serialVersionUID = -4778828542519168670L;
+    private static final long serialVersionUID = 1L;
 
     private static final double HEIGHT_PROPORTION = 0.85;
 

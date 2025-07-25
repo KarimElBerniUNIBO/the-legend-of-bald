@@ -37,12 +37,14 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public final class ConfigPanel extends AdapterPanel {
 
+    private static final long serialVersionUID = 1L;
+
     private static final int UP_DOWN_INSETS = 2;
 
-    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createHorizontalGridBagConstraints();
 
-    private transient final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
+    private final transient TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
 
     private transient Optional<TextLabel> title = Optional.empty();
     private final String text;
@@ -60,11 +62,11 @@ public final class ConfigPanel extends AdapterPanel {
      * @param values the component containing the configurable values or controls
      */
     @SuppressFBWarnings(
-        value = {"EI2"},
+        value = "EI2",
         justification = "This constructor is intended to be used for creating a ConfigPanel with a title and values."
     )
     public ConfigPanel(final String text, final JComponent values) {
-        super(new Dimension(0, 0));
+        super();
         this.text = text;
         this.values = values;
 

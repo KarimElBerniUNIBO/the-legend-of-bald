@@ -17,17 +17,19 @@ import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 
 final class NorthPanel extends AdapterPanel {
 
+    private static final long serialVersionUID = 1L;
+
     private static final String TITLE_TEXT = "SETTINGS";
     private static final double HEIGHT_PROPORTION = 0.35;
 
-    private transient final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
+    private final transient TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
 
     private final SettingsEditorsManager sem;
     private TextLabel titleLabel;
     private JPanel categoriesPanel;
 
-    NorthPanel(final Dimension size, final SettingsEditorsManager sem) {
-        super(size);
+    NorthPanel(final SettingsEditorsManager sem) {
+        super();
         this.sem = sem;
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
@@ -38,7 +40,7 @@ final class NorthPanel extends AdapterPanel {
         this.titleLabel = tlFactory.createTextLabelWithProportion(TITLE_TEXT, this.getSize(),
                 Optional.of(Pair.of(1.0, 0.5)), Optional.empty(), Optional.empty(),
                 Optional.empty());
-        this.categoriesPanel = new CategoriesPanel(this.getSize(), this.sem);
+        this.categoriesPanel = new CategoriesPanel(this.sem);
         super.initializeComponents();
     }
 

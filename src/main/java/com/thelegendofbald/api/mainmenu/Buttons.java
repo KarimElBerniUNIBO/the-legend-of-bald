@@ -75,7 +75,7 @@ public enum Buttons {
      * @return the {@code JButton} managed by this class
      */
     @SuppressFBWarnings(
-        value = {"EI" },
+        value = "EI",
         justification = "This method is designed to return the JButton instance without throwing exceptions."
     )
     public JButton getButton() {

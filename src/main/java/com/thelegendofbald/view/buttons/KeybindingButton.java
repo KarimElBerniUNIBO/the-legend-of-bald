@@ -34,6 +34,8 @@ import com.thelegendofbald.controller.listeners.buttons.KeybindingButtonMouseLis
  */
 public class KeybindingButton extends RoundedButton {
 
+    private static final long serialVersionUID = 1L;
+
     private volatile boolean changing;
 
     /**

@@ -14,9 +14,16 @@ import com.thelegendofbald.view.common.BackToPreviousPanel;
 import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 
+/**
+ * A panel displaying the leaderboard.
+ */
 public final class LeaderBoardPanel extends MenuPanel {
 
-    private transient final TextLabelFactory titleLabelFactory = new TextLabelFactoryImpl();
+    private static final long serialVersionUID = 1L;
+
+    private static final Pair<Double, Double> TITLE_PROPORTION = Pair.of(1.0, 0.3);
+
+    private final transient TextLabelFactory titleLabelFactory = new TextLabelFactoryImpl();
 
     private transient Optional<BackToPreviousPanel> backToMainPanel = Optional.empty();
     private transient Optional<TextLabel> titleLabel = Optional.empty();
@@ -24,11 +31,11 @@ public final class LeaderBoardPanel extends MenuPanel {
 
     @Override
     protected void initializeComponents() {
-        this.backToMainPanel = Optional.of(new BackToPreviousPanel(this.getSize()));
+        this.backToMainPanel = Optional.of(new BackToPreviousPanel());
         this.titleLabel = Optional.of(titleLabelFactory.createTextLabelWithProportion("LEADERBOARD",
-                this.getSize(), Optional.of(Pair.of(1.0, 0.3)), Optional.empty(),
+                this.getSize(), Optional.of(TITLE_PROPORTION), Optional.empty(),
                 Optional.empty(), Optional.empty()));
-        this.scrollingPanel = Optional.of(new ScrollingPanel(this.getSize()));
+        this.scrollingPanel = Optional.of(new ScrollingPanel());
         super.initializeComponents();
     }
 

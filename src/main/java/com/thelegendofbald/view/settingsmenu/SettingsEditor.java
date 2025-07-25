@@ -27,7 +27,9 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
  */
 public final class SettingsEditor extends AdapterPanel {
 
-    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private static final long serialVersionUID = 1L;
+
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final Settings settings;
@@ -40,12 +42,10 @@ public final class SettingsEditor extends AdapterPanel {
      * {@link Settings} instance. The panel is set to be non-opaque and uses a
      * {@link GridBagLayout} for component arrangement. Configuration panels are
      * initialized via {@code getConfigsPanels()}.
-     *
-     * @param size      the preferred size of the editor panel
      * @param settings  the settings object to be edited
      */
-    public SettingsEditor(final Dimension size, final Settings settings) {
-        super(size);
+    public SettingsEditor(final Settings settings) {
+        super();
         this.settings = settings;
         this.configsPanels = this.getConfigsPanels();
         this.setOpaque(false);
@@ -75,7 +75,7 @@ public final class SettingsEditor extends AdapterPanel {
 
     @Override
     public void updateComponentsSize() {
-        final var preferredSize = new Dimension(this.getWidth(), (int) (this.getHeight() / this.configsPanels.size()));
+        final var preferredSize = new Dimension(this.getWidth(), this.getHeight() / this.configsPanels.size());
         this.configsPanels.forEach(cp -> cp.setPreferredSize(preferredSize));
     }
 

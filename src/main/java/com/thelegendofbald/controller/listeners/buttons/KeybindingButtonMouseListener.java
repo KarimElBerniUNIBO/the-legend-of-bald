@@ -36,7 +36,7 @@ public class KeybindingButtonMouseListener extends RoundedButtonMouseListener {
      * @param button the {@code KeybindingButton} this mouse listener is associated with
      */
     @SuppressFBWarnings(
-        value = {"EI2"},
+        value = "EI2",
         justification = "This constructor is intended to be used with KeybindingButton only."
     )
     public KeybindingButtonMouseListener(final KeybindingButton button) {

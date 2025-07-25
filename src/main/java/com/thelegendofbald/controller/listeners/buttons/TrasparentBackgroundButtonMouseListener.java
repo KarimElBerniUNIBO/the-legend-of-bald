@@ -39,7 +39,7 @@ public class TrasparentBackgroundButtonMouseListener extends TemplateInteractive
      * @param button the {@link TrasparentBackgroundButton} to attach the mouse listener to
      */
     @SuppressFBWarnings(
-        value = {"EI2"},
+        value = "EI2",
         justification = "This class is designed to be used with TrasparentBackgroundButton instances only."
     )
     public TrasparentBackgroundButtonMouseListener(final TrasparentBackgroundButton button) {

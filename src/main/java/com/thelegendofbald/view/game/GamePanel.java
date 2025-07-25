@@ -60,6 +60,8 @@ import com.thelegendofbald.view.main.TileMap;
 
 public class GamePanel extends MenuPanel implements Runnable, Game {
 
+    private static final long serialVersionUID = 1L;
+
     private static final double OPTIONS_WIDTH_INSETS = 0.25;
     private static final double OPTIONS_HEIGHT_INSETS = 0.1;
 
@@ -108,10 +110,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     public GamePanel() {
         super();
         Dimension size = new Dimension(1280, 704);
-        //this.setPreferredSize(size);
-        this.setBackground(Color.BLACK);
-        this.setFocusable(true);
-        this.setLayout(new GridBagLayout());
 
         this.gridPanel = new GridPanel();
         this.gridPanel.setOpaque(false);
@@ -120,15 +118,15 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.lifePanel = new LifePanel(new Dimension(200,20), bald.getLifeComponent());
         this.lifePanel.setBounds(100, 800, 200,20);
 
-        this.optionsPanel = new GameOptionsPanel(size);
-        this.inventoryPanel = new InventoryPanel("INVENTORY", size, 5, 3);
+        this.optionsPanel = new GameOptionsPanel();
+        this.inventoryPanel = new InventoryPanel("INVENTORY", 5, 3);
         this.inventory = ((InventoryPanel) this.inventoryPanel).getInventory();
         this.inventory.setBald(bald);
 
         this.tileMap = new TileMap(size.width, size.height, 32);
 
         this.combatManager = new CombatManager(bald, enemies);
-        this.bald.setWeapon(new Magic(0, 0, 50, 50, combatManager));
+        this.bald.setWeapon(new Sword(0, 0, 50, 50, combatManager));
 
         JButton shopButton = new JButton("Shop");
         shopButton.setBounds(100, 100, 120, 40);
@@ -160,6 +158,15 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         }
 
         setupKeyBindings();
+        this.initialize();
+    }
+
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setBackground(Color.BLACK);
+            this.setFocusable(true);
+            this.setLayout(new GridBagLayout());
+        });
     }
 
     private void addWeaponsToInventory() {
@@ -252,7 +259,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         }
         gameRun = new GameRun(nickname, timer.getFormattedTime());
 
-        System.out.println("Game started with player nickname: " + gameRun.name() + " at time: " + gameRun.timedata());
         // TODO: Continua il gioco
     }
 
@@ -272,6 +278,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        this.stopGame();
     }
 
     @Override
@@ -301,7 +309,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             }
 
             if (updateInterval >= 1e9) {
-                // System.out.println("FPS:" + drawCount);
                 currentFPS = drawCount;
                 drawCount = 0;
                 updateInterval = 0;

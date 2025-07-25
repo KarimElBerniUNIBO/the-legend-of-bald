@@ -30,7 +30,7 @@ import com.thelegendofbald.controller.listeners.buttons.TrasparentBackgroundButt
  */
 public class TrasparentBackgroundButton extends TemplateButton {
 
-    private static final long serialVersionUID = -2907106289164271578L;
+    private static final long serialVersionUID = 1L;
 
     private final Color buttonFGColor;
     private final Color buttonFGSelectedColor;

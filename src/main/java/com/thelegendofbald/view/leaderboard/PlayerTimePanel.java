@@ -1,10 +1,11 @@
 package com.thelegendofbald.view.leaderboard;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Arrays;
 import java.util.Optional;
+
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -15,12 +16,17 @@ import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
+/**
+ * A panel displaying a player's time in the leaderboard.
+ */
 final class PlayerTimePanel extends AdapterPanel {
 
-    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private static final long serialVersionUID = 1L;
+
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private transient final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+    private final transient TextLabelFactory tlFactory = new TextLabelFactoryImpl();
 
     private final String playerName;
     private final String playerTime;
@@ -28,18 +34,26 @@ final class PlayerTimePanel extends AdapterPanel {
     private transient Optional<TextLabel> playerNameText = Optional.empty();
     private transient Optional<TextLabel> playerTimeText = Optional.empty();
 
-    PlayerTimePanel(String playerName, String playerTime) {
-        super(new Dimension(0, 0));
-        this.setLayout(new GridBagLayout());
+    PlayerTimePanel(final String playerName, final String playerTime) {
+        super();
         this.playerName = playerName;
         this.playerTime = playerTime;
+        this.initialize();
+    }
+
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setLayout(new GridBagLayout());
+            this.setOpaque(true);
+        });
     }
 
     @Override
     protected void initializeComponents() {
-        this.setOpaque(true);
-        this.playerNameText = Optional.of(tlFactory.createTextLabelWithProportion(playerName, this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
-        this.playerTimeText = Optional.of(tlFactory.createTextLabelWithProportion(playerTime, this.getSize(), Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
+        this.playerNameText = Optional.of(tlFactory.createTextLabelWithProportion(playerName, this.getSize(),
+                Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
+        this.playerTimeText = Optional.of(tlFactory.createTextLabelWithProportion(playerTime, this.getSize(),
+                Optional.of(Pair.of(0.5, 1.0)), Optional.empty(), Optional.empty(), Optional.empty()));
         super.initializeComponents();
     }
 

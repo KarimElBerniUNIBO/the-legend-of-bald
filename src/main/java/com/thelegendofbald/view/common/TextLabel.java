@@ -24,7 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public final class TextLabel extends JLabel {
 
-    private static final long serialVersionUID = 8944443862403400839L;
+    private static final long serialVersionUID = 1L;
 
     private static final double MAX_ASPECTRATIO = 1.2;
     private static final double TEXT_PROPORTION = 0.08;

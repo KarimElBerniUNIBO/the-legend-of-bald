@@ -28,7 +28,7 @@ public class KeybindingButtonKeyListener extends KeyAdapter {
      * @param button the {@link KeybindingButton} associated with this key listener
      */
     @SuppressFBWarnings(
-        value = {"EI2"},
+        value = "EI2",
         justification = "KeybindingButtonKeyListener is designed to be used with KeybindingButton instances only."
     )
     public KeybindingButtonKeyListener(final KeybindingButton button) {

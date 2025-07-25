@@ -20,12 +20,14 @@ import com.thelegendofbald.view.common.TextLabelFactoryImpl;
  */
 public final class MainPanel extends MenuPanel {
 
+    private static final long serialVersionUID = 1L;
+
     private static final String TITLE_TEXT = "THE LEGEND OF BALD";
     private static final String TITLE_FONT_NAME = Font.SERIF;
 
     private static final Pair<Double, Double> TITLE_PROPORTION = Pair.of(1.0, 0.3);
 
-    private transient final TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
+    private final transient TextLabelFactoryImpl tlFactory = new TextLabelFactoryImpl();
 
     private transient Optional<TextLabel> titleLabel = Optional.empty();
     private transient Optional<JPanel> centerPanel = Optional.empty();
@@ -39,7 +41,7 @@ public final class MainPanel extends MenuPanel {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.of(TITLE_FONT_NAME)));
-        centerPanel = Optional.of(new CenterPanel(this.getSize()));
+        centerPanel = Optional.of(new CenterPanel());
         super.initializeComponents();
     }
 

@@ -26,7 +26,7 @@ import com.thelegendofbald.api.buttons.TemplateButton;
  */
 public class RectangleButton extends TemplateButton {
 
-    private static final long serialVersionUID = 5903281673766633586L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructs a new {@code RectangleButton} with the specified properties.

@@ -12,46 +12,55 @@ import com.thelegendofbald.model.weapons.Weapon;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class InventoryManager implements Inventory {
+/**
+ * Manages the inventory of the game, allowing for adding, removing, and selecting items.
+ * This class implements the Inventory interface and provides methods to manipulate the inventory slots.
+ */
+public final class InventoryManager implements Inventory {
 
     private final int rows;
     private final int columns;
     private final List<Slot> inventory;
     private Bald bald;
 
-    public InventoryManager(int rows, int columns) {
+    /**
+     * Constructs an InventoryManager with the specified number of rows and columns.
+     *
+     * @param rows    the number of rows in the inventory
+     * @param columns the number of columns in the inventory
+     */
+    public InventoryManager(final int rows, final int columns) {
         this.rows = rows;
         this.columns = columns;
         this.inventory = this.getInventory(this.rows * this.columns);
     }
 
-    private List<Slot> getInventory(int slots) {
+    private List<Slot> getInventory(final int slots) {
         return Stream.generate(() -> new Slot(null))
                 .limit(slots)
                 .collect(Collectors.toList());
     }
 
     @SuppressFBWarnings(
-        value = {"EI2"},
+        value = "EI2",
         justification = "This method is designed to set the Bald instance for the InventoryManager."
     )
     @Override
-    public void setBald(Bald bald) {
+    public void setBald(final Bald bald) {
         this.bald = bald;
     }
 
     @Override
-    public void add(GameItem item) {
+    public void add(final GameItem item) {
         inventory.stream()
                 .filter(slot -> !slot.getItem().isPresent())
                 .findFirst()
-                .ifPresentOrElse(slot -> inventory.set(inventory.indexOf(slot), new Slot(item)), 
-                () -> { throw new IllegalStateException("Inventory is full"); });
+                .ifPresent(slot -> inventory.set(inventory.indexOf(slot), new Slot(item)));
     }
 
     @Override
-    public void set(GameItem item, int row, int column) {
-        int index = row * columns + column;
+    public void set(final GameItem item, final int row, final int column) {
+        final int index = row * columns + column;
         if (index < 0 || index >= inventory.size()) {
             throw new IndexOutOfBoundsException("Invalid slot index: " + index);
         }
@@ -60,8 +69,8 @@ public class InventoryManager implements Inventory {
     }
 
     @Override
-    public void remove(int row, int column) {
-        int index = row * columns + column;
+    public void remove(final int row, final int column) {
+        final int index = row * columns + column;
         if (index < 0 || index >= inventory.size()) {
             throw new IndexOutOfBoundsException("Invalid slot index: " + index);
         }
@@ -75,18 +84,16 @@ public class InventoryManager implements Inventory {
     }
 
     @Override
-    public Slot get(int row, int column) {
-        int index = row * columns + column;
+    public Slot get(final int row, final int column) {
+        final int index = row * columns + column;
         if (index < 0 || index >= inventory.size()) {
             throw new IndexOutOfBoundsException("Invalid row or column: " + row + ", " + column);
         }
         return inventory.get(index);
     }
 
-    private void handleItemSelection(Slot slot) {
+    private void handleItemSelection(final Slot slot) {
         slot.getItem().ifPresent(item -> {
-            System.out.println("Selected item: " + item.getName());
-
             if (item instanceof Weapon weapon) {
                 Optional.ofNullable(bald).ifPresent(b -> b.setWeapon(weapon));
             }
@@ -94,24 +101,24 @@ public class InventoryManager implements Inventory {
     }
 
     @Override
-    public void select(int row, int column) {
-        Slot slot = this.get(row, column);
+    public void select(final int row, final int column) {
+        final Slot slot = this.get(row, column);
         this.select(slot);
     }
 
     @Override
-    public void select(int index) {
-        Slot slot = inventory.get(index);
+    public void select(final int index) {
+        final Slot slot = inventory.get(index);
         this.select(slot);
     }
 
     @Override
-    public void select(Slot slot) {
+    public void select(final Slot slot) {
         this.handleItemSelection(slot);
     }
 
     @SuppressFBWarnings(
-        value = {"EI"},
+        value = "EI",
         justification = "This method is designed to return the list of slots in the inventory without throwing exceptions."
     )
     @Override

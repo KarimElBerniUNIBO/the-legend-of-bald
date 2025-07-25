@@ -23,27 +23,36 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import com.thelegendofbald.model.common.Timer.TimeData;
 
-public class DataManager {
+/**
+ * DataManager is responsible for loading and saving game runs to a YAML file.
+ * It uses SnakeYAML for serialization and deserialization of GameRun objects.
+ */
+public final class DataManager {
 
     private static final String SAVE_FILE_DIRECTORY = "game_data" + File.separator + "runs";
     private static final String SAVE_FILE_PATH = SAVE_FILE_DIRECTORY + File.separator + "users_data.yml";
 
     private final Yaml yaml;
 
+    /**
+     * Constructs a DataManager instance with configured YAML options.
+     * Initializes the YAML parser with custom settings for serialization and
+     * deserialization.
+     */
     public DataManager() {
-        DumperOptions dumperOptions = new DumperOptions();
+        final DumperOptions dumperOptions = new DumperOptions();
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         dumperOptions.setPrettyFlow(true);
 
-        LoaderOptions loaderOptions = new LoaderOptions();
+        final LoaderOptions loaderOptions = new LoaderOptions();
         loaderOptions.setAllowDuplicateKeys(false);
 
-        Constructor constructor = new Constructor(List.class, loaderOptions);
+        final Constructor constructor = new Constructor(List.class, loaderOptions);
 
-        TypeDescription gameRunDescription = new TypeDescription(GameRun.class);
+        final TypeDescription gameRunDescription = new TypeDescription(GameRun.class);
         constructor.addTypeDescription(gameRunDescription);
 
-        Representer representer = new Representer(dumperOptions);
+        final Representer representer = new Representer(dumperOptions);
         representer.setPropertyUtils(new PropertyUtils());
 
         representer.addClassTag(GameRun.class, MAP);
@@ -53,60 +62,72 @@ public class DataManager {
         yaml.setBeanAccess(BeanAccess.FIELD);
     }
 
+    /**
+     * Loads game runs from the YAML file.
+     * If the file does not exist or is empty, returns an empty list.
+     *
+     * @return a list of GameRun objects loaded from the YAML file.
+     */
     public List<GameRun> loadGameRuns() {
-        List<?> rawList;
+        final List<?> rawList;
         try (InputStream input = new FileInputStream(SAVE_FILE_PATH)) {
             rawList = yaml.load(input);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             return new ArrayList<>();
         }
-        List<GameRun> runs = new ArrayList<>();
+        final List<GameRun> runs = new ArrayList<>();
 
         Optional.ofNullable(rawList).ifPresent(list -> {
             list.stream()
-                .filter(obj -> obj instanceof GameRun || obj instanceof Map)
-                .forEach(obj -> {
-                switch (obj) {
-                    case GameRun gr -> runs.add(gr);
-                    case Map<?, ?> map -> {
-                        String name = (String) map.get("name");
-                        Object timedataObj = map.get("timedata");
-                        if (timedataObj instanceof Map tdMap) {
-                            int hours = (int) tdMap.get("hours");
-                            int minutes = (int) tdMap.get("minutes");
-                            int seconds = (int) tdMap.get("seconds");
-                            GameRun gr = new GameRun(name, new TimeData(hours, minutes, seconds));
-                            runs.add(gr);
+                    .filter(obj -> obj instanceof GameRun || obj instanceof Map)
+                    .forEach(obj -> {
+                        switch (obj) {
+                            case GameRun gr -> runs.add(gr);
+                            case Map<?, ?> map -> {
+                                final String name = (String) map.get("name");
+                                final Object timedataObj = map.get("timedata");
+                                if (timedataObj instanceof Map tdMap) {
+                                    final int hours = (int) tdMap.get("hours");
+                                    final int minutes = (int) tdMap.get("minutes");
+                                    final int seconds = (int) tdMap.get("seconds");
+                                    final GameRun gr = new GameRun(name, new TimeData(hours, minutes, seconds));
+                                    runs.add(gr);
+                                }
+                            }
+                            default -> {
+                            }
                         }
-                    }
-                    default -> {
-                    }
-                }
-                });
+                    });
         });
-        
+
         return runs;
     }
 
-    public void saveGameRun(GameRun gameRun) throws IOException {
-        List<GameRun> gameRuns = loadGameRuns();
+    /**
+     * Saves a GameRun object to the YAML file.
+     * If the file does not exist, it will be created.
+     *
+     * @param gameRun the GameRun object to save.
+     * @throws IOException if an error occurs while writing to the file.
+     */
+    public void saveGameRun(final GameRun gameRun) throws IOException {
+        final List<GameRun> gameRuns = loadGameRuns();
         gameRuns.add(gameRun);
 
-        File saveFile = new File(SAVE_FILE_PATH);
-        File parentDir = saveFile.getParentFile();
+        final File saveFile = new File(SAVE_FILE_PATH);
+        final File parentDir = saveFile.getParentFile();
 
-        if (Optional.ofNullable(parentDir).isPresent() && !parentDir.exists()) {
-            if (!parentDir.mkdirs()) {
-                throw new IOException("Failed to create directory: " + parentDir.getAbsolutePath());
-            }
+        if (Optional.ofNullable(parentDir).isPresent() && !parentDir.exists() && !parentDir.mkdirs()) {
+            throw new IOException("Failed to create directory: " + parentDir.getAbsolutePath());
         }
 
         try (FileWriter writer = new FileWriter(saveFile, StandardCharsets.UTF_8)) {
             yaml.dump(gameRuns, writer);
-        } catch (IOException e) {
+        } catch (final IOException e) {
+            // TODO: Log the error
             e.printStackTrace();
         }
-    
+
     }
 
 }

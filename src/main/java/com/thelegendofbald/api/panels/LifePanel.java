@@ -11,7 +11,7 @@ public class LifePanel extends AdapterPanel {
     private LifeComponent lifeComponent;  
 
     public LifePanel(Dimension size, LifeComponent lifeComponent) {
-        super(size);
+        super();
         this.lifeComponent = lifeComponent;
     }
 

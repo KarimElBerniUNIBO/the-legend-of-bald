@@ -89,7 +89,7 @@ public enum ControlsSettings implements SettingOption {
      * @return the JComponent for this keybinding setting
      */
     @SuppressFBWarnings(
-        value = {"EI"},
+        value = "EI",
         justification = "This method is intended to return a UI component for display purposes only."
     )
     @Override

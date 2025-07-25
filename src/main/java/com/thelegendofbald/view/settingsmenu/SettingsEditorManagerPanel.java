@@ -20,6 +20,8 @@ import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsEditorsManager {
 
+    private static final long serialVersionUID = 1L;
+
     private static final double WIDTH_PROPORTION = 0.7;
     private static final double HEIGHT_PROPORTION = 0.65;
 
@@ -29,13 +31,19 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
     private final List<SettingsEditor> settingsEditors = new ArrayList<>();
     private transient Optional<SettingsEditor> actualSettingsEditor = Optional.empty();
 
-    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = this.gbcFactory.createBothGridBagConstraints();
 
-    SettingsEditorManagerPanel(final Dimension size) {
-        super(size);
-        this.setOpaque(false);
-        this.setLayout(new GridBagLayout());
+    SettingsEditorManagerPanel() {
+        super();
+        this.initialize();
+    }
+
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setOpaque(false);
+            this.setLayout(new GridBagLayout());
+        });
     }
 
     @Override
@@ -47,9 +55,9 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
         }
     }
 
-    private List<SettingsEditor> getSettingsEditors(final Dimension size) {
+    private List<SettingsEditor> getSettingsEditors() {
         Arrays.stream(Settings.values())
-                .forEach(setting -> setting.setSettingsEditor(new SettingsEditor(size, setting)));
+                .forEach(setting -> setting.setSettingsEditor(new SettingsEditor(setting)));
 
         return Arrays.stream(Settings.values())
                 .map(Settings::getSettingsEditor)
@@ -58,8 +66,7 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
 
     @Override
     protected void initializeComponents() {
-        final var preferredSize = this.calculatePreferredSize(this.getParent().getSize());
-        this.settingsEditors.addAll(this.getSettingsEditors(preferredSize));
+        this.settingsEditors.addAll(this.getSettingsEditors());
         this.actualSettingsEditor = Optional.of(this.settingsEditors.getFirst());
         super.initializeComponents();
     }
@@ -104,7 +111,8 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
     public void updateComponentsSize() {
         final var preferredSize = this.calculatePreferredSize(this.getSize());
         this.settingsEditors.forEach(editor -> editor.setPreferredSize(preferredSize));
-        this.gbc.insets.set(0, (int) ((this.getWidth() * SIDE_INSETS) - (this.getWidth() * BackToPreviousPanel.WIDTH_PROPORTION)),
+        this.gbc.insets.set(0,
+                (int) ((this.getWidth() * SIDE_INSETS) - (this.getWidth() * BackToPreviousPanel.WIDTH_PROPORTION)),
                 (int) (this.getHeight() * BOTTOM_INSETS),
                 (int) (this.getWidth() * SIDE_INSETS));
     }

@@ -77,7 +77,7 @@ public enum AudioSettings implements SettingOption {
      * @return the JComponent for this audio setting
      */
     @SuppressFBWarnings(
-        value = {"EI"},
+        value = "EI",
         justification = "This method is intended to return a UI component for display purposes only."
     )
     @Override
@@ -86,14 +86,14 @@ public enum AudioSettings implements SettingOption {
     }
 
     private static CustomSlider createMasterSlider() {
-        var customSlider = new CustomSlider(JSlider.HORIZONTAL, 0, 100, 100);
-        var slider = customSlider.getSlider();
+        final var customSlider = new CustomSlider(JSlider.HORIZONTAL, 0, 100, 100);
+        final var slider = customSlider.getSlider();
 
         slider.addChangeListener(e -> {
             if (slider.getValueIsAdjusting()
                     && customSlider.getLastValue() != customSlider.getValue()) {
-                int value = customSlider.getValue();
-                float volume = value / 100f;
+                final int value = customSlider.getValue();
+                final float volume = value / 100f;
                 SoundManager.setMasterVolume(volume);
                 customSlider.setLastValue(slider.getValue());
             }
@@ -103,18 +103,16 @@ public enum AudioSettings implements SettingOption {
     }
 
     private static CustomSlider createMusicSlider() {
-        var customSlider = new CustomSlider(JSlider.HORIZONTAL, 0, 100, 50);
-        var slider = customSlider.getSlider();
+        final var customSlider = new CustomSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        final var slider = customSlider.getSlider();
 
         slider.addChangeListener(e -> {
             if (!slider.getValueIsAdjusting()) {
-                String value = String.valueOf(slider.getValue());
-                var lastValue = customSlider.getLastValue();
+                final var value = slider.getValue();
+                final var lastValue = customSlider.getLastValue();
 
-                if (lastValue != slider.getValue()) {
-                    System.out.println("Selected Music Volume: " + value);
-                    // TODO: Implement music volume setting logic
-                    customSlider.setLastValue(slider.getValue());
+                if (lastValue != value) {
+                    customSlider.setLastValue(value);
                 }
             }
         });

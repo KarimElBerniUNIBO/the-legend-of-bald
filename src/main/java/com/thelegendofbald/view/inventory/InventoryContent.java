@@ -13,22 +13,30 @@ import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 class InventoryContent extends AdapterPanel {
-    
-    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+
+    private static final long serialVersionUID = 1L;
+
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
     private final List<SlotPanel> inventorySlots;
     private final int maxSlotsPerRow;
-    private transient final Inventory inventoryManager;
+    private final transient Inventory inventoryManager;
 
-    InventoryContent(Dimension size, int columns, Inventory inventoryManager) {
-        super(size);
+    InventoryContent(final int columns, final Inventory inventoryManager) {
+        super();
         this.maxSlotsPerRow = columns;
         this.inventoryManager = inventoryManager;
         this.inventorySlots = this.getInventorySlots();
 
-        this.setLayout(new GridBagLayout());
-        this.setOpaque(false);
+        this.initialize();
+    }
+
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setLayout(new GridBagLayout());
+            this.setOpaque(false);
+        });
     }
 
     private List<SlotPanel> getInventorySlots() {
@@ -56,7 +64,7 @@ class InventoryContent extends AdapterPanel {
     }
 
     @Override
-    public void setPreferredSize(Dimension size) {
+    public void setPreferredSize(final Dimension size) {
         super.setPreferredSize(size);
         SwingUtilities.invokeLater(this::updateView);
     }
