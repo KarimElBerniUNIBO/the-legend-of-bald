@@ -1,13 +1,6 @@
 package com.thelegendofbald.view.game;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
@@ -126,9 +119,9 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.tileMap = new TileMap(size.width, size.height, 32);
 
         this.combatManager = new CombatManager(bald, enemies);
-        this.bald.setWeapon(new Sword(0, 0, 50, 50, combatManager));
+        this.bald.setWeapon(new Magic(0, 0, 50, 50, combatManager));
 
-        JButton shopButton = new JButton("Shop");
+        /*JButton shopButton = new JButton("Shop");
         shopButton.setBounds(100, 100, 120, 40);
         shopButton.setVisible(true);
         shopButton.setBackground(Color.YELLOW);
@@ -137,7 +130,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             ShopPanel shopPanel = new ShopPanel();
             JOptionPane.showMessageDialog(this, shopPanel, "Negozio", JOptionPane.PLAIN_MESSAGE);
         });
-        this.add(shopButton);
+        this.add(shopButton);*/
 
         tileMap.changeMap("map_1");
         bald.setTileMap(tileMap);
@@ -159,15 +152,22 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
         setupKeyBindings();
         this.initialize();
+
+
     }
+
 
     private void initialize() {
         SwingUtilities.invokeLater(() -> {
             this.setBackground(Color.BLACK);
             this.setFocusable(true);
             this.setLayout(new GridBagLayout());
+
+
+
         });
     }
+
 
     private void addWeaponsToInventory() {
         List<Weapon> weapons = List.of(new Magic(0, 0, 50, 50, combatManager),
@@ -465,6 +465,26 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         //this.add(gridPanel);
         this.add(optionsPanel, optionsGBC);
         this.add(inventoryPanel, inventoryGBC);
+
+
+        // ➤ CREA QUI IL BOTTONE
+        JButton shopButton = new JButton("Shop");
+        shopButton.setBackground(Color.YELLOW);
+        shopButton.setOpaque(true);
+        shopButton.addActionListener(e -> {
+            ShopPanel shopPanel = new ShopPanel();
+            JOptionPane.showMessageDialog(this, shopPanel, "Negozio", JOptionPane.PLAIN_MESSAGE);
+        });
+
+        // ➤ AGGIUNGI IL BOTTONE CON LE GBC CORRETTE
+        GridBagConstraints shopButtonGBC = new GridBagConstraints();
+        shopButtonGBC.gridx = 0;
+        shopButtonGBC.gridy = 0;
+        shopButtonGBC.insets = new Insets(10, 10, 10, 10);
+        shopButtonGBC.anchor = GridBagConstraints.NORTHWEST;
+        shopButtonGBC.fill = GridBagConstraints.NONE;
+
+        this.add(shopButton, shopButtonGBC);
     }
 
     @Override
