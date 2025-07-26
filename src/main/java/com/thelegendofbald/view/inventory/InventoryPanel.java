@@ -70,7 +70,7 @@ public final class InventoryPanel extends AdapterPanel {
     private void initialize() {
         SwingUtilities.invokeLater(() -> {
             this.setLayout(new GridBagLayout());
-            this.setVisible(true);
+            this.setVisible(false);
             this.setBackground(DEFAULT_BG_COLOR);
         });
     }

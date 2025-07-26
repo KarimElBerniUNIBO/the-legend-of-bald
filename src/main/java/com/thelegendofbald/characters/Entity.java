@@ -49,4 +49,5 @@ public abstract class Entity  {
         return new Rectangle(x, y, 32, 32);
     }
 
+
 }

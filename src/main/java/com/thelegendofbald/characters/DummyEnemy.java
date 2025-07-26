@@ -30,6 +30,7 @@ public class DummyEnemy extends Entity  implements Combatant{
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
 
     private long lastAttackTime = 0; // Tempo dell'ultimo attacco
+    private final double minDistance = 100;
 
     public DummyEnemy(int x, int y, int health, String name, int attackPower) {
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(health));
@@ -131,5 +132,10 @@ public class DummyEnemy extends Entity  implements Combatant{
         this.lastAttackTime = time;
     }
 
-    
+    public boolean isCloseTo(Bald bald) {
+            double dx = this.x - bald.getX();
+            double dy = this.y - bald.getY();
+            double distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < this.minDistance;
+    }
 }
