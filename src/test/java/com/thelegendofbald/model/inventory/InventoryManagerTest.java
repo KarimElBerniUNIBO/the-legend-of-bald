@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.thelegendofbald.item.GameItem;
 import com.thelegendofbald.item.weapons.Axe;
-import com.thelegendofbald.item.weapons.Magic;
+import com.thelegendofbald.item.weapons.FireBall;
 import com.thelegendofbald.item.weapons.Sword;
 import com.thelegendofbald.model.weapons.Weapon;
 
@@ -44,7 +44,7 @@ class InventoryManagerTest {
 
     @Test
     void testSetWeaponAtSpecificPosition() {
-        Weapon weapon = new Magic(0, 0, 0, 0, null);
+        Weapon weapon = new FireBall(0, 0, 0, 0, null);
         inventoryManager.set(weapon, 1, 1);
         Optional<GameItem> item = inventoryManager.get(1, 1).getItem();
         assertTrue(item.isPresent(), "Item should be present at (1,1)");

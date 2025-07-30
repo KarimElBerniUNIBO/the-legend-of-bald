@@ -1,6 +1,14 @@
 package com.thelegendofbald.view.game;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
@@ -13,6 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.Box;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -34,7 +43,7 @@ import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.combat.projectile.Projectile;
 import com.thelegendofbald.item.weapons.Axe;
-import com.thelegendofbald.item.weapons.Magic;
+import com.thelegendofbald.item.weapons.FireBall;
 import com.thelegendofbald.item.weapons.Sword;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.DataManager;
@@ -119,7 +128,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.tileMap = new TileMap(size.width, size.height, 32);
 
         this.combatManager = new CombatManager(bald, enemies);
-        this.bald.setWeapon(new Magic(0, 0, 50, 50, combatManager));
+        this.bald.setWeapon(new FireBall(0, 0, 50, 50, combatManager));
 
         /*JButton shopButton = new JButton("Shop");
         shopButton.setBounds(100, 100, 120, 40);
@@ -170,7 +179,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
 
     private void addWeaponsToInventory() {
-        List<Weapon> weapons = List.of(new Magic(0, 0, 50, 50, combatManager),
+        List<Weapon> weapons = List.of(new FireBall(0, 0, 50, 50, combatManager),
                                        new Sword(0, 0, 50, 50, combatManager),
                                        new Axe(0, 0, 50, 50, combatManager));
 
@@ -335,7 +344,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
         // --- LOGICA CAMBIO MAPPA ---
         Tile tileUnderFeet = tileMap.getTileAt(tileCenterX, tileFeetY);
-        System.out.println("Tile sotto i piedi: " + (tileUnderFeet != null ? tileUnderFeet.getId() : "null") + " at (" + tileCenterX + "," + tileFeetY + ")");
         if (tileUnderFeet != null && tileUnderFeet.getId() == 4) {
             if (feetY % tileSize == 0) {
                 switchToNextMap();
@@ -471,18 +479,31 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         JButton shopButton = new JButton("Shop");
         shopButton.setBackground(Color.YELLOW);
         shopButton.setOpaque(true);
+        shopButton.setFocusable(false);
         shopButton.addActionListener(e -> {
-            ShopPanel shopPanel = new ShopPanel();
+            ShopPanel shopPanel = new ShopPanel(this.combatManager, bald.getWallet());
             JOptionPane.showMessageDialog(this, shopPanel, "Negozio", JOptionPane.PLAIN_MESSAGE);
         });
+
+        // componente “colla” che assorbe lo spazio in più
+        GridBagConstraints fillerGBC = new GridBagConstraints();
+        fillerGBC.gridx   = 0;            // prima colonna
+        fillerGBC.gridy   = 0;            // prima riga
+        fillerGBC.weightx = 1;            // si espande in larghezza
+        fillerGBC.weighty = 1;            // si espande in altezza
+        fillerGBC.fill    = GridBagConstraints.BOTH;   // riempie la cella
+        this.add(Box.createGlue(), fillerGBC);         // puoi usare anche new JPanel()
+
 
         // ➤ AGGIUNGI IL BOTTONE CON LE GBC CORRETTE
         GridBagConstraints shopButtonGBC = new GridBagConstraints();
         shopButtonGBC.gridx = 0;
         shopButtonGBC.gridy = 0;
         shopButtonGBC.insets = new Insets(10, 10, 10, 10);
-        shopButtonGBC.anchor = GridBagConstraints.NORTHWEST;
+        shopButtonGBC.anchor = GridBagConstraints.SOUTH;
         shopButtonGBC.fill = GridBagConstraints.NONE;
+        shopButtonGBC.weightx = 0;
+        shopButtonGBC.weighty = 0;
 
         this.add(shopButton, shopButtonGBC);
     }

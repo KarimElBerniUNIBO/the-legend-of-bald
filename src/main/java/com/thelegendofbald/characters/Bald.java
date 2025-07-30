@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
+import com.thelegendofbald.model.common.Wallet;
 import com.thelegendofbald.model.weapons.Weapon;
 import com.thelegendofbald.view.main.TileMap;
 
@@ -31,6 +32,7 @@ public class Bald extends Entity implements Combatant {
     private BufferedImage image;
     private String path = "/images/bald.png"; // Percorso dell'immagine
     private double speedX = 0.0; // Velocità lungo l'asse X
+    private final Wallet wallet = new Wallet(0);
 
     public double getSpeedX() {
         return speedX;
@@ -38,6 +40,10 @@ public class Bald extends Entity implements Combatant {
 
     public double getSpeedY() {
         return speedY;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
     }
 
     private double speedY = 0.0; // Velocità lungo l'asse Y
