@@ -15,13 +15,13 @@ import com.thelegendofbald.api.mainmenu.Buttons;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.panels.InteractivePanel;
 import com.thelegendofbald.api.panels.Panels;
-import com.thelegendofbald.controller.ui.common.SwitchToOtherPanel;
+import com.thelegendofbald.controller.common.SwitchToOtherPanel;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.main.GameWindow;
 
 final class CenterPanel extends AdapterPanel implements InteractivePanel {
 
-    private static final long serialVersionUID = -5181397653556589255L;
+    private static final long serialVersionUID = 1L;
 
     private static final double BUTTONS_BOTTOM_INSETS_PROPORTION = 0.05;
     private static final double BUTTONS_LEFT_RIGHT_INSETS_PROPORTION = 0.25;
@@ -31,15 +31,21 @@ final class CenterPanel extends AdapterPanel implements InteractivePanel {
 
     private final List<JButton> buttons = this.getListOfButtons();
 
-    CenterPanel(final Dimension size) {
-        super(size);
-        this.setOpaque(false);
+    CenterPanel() {
+        super();
+        this.initialize();
+    }
+
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setOpaque(false);
+            this.setLayout(new GridBagLayout());
+        });
     }
 
     @Override
     protected void initializeComponents() {
         super.initializeComponents();
-        this.setLayout(new GridBagLayout());
         this.connectButtonsWithActionListeners();
         this.updateComponentsSize();
     }

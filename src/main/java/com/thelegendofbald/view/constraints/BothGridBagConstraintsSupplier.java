@@ -16,7 +16,9 @@ public final class BothGridBagConstraintsSupplier implements Supplier<GridBagCon
         return new BothGridBagConstraints();
     }
 
-    private final class BothGridBagConstraints extends GridBagConstraints {
+    private static final class BothGridBagConstraints extends GridBagConstraints {
+
+        private static final long serialVersionUID = 1L;
 
         private BothGridBagConstraints() {
             this.fill = BOTH;

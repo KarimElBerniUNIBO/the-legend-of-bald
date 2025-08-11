@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import com.thelegendofbald.api.game.Game;
 import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.settingsmenu.WindowMode;
@@ -14,14 +15,26 @@ import com.thelegendofbald.api.views.MainView;
 import com.thelegendofbald.api.views.View;
 import com.thelegendofbald.view.game.GamePanel;
 
+/**
+ * The {@code GameWindow} class represents the main window of the game.
+ * It is responsible for displaying the current game panel and managing the game state.
+ */
 public final class GameWindow extends JFrame implements View, MainView {
 
+    private static final long serialVersionUID = 1L;
+
     private static final String TITLE = "The Legend of Bald";
-    private static Dimension internalSize = new Dimension(1280, 704);
+    private static final int DEFAULT_WINDOW_WIDTH = 1280;
+    private static final int DEFAULT_WINDOW_HEIGHT = 704;
 
+    private Dimension internalSize = new Dimension(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
     private Panels currentPanel = Panels.MAIN_MENU;
-    private Optional<Panels> lastPanel = Optional.empty();
+    private transient Optional<Panels> lastPanel = Optional.empty();
 
+    /**
+     * Default constructor for the GameWindow.
+     * Initializes the window with default settings and updates the size of the panels.
+     */
     public GameWindow() {
         super();
         this.updatePanelsSize();
@@ -43,11 +56,11 @@ public final class GameWindow extends JFrame implements View, MainView {
         this.pack();
         this.setLocationByPlatform(true);
         this.setVisible(true);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     @Override
-    public void changeMainPanel(Panels panelEnum) {
+    public void changeMainPanel(final Panels panelEnum) {
         lastPanel = Optional.of(currentPanel);
         currentPanel = panelEnum;
         this.updateView();
@@ -55,24 +68,25 @@ public final class GameWindow extends JFrame implements View, MainView {
 
     @Override
     public void updateView() {
-        MenuPanel panel = currentPanel.getPanel();
+        final MenuPanel panel = currentPanel.getPanel();
         this.setContentPane(panel);
         this.revalidate();
         this.repaint();
         panel.requestFocusInWindow();
         if (panel instanceof GamePanel gamePanel && !gamePanel.isRunning()) {
             gamePanel.startGame(); // <-- solo se è GamePanel
+            gamePanel.requestFocusInWindow();
         }
     }
 
     @Override
-    public Dimension getInternalSize() {
-        return internalSize;
+    public synchronized Dimension getInternalSize() {
+        return (Dimension) internalSize.clone();
     }
 
     @Override
-    public void setInternalSize(Dimension size) {
-        GameWindow.internalSize = size;
+    public synchronized void setInternalSize(final Dimension size) {
+        internalSize = (Dimension) size.clone();
         this.updatePanelsSize();
     }
 
@@ -87,9 +101,8 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     @Override
-    public void setWindowMode(WindowMode windowMode) {
+    public void setWindowMode(final WindowMode windowMode) {
         Optional.ofNullable(windowMode).ifPresent(mode -> {
-            System.out.println("Setting window mode to: " + mode.getText());
             this.dispose();
             switch (mode) {
                 case FULLSCREEN -> {
@@ -112,16 +125,21 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     @Override
-    public void setFPS(int fps) {
-        System.out.println("Setting FPS to: " + fps);
-        ((GamePanel) Panels.GAME_MENU.getPanel()).setFPS(fps);
-        // TODO: Implement FPS setting logic in GamePanel
+    public void setFPS(final int fps) {
+        final Game game = (Game) Panels.GAME_MENU.getPanel();
+        game.setFPS(fps);
     }
 
     @Override
-    public void toggleViewFps(boolean showFPS) {
-        System.out.println("Setting show FPS to: " + showFPS);
-        // TODO: Implement FPS display toggle
+    public void toggleViewFps(final boolean showFPS) {
+        final Game game = (Game) Panels.GAME_MENU.getPanel();
+        game.setShowingFPS(showFPS);
+    }
+
+    @Override
+    public void toggleViewTimer(final boolean showTimer) {
+        final GamePanel game = (GamePanel) Panels.GAME_MENU.getPanel();
+        game.setShowingTimer(showTimer);
     }
 
 }

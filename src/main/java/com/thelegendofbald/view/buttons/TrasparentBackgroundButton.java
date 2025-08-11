@@ -8,7 +8,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.buttons.TemplateButton;
-import com.thelegendofbald.controller.ui.listeners.TrasparentBackgroundButtonMouseListener;
+import com.thelegendofbald.controller.listeners.buttons.TrasparentBackgroundButtonMouseListener;
 
 /**
  * A custom button with a transparent background and selectable foreground
@@ -30,7 +30,7 @@ import com.thelegendofbald.controller.ui.listeners.TrasparentBackgroundButtonMou
  */
 public class TrasparentBackgroundButton extends TemplateButton {
 
-    private static final long serialVersionUID = -2907106289164271578L;
+    private static final long serialVersionUID = 1L;
 
     private final Color buttonFGColor;
     private final Color buttonFGSelectedColor;

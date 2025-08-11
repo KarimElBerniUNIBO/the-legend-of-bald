@@ -56,9 +56,8 @@ public final class SoundPlayer {
             clip = Optional.of(AudioSystem.getClip());
             clip.get().open(audioStream);
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
-            // TODO Handle exception
             // TODO Log exception
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -75,7 +74,7 @@ public final class SoundPlayer {
             clip.get().start();
         }
     }
-    
+
     /**
      * Sets the volume of the audio clip.
      * <p>
@@ -85,16 +84,17 @@ public final class SoundPlayer {
      * is thrown.
      *
      * @param volume the desired volume level, a float between 0 and 1
-     * @throws IllegalArgumentException if the provided volume is not between 0 and 1
+     * @throws IllegalArgumentException if the provided volume is not between 0 and
+     *                                  1
      */
-    public void setVolume(float volume) {
+    public void setVolume(final float volume) {
         if (volume < 0 || volume > 1) {
             throw new IllegalArgumentException("Volume must be between 0 and 1");
         }
         clip.filter(c -> c.isControlSupported(FloatControl.Type.MASTER_GAIN))
                 .ifPresent(c -> {
-                    FloatControl gain = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
-                    float dB = (float) (20 * Math.log10(volume)); // Fomula to convert linear volume to dB
+                    final FloatControl gain = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
+                    final float dB = (float) (20 * Math.log10(volume)); // Fomula to convert linear volume to dB
                     gain.setValue(dB);
                 });
     }

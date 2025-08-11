@@ -15,11 +15,27 @@ import com.thelegendofbald.view.common.CustomSlider;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * Enum representing video settings in the application.
+ * Each setting is associated with a specific UI component for user interaction.
+ */
 public enum VideoSettings implements SettingOption {
-
+    /**
+     * Represents the window mode setting.
+     */
     WINDOW_MODE("WINDOW MODE", createWindowModeComboBox()),
+    /**
+     * Represents the framerate setting.
+     */
     FPS("FRAMERATE PER SECOND", createFPSSlider()),
-    SHOW_FPS("SHOW FPS", createShowFPSCheckBox());
+    /**
+     * Represents the show FPS setting.
+     */
+    SHOW_FPS("SHOW FPS", createShowFPSCheckBox()),
+    /**
+     * Represents the show timer setting.
+     */
+    SHOW_TIMER("SHOW TIMER", createShowTimerCheckBox());
 
     private final String text;
     private final JComponent jcomponent;
@@ -34,19 +50,47 @@ public enum VideoSettings implements SettingOption {
         return this.text;
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "JComponent must be mutable for UI interaction; safe in enum context.")
     @Override
-    public JComponent getJcomponent() {
+    public Object getValue() {
+        switch (this.jcomponent) {
+            case CustomComboBox<?> combobox -> {
+                return combobox.getSelectedItem();
+            }
+            case CustomSlider slider -> {
+                return slider.getValue();
+            }
+            case CustomCheckBox checkbox -> {
+                return checkbox.isSelected();
+            }
+            default -> {
+                throw new IllegalStateException("Unexpected component type: " + this.jcomponent.getClass().getName());
+            }
+        }
+    }
+
+    /**
+     * Returns the {@link JComponent} associated with this video setting.
+     * <b>Note:</b> The component should not be modified externally as it is
+     * intended for UI purposes only.
+     *
+     * @return the JComponent for this video setting
+     */
+    @SuppressFBWarnings(
+        value = "EI",
+        justification = "This method is intended to return a UI component for display purposes only."
+    )
+    @Override
+    public JComponent getJComponent() {
         return this.jcomponent;
     }
 
     private static JComboBox<WindowMode> createWindowModeComboBox() {
-        var comboBox = new CustomComboBox<>(Arrays.asList(WindowMode.values()));
+        final var comboBox = new CustomComboBox<>(Arrays.asList(WindowMode.values()));
         comboBox.setSelectedItem(WindowMode.WINDOW);
         comboBox.addActionListener(e -> {
-            var selectedMode = (WindowMode) comboBox.getSelectedItem();
+            final var selectedMode = (WindowMode) comboBox.getSelectedItem();
             if (Optional.ofNullable(selectedMode).isPresent() && selectedMode != comboBox.getLastSelectedItem()) {
-                var window = (MainView) SwingUtilities.getWindowAncestor(comboBox);
+                final var window = (MainView) SwingUtilities.getWindowAncestor(comboBox);
                 window.setWindowMode(selectedMode);
                 comboBox.setLastSelectedItem(selectedMode);
             }
@@ -55,13 +99,13 @@ public enum VideoSettings implements SettingOption {
     }
 
     private static CustomSlider createFPSSlider() {
-        var customSlider = new CustomSlider(JSlider.HORIZONTAL, 30, 144, 60);
-        var slider = customSlider.getSlider();
+        final var customSlider = new CustomSlider(JSlider.HORIZONTAL, 30, 144, 60);
+        final var slider = customSlider.getSlider();
 
         slider.addChangeListener(e -> {
             if (!slider.getValueIsAdjusting()
                     && customSlider.getLastValue() != customSlider.getValue()) {
-                var window = (MainView) SwingUtilities.getWindowAncestor(customSlider);
+                final var window = (MainView) SwingUtilities.getWindowAncestor(customSlider);
                 window.setFPS(slider.getValue());
                 customSlider.setLastValue(slider.getValue());
             }
@@ -71,11 +115,22 @@ public enum VideoSettings implements SettingOption {
     }
 
     private static CustomCheckBox createShowFPSCheckBox() {
-        var checkBox = new CustomCheckBox();
+        final var checkBox = new CustomCheckBox();
         checkBox.addActionListener(e -> {
-            boolean isSelected = checkBox.isSelected();
-            var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
+            final boolean isSelected = checkBox.isSelected();
+            final var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
             window.toggleViewFps(isSelected);
+        });
+        return checkBox;
+    }
+
+    private static CustomCheckBox createShowTimerCheckBox() {
+        final var checkBox = new CustomCheckBox();
+        checkBox.setSelected(true);
+        checkBox.addActionListener(e -> {
+            final boolean isSelected = checkBox.isSelected();
+            final var window = (MainView) SwingUtilities.getWindowAncestor(checkBox);
+            window.toggleViewTimer(isSelected);
         });
         return checkBox;
     }

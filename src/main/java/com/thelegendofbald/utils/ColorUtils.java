@@ -17,13 +17,13 @@ public final class ColorUtils {
     }
 
     /**
-     * Returns a new {@link Color} that is a darkened version of the specified color.
-     * The darkness is determined by multiplying each RGB component by the given factor.
+     * Returns a darker version of the specified {@link Color} by multiplying each RGB component
+     * by the given darkness factor. The resulting color components are clamped to the range [0, 255].
      *
-     * @param color the original {@link Color} to darken
-     * @param factorOfDarkness the factor by which to darken the color (should be between 0.0 and 1.0)
-     * @return a new {@link Color} with each RGB component scaled by the factorOfDarkness
-     * @throws IllegalArgumentException if color is null or if the resulting RGB values are out of range
+     * @param color the original color to darken; must not be {@code null}
+     * @param factorOfDarkness the factor by which to decrease brightness; must be between 0.0 and 1.0 (exclusive)
+     * @throws IllegalArgumentException if {@code color} is {@code null} or if {@code factorOfDarkness} is not in (0.0, 1.0]
+     * @return a new {@link Color} object that is a darker version of the input color
      */
     public static Color getDarkenColor(final Color color, final double factorOfDarkness) {
         if (Optional.ofNullable(color).isEmpty()) {
@@ -37,17 +37,17 @@ public final class ColorUtils {
         final int green = Math.max(0, Math.min(255, (int) (color.getGreen() * factorOfDarkness)));
         final int blue = Math.max(0, Math.min(255, (int) (color.getBlue() * factorOfDarkness)));
 
-        return new Color(red, green, blue);
+        return new Color(red, green, blue, color.getAlpha());
     }
 
     /**
-     * Returns a brighter version of the specified {@link Color} by dividing each RGB component
-     * by the given brightness factor. The resulting color components are clamped to the range [0, 255].
-     *
+     * Reutns a brighter version of the specified {@link Color} by dividing each RGB component
+     * by the given factor of brightness. The resulting color components are clamped to the range [0, 255].
+     * 
      * @param color the original color to brighten; must not be {@code null}
      * @param factorOfBrightness the factor by which to increase brightness; must be between 0.0 and 1.0 (exclusive)
-     * @return a new {@link Color} object that is a brighter version of the input color
      * @throws IllegalArgumentException if {@code color} is {@code null} or if {@code factorOfBrightness} is not in (0.0, 1.0]
+     * @return a new {@link Color} object that is a brighter version of the input color
      */
     public static Color getBrightenColor(final Color color, final double factorOfBrightness) {
         if (Optional.ofNullable(color).isEmpty()) {
@@ -61,7 +61,7 @@ public final class ColorUtils {
         final int green = Math.max(0, Math.min(255, (int) (color.getGreen() / factorOfBrightness)));
         final int blue = Math.max(0, Math.min(255, (int) (color.getBlue() / factorOfBrightness)));
 
-        return new Color(red, green, blue);
+        return new Color(red, green, blue, color.getAlpha());
     }
 
 }

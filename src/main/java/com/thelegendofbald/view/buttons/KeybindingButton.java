@@ -7,8 +7,8 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.thelegendofbald.controller.ui.listeners.KeybindingButtonKeyListener;
-import com.thelegendofbald.controller.ui.listeners.KeybindingButtonMouseListener;
+import com.thelegendofbald.controller.listeners.buttons.KeybindingButtonKeyListener;
+import com.thelegendofbald.controller.listeners.buttons.KeybindingButtonMouseListener;
 
 /**
  * A custom button component for keybinding settings in the UI.
@@ -33,6 +33,8 @@ import com.thelegendofbald.controller.ui.listeners.KeybindingButtonMouseListener
  * @see RoundedButton
  */
 public class KeybindingButton extends RoundedButton {
+
+    private static final long serialVersionUID = 1L;
 
     private volatile boolean changing;
 

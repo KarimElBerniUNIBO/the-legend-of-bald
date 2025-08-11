@@ -9,8 +9,8 @@ import javax.swing.SwingUtilities;
 import com.thelegendofbald.api.common.Resizable;
 import com.thelegendofbald.api.views.MenuView;
 import com.thelegendofbald.api.views.View;
-import com.thelegendofbald.controller.ui.listeners.ResizeListener;
-import com.thelegendofbald.controller.ui.listeners.TemplateButtonMouseListener;
+import com.thelegendofbald.controller.listeners.common.ResizeListener;
+import com.thelegendofbald.controller.listeners.common.TemplateInteractiveComponentMouseListener;
 import com.thelegendofbald.utils.ImageUtils;
 
 /**
@@ -32,9 +32,9 @@ import com.thelegendofbald.utils.ImageUtils;
  * </ul>
  * </p>
  */
-public class CustomCheckBox extends JCheckBox implements View, MenuView, Resizable {
+public final class CustomCheckBox extends JCheckBox implements View, MenuView, Resizable {
 
-    private static final long serialVersionUID = -4778828542519168670L;
+    private static final long serialVersionUID = 1L;
 
     private static final double HEIGHT_PROPORTION = 0.85;
 
@@ -56,7 +56,7 @@ public class CustomCheckBox extends JCheckBox implements View, MenuView, Resizab
      * content
      * both horizontally and vertically. It also adds a {@link ResizeListener} to
      * handle
-     * resize events and a {@link TemplateButtonMouseListener} to handle mouse
+     * resize events and a {@link TemplateInteractiveComponentMouseListener} to handle mouse
      * interactions.
      */
     public CustomCheckBox() {
@@ -70,7 +70,7 @@ public class CustomCheckBox extends JCheckBox implements View, MenuView, Resizab
             this.setHorizontalAlignment(CENTER);
             this.setVerticalAlignment(CENTER);
             this.addComponentListener(new ResizeListener(this::onResize));
-            this.addMouseListener(new TemplateButtonMouseListener() {
+            this.addMouseListener(new TemplateInteractiveComponentMouseListener() {
             });
         });
     }

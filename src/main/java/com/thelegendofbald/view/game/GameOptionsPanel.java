@@ -15,32 +15,43 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.common.TextLabelFactory;
-import com.thelegendofbald.api.game.Buttons;
+import com.thelegendofbald.api.game.Game;
+import com.thelegendofbald.api.game_options.Buttons;
 import com.thelegendofbald.api.panels.AdapterPanel;
-import com.thelegendofbald.controller.ui.common.SwitchToOtherPanel;
+import com.thelegendofbald.controller.common.SwitchToOtherPanel;
 import com.thelegendofbald.view.common.TextLabel;
 import com.thelegendofbald.view.common.TextLabelFactoryImpl;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.main.GameWindow;
 
+/**
+ * The {@code GameOptionsPanel} class represents the options panel in the game.
+ * It provides buttons for various game options and handles their actions.
+ */
 public final class GameOptionsPanel extends AdapterPanel {
 
-    private static final Color DEFAULT_BG_COLOR = new Color(0, 0, 0, 150);
+    private static final long serialVersionUID = 1L;
+
+    private static final Color DEFAULT_BG_COLOR = new Color(0, 0, 0, 180);
     private static final Pair<Double, Double> TITLE_PROPORTION = Pair.of(1.0, 0.3);
 
     private static final double WIDTH_INSETS = 0.1;
     private static final double HEIGHT_INSETS = 0.05;
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
 
-    private final TextLabelFactory tlFactory = new TextLabelFactoryImpl();
-    private Optional<TextLabel> title;
+    private final transient TextLabelFactory tlFactory = new TextLabelFactoryImpl();
+    private transient Optional<TextLabel> title = Optional.empty();
 
     private final List<JButton> buttons = this.getButtonsList();
 
-    public GameOptionsPanel(final Dimension size) {
-        super(new Dimension(0, 0));
+    /**
+     * Constructs a new {@code GameOptionsPanel} instance.
+     * Initializes the panel with a grid bag layout and sets its visibility to false.
+     */
+    public GameOptionsPanel() {
+        super();
         this.setLayout(new GridBagLayout());
         this.setVisible(false);
         SwingUtilities.invokeLater(() -> this.setBackground(DEFAULT_BG_COLOR));
@@ -69,7 +80,7 @@ public final class GameOptionsPanel extends AdapterPanel {
                                         new SwitchToOtherPanel((GameWindow) SwingUtilities.getWindowAncestor(this),
                                                 panel).actionPerformed(e);
                                         if (enumButton == Buttons.LEAVE) {
-                                            ((GamePanel) this.getParent()).stopGame();
+                                            ((Game) this.getParent()).stopGame();
                                             this.setVisible(false);
                                         }
                                     }),

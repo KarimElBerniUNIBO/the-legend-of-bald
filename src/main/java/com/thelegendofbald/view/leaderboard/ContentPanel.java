@@ -1,40 +1,92 @@
 package com.thelegendofbald.view.leaderboard;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import javax.swing.SwingUtilities;
+
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
+import com.thelegendofbald.model.common.DataManager;
+import com.thelegendofbald.model.common.GameRun;
+import com.thelegendofbald.model.common.Timer.TimeData;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 final class ContentPanel extends AdapterPanel {
 
+    private static final double BOTTOM_PADDING = 0.01;
+
+    private static final long serialVersionUID = 1L;
+
     private static final int MAX_PLAYERS = 10;
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
-    private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
-    
-    private final List<PlayerTimePanel> players = new ArrayList<>(MAX_PLAYERS);
+    private static final Color GOLD_COLOR = new Color(255, 215, 0);
+    private static final Color SILVER_COLOR = new Color(192, 192, 192);
+    private static final Color BRONZE_COLOR = new Color(205, 127, 50);
+    private static final Color DEFAULT_COLOR = new Color(80, 80, 80);
 
-    ContentPanel(final Dimension size) {
-        super(size);
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private final GridBagConstraints gbc = gbcFactory.createBothGridBagConstraints();
+
+    private final List<PlayerTimePanel> players = new ArrayList<>(MAX_PLAYERS);
+    private final transient DataManager dataManager = new DataManager();
+
+    ContentPanel() {
+        super();
     }
 
     @Override
     protected void initializeComponents() {
         this.setLayout(new GridBagLayout());
-        players.addAll(this.getPlayersList());
+        players.clear();
+        this.setPlayersListFromData();
+        this.applyRankingColors(players);
         super.initializeComponents();
     }
 
-    private List<PlayerTimePanel> getPlayersList() {
-        return Stream.iterate(0, i -> i < MAX_PLAYERS, i -> i + 1)
-                .map(i -> new PlayerTimePanel())
-                .toList();
+    private void applyRankingColors(final List<PlayerTimePanel> players) {
+        players.forEach(p -> {
+            final int index = players.indexOf(p);
+            switch (index) {
+                case 0 -> SwingUtilities.invokeLater(() -> p.setBackground(GOLD_COLOR));
+                case 1 -> SwingUtilities.invokeLater(() -> p.setBackground(SILVER_COLOR));
+                case 2 -> SwingUtilities.invokeLater(() -> p.setBackground(BRONZE_COLOR));
+                default -> SwingUtilities.invokeLater(() -> p.setBackground(DEFAULT_COLOR));
+            }
+        });
+
+    }
+
+    private void setPlayersListFromData() {
+        final List<GameRun> gameRuns = dataManager.loadGameRuns();
+        gameRuns.sort(Comparator.comparing(GameRun::timedata, this::compareTimeData));
+
+        players.addAll(
+                Stream.concat(
+                        gameRuns.stream()
+                                .limit(MAX_PLAYERS)
+                                .map(run -> new PlayerTimePanel(run.name(), run.timedata().toString())),
+                        Stream.generate(() -> new PlayerTimePanel("???", "hh:mm:ss"))
+                                .limit(Math.max(0, MAX_PLAYERS - gameRuns.size())))
+                .toList());
+    }
+
+    private int compareTimeData(final TimeData t1, final TimeData t2) {
+        final int h = Integer.compare(t1.hours(), t2.hours());
+        if (h != 0) {
+            return h;
+        }
+        final int m = Integer.compare(t1.minutes(), t2.minutes());
+        if (m != 0) {
+            return m;
+        }
+        return Integer.compare(t1.seconds(), t2.seconds());
     }
 
     @Override
@@ -42,7 +94,7 @@ final class ContentPanel extends AdapterPanel {
         this.players.forEach(player -> {
             player.setPreferredSize(this.getSize());
         });
-        this.gbc.insets.set(0, 0, (int) (this.getHeight() * 0.01), 0);
+        this.gbc.insets.set(0, 0, (int) (this.getHeight() * BOTTOM_PADDING), 0);
     }
 
     @Override
@@ -56,7 +108,7 @@ final class ContentPanel extends AdapterPanel {
 
     @Override
     public void setPreferredSize(final Dimension size) {
-        var preferredSize = new Dimension((int) size.getWidth(), (int) (size.getHeight() * 2.25));
+        final var preferredSize = new Dimension((int) size.getWidth(), (int) (size.getHeight() * 2.25));
         super.setPreferredSize(preferredSize);
     }
 

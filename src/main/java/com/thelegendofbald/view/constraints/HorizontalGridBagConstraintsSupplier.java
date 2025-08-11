@@ -19,7 +19,9 @@ public final class HorizontalGridBagConstraintsSupplier implements Supplier<Grid
         return new HorizontalGridBagConstraints();
     }
 
-    private final class HorizontalGridBagConstraints extends GridBagConstraints {
+    private static final class HorizontalGridBagConstraints extends GridBagConstraints {
+
+        private static final long serialVersionUID = 1L;
 
         private HorizontalGridBagConstraints() {
             this.fill = HORIZONTAL;

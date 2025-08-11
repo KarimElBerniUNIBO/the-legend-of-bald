@@ -2,75 +2,188 @@ package com.thelegendofbald.view.game;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Arc2D;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.Box;
 import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
+import com.thelegendofbald.api.game.Game;
+import com.thelegendofbald.api.inventory.Inventory;
+import com.thelegendofbald.api.panels.LifePanel;
 import com.thelegendofbald.api.panels.MenuPanel;
+import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
-import com.thelegendofbald.view.common.CustomSlider;
+import com.thelegendofbald.combat.Combatant;
+import com.thelegendofbald.combat.projectile.Projectile;
+import com.thelegendofbald.item.weapons.Axe;
+import com.thelegendofbald.item.weapons.FireBall;
+import com.thelegendofbald.item.weapons.Sword;
+import com.thelegendofbald.model.combat.CombatManager;
+import com.thelegendofbald.model.common.DataManager;
+import com.thelegendofbald.model.common.GameRun;
+import com.thelegendofbald.model.common.Timer;
+import com.thelegendofbald.model.common.Timer.TimeData;
+import com.thelegendofbald.model.weapons.MeleeWeapon;
+import com.thelegendofbald.model.weapons.Weapon;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
+import com.thelegendofbald.view.inventory.InventoryPanel;
 import com.thelegendofbald.view.main.GameWindow;
 import com.thelegendofbald.view.main.GridPanel;
+import com.thelegendofbald.view.main.ShopPanel;
+import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
-public class GamePanel extends MenuPanel implements Runnable {
+public class GamePanel extends MenuPanel implements Runnable, Game {
+
+    private static final long serialVersionUID = 1L;
 
     private static final double OPTIONS_WIDTH_INSETS = 0.25;
     private static final double OPTIONS_HEIGHT_INSETS = 0.1;
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private static final double INVENTORY_WIDTH_INSETS = 0.25;
+    private static final double INVENTORY_HEIGHT_INSETS = 0.25;
+
+    private static final Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 20);
+
+    private static final Pair<Integer, Integer> FPS_POSITION = Pair.of(15, 25);
+    private static final Pair<Integer, Integer> TIMER_POSITION = Pair.of(1085, 25);
+
+    private static final Color ATTACK_AREA_COLOR = new Color(200, 200, 200, 100);
+
+    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints optionsGBC = gbcFactory.createBothGridBagConstraints();
+    private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
 
-    private final Bald bald = new Bald(60, 60, 100, "Bald", 50);
-    private final DummyEnemy dummyenemy = new DummyEnemy(500, 200, 50, "ZioBilly", 50);
+    private transient final Bald bald = new Bald(60, 60, 100, "Bald", 50);
+
+    private String currentMapName = "map_1";
     private final GridPanel gridPanel;
-    private final TileMap tileMap;
+    private transient final TileMap tileMap;
+    private final LifePanel lifePanel;
+    private transient List<DummyEnemy> enemies = new ArrayList<>();
     private final JPanel optionsPanel;
+    private transient final Timer timer = new Timer();
+    private transient GameRun gameRun;
+    private transient final CombatManager combatManager;
+    private transient final DataManager saveDataManager = new DataManager();
 
-    private Thread gameThread;
-    private boolean paused = false;
-    private boolean running = false;
-    private int fps = ((CustomSlider) VideoSettings.FPS.getJcomponent()).getValue();
+    private final JPanel inventoryPanel;
+    private transient final Inventory inventory;
+
+    private int num_enemies = 3;
+
+    private transient Thread gameThread;
+    private volatile boolean running = false;
+
+    private volatile int maxFPS = (int) VideoSettings.FPS.getValue();
+    private volatile boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
+    private volatile int currentFPS = 0;
+    private volatile boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
 
     public GamePanel() {
         super();
         Dimension size = new Dimension(1280, 704);
-        // this.setPreferredSize(size);
-        this.setBackground(Color.BLACK);
-        this.setFocusable(true);
-        this.setLayout(new GridBagLayout());
 
         this.gridPanel = new GridPanel();
         this.gridPanel.setOpaque(false);
         this.gridPanel.setBounds(0, 0, size.width, size.height);
 
-        this.optionsPanel = new GameOptionsPanel(size);
+        this.lifePanel = new LifePanel(new Dimension(200,20), bald.getLifeComponent());
+        this.lifePanel.setBounds(100, 800, 200,20);
 
-        this.tileMap = new TileMap(size.width, size.height);
-        this.requestFocusInWindow();
+        this.optionsPanel = new GameOptionsPanel();
+        this.inventoryPanel = new InventoryPanel("INVENTORY", 5, 3);
+        this.inventory = ((InventoryPanel) this.inventoryPanel).getInventory();
+        this.inventory.setBald(bald);
+
+        this.tileMap = new TileMap(size.width, size.height, 32);
+
+        this.combatManager = new CombatManager(bald, enemies);
+        this.bald.setWeapon(new FireBall(0, 0, 50, 50, combatManager));
+
+        /*JButton shopButton = new JButton("Shop");
+        shopButton.setBounds(100, 100, 120, 40);
+        shopButton.setVisible(true);
+        shopButton.setBackground(Color.YELLOW);
+        shopButton.setOpaque(true);
+        shopButton.addActionListener(e -> {
+            ShopPanel shopPanel = new ShopPanel();
+            JOptionPane.showMessageDialog(this, shopPanel, "Negozio", JOptionPane.PLAIN_MESSAGE);
+        });
+        this.add(shopButton);*/
+
+        tileMap.changeMap("map_1");
+        bald.setTileMap(tileMap);
+
+        Point spawnPoint = tileMap.findSpawnPoint(5);
+        if (spawnPoint != null) {
+            int tileSize = tileMap.TILE_SIZE;
+            bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
+            bald.setY(spawnPoint.y - bald.getHeight());
+        }
+
+        this.addWeaponsToInventory();
+
+        for (int i = 0 ; i < num_enemies ; i++) {
+            enemies.add(new DummyEnemy(ThreadLocalRandom.current().nextInt(300, 1000), // x
+                                       ThreadLocalRandom.current().nextInt(300, 600),  // y
+                                       60, "ZioBilly", 10));
+        }
 
         setupKeyBindings();
-        // this.startGame();
+        this.initialize();
 
-        SwingUtilities.invokeLater(() -> this.requestFocusInWindow());
+
+    }
+
+
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setBackground(Color.BLACK);
+            this.setFocusable(true);
+            this.setLayout(new GridBagLayout());
+
+
+
+        });
+    }
+
+
+    private void addWeaponsToInventory() {
+        List<Weapon> weapons = List.of(new FireBall(0, 0, 50, 50, combatManager),
+                                       new Sword(0, 0, 50, 50, combatManager),
+                                       new Axe(0, 0, 50, 50, combatManager));
+
+        weapons.forEach(inventory::add);
     }
 
     private void setupKeyBindings() {
@@ -89,6 +202,7 @@ public class GamePanel extends MenuPanel implements Runnable {
                 openOptionsPanel();
             }
         });
+        bindKey(im, am, "pressed SPACE", ControlsSettings.ATTACK.getKey(), true, combatManager::tryToAttack);
 
         // Tasti rilasciati
         bindKey(im, am, "released UP", KeyEvent.VK_UP, false, () -> pressedKeys.remove(KeyEvent.VK_UP));
@@ -122,6 +236,10 @@ public class GamePanel extends MenuPanel implements Runnable {
         if (pressedKeys.contains(KeyEvent.VK_DOWN))
             dy += 1;
 
+        if (pressedKeys.contains(ControlsSettings.ATTACK.getKey())) {
+            combatManager.tryToAttack();
+        }
+
         // Normalizza il vettore per garantire velocità costante
         double magnitude = Math.hypot(dx, dy); // meglio di sqrt(x^2 + y^2)
         if (magnitude > 0) {
@@ -129,29 +247,56 @@ public class GamePanel extends MenuPanel implements Runnable {
             dy = (dy / magnitude) * MOVE_SPEED;
         }
 
+        if (dx > 0) {
+            bald.setFacingRight(true);
+        } else if (dx < 0) {
+            bald.setFacingRight(false);
+        }
+
         bald.setSpeedX(dx);
         bald.setSpeedY(dy);
     }
 
-    public boolean isRunning() {
-        return running;
+
+    boolean intersects(Combatant e1, Combatant e2) {
+        return e1.getBounds().intersects(e2.getBounds());
     }
 
+    public GameRun getGameRun() {
+        return gameRun;
+    }
+
+    private void setPlayerName() {
+        String nickname = "";
+
+        // TODO: Mettere in pausa il gioco e mostrare un dialogo per inserire il nome
+
+        while (Optional.ofNullable(nickname).isEmpty() || nickname.isBlank()) {
+            nickname = javax.swing.JOptionPane.showInputDialog("Enter your nickname:");
+        }
+        gameRun = new GameRun(nickname, timer.getFormattedTime());
+
+        // TODO: Continua il gioco
+    }
+
+    @Override
     public void startGame() {
-        if (!running) {
-            running = true;
-            gameThread = new Thread(this);
-            gameThread.start();
-        }
+        gameThread = new Thread(this);
+        gameThread.start();
+        timer.start();
+        this.setPlayerName();
     }
 
-    public void stopGame() {
-        running = false;
-        if (gameThread != null) {
-            gameThread.interrupt();
-            gameThread = null;
+    @Override
+    public void finishGame() {
+        gameRun = new GameRun(gameRun.name(), timer.getFormattedTime());
+        try {
+            saveDataManager.saveGameRun(gameRun);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        this.paused = false; //Reset pausa
+
+        this.stopGame();
     }
 
     @Override
@@ -159,6 +304,11 @@ public class GamePanel extends MenuPanel implements Runnable {
         System.out.println("Game loop started!");
 
         long lastTime = System.nanoTime();
+
+        double interval = 0;
+        int drawCount = 0;
+        long updateInterval = 0;
+        double delta = 0;
 
         while (gameThread != null) {
             
@@ -180,30 +330,126 @@ public class GamePanel extends MenuPanel implements Runnable {
         }
     }
 
-    private void update(double deltaTime) {
 
+
+    private void update() {
         handleInput();
-        bald.move(tileMap, deltaTime);
-        dummyenemy.followPlayer(bald, tileMap, deltaTime);
-        dummyenemy.updateAnimation();
+        bald.updateAnimation();
+        bald.move();
+
+        int baldX = bald.getX();
+        int baldY = bald.getY();
+        int baldW = bald.getWidth();
+        int baldH = bald.getHeight();
+        int tileSize = tileMap.TILE_SIZE;
+
+        // Calcola la posizione dei piedi di Bald
+        int feetY = baldY + baldH;
+        int tileFeetY = feetY / tileSize;
+        int tileCenterX = (baldX + baldW / 2) / tileSize;
+
+        // --- LOGICA CAMBIO MAPPA ---
+        Tile tileUnderFeet = tileMap.getTileAt(tileCenterX, tileFeetY);
+        if (tileUnderFeet != null && tileUnderFeet.getId() == 4) {
+            if (feetY % tileSize == 0) {
+                switchToNextMap();
+                return;
+            }
+        }
+        combatManager.checkEnemyAttacks();
+
+        enemies.removeIf(enemy -> !enemy.isAlive());
+        enemies.forEach(enemy -> {
+            if(enemy.isCloseTo(bald)){
+                enemy.followPlayer(bald);
+                enemy.updateAnimation();
+            }
+
+        });
+
+        combatManager.getProjectiles().forEach(Projectile::move);
+        combatManager.checkProjectiles();
+
         repaint();
+    }
+
+    public void changeMap(String mapName) {
+        currentMapName = mapName;
+        tileMap.changeMap(mapName);
+        bald.setTileMap(tileMap);
+
+        Point spawnPoint = tileMap.findSpawnPoint(5);
+        if (spawnPoint != null) {
+            int tileSize = tileMap.TILE_SIZE;
+            bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
+            bald.setY(spawnPoint.y + tileSize - bald.getHeight());
+        } else {
+            System.out.println("Spawn point not found!");
+        }
+    }
+
+    private void switchToNextMap() {
+        if (currentMapName.equals("map_1")) {
+            changeMap("map_2");
+        } else if (currentMapName.equals("map_2")) {
+            changeMap("map_3");
+        } else {
+            System.out.println("Nessuna mappa successiva definita.");
+        }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
         Graphics2D g2d = (Graphics2D) g.create();
-        this.scaleGraphics(g2d);
+        super.paintComponent(g2d);
 
-        tileMap.render(g2d);
+        this.scaleGraphics(g2d);
+        tileMap.paint(g2d);
         gridPanel.paintComponent(g2d);
         bald.render(g2d);
-        dummyenemy.render(g2d);
+        enemies.forEach(enemy -> enemy.render(g2d));
+        this.combatManager.getProjectiles().forEach(p -> p.render(g2d));   
+        this.lifePanel.paintComponent(g2d);
+        this.drawFPS(g2d);
+        this.drawTimer(g2d);
+        this.drawAttackArea(g2d);
 
-        g2d.setColor(new Color(255, 0, 0, 100)); // Rosso semi-trasparente
-        g2d.draw(bald.getHitbox());
         g2d.dispose();
+    }
+
+    private void drawAttackArea(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        
+        bald.getWeapon().ifPresent(weapon -> {
+            if (bald.isAttacking() && weapon instanceof MeleeWeapon) {
+                Arc2D attackArea = ((MeleeWeapon) weapon).getAttackArea();
+                Optional.ofNullable(attackArea).ifPresent(atk -> {
+                    g2d.setColor(ATTACK_AREA_COLOR);
+                    g2d.fill(atk);
+                });
+            }
+        });
+    }
+
+    private void drawFPS(Graphics g) {
+        if (showingFPS) {
+            g.setColor(Color.YELLOW);
+            g.setFont(DEFAULT_FONT);
+            g.drawString("FPS: " + currentFPS, FPS_POSITION.getLeft(), FPS_POSITION.getRight());
+        }
+    }
+
+    private void drawTimer(Graphics g) {
+        if (showingTimer) {
+            TimeData timeData = timer.getFormattedTime();
+
+            g.setColor(Color.WHITE);
+            g.setFont(DEFAULT_FONT);
+
+            g.drawString(
+                    String.format("Timer: %02d:%02d:%02d", timeData.hours(), timeData.minutes(), timeData.seconds()),
+                    TIMER_POSITION.getLeft(), TIMER_POSITION.getRight());
+        }
     }
 
     private void scaleGraphics(Graphics g) {
@@ -222,17 +468,82 @@ public class GamePanel extends MenuPanel implements Runnable {
         optionsGBC.insets.set((int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
                 (int) (this.getWidth() * OPTIONS_WIDTH_INSETS), (int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
                 (int) (this.getWidth() * OPTIONS_WIDTH_INSETS));
+        inventoryGBC.insets.set((int) (this.getHeight() * INVENTORY_HEIGHT_INSETS),
+                (int) (this.getWidth() * INVENTORY_WIDTH_INSETS), (int) (this.getHeight() * INVENTORY_HEIGHT_INSETS),
+                (int) (this.getWidth() * INVENTORY_WIDTH_INSETS));
     }
 
     @Override
     public void addComponentsToPanel() {
         this.updateComponentsSize();
-        this.add(gridPanel);
+        //this.add(gridPanel);
         this.add(optionsPanel, optionsGBC);
+        this.add(inventoryPanel, inventoryGBC);
+
+
+        // ➤ CREA QUI IL BOTTONE
+        JButton shopButton = new JButton("Shop");
+        shopButton.setBackground(Color.YELLOW);
+        shopButton.setOpaque(true);
+        shopButton.setFocusable(false);
+        shopButton.addActionListener(e -> {
+            ShopPanel shopPanel = new ShopPanel(this.combatManager, bald.getWallet());
+            JOptionPane.showMessageDialog(this, shopPanel, "Negozio", JOptionPane.PLAIN_MESSAGE);
+        });
+
+        // componente “colla” che assorbe lo spazio in più
+        GridBagConstraints fillerGBC = new GridBagConstraints();
+        fillerGBC.gridx   = 0;            // prima colonna
+        fillerGBC.gridy   = 0;            // prima riga
+        fillerGBC.weightx = 1;            // si espande in larghezza
+        fillerGBC.weighty = 1;            // si espande in altezza
+        fillerGBC.fill    = GridBagConstraints.BOTH;   // riempie la cella
+        this.add(Box.createGlue(), fillerGBC);         // puoi usare anche new JPanel()
+
+
+        // ➤ AGGIUNGI IL BOTTONE CON LE GBC CORRETTE
+        GridBagConstraints shopButtonGBC = new GridBagConstraints();
+        shopButtonGBC.gridx = 0;
+        shopButtonGBC.gridy = 0;
+        shopButtonGBC.insets = new Insets(10, 10, 10, 10);
+        shopButtonGBC.anchor = GridBagConstraints.SOUTH;
+        shopButtonGBC.fill = GridBagConstraints.NONE;
+        shopButtonGBC.weightx = 0;
+        shopButtonGBC.weighty = 0;
+
+        this.add(shopButton, shopButtonGBC);
     }
 
+    @Override
+    public boolean isRunning() {
+        return running;
+    }
+
+    @Override
+    public void stopGame() {
+        this.running = false;
+    }
+
+    @Override
     public void setFPS(int fps) {
-        this.fps = fps;
+        this.maxFPS = fps;
+    }
+
+    @Override
+    public void setShowingFPS(boolean showingFPS) {
+        this.showingFPS = showingFPS;
+    }
+
+    public boolean isShowingFPS() {
+        return showingFPS;
+    }
+
+    public void setShowingTimer(boolean showingTimer) {
+        this.showingTimer = showingTimer;
+    }
+
+    public boolean isShowingTimer() {
+        return showingTimer;
     }
 
     public void pauseGame() {

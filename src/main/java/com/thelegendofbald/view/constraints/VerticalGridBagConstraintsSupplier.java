@@ -20,7 +20,9 @@ public final class VerticalGridBagConstraintsSupplier implements Supplier<GridBa
         return new VerticalGridBagConstraints();
     }
 
-    private final class VerticalGridBagConstraints extends GridBagConstraints {
+    private static final class VerticalGridBagConstraints extends GridBagConstraints {
+
+        private static final long serialVersionUID = 1L;
 
         private VerticalGridBagConstraints() {
             this.fill = VERTICAL;

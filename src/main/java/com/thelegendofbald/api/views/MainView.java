@@ -79,4 +79,12 @@ public interface MainView {
      */
     void toggleViewFps(boolean showFPS);
 
+    /**
+     * Changes the visibility of the timer display in the view.
+     * This can be used to toggle whether a timer is shown on the screen.
+     * 
+     * @param showTimer a boolean indicating whether to show the timer display; true to show, false to hide
+     */
+    void toggleViewTimer(boolean showTimer);
+
 }

@@ -11,16 +11,16 @@ import java.util.Optional;
 
 import javax.swing.SwingUtilities;
 
-import com.thelegendofbald.api.buttons.JButtonFactory;
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.settingsmenu.Settings;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
-import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.common.BackToPreviousPanel;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 
 final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsEditorsManager {
+
+    private static final long serialVersionUID = 1L;
 
     private static final double WIDTH_PROPORTION = 0.7;
     private static final double HEIGHT_PROPORTION = 0.65;
@@ -28,24 +28,22 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
     private static final double BOTTOM_INSETS = 0.05;
     private static final double SIDE_INSETS = 0.2;
 
-    private static final double SETTINGS_EDITOR_WEIGHTY = 0.9;
-    private static final double APPLY_BUTTON_WEIGHTY = 0.1;
-
-    private static final String APPLY_BUTTON_TEXT = "Apply";
-    private static final double APPLY_BUTTON_ARC_PROPORTION = 0.1;
-
     private final List<SettingsEditor> settingsEditors = new ArrayList<>();
-    private Optional<SettingsEditor> actualSettingsEditor = Optional.empty();
+    private transient Optional<SettingsEditor> actualSettingsEditor = Optional.empty();
 
-    private final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints gbc = this.gbcFactory.createBothGridBagConstraints();
 
-    private final JButtonFactory jbFactory = new JButtonFactoryImpl();
+    SettingsEditorManagerPanel() {
+        super();
+        this.initialize();
+    }
 
-    SettingsEditorManagerPanel(final Dimension size) {
-        super(size);
-        this.setOpaque(false);
-        this.setLayout(new GridBagLayout());
+    private void initialize() {
+        SwingUtilities.invokeLater(() -> {
+            this.setOpaque(false);
+            this.setLayout(new GridBagLayout());
+        });
     }
 
     @Override
@@ -57,9 +55,9 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
         }
     }
 
-    private List<SettingsEditor> getSettingsEditors(final Dimension size) {
+    private List<SettingsEditor> getSettingsEditors() {
         Arrays.stream(Settings.values())
-                .forEach(setting -> setting.setSettingsEditor(new SettingsEditor(size, setting)));
+                .forEach(setting -> setting.setSettingsEditor(new SettingsEditor(setting)));
 
         return Arrays.stream(Settings.values())
                 .map(Settings::getSettingsEditor)
@@ -68,8 +66,7 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
 
     @Override
     protected void initializeComponents() {
-        final var preferredSize = this.calculatePreferredSize(this.getParent().getSize());
-        this.settingsEditors.addAll(this.getSettingsEditors(preferredSize));
+        this.settingsEditors.addAll(this.getSettingsEditors());
         this.actualSettingsEditor = Optional.of(this.settingsEditors.getFirst());
         super.initializeComponents();
     }
@@ -114,7 +111,8 @@ final class SettingsEditorManagerPanel extends AdapterPanel implements SettingsE
     public void updateComponentsSize() {
         final var preferredSize = this.calculatePreferredSize(this.getSize());
         this.settingsEditors.forEach(editor -> editor.setPreferredSize(preferredSize));
-        this.gbc.insets.set(0, (int) ((this.getWidth() * SIDE_INSETS) - (this.getWidth() * BackToPreviousPanel.WIDTH_PROPORTION)),
+        this.gbc.insets.set(0,
+                (int) ((this.getWidth() * SIDE_INSETS) - (this.getWidth() * BackToPreviousPanel.WIDTH_PROPORTION)),
                 (int) (this.getHeight() * BOTTOM_INSETS),
                 (int) (this.getWidth() * SIDE_INSETS));
     }

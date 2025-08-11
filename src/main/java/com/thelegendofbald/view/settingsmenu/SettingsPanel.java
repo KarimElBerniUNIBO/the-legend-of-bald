@@ -30,15 +30,17 @@ import com.thelegendofbald.view.common.BackToPreviousPanel;
  */
 public final class SettingsPanel extends MenuPanel {
 
+    private static final long serialVersionUID = 1L;
+
     private BackToPreviousPanel backToMainPanel;
     private JPanel northPanel;
     private SettingsEditorsManager sem;
 
     @Override
     protected void initializeComponents() {
-        this.backToMainPanel = new BackToPreviousPanel(this.getSize());
-        this.sem = new SettingsEditorManagerPanel(this.getSize());
-        this.northPanel = new NorthPanel(this.getSize(), this.sem);
+        this.backToMainPanel = new BackToPreviousPanel();
+        this.sem = new SettingsEditorManagerPanel();
+        this.northPanel = new NorthPanel(this.sem);
         super.initializeComponents();
     }
 

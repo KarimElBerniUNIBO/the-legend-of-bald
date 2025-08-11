@@ -1,7 +1,6 @@
 package com.thelegendofbald.api.panels;
 
 import java.awt.Color;
-import java.awt.Dimension;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -22,16 +21,14 @@ import com.thelegendofbald.api.views.View;
  */
 public abstract class BasePanel extends JPanel implements View, MenuView {
 
-    private static final long serialVersionUID = -4999726392950384300L;
+    private static final long serialVersionUID = 1L;
 
     private boolean initializedComponets;
 
     /**
-     * Constructs a new {@code BasePanel} with the specified size.
-     *
-     * @param size the preferred size of the panel
+     * Constructs a new {@code BasePanel}.
      */
-    public BasePanel(final Dimension size) {
+    public BasePanel() {
         super();
         this.initialize();
     }

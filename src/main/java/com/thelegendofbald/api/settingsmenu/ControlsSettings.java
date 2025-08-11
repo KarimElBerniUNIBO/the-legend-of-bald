@@ -13,30 +13,15 @@ import com.thelegendofbald.view.buttons.KeybindingButton;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+
 /**
- * The {@code KeybindsSettings} enum represents the configurable key binding
- * options
- * available in the settings menu of the application. Each enum constant
- * corresponds
- * to a directional control (UP, DOWN, LEFT, RIGHT) and provides associated
- * display text,
- * button text, and a Swing {@link JComponent} for UI representation.
+ * Represents the keybinding settings for the game controls.
+ * This enum defines various keybindings such as UP, DOWN, LEFT, RIGHT, and ATTACK,
+ * each associated with a specific key code.
  * <p>
- * Each keybind setting is initialized with a display label and the default key
- * text,
- * and constructs a keybinding button using a {@link JButtonFactory}.
+ * Each enum constant provides a button component that can be used in the UI to display
+ * and modify the keybinding settings.
  * </p>
- *
- * <ul>
- * <li>{@link #UP} - Represents the "Up" key binding.</li>
- * <li>{@link #DOWN} - Represents the "Down" key binding.</li>
- * <li>{@link #LEFT} - Represents the "Left" key binding.</li>
- * <li>{@link #RIGHT} - Represents the "Right" key binding.</li>
- * </ul>
- *
- * @see SettingOption
- * @see JButtonFactory
- * @see JComponent
  */
 public enum ControlsSettings implements SettingOption {
     /**
@@ -54,7 +39,15 @@ public enum ControlsSettings implements SettingOption {
     /**
      * Represents the "Right" key binding.
      */
-    RIGHT("RIGHT", KeyEvent.VK_RIGHT);
+    RIGHT("RIGHT", KeyEvent.VK_RIGHT),
+    /**
+     * Represents the "Opening Inventory" key binding.
+     */
+    INVENTORY("INVENTORY", KeyEvent.VK_E),
+    /**
+     * Represents the "Attack" key binding.
+     */
+    ATTACK("ATTACK", KeyEvent.VK_SPACE);
 
     private static final double BUTTONS_ARC_PROPORTION = 0.05;
 
@@ -84,16 +77,31 @@ public enum ControlsSettings implements SettingOption {
         return this.text;
     }
 
+    @Override
+    public Object getValue() {
+        return KeyEvent.getKeyText(this.getKey());
+    }
+
+    /**
+     * Returns the {@link JComponent} associated with this keybinding setting.
+     * <b>Note:</b> The component should not be modified externally as it is intended for UI purposes only.
+     *
+     * @return the JComponent for this keybinding setting
+     */
+    @SuppressFBWarnings(
+        value = "EI",
+        justification = "This method is intended to return a UI component for display purposes only."
+    )
+    @Override
+    public JComponent getJComponent() {
+        return this.jcomponent;
+    }
+
     /**
      * Returns the key code associated with this keybinding setting.
      *
      * @return the key code as an {@code int}
      * @see KeyEvent
-     */
-    /**
-     * Returns the key code associated with this key binding.
-     *
-     * @return the integer value representing the key code
      */
     public int getKey() {
         return this.key;
@@ -102,20 +110,14 @@ public enum ControlsSettings implements SettingOption {
     /**
      * Sets the key code for this keybinding setting.
      *
-     * @param key the new key code to set
+     * @param key the new {@code KeyEvent int} key code to set
+     * @see KeyEvent
      */
     public void setKey(final int key) {
-        this.key = key;
-        updateButtonText((JButton) this.jcomponent, key);
-    }
-
-    @SuppressFBWarnings(
-        value = "EI_EXPOSE_REP",
-        justification = "JComponent must be mutable for UI interaction; safe in enum context."
-    )
-    @Override
-    public JComponent getJcomponent() {
-        return this.jcomponent;
+        if (Optional.ofNullable(key).isPresent() && this.key != key) {
+            this.key = key;
+            updateButtonText((JButton) this.jcomponent, key);
+        }
     }
 
     /**
@@ -143,7 +145,7 @@ public enum ControlsSettings implements SettingOption {
      */
     public static void setKeyCode(final ControlsSettings keybind, final int key) {
         keybind.setKey(key);
-        updateButtonText((JButton) keybind.getJcomponent(), key);
+        updateButtonText((JButton) keybind.getJComponent(), key);
     }
 
     /**

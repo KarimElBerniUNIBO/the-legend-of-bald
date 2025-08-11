@@ -18,24 +18,26 @@ import com.thelegendofbald.api.panels.AdapterPanel;
 import com.thelegendofbald.api.panels.InteractivePanel;
 import com.thelegendofbald.api.settingsmenu.Settings;
 import com.thelegendofbald.api.settingsmenu.SettingsEditorsManager;
-import com.thelegendofbald.controller.ui.common.SwitchToOtherSettingsEditorPanel;
+import com.thelegendofbald.controller.common.SwitchToOtherSettingsEditorPanel;
 import com.thelegendofbald.view.buttons.JButtonFactoryImpl;
 import com.thelegendofbald.view.buttons.TrasparentBackgroundButton;
 
 final class CategoriesPanel extends AdapterPanel implements InteractivePanel {
+
+    private static final long serialVersionUID = 1L;
 
     private static final double HEIGHT_PROPORTION = 0.1;
     private static final double WIDTH_BUTTONS_PADDING = 0.05;
 
     private static final Pair<Double, Double> BUTTON_PROPORTION = Pair.of(1.0, 2.5);
 
-    private final JButtonFactory jbFactory = new JButtonFactoryImpl();
+    private final transient JButtonFactory jbFactory = new JButtonFactoryImpl();
     private final List<JButton> buttons;
 
     private final SettingsEditorsManager sem;
 
-    CategoriesPanel(final Dimension size, final SettingsEditorsManager sem) {
-        super(size);
+    CategoriesPanel(final SettingsEditorsManager sem) {
+        super();
         this.sem = sem;
         this.buttons = this.getListOfButtons();
         ((TrasparentBackgroundButton) this.buttons.getFirst()).select();
@@ -69,7 +71,7 @@ final class CategoriesPanel extends AdapterPanel implements InteractivePanel {
      */
 
     private void connectButtonsWithActionListeners() {
-        Stream.iterate(0, i -> i < this.buttons.size(), i -> i + 1)
+        Stream.iterate(0, i -> i + 1).limit(this.buttons.size())
                 .forEach(i -> this.buttons.get(i)
                         .addActionListener(new SwitchToOtherSettingsEditorPanel(sem, Settings.getSettingByIndex(i))));
     }

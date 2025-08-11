@@ -57,7 +57,7 @@ public final class BackToPreviousPanel extends AdapterPanel {
      */
     public static final double HEIGHT_PROPORTION = 0.2;
 
-    private static final long serialVersionUID = 5790272005792439522L;
+    private static final long serialVersionUID = 1L;
 
     private static final String PATH = "/images/buttons/back.png";
 
@@ -67,11 +67,9 @@ public final class BackToPreviousPanel extends AdapterPanel {
     /**
      * Constructs a new {@code BackToMainPanel} with the specified size.
      * The panel is set to be non-opaque and uses a centered {@link FlowLayout}.
-     *
-     * @param size the preferred size of the panel
      */
-    public BackToPreviousPanel(final Dimension size) {
-        super(size);
+    public BackToPreviousPanel() {
+        super();
         this.setOpaque(false);
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
     }
@@ -79,7 +77,8 @@ public final class BackToPreviousPanel extends AdapterPanel {
     @Override
     protected void initializeComponents() {
         final var originalImage = new ImageIcon(this.getClass().getResource(PATH));
-        this.backButton = Optional.of(jbFactory.createTrasparentButton(originalImage, Optional.empty(), Optional.of(Color.WHITE)));
+        this.backButton = Optional
+                .of(jbFactory.createTrasparentButton(originalImage, Optional.empty(), Optional.of(Color.WHITE)));
         this.backButton.ifPresent(button -> button.addActionListener(e -> {
             final var parent = (GameWindow) SwingUtilities.getWindowAncestor(this);
             parent.changeMainPanel(parent.getLastPanel().orElse(Panels.MAIN_MENU));

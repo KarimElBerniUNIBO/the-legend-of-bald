@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.buttons.TemplateButton;
-import com.thelegendofbald.controller.ui.listeners.RoundedButtonMouseListener;
+import com.thelegendofbald.controller.listeners.buttons.RoundedButtonMouseListener;
 
 /**
  * A custom JButton implementation that renders a button with rounded corners.
@@ -40,7 +40,7 @@ import com.thelegendofbald.controller.ui.listeners.RoundedButtonMouseListener;
  */
 public class RoundedButton extends TemplateButton {
 
-    private static final long serialVersionUID = -649720576764931563L;
+    private static final long serialVersionUID = 1L;
 
     private final double arcProportion;
 
