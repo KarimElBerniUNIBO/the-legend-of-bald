@@ -33,23 +33,34 @@ public class TileMap {
     // Carica i vari tipi di tile (es. erba, muro, acqua)
     private void loadTileTypes() {
         try {
-            // Carica le immagini per i vari tipi di tile
-            BufferedImage floor = ImageIO.read(getClass().getResource("/images/map_png/floor-tiles.png"));
-            BufferedImage wall = ImageIO.read(getClass().getResource("/images/map_png/BrickGrey.png"));
-            BufferedImage shop = ImageIO.read(getClass().getResource("/images/map_png/shop.png"));
+            BufferedImage floor = loadBufferedImage("/images/map_png/floor-tiles.png");
+            BufferedImage wall = loadBufferedImage("/images/map_png/BrickGrey.png");
+            BufferedImage shop = loadBufferedImage("/images/map_png/shop.png");
+            BufferedImage chest = loadBufferedImage("/images/items/chestClosed.png");
 
-            // Aggiungi i vari tipi di tile con il costruttore aggiornato
             tileTypes.put(0, new Tile(null, TILE_SIZE, TILE_SIZE, 0, false, false, false, false, null));  // Tile vuoto
-            tileTypes.put(1, new Tile(floor, TILE_SIZE, TILE_SIZE, 1, false, true, false, true, null));  // Tile per il pavimento
-            tileTypes.put(2, new Tile(wall, TILE_SIZE, TILE_SIZE, 2, false, true, false, false, null));    // Tile per il muro (solido)
+            tileTypes.put(1, new Tile(floor, TILE_SIZE, TILE_SIZE, 1, false, true, false, true, null));   // Pavimento
+            tileTypes.put(2, new Tile(wall, TILE_SIZE, TILE_SIZE, 2, false, true, false, false, null));   // Muro solido
             tileTypes.put(4, new Tile(floor, TILE_SIZE, TILE_SIZE, 4, false, true, false, true, null));
-            tileTypes.put(5, new Tile(floor, TILE_SIZE, TILE_SIZE, 5, false, true, true, true, null)); // Un altro tile pavimento (opzionale)
-            tileTypes.put(6, new Tile(floor, TILE_SIZE, TILE_SIZE, 5, false, true, true, true, shop)); 
-
+            tileTypes.put(5, new Tile(floor, TILE_SIZE, TILE_SIZE, 5, false, true, true, true, null));
+            tileTypes.put(6, new Tile(floor, TILE_SIZE, TILE_SIZE, 6, false, true, true, true, shop));
+            tileTypes.put(7, new Tile(chest, TILE_SIZE, TILE_SIZE, 7, false, true, true, true, null));
+            tileTypes.put(8, new Tile(floor, TILE_SIZE, TILE_SIZE, 8, false, true, true, true, null));
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RuntimeException("Errore nel caricamento delle immagini dei tile.");
         }
     }
+
+
+    private BufferedImage loadBufferedImage(String path) throws IOException {
+        var stream = getClass().getResourceAsStream(path);
+        if (stream == null) {
+            throw new IllegalArgumentException("Risorsa non trovata: " + path);
+        }
+        return ImageIO.read(stream);
+    }
+
 
     // Carica una mappa specifica
     private void loadMap(String mapName) {
@@ -209,6 +220,29 @@ public class TileMap {
             }
         }
     }
+
+    // Dimensione del tile (comodo per chi usa la mappa)
+    public int getTileSize() {
+        return TILE_SIZE;
+    }
+
+    // Tutte le posizioni (in pixel) dei tile con l'id richiesto
+    public List<Point> findAllWithId(final int wantedId) {
+        final List<Point> points = new ArrayList<>();
+        if (tiles == null) {
+            return points;
+        }
+        for (int y = 0; y < tiles.length; y++) {
+            for (int x = 0; x < tiles[y].length; x++) {
+                final Tile t = tiles[y][x];
+                if (t != null && t.getId() == wantedId) {
+                    points.add(new Point(x * TILE_SIZE, y * TILE_SIZE));
+                }
+            }
+        }
+        return points;
+    }
+
 } 
 
     

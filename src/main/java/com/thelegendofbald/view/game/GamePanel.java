@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -108,6 +107,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private volatile boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
+    
+    private final JButton shopButton = new JButton("Shop");
 
     public GamePanel() {
         super();
@@ -152,12 +153,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         }
 
         this.addWeaponsToInventory();
-
-        for (int i = 0 ; i < num_enemies ; i++) {
-            enemies.add(new DummyEnemy(ThreadLocalRandom.current().nextInt(300, 1000), // x
-                                       ThreadLocalRandom.current().nextInt(300, 600),  // y
-                                       60, "ZioBilly", 10));
-        }
 
         setupKeyBindings();
         this.initialize();
@@ -330,6 +325,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         handleInput();
         bald.updateAnimation();
         bald.move();
+        checkIfNearShopTile();
 
         int baldX = bald.getX();
         int baldY = bald.getY();
@@ -367,6 +363,23 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         repaint();
     }
 
+    private void spawnEnemiesFromMap() {
+        enemies.clear(); // rigenera ad ogni cambio mappa
+
+        List<Point> spawns = tileMap.findAllWithId(8); // id 8 = spawn nemici
+        int tileSize = tileMap.TILE_SIZE;
+
+        for (Point topLeft : spawns) {
+            int enemyW = 60, enemyH = 60;
+
+            // centra il nemico nel tile
+            int x = topLeft.x + (tileSize - enemyW) / 2;
+            int y = topLeft.y + (tileSize - enemyH) / 2;
+
+            enemies.add(new DummyEnemy(x, y, enemyW, "ZioBilly", 10));
+        }
+    }
+
     public void changeMap(String mapName) {
         currentMapName = mapName;
         tileMap.changeMap(mapName);
@@ -378,8 +391,10 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
             bald.setY(spawnPoint.y + tileSize - bald.getHeight());
         } else {
-            System.out.println("Spawn point not found!");
+            System.out.println("Punto di spawn non trovato per la mappa: " + mapName);
         }
+
+        spawnEnemiesFromMap();
     }
 
     private void switchToNextMap() {
@@ -470,32 +485,29 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     @Override
     public void addComponentsToPanel() {
         this.updateComponentsSize();
-        //this.add(gridPanel);
         this.add(optionsPanel, optionsGBC);
         this.add(inventoryPanel, inventoryGBC);
 
-
-        // ➤ CREA QUI IL BOTTONE
-        JButton shopButton = new JButton("Shop");
+        // ➤ CONFIGURA IL BOTTONE (già creato come campo)
         shopButton.setBackground(Color.YELLOW);
         shopButton.setOpaque(true);
         shopButton.setFocusable(false);
+        shopButton.setVisible(false); // 👈 INIZIALMENTE NASCOSTO!
         shopButton.addActionListener(e -> {
             ShopPanel shopPanel = new ShopPanel(this.combatManager, bald.getWallet());
             JOptionPane.showMessageDialog(this, shopPanel, "Negozio", JOptionPane.PLAIN_MESSAGE);
         });
 
-        // componente “colla” che assorbe lo spazio in più
+        // Componente “colla” che assorbe lo spazio
         GridBagConstraints fillerGBC = new GridBagConstraints();
-        fillerGBC.gridx   = 0;            // prima colonna
-        fillerGBC.gridy   = 0;            // prima riga
-        fillerGBC.weightx = 1;            // si espande in larghezza
-        fillerGBC.weighty = 1;            // si espande in altezza
-        fillerGBC.fill    = GridBagConstraints.BOTH;   // riempie la cella
-        this.add(Box.createGlue(), fillerGBC);         // puoi usare anche new JPanel()
+        fillerGBC.gridx = 0;
+        fillerGBC.gridy = 0;
+        fillerGBC.weightx = 1;
+        fillerGBC.weighty = 1;
+        fillerGBC.fill = GridBagConstraints.BOTH;
+        this.add(Box.createGlue(), fillerGBC);
 
-
-        // ➤ AGGIUNGI IL BOTTONE CON LE GBC CORRETTE
+        // ➤ POSIZIONA IL BOTTONE CON GBC
         GridBagConstraints shopButtonGBC = new GridBagConstraints();
         shopButtonGBC.gridx = 0;
         shopButtonGBC.gridy = 0;
@@ -507,6 +519,28 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
         this.add(shopButton, shopButtonGBC);
     }
+
+
+    private void checkIfNearShopTile() {
+        int tileX = bald.getX() / tileMap.TILE_SIZE;
+        int tileY = bald.getY() / tileMap.TILE_SIZE;
+
+        for (int dy = -1; dy <= 1; dy++) {
+            for (int dx = -1; dx <= 1; dx++) {
+                int checkX = tileX + dx;
+                int checkY = tileY + dy;
+
+                if (checkX < 0 || checkY < 0) continue;
+                var tile = tileMap.getTileAt(checkX, checkY);
+                if (tile != null && tile.getId() == 6) {
+                    shopButton.setVisible(true);
+                    return;
+                }
+            }
+        }
+        shopButton.setVisible(false);
+    }
+
 
     @Override
     public boolean isRunning() {

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd" version="7.10.0" timestamp="2025-08-04T15:23:35.233">
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\test\java\com\thelegendofbald\model\common\DataManagerTest.java">
+<violation beginline="25" endline="25" begincolumn="14" endcolumn="22" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.common" class="DataManagerTest" method="setUp" variable="saveFile" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'saveFile' could be declared final
+</violation>
+<violation beginline="34" endline="34" begincolumn="14" endcolumn="22" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.common" class="DataManagerTest" method="tearDown" variable="saveFile" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'saveFile' could be declared final
+</violation>
+<violation beginline="42" endline="42" begincolumn="23" endcolumn="27" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.common" class="DataManagerTest" method="testLoadGameRunsReturnsEmptyListIfFileDoesNotExist" variable="runs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'runs' could be declared final
+</violation>
+<violation beginline="49" endline="49" begincolumn="17" endcolumn="20" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.common" class="DataManagerTest" method="testSaveAndLoadGameRun" variable="run" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'run' could be declared final
+</violation>
+<violation beginline="52" endline="52" begincolumn="23" endcolumn="27" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.common" class="DataManagerTest" method="testSaveAndLoadGameRun" variable="runs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'runs' could be declared final
+</violation>
+<violation beginline="55" endline="55" begincolumn="17" endcolumn="23" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.common" class="DataManagerTest" method="testSaveAndLoadGameRun" variable="loaded" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'loaded' could be declared final
+</violation>
+<violation beginline="64" endline="64" begincolumn="17" endcolumn="21" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.common" class="DataManagerTest" method="testSaveMultipleGameRuns" variable="run1" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'run1' could be declared final
+</violation>
+<violation beginline="65" endline="65" begincolumn="17" endcolumn="21" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.common" class="DataManagerTest" method="testSaveMultipleGameRuns" variable="run2" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'run2' could be declared final
+</violation>
+<violation beginline="69" endline="69" begincolumn="23" endcolumn="27" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.common" class="DataManagerTest" method="testSaveMultipleGameRuns" variable="runs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'runs' could be declared final
+</violation>
+<violation beginline="73" endline="73" begincolumn="17" endcolumn="21" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.common" class="DataManagerTest" method="testSaveMultipleGameRuns" variable="last" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'last' could be declared final
+</violation>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\test\java\com\thelegendofbald\model\inventory\InventoryManagerTest.java">
+<violation beginline="20" endline="20" begincolumn="23" endcolumn="27" rule="FieldNamingConventions" ruleset="Code Style" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" variable="ROWS" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The final field name 'ROWS' doesn't match '[a-z][a-zA-Z0-9]*'
+</violation>
+<violation beginline="20" endline="20" begincolumn="23" endcolumn="27" rule="FinalFieldCouldBeStatic" ruleset="Design" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" variable="ROWS" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_design.html#finalfieldcouldbestatic" priority="3">
+This final field could be made static
+</violation>
+<violation beginline="21" endline="21" begincolumn="23" endcolumn="27" rule="FieldNamingConventions" ruleset="Code Style" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" variable="COLS" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#fieldnamingconventions" priority="1">
+The final field name 'COLS' doesn't match '[a-z][a-zA-Z0-9]*'
+</violation>
+<violation beginline="21" endline="21" begincolumn="23" endcolumn="27" rule="FinalFieldCouldBeStatic" ruleset="Design" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" variable="COLS" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_design.html#finalfieldcouldbestatic" priority="3">
+This final field could be made static
+</violation>
+<violation beginline="30" endline="30" begincolumn="16" endcolumn="22" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" method="testAddWeapon" variable="weapon" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'weapon' could be declared final
+</violation>
+<violation beginline="32" endline="32" begincolumn="17" endcolumn="22" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" method="testAddWeapon" variable="found" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'found' could be declared final
+</violation>
+<violation beginline="33" endline="33" begincolumn="65" endcolumn="95" rule="CompareObjectsWithEquals" ruleset="Error Prone" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" method="testAddWeapon" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_errorprone.html#compareobjectswithequals" priority="3">
+Use equals() to compare object references.
+</violation>
+<violation beginline="39" endline="39" begincolumn="16" endcolumn="22" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" method="testRemoveWeapon" variable="weapon" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'weapon' could be declared final
+</violation>
+<violation beginline="47" endline="47" begincolumn="16" endcolumn="22" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" method="testSetWeaponAtSpecificPosition" variable="weapon" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'weapon' could be declared final
+</violation>
+<violation beginline="49" endline="49" begincolumn="28" endcolumn="32" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" method="testSetWeaponAtSpecificPosition" variable="item" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'item' could be declared final
+</violation>
+<violation beginline="56" endline="56" begincolumn="16" endcolumn="22" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" method="testClearInventory" variable="weapon" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'weapon' could be declared final
+</violation>
+<violation beginline="60" endline="60" begincolumn="17" endcolumn="25" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.inventory" class="InventoryManagerTest" method="testClearInventory" variable="allEmpty" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'allEmpty' could be declared final
+</violation>
+</file>
+<file name="C:\Users\Utente\Desktop\the-legend-of-bald\src\test\java\com\thelegendofbald\model\sounds\SoundManagerTest.java">
+<violation beginline="21" endline="21" begincolumn="21" endcolumn="27" rule="UnusedLocalVariable" ruleset="Best Practices" package="com.thelegendofbald.model.sounds" class="SoundManagerTest" method="testAddSoundPlayerSetsVolume" variable="player" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'player'.
+</violation>
+<violation beginline="28" endline="28" begincolumn="21" endcolumn="23" rule="UnusedLocalVariable" ruleset="Best Practices" package="com.thelegendofbald.model.sounds" class="SoundManagerTest" method="testSetMasterVolumeUpdatesPlayers" variable="p1" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'p1'.
+</violation>
+<violation beginline="29" endline="29" begincolumn="21" endcolumn="23" rule="UnusedLocalVariable" ruleset="Best Practices" package="com.thelegendofbald.model.sounds" class="SoundManagerTest" method="testSetMasterVolumeUpdatesPlayers" variable="p2" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'p2'.
+</violation>
+<violation beginline="42" endline="42" begincolumn="21" endcolumn="23" rule="UnusedLocalVariable" ruleset="Best Practices" package="com.thelegendofbald.model.sounds" class="SoundManagerTest" method="testCloseAllDoesNotThrow" variable="p1" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'p1'.
+</violation>
+<violation beginline="43" endline="43" begincolumn="21" endcolumn="23" rule="UnusedLocalVariable" ruleset="Best Practices" package="com.thelegendofbald.model.sounds" class="SoundManagerTest" method="testCloseAllDoesNotThrow" variable="p2" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'p2'.
+</violation>
+<violation beginline="49" endline="49" begincolumn="21" endcolumn="27" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.sounds" class="SoundManagerTest" method="testSoundPlayerSetVolumeValid" variable="player" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'player' could be declared final
+</violation>
+<violation beginline="57" endline="57" begincolumn="21" endcolumn="27" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.sounds" class="SoundManagerTest" method="testSoundPlayerSetVolumeInvalid" variable="player" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'player' could be declared final
+</violation>
+<violation beginline="64" endline="64" begincolumn="21" endcolumn="27" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.sounds" class="SoundManagerTest" method="testSoundPlayerCloseDoesNotThrow" variable="player" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'player' could be declared final
+</violation>
+<violation beginline="70" endline="70" begincolumn="21" endcolumn="27" rule="LocalVariableCouldBeFinal" ruleset="Code Style" package="com.thelegendofbald.model.sounds" class="SoundManagerTest" method="testSoundPlayerPlayDoesNotThrow" variable="player" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.10.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal" priority="3">
+Local variable 'player' could be declared final
+</violation>
+</file>
+</pmd>
