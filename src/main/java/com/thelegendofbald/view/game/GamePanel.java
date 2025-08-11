@@ -109,6 +109,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
     private final Set<Integer> pressedKeys = new HashSet<>();
 
+    boolean paused;
+
     public GamePanel() {
         super();
         Dimension size = new Dimension(1280, 704);
@@ -196,6 +198,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         bindKey(im, am, "pressed LEFT", KeyEvent.VK_LEFT, true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
         bindKey(im, am, "pressed RIGHT", KeyEvent.VK_RIGHT, true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
         bindKey(im, am, "pressed ESCAPE", KeyEvent.VK_ESCAPE, true, () -> {
+
             if (paused) {
                 closeOptionsPanel();
             } else {
@@ -332,10 +335,10 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
 
 
-    private void update() {
+    private void update(double deltatime ) {
         handleInput();
         bald.updateAnimation();
-        bald.move();
+        bald.move(tileMap, deltatime);
 
         int baldX = bald.getX();
         int baldY = bald.getY();
@@ -361,7 +364,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         enemies.removeIf(enemy -> !enemy.isAlive());
         enemies.forEach(enemy -> {
             if(enemy.isCloseTo(bald)){
-                enemy.followPlayer(bald);
+                enemy.followPlayer(bald, tileMap, tileCenterX);
                 enemy.updateAnimation();
             }
 

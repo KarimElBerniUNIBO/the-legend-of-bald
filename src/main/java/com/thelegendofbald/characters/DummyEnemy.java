@@ -6,10 +6,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.awt.Rectangle;
 import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
+import com.thelegendofbald.view.main.TileMap;
 
 public class DummyEnemy extends Entity  implements Combatant{
 
@@ -35,8 +37,6 @@ public class DummyEnemy extends Entity  implements Combatant{
     public DummyEnemy(int x, int y, int health, String name, int attackPower) {
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(health));
         this.attackPower = attackPower;
-        this.posX = x;
-        this.posY = y;
         loadRunFrames();
     }
     private String path = "/images/enemyWalkSpritesheet.png"; 
@@ -106,8 +106,8 @@ public class DummyEnemy extends Entity  implements Combatant{
         int hitboxY = 25;
 
         // Calcola la direzione verso Bald
-        double dirX = bald.getX() - this.posX;
-        double dirY = bald.getY() - this.posY;
+        double dirX = bald.getX() - this.x;
+        double dirY = bald.getY() - this.y;
 
         // Normalizzo
         double magnitude = Math.hypot(dirX, dirY);
@@ -120,10 +120,10 @@ public class DummyEnemy extends Entity  implements Combatant{
 
         facingRight = speedX >= 0;
 
-        double nextX = posX + speedX * deltaTime * MOVE_SPEED;
+        double nextX = x + speedX * deltaTime * MOVE_SPEED;
         Rectangle nextHitboxX = new Rectangle(
             (int)(nextX + (50 - hitboxX) / 2),
-            (int)(posY + (50 - hitboxY) / 2),
+            (int)(y + (50 - hitboxY) / 2),
             hitboxX, hitboxY
         );
 
@@ -136,7 +136,7 @@ public class DummyEnemy extends Entity  implements Combatant{
         boolean collisionX = false;
         for (int tx = leftX; tx <= rightX; tx++) {
             for (int ty = topX; ty <= bottomX; ty++) {
-                if (tileMap.getTile(tx, ty) == 2) {
+                if (tileMap.getTileIdAt(tx, ty) == 2) {
                     collisionX = true;
                     break;
                 }
@@ -145,12 +145,12 @@ public class DummyEnemy extends Entity  implements Combatant{
         }
 
         if (!collisionX) {
-            posX = nextX;
+            x = (int) nextX;
         }
 
-        double nextY = posY + speedY * deltaTime * MOVE_SPEED;
+        double nextY = y + speedY * deltaTime * MOVE_SPEED;
         Rectangle nextHitboxY = new Rectangle(
-            (int)(posX + (50 - hitboxX) / 2),
+            (int)(x + (50 - hitboxX) / 2),
             (int)(nextY + (50 - hitboxY) / 2),
             hitboxX, hitboxY
         );
@@ -163,7 +163,7 @@ public class DummyEnemy extends Entity  implements Combatant{
         boolean collisionY = false;
         for (int tx = leftY; tx <= rightY; tx++) {
             for (int ty = topY; ty <= bottomY; ty++) {
-                if (tileMap.getTile(tx, ty) == 2) {
+                if (tileMap.getTileIdAt(tx, ty) == 2) {
                     collisionY = true;
                     break;
                 }
@@ -172,11 +172,11 @@ public class DummyEnemy extends Entity  implements Combatant{
         }
 
         if (!collisionY) {
-            posY = nextY;
+            y = (int) nextY;
         }
 
-        this.x = (int) posX;
-        this.y = (int) posY;
+        this.x = (int) x;
+        this.y = (int) y;
     }
 
 

@@ -227,7 +227,7 @@ public class Bald extends Entity implements Combatant {
         boolean collisionX = false;
         for (int tx = leftX; tx <= rightX; tx++) {
             for (int ty = topX; ty <= bottomX; ty++) {
-                if (tileMap.getTile(tx, ty) == 2) {
+                if (tileMap.getTileIdAt(tx, ty) == 2) {
                     collisionX = true;
                     break;
                 }
@@ -254,7 +254,7 @@ public class Bald extends Entity implements Combatant {
         boolean collisionY = false;
         for (int tx = leftY; tx <= rightY; tx++) {
             for (int ty = topY; ty <= bottomY; ty++) {
-                if (tileMap.getTile(tx, ty) == 2) {
+                if (tileMap.getTileIdAt(tx, ty) == 2) {
                     collisionY = true;
                     break;
                 }
