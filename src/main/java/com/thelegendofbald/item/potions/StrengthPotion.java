@@ -39,5 +39,6 @@ public class StrengthPotion extends Potion implements UsableItem {
         StrengthBuff buff = new StrengthBuff(DURATION_MS, STRENGTH_BONUS);
         bald.applyBuff(buff);
         System.out.println("You used a Strength Potion! Attack strength increased for " + (DURATION_MS / 1000) + " seconds.");
+        System.out.println("Current attack power: " + bald.getAttackPower());
     }
 }
