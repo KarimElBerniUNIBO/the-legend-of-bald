@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 
 import com.thelegendofbald.buffs.Buff;
+import com.thelegendofbald.buffs.PoisonBuff;
 import com.thelegendofbald.buffs.StrengthBuff;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
@@ -268,8 +269,29 @@ public class Bald extends Entity implements Combatant {
         System.out.println("Buff di " + buff.getName() + " attivato!");
     }
 
+    // Estratto da Bald.java
     public void updateBuffs() {
-        activeBuffs.removeIf(Buff::isExpired);
+     List<Buff> expiredBuffs = new ArrayList<>();
+        for (Buff buff : activeBuffs) {
+         buff.update(); // 1. Chiamata all'update() del buff base per gestire la sua durata
+
+        // 2. Controllo specifico per i PoisonBuff per applicare danni periodici
+            if (buff instanceof PoisonBuff) {
+             PoisonBuff poisonBuff = (PoisonBuff) buff;
+                if (poisonBuff.shouldTick()) { 
+                this.lifeComponent.damageTaken(poisonBuff.getDamagePerTick()); 
+                System.out.println("Poison dealt " + poisonBuff.getDamagePerTick() + " damage. Current Health: " + this.lifeComponent.getCurrentHealth());
+                poisonBuff.resetTickTimer(); // RESETTA il timer per il prossimo tick di danno
+            }
+        }
+        
+        // 3. Rimuove il buff se è scaduto
+         if (buff.isExpired()) {
+              buff.remove(this); // Chiama il metodo remove() del buff specifico per annullare l'effetto
+              expiredBuffs.add(buff);
+        }
     }
+    activeBuffs.removeAll(expiredBuffs); // Pulisce la lista dai buff scaduti
+}
 
 }

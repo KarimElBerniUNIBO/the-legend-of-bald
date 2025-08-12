@@ -49,6 +49,7 @@ import com.thelegendofbald.item.GameItem;
 import com.thelegendofbald.item.InventoryItem;
 import com.thelegendofbald.item.ItemFactory;
 import com.thelegendofbald.item.MapItemSpawner;
+import com.thelegendofbald.item.Trap;
 import com.thelegendofbald.item.UsableItem;
 import com.thelegendofbald.item.weapons.Axe;
 import com.thelegendofbald.item.weapons.FireBall;
@@ -336,21 +337,36 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private void handleItemCollection() {
         gameItems.removeIf(item -> {
             if (bald.getBounds().intersects(item.getBounds())) {
+                // DEBUG: Controlla le coordinate e le dimensioni per il debug delle collisioni
+                System.out.printf("DEBUG: Bald Bounds: %s, Item Bounds: %s%n", bald.getBounds(), item.getBounds());
+                System.out.println("DEBUG: Collisione rilevata con: " + item.getName() + " (" + item.getClass().getSimpleName() + ")");
+                
                 if (item instanceof Chest) {
-                    return false;
+                    System.out.println("DEBUG: Colliso con Chest, ignorato per raccolta automatica.");
+                    return false; // La cassa non viene rimossa dalla handleItemCollection
                 }
                 
-                if (item instanceof InventoryItem) {
-                    ((InventoryItem) item).onCollect(inventory);
-                    return true;
-                }
-
                 if (item instanceof UsableItem) {
                     ((UsableItem) item).applyEffect(bald);
-                    return true;
+                    System.out.println("DEBUG: Item " + item.getName() + " (UsableItem) usato automaticamente.");
+                    return true; // Gli UsableItem vengono rimossi dopo l'uso
+                } else if (item instanceof InventoryItem) {
+                    ((InventoryItem) item).onCollect(inventory);
+                    System.out.println("DEBUG: Item " + item.getName() + " (InventoryItem) raccolto automaticamente.");
+                    return true; // Gli InventoryItem vengono rimossi dopo la raccolta
+                } else if (item instanceof Trap) { 
+                    Trap trap = (Trap) item;
+                    System.out.println("DEBUG: Colliso con Trap. isTriggered: " + trap.isTriggered());
+                    if (!trap.isTriggered()) {
+                        trap.interact(bald, inventory); 
+                        System.out.println("DEBUG: Trap " + item.getName() + " attivata (non rimossa dalla lista).");
+                    } else {
+                        System.out.println("DEBUG: Trap " + item.getName() + " già attivata, ignorata.");
+                    }
+                    return false; // <--- CAMBIATO QUI! La trappola NON viene rimossa.
                 }
             }
-            return false;
+            return false; // Nessuna collisione, o collisione con item che non devono essere rimossi qui
         });
     }
 
