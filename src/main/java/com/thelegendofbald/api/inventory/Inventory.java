@@ -86,4 +86,19 @@ public interface Inventory {
      */
     List<Slot> getSlots();
 
+     /**
+     * Checks if the inventory contains a specific key.
+     *
+     * @param keyId the ID of the key to check for
+     * @return true if the key is present, false otherwise
+     */
+    boolean hasKey(int keyId);
+
+    /**
+     * Removes a specific key from the inventory.
+     *
+     * @param keyId the ID of the key to remove
+     */
+    void removeKey(int keyId);
+
 }

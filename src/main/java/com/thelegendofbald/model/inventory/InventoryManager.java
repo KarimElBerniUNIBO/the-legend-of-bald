@@ -8,7 +8,9 @@ import java.util.stream.Stream;
 import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.item.GameItem;
+import com.thelegendofbald.item.Key;
 import com.thelegendofbald.model.weapons.Weapon;
+import com.thelegendofbald.view.inventory.InventoryPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -126,5 +128,25 @@ public final class InventoryManager implements Inventory {
         return this.inventory;
     }
 
+    @Override
+    public boolean hasKey(final int keyId) {
+        return this.inventory.stream()
+            .anyMatch(slot -> slot.getItem()
+                    .filter(item -> item instanceof Key && ((Key) item).getKeyId() == keyId)
+                    .isPresent());
+    }
 
+    @Override
+    public void removeKey(final int keyId) {
+        Optional<Slot> slotToRemove = this.inventory.stream()
+            .filter(slot -> slot.getItem()
+                    .filter(item -> item instanceof Key && ((Key) item).getKeyId() == keyId)
+                    .isPresent())
+            .findFirst();
+        
+        slotToRemove.ifPresent(slot -> {
+            int index = this.inventory.indexOf(slot);
+            this.inventory.set(index, new Slot(null));
+        });
+    }
 }
