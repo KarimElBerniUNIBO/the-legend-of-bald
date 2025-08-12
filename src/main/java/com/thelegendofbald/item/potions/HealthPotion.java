@@ -23,7 +23,7 @@ public class HealthPotion extends Potion implements UsableItem {
         this.healAmount = 20;
         setDescription("Restores " + healAmount + " health points.");
         setPrice(30);
-        loadImage("/images/potions/rum.png");
+        loadImage("/images/potions/health_potion.png");
     }
 
     /**

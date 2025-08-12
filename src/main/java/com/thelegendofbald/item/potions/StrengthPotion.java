@@ -24,7 +24,7 @@ public class StrengthPotion extends Potion implements UsableItem {
         super(x, y, 32, 32, "Strength Potion");
         setPrice(50);
         setDescription("Increases attack strength by " + STRENGTH_BONUS + " for " + (DURATION_MS / 1000) + " seconds.");
-        loadImage("/images/potions/wine.jpg");
+        loadImage("/images/potions/strength_potion.png");
     }
 
     /**
