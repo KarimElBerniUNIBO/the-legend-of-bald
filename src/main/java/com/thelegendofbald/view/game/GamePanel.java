@@ -390,12 +390,12 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         bald.updateAnimation();
         bald.move();
         bald.updateBuffs(); 
-
+    
         if (isAtMapTransitionPoint()) {
             switchToNextMap();
             return;
         }
-
+    
         combatManager.checkEnemyAttacks();
         enemies.removeIf(enemy -> !enemy.isAlive());
         enemies.forEach(enemy -> {
@@ -404,13 +404,20 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 enemy.updateAnimation();
             }
         });
-
+    
         combatManager.getProjectiles().forEach(Projectile::move);
         combatManager.checkProjectiles();
-
+    
         handleItemCollection();
-
-        repaint();
+    
+        // !!! AGGIUNGI QUESTO BLOCCO !!!
+        // Aggiorna l'animazione di tutti gli item che ne hanno una
+        gameItems.forEach(item -> {
+            if (item instanceof Trap) { // O qualsiasi altro item che ha updateAnimation()
+                ((Trap) item).updateAnimation();
+            }
+            // Aggiungi qui altri if per altri tipi di item animati
+        });
     }
 
     public void changeMap(String mapName) {
