@@ -2,6 +2,7 @@ package com.thelegendofbald.characters;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
+import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
 public class DummyEnemy extends Entity  implements Combatant{
@@ -32,7 +34,9 @@ public class DummyEnemy extends Entity  implements Combatant{
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
 
     private long lastAttackTime = 0; // Tempo dell'ultimo attacco
-    private final double minDistance = 100;
+    private final double minDistance = 1000;
+
+    private TileMap tileMap;
 
     public DummyEnemy(int x, int y, int health, String name, int attackPower) {
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(health));
@@ -136,7 +140,8 @@ public class DummyEnemy extends Entity  implements Combatant{
         boolean collisionX = false;
         for (int tx = leftX; tx <= rightX; tx++) {
             for (int ty = topX; ty <= bottomX; ty++) {
-                if (tileMap.getTileIdAt(tx, ty) == 2) {
+                Tile tileX = tileMap.getTileAt(tx, ty);
+                if (tileX != null && tileX.getId() == 2) {
                     collisionX = true;
                     break;
                 }
@@ -163,7 +168,8 @@ public class DummyEnemy extends Entity  implements Combatant{
         boolean collisionY = false;
         for (int tx = leftY; tx <= rightY; tx++) {
             for (int ty = topY; ty <= bottomY; ty++) {
-                if (tileMap.getTileIdAt(tx, ty) == 2) {
+                Tile tileY = tileMap.getTileAt(tx, ty);
+                if (tileY != null && tileY.getId() == 2) {
                     collisionY = true;
                     break;
                 }
@@ -198,5 +204,20 @@ public class DummyEnemy extends Entity  implements Combatant{
             double dy = this.y - bald.getY();
             double distance = Math.sqrt(dx * dx + dy * dy);
         return distance < this.minDistance;
+    }
+
+    public void setTileMap(TileMap tileMap) {
+        this.tileMap = tileMap;
+    }    
+
+    public void setSpawnPosition(int spawnTileId, int tileSize) {
+        Point spawnPoint = tileMap.findSpawnPoint(spawnTileId);
+        if (spawnPoint != null) {
+            // Centra i piedi di Bald nel tile di spawn
+            int x = spawnPoint.x + (tileSize - getWidth()) / 2;
+            int y = spawnPoint.y + tileSize - getHeight();
+            this.setX(x);
+            this.setY(y);
+        }
     }
 }

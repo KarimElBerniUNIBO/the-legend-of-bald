@@ -307,14 +307,10 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         System.out.println("Game loop started!");
 
         long lastTime = System.nanoTime();
-
-        double interval = 0;
-        int drawCount = 0;
-        long updateInterval = 0;
-        double delta = 0;
+        long timer = System.currentTimeMillis();
+        int frames = 0;
 
         while (gameThread != null) {
-            
             if (paused) {
                 try {
                     Thread.sleep(100);
@@ -325,17 +321,37 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             }
 
             long now = System.nanoTime();
-            double deltaTime = (now - lastTime) / 1e9 ; // secondi
+            double deltatime = (now - lastTime) / 1e7;
+            long mintime = 1000/maxFPS;
+            long sleepTime = (long) (mintime - deltatime);
+            if (sleepTime > 0) {
+                    try {
+                        Thread.sleep(sleepTime);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
             lastTime = now;
 
-            update(deltaTime);
+            update(deltatime/100.0);
             repaint();
+            frames++;
+
+            // Stampa FPS ogni secondo
+                if (System.currentTimeMillis() - timer >= 1000) {
+                    currentFPS = frames;
+                    if (showingFPS) {
+                        System.out.println("FPS: " + frames);
+                    }
+                    frames = 0;
+                    timer += 1000;
+                }
+            }
         }
     }
 
 
 
-    private void update(double deltatime ) {
+    private void update(double deltatime) {
         handleInput();
         bald.updateAnimation();
         bald.move(tileMap, deltatime);
@@ -364,7 +380,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         enemies.removeIf(enemy -> !enemy.isAlive());
         enemies.forEach(enemy -> {
             if(enemy.isCloseTo(bald)){
-                enemy.followPlayer(bald, tileMap, tileCenterX);
+                enemy.followPlayer(bald, tileMap, deltatime);
                 enemy.updateAnimation();
             }
 
@@ -374,7 +390,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         combatManager.checkProjectiles();
 
         repaint();
-    }
+    }  
 
     public void changeMap(String mapName) {
         currentMapName = mapName;
@@ -384,11 +400,21 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         Point spawnPoint = tileMap.findSpawnPoint(5);
         if (spawnPoint != null) {
             int tileSize = tileMap.TILE_SIZE;
-            bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
-            bald.setY(spawnPoint.y + tileSize - bald.getHeight());
+            int x = spawnPoint.x + (tileSize - bald.getWidth()) / 2;
+            int y = spawnPoint.y + tileSize - bald.getHeight();
+            bald.setPosition(x, y);
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            spawnPoint = null;
         } else {
             System.out.println("Spawn point not found!");
         }
+
     }
 
     private void switchToNextMap() {

@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
 import com.thelegendofbald.combat.Combatant;
@@ -36,7 +37,7 @@ public class Bald extends Entity implements Combatant {
     private int attackPower; // Potenza d'attacco
     private BufferedImage image;
     private String path = "/images/bald.png"; // Percorso dell'immagine
-    private double speedX = 0.0; // Velocità lungo l'asse X
+    private double speedX = 1.0; // Velocità lungo l'asse X
     private final Wallet wallet = new Wallet(0);
 
     public double getSpeedX() {
@@ -51,7 +52,7 @@ public class Bald extends Entity implements Combatant {
         return wallet;
     }
 
-    private double speedY = 0.0; // Velocità lungo l'asse Y
+    private double speedY = 1.0; // Velocità lungo l'asse Y
     private double posX, posY;
     private BufferedImage[] runFrames; // Array di immagini per l'animazione della corsa
     private Map<String, BufferedImage[]> attackFrames = new HashMap<>(); // Mappa per i frame di attacco
@@ -59,7 +60,7 @@ public class Bald extends Entity implements Combatant {
     private int currentFrame = 0; // Indice del frame corrente
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
-    private int MOVE_SPEED = 60; // Velocità di movimento in pixel al secondo
+    private double MOVE_SPEED = 60.0; // Velocità di movimento in pixel al secondo
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
     private boolean facingRight = true; // Direzione in cui Bald sta guardando
@@ -194,6 +195,11 @@ public class Bald extends Entity implements Combatant {
             g.setColor(Color.RED);
             g.fillRect(x, y, 50, 50);
         }
+
+        // Disegna la hitbox in rosso per debug
+        Rectangle hitbox = getHitbox();
+        g.setColor(Color.RED);
+        g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
     }
 
     public void setSpeedX(double speedX) {
@@ -212,6 +218,7 @@ public class Bald extends Entity implements Combatant {
         int hitboxY = 25;
 
         double nextX = posX + speedX * deltaTime * MOVE_SPEED; // deltaTime per rendere il movimento costante al variare degli FPS
+        
         Rectangle nextHitboxX = new Rectangle(
             (int)(nextX + (50 - hitboxX) / 2),
             (int)(posY + (50 - hitboxY) / 2),
@@ -227,7 +234,8 @@ public class Bald extends Entity implements Combatant {
         boolean collisionX = false;
         for (int tx = leftX; tx <= rightX; tx++) {
             for (int ty = topX; ty <= bottomX; ty++) {
-                if (tileMap.getTileIdAt(tx, ty) == 2) {
+                Tile tileX = tileMap.getTileAt(tx, ty);
+                if (tileX != null && tileX.getId() == 2) {
                     collisionX = true;
                     break;
                 }
@@ -254,7 +262,8 @@ public class Bald extends Entity implements Combatant {
         boolean collisionY = false;
         for (int tx = leftY; tx <= rightY; tx++) {
             for (int ty = topY; ty <= bottomY; ty++) {
-                if (tileMap.getTileIdAt(tx, ty) == 2) {
+                Tile tileY = tileMap.getTileAt(tx, ty);
+                if (tileY != null && tileY.getId() == 2) {
                     collisionY = true;
                     break;
                 }
@@ -266,8 +275,8 @@ public class Bald extends Entity implements Combatant {
             posY = nextY;
         }
 
-        x = (int) posX;
-        y = (int) posY;
+        this.x = (int) nextX;
+        this.y = (int) nextY;
     }
 
     public Rectangle getHitbox() {
@@ -324,4 +333,10 @@ public class Bald extends Entity implements Combatant {
         this.startAttackAnimation();
     }
 
+    public void setPosition(int x, int y) {
+        this.setX(x);
+        this.setY(y);
+        this.posX = x;
+        this.posY = y;
+    }
 }
