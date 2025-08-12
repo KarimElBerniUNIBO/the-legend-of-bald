@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,9 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import com.thelegendofbald.buffs.Buff;
+import com.thelegendofbald.buffs.PoisonBuff;
+import com.thelegendofbald.buffs.StrengthBuff;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.common.Wallet;
@@ -28,11 +32,11 @@ public class Bald extends Entity implements Combatant {
     private Optional<Weapon> weapon = Optional.empty();
     public static final String SpeedX = null;
     private TileMap tileMap;
-    private int attackPower; // Potenza d'attacco
-    private BufferedImage image;
-    private String path = "/images/bald.png"; // Percorso dell'immagine
+    private int attackPower; // Potenza d'attacco base
     private double speedX = 0.0; // Velocità lungo l'asse X
     private final Wallet wallet = new Wallet(0);
+
+    private final List<Buff> activeBuffs = new ArrayList<>();
 
     public double getSpeedX() {
         return speedX;
@@ -56,8 +60,6 @@ public class Bald extends Entity implements Combatant {
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
     private boolean facingRight = true; // Direzione in cui Bald sta guardando
-    private int health = 100; // Salute di Bald
-    private String name; // Nome di Bald
 
     public Bald(int x, int y, int maxHealth, String name, int attackPower) {
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(maxHealth));
@@ -109,7 +111,6 @@ public class Bald extends Entity implements Combatant {
     public void setSpawnPosition(int spawnTileId, int tileSize) {
         Point spawnPoint = tileMap.findSpawnPoint(spawnTileId);
         if (spawnPoint != null) {
-            // Centra i piedi di Bald nel tile di spawn
             int x = spawnPoint.x + (tileSize - getWidth()) / 2;
             int y = spawnPoint.y + tileSize - getHeight();
             this.setX(x);
@@ -119,11 +120,10 @@ public class Bald extends Entity implements Combatant {
 
     private void loadRunFrames() {
         try {
-            int numFrames = 9; // Supponiamo di avere 6 frame
+            int numFrames = 9;
             runFrames = new BufferedImage[numFrames];
             for (int i = 0; i < numFrames; i++) {
-                String framePath = String.format("/images/bald_run/PS_BALD GUY_Run_00%d.png", i + 1); // Percorso dei
-                                                                                                      // frame
+                String framePath = String.format("/images/bald_run/PS_BALD GUY_Run_00%d.png", i + 1);
                 InputStream is = getClass().getResourceAsStream(framePath);
                 if (is != null) {
                     runFrames[i] = ImageIO.read(is);
@@ -135,9 +135,16 @@ public class Bald extends Entity implements Combatant {
             e.printStackTrace();
         }
     }
-
+    
+    @Override
     public int getAttackPower() {
-        return attackPower;
+        int totalPower = attackPower;
+        for (Buff buff : activeBuffs) {
+            if (buff instanceof StrengthBuff) {
+                totalPower += ((StrengthBuff) buff).getBonusAmount();
+            }
+        }
+        return totalPower;
     }
 
     public void setAttackPower(int attackPower) {
@@ -157,7 +164,7 @@ public class Bald extends Entity implements Combatant {
                 }
 
             } else {
-                currentFrame = (currentFrame + 1) % runFrames.length; // Cicla tra i frame
+                currentFrame = (currentFrame + 1) % runFrames.length;
             }
         }
 
@@ -254,5 +261,37 @@ public class Bald extends Entity implements Combatant {
         this.isAttacking = true;
         this.startAttackAnimation();
     }
+    
+    public void applyBuff(Buff buff) {
+        activeBuffs.removeIf(b -> b.getName().equals(buff.getName()));
+        buff.activate();
+        activeBuffs.add(buff);
+        System.out.println("Buff di " + buff.getName() + " attivato!");
+    }
+
+    // Estratto da Bald.java
+    public void updateBuffs() {
+     List<Buff> expiredBuffs = new ArrayList<>();
+        for (Buff buff : activeBuffs) {
+         buff.update(); // 1. Chiamata all'update() del buff base per gestire la sua durata
+
+        // 2. Controllo specifico per i PoisonBuff per applicare danni periodici
+            if (buff instanceof PoisonBuff) {
+             PoisonBuff poisonBuff = (PoisonBuff) buff;
+                if (poisonBuff.shouldTick()) { 
+                this.lifeComponent.damageTaken(poisonBuff.getDamagePerTick()); 
+                System.out.println("Poison dealt " + poisonBuff.getDamagePerTick() + " damage. Current Health: " + this.lifeComponent.getCurrentHealth());
+                poisonBuff.resetTickTimer(); // RESETTA il timer per il prossimo tick di danno
+            }
+        }
+        
+        // 3. Rimuove il buff se è scaduto
+         if (buff.isExpired()) {
+              buff.remove(this); // Chiama il metodo remove() del buff specifico per annullare l'effetto
+              expiredBuffs.add(buff);
+        }
+    }
+    activeBuffs.removeAll(expiredBuffs); // Pulisce la lista dai buff scaduti
+}
 
 }

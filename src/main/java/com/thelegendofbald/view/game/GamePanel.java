@@ -15,8 +15,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -33,6 +35,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.game.Game;
 import com.thelegendofbald.api.inventory.Inventory;
+import com.thelegendofbald.api.interactable.Interactable;
 import com.thelegendofbald.api.panels.LifePanel;
 import com.thelegendofbald.api.panels.MenuPanel;
 import com.thelegendofbald.api.settingsmenu.ControlsSettings;
@@ -41,6 +44,13 @@ import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.combat.projectile.Projectile;
+import com.thelegendofbald.item.Chest;
+import com.thelegendofbald.item.GameItem;
+import com.thelegendofbald.item.InventoryItem;
+import com.thelegendofbald.item.ItemFactory;
+import com.thelegendofbald.item.MapItemSpawner;
+import com.thelegendofbald.item.Trap;
+import com.thelegendofbald.item.UsableItem;
 import com.thelegendofbald.item.weapons.Axe;
 import com.thelegendofbald.item.weapons.FireBall;
 import com.thelegendofbald.item.weapons.Sword;
@@ -58,6 +68,7 @@ import com.thelegendofbald.view.main.GridPanel;
 import com.thelegendofbald.view.main.ShopPanel;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
+
 
 public class GamePanel extends MenuPanel implements Runnable, Game {
 
@@ -83,8 +94,17 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private transient final Bald bald = new Bald(60, 60, 100, "Bald", 50);
 
     private String currentMapName = "map_1";
+    private final Map<String, String> mapTransitions = Map.of(
+        "map_1", "map_2",
+        "map_2", "map_3"
+    );
     private final GridPanel gridPanel;
     private transient final TileMap tileMap;
+
+    private transient ItemFactory itemFactory;
+    private MapItemSpawner itemSpawner;
+    private transient List<GameItem> gameItems = new ArrayList<>();
+
     private final LifePanel lifePanel;
     private transient List<DummyEnemy> enemies = new ArrayList<>();
     private final JPanel optionsPanel;
@@ -131,16 +151,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.combatManager = new CombatManager(bald, enemies);
         this.bald.setWeapon(new FireBall(0, 0, 50, 50, combatManager));
 
-        /*JButton shopButton = new JButton("Shop");
-        shopButton.setBounds(100, 100, 120, 40);
-        shopButton.setVisible(true);
-        shopButton.setBackground(Color.YELLOW);
-        shopButton.setOpaque(true);
-        shopButton.addActionListener(e -> {
-            ShopPanel shopPanel = new ShopPanel();
-            JOptionPane.showMessageDialog(this, shopPanel, "Negozio", JOptionPane.PLAIN_MESSAGE);
-        });
-        this.add(shopButton);*/
+        this.itemFactory = new ItemFactory();
+        this.gameItems = new ArrayList<>();
 
         tileMap.changeMap("map_1");
         bald.setTileMap(tileMap);
@@ -154,10 +166,14 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
         this.addWeaponsToInventory();
 
+        for (int i = 0 ; i < num_enemies ; i++) {
+            enemies.add(new DummyEnemy(ThreadLocalRandom.current().nextInt(300, 1000), 
+                                       ThreadLocalRandom.current().nextInt(300, 600),
+                                       60, "ZioBilly", 10));
+        }
+
         setupKeyBindings();
         this.initialize();
-
-
     }
 
 
@@ -166,9 +182,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             this.setBackground(Color.BLACK);
             this.setFocusable(true);
             this.setLayout(new GridBagLayout());
-
-
-
         });
     }
 
@@ -185,18 +198,18 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = this.getActionMap();
 
-        // Tasti premuti
         bindKey(im, am, "pressed UP", KeyEvent.VK_UP, true, () -> pressedKeys.add(KeyEvent.VK_UP));
         bindKey(im, am, "pressed DOWN", KeyEvent.VK_DOWN, true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
         bindKey(im, am, "pressed LEFT", KeyEvent.VK_LEFT, true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
         bindKey(im, am, "pressed RIGHT", KeyEvent.VK_RIGHT, true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
         bindKey(im, am, "pressed SPACE", ControlsSettings.ATTACK.getKey(), true, combatManager::tryToAttack);
 
-        // Tasti rilasciati
         bindKey(im, am, "released UP", KeyEvent.VK_UP, false, () -> pressedKeys.remove(KeyEvent.VK_UP));
         bindKey(im, am, "released DOWN", KeyEvent.VK_DOWN, false, () -> pressedKeys.remove(KeyEvent.VK_DOWN));
         bindKey(im, am, "released LEFT", KeyEvent.VK_LEFT, false, () -> pressedKeys.remove(KeyEvent.VK_LEFT));
         bindKey(im, am, "released RIGHT", KeyEvent.VK_RIGHT, false, () -> pressedKeys.remove(KeyEvent.VK_RIGHT));
+
+        bindKey(im, am, "interact", KeyEvent.VK_E, true, this::interactWithItems);
     }
 
     private void bindKey(InputMap im, ActionMap am, String name, int key, boolean pressed, Runnable action) {
@@ -228,8 +241,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             combatManager.tryToAttack();
         }
 
-        // Normalizza il vettore per garantire velocità costante
-        double magnitude = Math.hypot(dx, dy); // meglio di sqrt(x^2 + y^2)
+        double magnitude = Math.hypot(dx, dy);
         if (magnitude > 0) {
             dx = (dx / magnitude) * MOVE_SPEED;
             dy = (dy / magnitude) * MOVE_SPEED;
@@ -245,6 +257,15 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         bald.setSpeedY(dy);
     }
 
+    private void interactWithItems() {
+        gameItems.stream()
+                .filter(item -> bald.getBounds().intersects(item.getBounds()))
+                .filter(item -> item instanceof Interactable)
+                .map(item -> (Interactable) item)
+                .findFirst()
+                .ifPresent(interactableItem -> interactableItem.interact(bald, inventory));
+    }
+
     boolean intersects(Combatant e1, Combatant e2) {
         return e1.getBounds().intersects(e2.getBounds());
     }
@@ -256,14 +277,10 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private void setPlayerName() {
         String nickname = "";
 
-        // TODO: Mettere in pausa il gioco e mostrare un dialogo per inserire il nome
-
         while (Optional.ofNullable(nickname).isEmpty() || nickname.isBlank()) {
             nickname = javax.swing.JOptionPane.showInputDialog("Enter your nickname:");
         }
         gameRun = new GameRun(nickname, timer.getFormattedTime());
-
-        // TODO: Continua il gioco
     }
 
     @Override
@@ -298,7 +315,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         double delta = 0;
 
         while (true) {
-
             long now = System.nanoTime();
             updateInterval += (now - lastTime);
             interval = 1e9 / maxFPS;
@@ -309,7 +325,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 update();
                 repaint();
                 delta--;
-                drawCount++; // check FPS
+                drawCount++;
             }
 
             if (updateInterval >= 1e9) {
@@ -317,50 +333,93 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 drawCount = 0;
                 updateInterval = 0;
             }
-
         }
     }
 
-    private void update() {
-        handleInput();
-        bald.updateAnimation();
-        bald.move();
-        checkIfNearShopTile();
+    private void handleItemCollection() {
+        gameItems.removeIf(item -> {
+            if (bald.getBounds().intersects(item.getBounds())) {
+                // DEBUG: Controlla le coordinate e le dimensioni per il debug delle collisioni
+                System.out.printf("DEBUG: Bald Bounds: %s, Item Bounds: %s%n", bald.getBounds(), item.getBounds());
+                System.out.println("DEBUG: Collisione rilevata con: " + item.getName() + " (" + item.getClass().getSimpleName() + ")");
+                
+                if (item instanceof Chest) {
+                    System.out.println("DEBUG: Colliso con Chest, ignorato per raccolta automatica.");
+                    return false; // La cassa non viene rimossa dalla handleItemCollection
+                }
+                
+                if (item instanceof UsableItem) {
+                    ((UsableItem) item).applyEffect(bald);
+                    System.out.println("DEBUG: Item " + item.getName() + " (UsableItem) usato automaticamente.");
+                    return true; // Gli UsableItem vengono rimossi dopo l'uso
+                } else if (item instanceof InventoryItem) {
+                    ((InventoryItem) item).onCollect(inventory);
+                    System.out.println("DEBUG: Item " + item.getName() + " (InventoryItem) raccolto automaticamente.");
+                    return true; // Gli InventoryItem vengono rimossi dopo la raccolta
+                } else if (item instanceof Trap) { 
+                    Trap trap = (Trap) item;
+                    System.out.println("DEBUG: Colliso con Trap. isTriggered: " + trap.isTriggered());
+                    if (!trap.isTriggered()) {
+                        trap.interact(bald, inventory); 
+                        System.out.println("DEBUG: Trap " + item.getName() + " attivata (non rimossa dalla lista).");
+                    } else {
+                        System.out.println("DEBUG: Trap " + item.getName() + " già attivata, ignorata.");
+                    }
+                    return false; // <--- CAMBIATO QUI! La trappola NON viene rimossa.
+                }
+            }
+            return false; // Nessuna collisione, o collisione con item che non devono essere rimossi qui
+        });
+    }
 
+    private boolean isAtMapTransitionPoint() {
         int baldX = bald.getX();
         int baldY = bald.getY();
-        int baldW = bald.getWidth();
         int baldH = bald.getHeight();
+        int baldW = bald.getWidth();
         int tileSize = tileMap.TILE_SIZE;
-
-        // Calcola la posizione dei piedi di Bald
+        
         int feetY = baldY + baldH;
         int tileFeetY = feetY / tileSize;
         int tileCenterX = (baldX + baldW / 2) / tileSize;
 
-        // --- LOGICA CAMBIO MAPPA ---
         Tile tileUnderFeet = tileMap.getTileAt(tileCenterX, tileFeetY);
-        if (tileUnderFeet != null && tileUnderFeet.getId() == 4) {
-            if (feetY % tileSize == 0) {
-                switchToNextMap();
-                return;
-            }
-        }
-        combatManager.checkEnemyAttacks();
+        return tileUnderFeet != null && tileUnderFeet.getId() == 4 && (feetY % tileSize == 0);
+    }
 
+    public void update() {
+        handleInput();
+        bald.updateAnimation();
+        bald.move();
+        bald.updateBuffs(); 
+    
+        if (isAtMapTransitionPoint()) {
+            switchToNextMap();
+            return;
+        }
+    
+        combatManager.checkEnemyAttacks();
         enemies.removeIf(enemy -> !enemy.isAlive());
         enemies.forEach(enemy -> {
             if(enemy.isCloseTo(bald)){
                 enemy.followPlayer(bald);
                 enemy.updateAnimation();
             }
-
         });
-
+    
         combatManager.getProjectiles().forEach(Projectile::move);
         combatManager.checkProjectiles();
-
-        repaint();
+    
+        handleItemCollection();
+    
+        // !!! AGGIUNGI QUESTO BLOCCO !!!
+        // Aggiorna l'animazione di tutti gli item che ne hanno una
+        gameItems.forEach(item -> {
+            if (item instanceof Trap) { // O qualsiasi altro item che ha updateAnimation()
+                ((Trap) item).updateAnimation();
+            }
+            // Aggiungi qui altri if per altri tipi di item animati
+        });
     }
 
     private void spawnEnemiesFromMap() {
@@ -384,6 +443,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         currentMapName = mapName;
         tileMap.changeMap(mapName);
         bald.setTileMap(tileMap);
+        
+        this.gameItems.clear(); 
 
         Point spawnPoint = tileMap.findSpawnPoint(5);
         if (spawnPoint != null) {
@@ -397,14 +458,26 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         spawnEnemiesFromMap();
     }
 
+    private String getNextMapName(String currentMap) {
+        return mapTransitions.get(currentMap);
+    }
+
     private void switchToNextMap() {
-        if (currentMapName.equals("map_1")) {
-            changeMap("map_2");
-        } else if (currentMapName.equals("map_2")) {
-            changeMap("map_3");
+        String nextMapName = getNextMapName(currentMapName);
+        if (nextMapName != null) {
+            changeAndLoadMap(nextMapName);
         } else {
             System.out.println("Nessuna mappa successiva definita.");
         }
+    }
+    
+    private void changeAndLoadMap(String mapName) {
+        changeMap(mapName);
+        String itemFileName = "item_" + mapName + ".txt";
+        this.itemSpawner = new MapItemSpawner(tileMap, this.itemFactory, itemFileName);
+        this.itemSpawner.spawnItems();
+        // Crea una nuova ArrayList a partire dalla lista non modificabile
+        this.gameItems = new ArrayList<>(itemSpawner.getItems()); 
     }
 
     @Override
@@ -415,6 +488,9 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.scaleGraphics(g2d);
         tileMap.paint(g2d);
         gridPanel.paintComponent(g2d);
+
+        this.gameItems.forEach(item -> item.render(g2d));
+        
         bald.render(g2d);
         enemies.forEach(enemy -> enemy.render(g2d));
         this.combatManager.getProjectiles().forEach(p -> p.render(g2d));   
@@ -488,7 +564,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.add(optionsPanel, optionsGBC);
         this.add(inventoryPanel, inventoryGBC);
 
-        // ➤ CONFIGURA IL BOTTONE (già creato come campo)
+        JButton shopButton = new JButton("Shop");
         shopButton.setBackground(Color.YELLOW);
         shopButton.setOpaque(true);
         shopButton.setFocusable(false);
@@ -573,5 +649,4 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     public boolean isShowingTimer() {
         return showingTimer;
     }
-
 }
