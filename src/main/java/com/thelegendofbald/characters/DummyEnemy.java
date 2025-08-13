@@ -34,7 +34,7 @@ public class DummyEnemy extends Entity  implements Combatant{
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
 
     private long lastAttackTime = 0; // Tempo dell'ultimo attacco
-    private final double minDistance = 1000;
+    private final double minDistance = 150;
 
     private TileMap tileMap;
 

@@ -193,25 +193,34 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         ActionMap am = this.getActionMap();
 
             // Tasti premuti
-        bindKey(im, am, "pressed UP", KeyEvent.VK_UP, true, () -> pressedKeys.add(KeyEvent.VK_UP));
-        bindKey(im, am, "pressed DOWN", KeyEvent.VK_DOWN, true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
-        bindKey(im, am, "pressed LEFT", KeyEvent.VK_LEFT, true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
-        bindKey(im, am, "pressed RIGHT", KeyEvent.VK_RIGHT, true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
+        bindKey(im, am, "pressed UP", ControlsSettings.UP.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_UP));
+        bindKey(im, am, "pressed DOWN", ControlsSettings.DOWN.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
+        bindKey(im, am, "pressed LEFT", ControlsSettings.LEFT.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
+        bindKey(im, am, "pressed RIGHT", ControlsSettings.RIGHT.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
         bindKey(im, am, "pressed ESCAPE", KeyEvent.VK_ESCAPE, true, () -> {
-
-            if (paused) {
+            if (paused && !inventoryPanel.isVisible()) {
                 closeOptionsPanel();
+            } else if (!inventoryPanel.isVisible()) {
+                openOptionsPanel();
             } else {
+                inventoryPanel.setVisible(false);
                 openOptionsPanel();
             }
         });
         bindKey(im, am, "pressed SPACE", ControlsSettings.ATTACK.getKey(), true, combatManager::tryToAttack);
+        bindKey(im, am, "pressed E", ControlsSettings.INVENTORY.getKey(), true, () -> {
+            if (inventoryPanel.isVisible()) {
+                inventoryPanel.setVisible(false);
+            } else {
+                inventoryPanel.setVisible(true);
+            }
+        });
 
         // Tasti rilasciati
-        bindKey(im, am, "released UP", KeyEvent.VK_UP, false, () -> pressedKeys.remove(KeyEvent.VK_UP));
-        bindKey(im, am, "released DOWN", KeyEvent.VK_DOWN, false, () -> pressedKeys.remove(KeyEvent.VK_DOWN));
-        bindKey(im, am, "released LEFT", KeyEvent.VK_LEFT, false, () -> pressedKeys.remove(KeyEvent.VK_LEFT));
-        bindKey(im, am, "released RIGHT", KeyEvent.VK_RIGHT, false, () -> pressedKeys.remove(KeyEvent.VK_RIGHT));
+        bindKey(im, am, "released UP", ControlsSettings.UP.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_UP));
+        bindKey(im, am, "released DOWN", ControlsSettings.DOWN.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_DOWN));
+        bindKey(im, am, "released LEFT", ControlsSettings.LEFT.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_LEFT));
+        bindKey(im, am, "released RIGHT", ControlsSettings.RIGHT.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_RIGHT));
     }
 
     private void bindKey(InputMap im, ActionMap am, String name, int key, boolean pressed, Runnable action) {
@@ -223,8 +232,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             }
         });
     }
-
-    private static final double MOVE_SPEED = 2.0;
 
     private void handleInput() {
         double dx = 0;
@@ -246,8 +253,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         // Normalizza il vettore per garantire velocità costante
         double magnitude = Math.hypot(dx, dy); // meglio di sqrt(x^2 + y^2)
         if (magnitude > 0) {
-            dx = (dx / magnitude) * MOVE_SPEED;
-            dy = (dy / magnitude) * MOVE_SPEED;
+            dx = (dx / magnitude);
+            dy = (dy / magnitude);
         }
 
         if (dx > 0) {
@@ -303,12 +310,13 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     @Override
-    public void run() {
-        System.out.println("Game loop started!");
-
+        public void run() {
         long lastTime = System.nanoTime();
-        long timer = System.currentTimeMillis();
         int frames = 0;
+        long fpsTimer = System.currentTimeMillis();
+    
+        // Usa double per precisione nei calcoli di timing
+        double targetFrameTime = 1000000000.0 / maxFPS; // nanosecondi come double
 
         while (gameThread != null) {
             if (paused) {
@@ -317,33 +325,39 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
+                lastTime = System.nanoTime(); // Reset per evitare salti temporali
                 continue;
             }
 
             long now = System.nanoTime();
-            double deltatime = (now - lastTime) / 1e7;
-            long mintime = 1000/maxFPS;
-            long sleepTime = (long) (mintime - deltatime);
-            if (sleepTime > 0) {
-                    try {
-                        Thread.sleep(sleepTime);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
+            double deltaTime = (now - lastTime) / 1e9; // secondi come double
+        
+            // Limita deltaTime per evitare salti dopo pause
+            deltaTime = Math.min(deltaTime, 1.0/30.0);
             lastTime = now;
 
-            update(deltatime/100.0);
+            update(deltaTime);
             repaint();
-            frames++;
 
-            // Stampa FPS ogni secondo
-                if (System.currentTimeMillis() - timer >= 1000) {
-                    currentFPS = frames;
-                    if (showingFPS) {
-                        System.out.println("FPS: " + frames);
-                    }
-                    frames = 0;
-                    timer += 1000;
+            frames++;
+            if (System.currentTimeMillis() - fpsTimer >= 1000) {
+                currentFPS = frames;
+                frames = 0;
+                fpsTimer += 1000;
+            }
+
+            // Calcolo preciso del sleep time
+            long frameEndTime = System.nanoTime();
+            double frameElapsed = (frameEndTime - now); // nanosecondi
+            double sleepTimeNanos = targetFrameTime - frameElapsed;
+        
+            if (sleepTimeNanos > 0) {
+                try {
+                    long sleepMillis = (long)(sleepTimeNanos / 1000000);
+                    int sleepNanos = (int)(sleepTimeNanos % 1000000);
+                    Thread.sleep(sleepMillis, sleepNanos);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -415,6 +429,13 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             System.out.println("Spawn point not found!");
         }
 
+        enemies.clear();
+
+        for (int i = 0 ; i < num_enemies ; i++) {
+            enemies.add(new DummyEnemy(ThreadLocalRandom.current().nextInt(300, 1000), // x
+                                       ThreadLocalRandom.current().nextInt(300, 600),  // y
+                                       60, "ZioBilly", 10));
+        }
     }
 
     private void switchToNextMap() {
@@ -585,6 +606,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
     private void openOptionsPanel() {
         pauseGame();
+        pressedKeys.clear();
         this.optionsPanel.setVisible(true);
         this.optionsPanel.requestFocusInWindow();
         this.repaint();
@@ -592,7 +614,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
     public void closeOptionsPanel() {
         this.optionsPanel.setVisible(false);
-        pressedKeys.clear(); // Svuota i tasti premuti per evitare stati incoerenti
+        pressedKeys.clear();
         resumeGame();
         this.requestFocusInWindow();
         this.repaint();

@@ -275,8 +275,8 @@ public class Bald extends Entity implements Combatant {
             posY = nextY;
         }
 
-        this.x = (int) nextX;
-        this.y = (int) nextY;
+        this.x = (int) Math.round(posX);
+        this.y = (int) Math.round(posY);
     }
 
     public Rectangle getHitbox() {
