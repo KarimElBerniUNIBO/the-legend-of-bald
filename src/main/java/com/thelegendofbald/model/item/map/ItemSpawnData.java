@@ -1,4 +1,4 @@
-package com.thelegendofbald.item.map;
+package com.thelegendofbald.model.item.map;
 
 public class ItemSpawnData {
     public final int id;

@@ -3,8 +3,8 @@ package com.thelegendofbald.api.inventory;
 import java.util.List;
 
 import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.item.GameItem;
 import com.thelegendofbald.model.inventory.Slot;
+import com.thelegendofbald.model.item.GameItem;
 
 /**
  * Represents an inventory system for the Bald character.

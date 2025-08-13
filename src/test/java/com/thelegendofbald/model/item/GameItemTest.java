@@ -5,7 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.awt.Rectangle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.thelegendofbald.item.GameItem;
+
+import com.thelegendofbald.model.item.GameItem;
 
 /**
  * Unit tests for the {@link GameItem} class.

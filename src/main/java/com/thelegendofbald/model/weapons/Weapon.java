@@ -3,8 +3,8 @@ package com.thelegendofbald.model.weapons;
 import java.util.List;
 
 import com.thelegendofbald.combat.Combatant;
-import com.thelegendofbald.item.GameItem;
 import com.thelegendofbald.model.combat.CombatManager;
+import com.thelegendofbald.model.item.GameItem;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

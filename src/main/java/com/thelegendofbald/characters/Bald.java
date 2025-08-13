@@ -38,7 +38,7 @@ public class Bald extends Entity implements Combatant {
     private final Wallet wallet = new Wallet(0);
 
     private final List<Buff> activeBuffs = new ArrayList<>();
-
+    
     public double getSpeedX() {
         return speedX;
     }

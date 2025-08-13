@@ -1,7 +1,7 @@
-package com.thelegendofbald.item.potions;
+package com.thelegendofbald.model.item.potions;
 
 import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.item.GameItem;
+import com.thelegendofbald.model.item.GameItem;
 
 /**
  * An abstract base class for all potions in the game.

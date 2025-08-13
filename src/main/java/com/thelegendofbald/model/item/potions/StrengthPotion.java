@@ -1,8 +1,8 @@
-package com.thelegendofbald.item.potions;
+package com.thelegendofbald.model.item.potions;
 
 import com.thelegendofbald.buffs.StrengthBuff;
 import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.item.UsableItem;
+import com.thelegendofbald.model.item.UsableItem;
 
 /**
  * A potion that temporarily increases the player's attack strength.

@@ -1,12 +1,12 @@
-package com.thelegendofbald.item.map;
+package com.thelegendofbald.model.item.map;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.thelegendofbald.item.GameItem;
-import com.thelegendofbald.item.ItemFactory;
+import com.thelegendofbald.model.item.GameItem;
+import com.thelegendofbald.model.item.ItemFactory;
 import com.thelegendofbald.view.main.TileMap;
 
 /**

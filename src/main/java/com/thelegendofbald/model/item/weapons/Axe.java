@@ -1,11 +1,11 @@
-package com.thelegendofbald.item.weapons;
+package com.thelegendofbald.model.item.weapons;
 
 import java.awt.Image;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.thelegendofbald.item.ShopItem;
+import com.thelegendofbald.model.item.ShopItem;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.weapons.HeavyMeleeWeapon;
 

@@ -1,11 +1,11 @@
-package com.thelegendofbald.item;
+package com.thelegendofbald.model.item;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import com.thelegendofbald.item.potions.HealthPotion;
-import com.thelegendofbald.item.potions.StrengthPotion;
+import com.thelegendofbald.model.item.potions.HealthPotion;
+import com.thelegendofbald.model.item.potions.StrengthPotion;
 
 /**
  * A factory class responsible for creating different types of {@link GameItem}

@@ -1,4 +1,4 @@
-package com.thelegendofbald.item;
+package com.thelegendofbald.model.item;
 
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.api.inventory.Inventory;
@@ -9,7 +9,7 @@ import com.thelegendofbald.api.interactable.Interactable;
  * It can only be opened by the player if they have the correct key.
  *
  * @see com.thelegendofbald.api.interactable.Interactable
- * @see com.thelegendofbald.item.GameItem
+ * @see com.thelegendofbald.model.item.GameItem
  */
 public class Chest extends GameItem implements Interactable {
 

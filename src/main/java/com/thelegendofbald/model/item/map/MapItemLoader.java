@@ -1,4 +1,4 @@
-package com.thelegendofbald.item.map;
+package com.thelegendofbald.model.item.map;
 
 import java.io.BufferedReader;
 import java.io.IOException;
