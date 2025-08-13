@@ -48,9 +48,10 @@ import com.thelegendofbald.item.Chest;
 import com.thelegendofbald.item.GameItem;
 import com.thelegendofbald.item.InventoryItem;
 import com.thelegendofbald.item.ItemFactory;
-import com.thelegendofbald.item.MapItemSpawner;
 import com.thelegendofbald.item.Trap;
 import com.thelegendofbald.item.UsableItem;
+import com.thelegendofbald.item.map.MapItemLoader;
+import com.thelegendofbald.item.map.MapItemSpawner;
 import com.thelegendofbald.item.weapons.Axe;
 import com.thelegendofbald.item.weapons.FireBall;
 import com.thelegendofbald.item.weapons.Sword;
@@ -152,7 +153,19 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.bald.setWeapon(new FireBall(0, 0, 50, 50, combatManager));
 
         this.itemFactory = new ItemFactory();
-        this.gameItems = new ArrayList<>();
+        
+        // --- INIZIALIZZAZIONE ITEMSPAWNER E GAMEITEMS ---
+        // Se la prima mappa non ha un file item dedicato, inizializza con una lista vuota.
+        // Altrimenti, carica il file item_map_1.txt se esiste.
+        try {
+            this.itemSpawner = new MapItemSpawner(tileMap, this.itemFactory, new MapItemLoader(), "item_map_1.txt");
+            this.itemSpawner.spawnItems();
+            this.gameItems = new ArrayList<>(itemSpawner.getItems());
+        } catch (Exception e) {
+            System.err.println("Nessun file item_map_1.txt trovato o errore di caricamento. La mappa parte senza item. " + e.getMessage());
+            this.gameItems = new ArrayList<>();
+        }
+        // --------------------------------------------------
 
         tileMap.changeMap("map_1");
         bald.setTileMap(tileMap);
@@ -420,6 +433,10 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             }
             // Aggiungi qui altri if per altri tipi di item animati
         });
+
+        checkIfNearShopTile();
+        this.revalidate();
+        this.repaint();
     }
 
     private void spawnEnemiesFromMap() {
@@ -471,14 +488,27 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         }
     }
     
+    // --- METODO REVISIONE PER CAMBIO MAPPA E CARICAMENTO ITEM ---
     private void changeAndLoadMap(String mapName) {
-        changeMap(mapName);
+        changeMap(mapName); // Cambia la mappa visiva e sposta il giocatore
+        
+        // Carica gli item della nuova mappa
         String itemFileName = "item_" + mapName + ".txt";
-        this.itemSpawner = new MapItemSpawner(tileMap, this.itemFactory, itemFileName);
-        this.itemSpawner.spawnItems();
-        // Crea una nuova ArrayList a partire dalla lista non modificabile
-        this.gameItems = new ArrayList<>(itemSpawner.getItems()); 
+        
+        // Gestisce il caso in cui un file item non esiste
+        try {
+            this.itemSpawner = new MapItemSpawner(tileMap, this.itemFactory, new MapItemLoader(), itemFileName);
+            this.itemSpawner.spawnItems();
+            this.gameItems = new ArrayList<>(itemSpawner.getItems()); 
+        } catch (Exception e) {
+            System.err.println("Nessun file item_" + mapName + ".txt trovato o errore di caricamento. La mappa si carica senza item." + e.getMessage());
+            this.gameItems = new ArrayList<>();
+        }
+        
+        // Resetta l'inventario per una nuova partita
+        this.inventory.clear();
     }
+    // -------------------------------------------------------------
 
     @Override
     protected void paintComponent(Graphics g) {
