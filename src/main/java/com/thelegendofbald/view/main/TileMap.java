@@ -36,7 +36,6 @@ public class TileMap {
             BufferedImage floor = loadBufferedImage("/images/map_png/floor-tiles.png");
             BufferedImage wall = loadBufferedImage("/images/map_png/BrickGrey.png");
             BufferedImage shop = loadBufferedImage("/images/map_png/shop.png");
-            BufferedImage chest = loadBufferedImage("/images/items/chestClosed.png");
 
             tileTypes.put(0, new Tile(null, TILE_SIZE, TILE_SIZE, 0, false, false, false, false, null));  // Tile vuoto
             tileTypes.put(1, new Tile(floor, TILE_SIZE, TILE_SIZE, 1, false, true, false, true, null));   // Pavimento
@@ -44,7 +43,6 @@ public class TileMap {
             tileTypes.put(4, new Tile(floor, TILE_SIZE, TILE_SIZE, 4, false, true, false, true, null));
             tileTypes.put(5, new Tile(floor, TILE_SIZE, TILE_SIZE, 5, false, true, true, true, null));
             tileTypes.put(6, new Tile(floor, TILE_SIZE, TILE_SIZE, 6, false, true, true, true, shop));
-            tileTypes.put(7, new Tile(chest, TILE_SIZE, TILE_SIZE, 7, false, true, true, true, null));
             tileTypes.put(8, new Tile(floor, TILE_SIZE, TILE_SIZE, 8, false, true, true, true, null));
         } catch (IOException e) {
             e.printStackTrace();
