@@ -1,3 +1,0 @@
-C:\Users\Utente\Desktop\the-legend-of-bald\build\classes\java\test\com\thelegendofbald\model\common\DataManagerTest.class
-C:\Users\Utente\Desktop\the-legend-of-bald\build\classes\java\test\com\thelegendofbald\model\inventory\InventoryManagerTest.class
-C:\Users\Utente\Desktop\the-legend-of-bald\build\classes\java\test\com\thelegendofbald\model\sounds\SoundManagerTest.class
