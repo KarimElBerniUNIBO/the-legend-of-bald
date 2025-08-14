@@ -296,6 +296,10 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.stopGame();
     }
 
+    /**
+     * Esegue il ciclo principale del gioco.
+     * Gestisce il calcolo del delta time, aggiornamento dello stato e FPS.
+     */
     @Override
     public void run() {
         final long NANOS_IN_SECOND = 1_000_000_000L;
