@@ -390,6 +390,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             return false;
         });
     }
+    
 
     private boolean isAtMapTransitionPoint() {
         int baldX = bald.getX();
