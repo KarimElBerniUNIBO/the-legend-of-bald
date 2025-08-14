@@ -270,21 +270,22 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private void setPlayerName() {
         String nickname = "";
 
-        // TODO: Mettere in pausa il gioco e mostrare un dialogo per inserire il nome
+        this.pauseGame();
 
         while (Optional.ofNullable(nickname).isEmpty() || nickname.isBlank()) {
             nickname = javax.swing.JOptionPane.showInputDialog("Enter your nickname:");
         }
-        gameRun = new GameRun(nickname, timer.getFormattedTime());
 
-        // TODO: Continua il gioco
+        this.gameRun = new GameRun(nickname, timer.getFormattedTime());
+        this.resumeGame();
     }
 
     @Override
     public void startGame() {
-        gameThread = new Thread(this);
-        gameThread.start();
-        timer.start();
+        this.running = true;
+        this.gameThread = new Thread(this);
+        this.gameThread.start();
+        this.timer.start();
         this.setPlayerName();
     }
 
@@ -559,6 +560,14 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     @Override
     public void stopGame() {
         this.running = false;
+        this.timer.stop();
+        if (gameThread != null) {
+            try {
+                gameThread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     @Override
@@ -583,12 +592,16 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         return showingTimer;
     }
 
+    @Override
     public void pauseGame() {
         this.paused = true;
+        this.timer.stop();
     }
 
+    @Override
     public void resumeGame() {
         this.paused = false;
+        this.timer.resume();
     }
 
     private final void openOptionsPanel() {
