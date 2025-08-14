@@ -183,8 +183,8 @@ public class DummyEnemy extends Entity  implements Combatant{
             y = (int) nextY;
         }
 
-        this.x = (int) x;
-        this.y = (int) y;
+        this.setX((int) x);
+        this.setY((int) y);
     }
 
 

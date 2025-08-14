@@ -106,7 +106,11 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
     private final Set<Integer> pressedKeys = new HashSet<>();
 
-    boolean paused;
+    private volatile boolean paused;
+    private static final long NANOS_IN_SECOND = 1_000_000_000L;
+    private static final long MILLIS_IN_SECOND = 1000L;
+    private static final long SLEEP_INTERVAL_WHEN_PAUSED = 100L;
+    private static final int DEFAULT_MAX_FPS = 60;
 
     public GamePanel() {
         super();
@@ -302,10 +306,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
      */
     @Override
     public void run() {
-        final long NANOS_IN_SECOND = 1_000_000_000L;
-        final long MILLIS_IN_SECOND = 1000L;
-        final long SLEEP_INTERVAL_WHEN_PAUSED = 100L;
-        final int DEFAULT_MAX_FPS = 60;
+
 
         long lastTime = System.nanoTime();
         int frames = 0;
@@ -590,7 +591,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.paused = false;
     }
 
-    private void openOptionsPanel() {
+    private final void openOptionsPanel() {
         pauseGame();
         pressedKeys.clear();
         this.optionsPanel.setVisible(true);
@@ -598,7 +599,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.repaint();
     }
 
-    public void closeOptionsPanel() {
+    private final void closeOptionsPanel() {
         this.optionsPanel.setVisible(false);
         pressedKeys.clear();
         resumeGame();
