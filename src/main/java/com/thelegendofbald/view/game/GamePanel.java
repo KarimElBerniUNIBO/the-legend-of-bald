@@ -53,10 +53,10 @@ import com.thelegendofbald.model.item.Chest;
 import com.thelegendofbald.model.item.GameItem;
 import com.thelegendofbald.model.item.InventoryItem;
 import com.thelegendofbald.model.item.ItemFactory;
-import com.thelegendofbald.model.item.Trap;
 import com.thelegendofbald.model.item.UsableItem;
 import com.thelegendofbald.model.item.map.MapItemLoader;
 import com.thelegendofbald.model.item.map.MapItemSpawner;
+import com.thelegendofbald.model.item.traps.Trap;
 import com.thelegendofbald.model.item.weapons.Axe;
 import com.thelegendofbald.model.item.weapons.FireBall;
 import com.thelegendofbald.model.item.weapons.Sword;
@@ -238,9 +238,15 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private static final double MOVE_SPEED = 2.0;
 
     private void handleInput() {
+        if (bald.isImmobilized()) {
+            bald.setSpeedX(0);
+            bald.setSpeedY(0);
+            return;
+        }
+    
         double dx = 0;
         double dy = 0;
-
+    
         if (pressedKeys.contains(KeyEvent.VK_LEFT))
             dx -= 1;
         if (pressedKeys.contains(KeyEvent.VK_RIGHT))
@@ -249,23 +255,23 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             dy -= 1;
         if (pressedKeys.contains(KeyEvent.VK_DOWN))
             dy += 1;
-
+    
         if (pressedKeys.contains(ControlsSettings.ATTACK.getKey())) {
             combatManager.tryToAttack();
         }
-
+    
         double magnitude = Math.hypot(dx, dy);
         if (magnitude > 0) {
             dx = (dx / magnitude) * MOVE_SPEED;
             dy = (dy / magnitude) * MOVE_SPEED;
         }
-
+    
         if (dx > 0) {
             bald.setFacingRight(true);
         } else if (dx < 0) {
             bald.setFacingRight(false);
         }
-
+    
         bald.setSpeedX(dx);
         bald.setSpeedY(dy);
     }
@@ -352,36 +358,36 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private void handleItemCollection() {
         gameItems.removeIf(item -> {
             if (bald.getBounds().intersects(item.getBounds())) {
-                // DEBUG: Controlla le coordinate e le dimensioni per il debug delle collisioni
                 System.out.printf("DEBUG: Bald Bounds: %s, Item Bounds: %s%n", bald.getBounds(), item.getBounds());
                 System.out.println("DEBUG: Collisione rilevata con: " + item.getName() + " (" + item.getClass().getSimpleName() + ")");
-                
+    
                 if (item instanceof Chest) {
                     System.out.println("DEBUG: Colliso con Chest, ignorato per raccolta automatica.");
-                    return false; // La cassa non viene rimossa dalla handleItemCollection
+                    return false;
                 }
-                
+    
                 if (item instanceof UsableItem) {
                     ((UsableItem) item).applyEffect(bald);
                     System.out.println("DEBUG: Item " + item.getName() + " (UsableItem) usato automaticamente.");
-                    return true; // Gli UsableItem vengono rimossi dopo l'uso
-                } else if (item instanceof InventoryItem) {
+                    return true;
+                } 
+                else if (item instanceof InventoryItem) {
                     ((InventoryItem) item).onCollect(inventory);
                     System.out.println("DEBUG: Item " + item.getName() + " (InventoryItem) raccolto automaticamente.");
-                    return true; // Gli InventoryItem vengono rimossi dopo la raccolta
-                } else if (item instanceof Trap) { 
-                    Trap trap = (Trap) item;
-                    System.out.println("DEBUG: Colliso con Trap. isTriggered: " + trap.isTriggered());
-                    if (!trap.isTriggered()) {
-                        trap.interact(bald, inventory); 
-                        System.out.println("DEBUG: Trap " + item.getName() + " attivata (non rimossa dalla lista).");
-                    } else {
-                        System.out.println("DEBUG: Trap " + item.getName() + " già attivata, ignorata.");
+                    return true;
+                } 
+                else if (item instanceof Trap trap) {
+                    // Usa la logica di attivazione definita nella trappola stessa
+                    if (trap.shouldTrigger(bald)) {
+                        trap.interact(bald, inventory);
+                        if (trap.shouldRemoveOnTrigger()) {
+                            return true; // rimuove trappole che scompaiono
+                        }
                     }
-                    return false; // <--- CAMBIATO QUI! La trappola NON viene rimossa.
+                    return false; // mantiene trappole permanenti
                 }
             }
-            return false; // Nessuna collisione, o collisione con item che non devono essere rimossi qui
+            return false;
         });
     }
 

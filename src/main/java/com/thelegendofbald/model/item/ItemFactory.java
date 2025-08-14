@@ -6,6 +6,8 @@ import java.util.function.BiFunction;
 
 import com.thelegendofbald.model.item.potions.HealthPotion;
 import com.thelegendofbald.model.item.potions.StrengthPotion;
+import com.thelegendofbald.model.item.traps.ImmobilizingTrap;
+import com.thelegendofbald.model.item.traps.PoisonTrap;
 
 /**
  * A factory class responsible for creating different types of {@link GameItem}
@@ -29,7 +31,8 @@ public class ItemFactory {
         // This decouples the factory from the Bald instance.
         registry.put(9, (x, y) -> new Chest(x, y, 8)); // Chest requiring key ID 8
         registry.put(10, (x, y) -> new Key(x, y, 8)); // Key with ID 8
-        registry.put(11, (x, y) -> new Trap(x, y)); // Trap item
+        registry.put(11, (x, y) -> new PoisonTrap(x, y));
+        registry.put(12, (x, y) -> new ImmobilizingTrap(x, y));
     }
 
     /**
