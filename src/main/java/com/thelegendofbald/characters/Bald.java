@@ -2,6 +2,7 @@ package com.thelegendofbald.characters;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -12,29 +13,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import javax.imageio.ImageIO;
 
 import com.thelegendofbald.buffs.Buff;
 import com.thelegendofbald.buffs.BuffManager;
 import com.thelegendofbald.buffs.PoisonBuff;
 import com.thelegendofbald.buffs.StrengthBuff;
+import com.thelegendofbald.view.main.Tile;
+import com.thelegendofbald.view.main.TileMap;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.common.Wallet;
 import com.thelegendofbald.model.weapons.Weapon;
-import com.thelegendofbald.view.main.TileMap;
+
+
 
 public class Bald extends Entity implements Combatant {
 
     private static final int WIDTH = 50; // Larghezza del frame
     private static final int HEIGHT = 50; // Altezza del frame
+    private static final int tileSize = 32;
 
     private Optional<Weapon> weapon = Optional.empty();
     public static final String SpeedX = null;
     private TileMap tileMap;
-    private int attackPower; // Potenza d'attacco base
-    private double speedX = 0.0; // Velocità lungo l'asse X
+    private int attackPower; // Potenza d'attacco
+    private BufferedImage image;
+    private String path = "/images/bald.png"; // Percorso dell'immagine
+    private double speedX = 1.0; // Velocità lungo l'asse X
     private final Wallet wallet = new Wallet(0);
 
     private final List<Buff> activeBuffs = new ArrayList<>();
@@ -51,13 +57,15 @@ public class Bald extends Entity implements Combatant {
         return wallet;
     }
 
-    private double speedY = 0.0; // Velocità lungo l'asse Y
+    private double speedY = 1.0; // Velocità lungo l'asse Y
+    private double posX, posY;
     private BufferedImage[] runFrames; // Array di immagini per l'animazione della corsa
     private Map<String, BufferedImage[]> attackFrames = new HashMap<>(); // Mappa per i frame di attacco
     private BufferedImage[] actualAttackFrames;
     private int currentFrame = 0; // Indice del frame corrente
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
+    private double MOVE_SPEED = 100.0; // Velocità di movimento in pixel al secondo
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
     private boolean facingRight = true; // Direzione in cui Bald sta guardando
@@ -66,6 +74,8 @@ public class Bald extends Entity implements Combatant {
     public Bald(int x, int y, int maxHealth, String name, int attackPower) {
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(maxHealth));
         this.attackPower = attackPower;
+        this.posX = x;
+        this.posY = y;
         loadRunFrames();
         loadAllAttackFrames();
     }
@@ -200,17 +210,77 @@ public class Bald extends Entity implements Combatant {
         // this.updateAnimation();
     }
 
-    public void move() {
-        if (speedX > 0) {
-            facingRight = true; // Bald si muove verso destra
-        } else if (speedX < 0) {
-            facingRight = false; // Bald si muove verso sinistra
-        }
-    
-        // Spostamento
-        this.x += speedX;
-        this.y += speedY;
+    /**
+     * Muove il nemico lungo gli assi X e Y sulla mappa, gestendo le collisioni con i tile solidi.
+     *
+     * @param tileMap mappa del mondo di gioco
+     * @param deltaTime tempo trascorso dall'ultimo aggiornamento, in secondi
+     */
+    public void move(final TileMap tileMap, final double deltaTime) {
+        final int HITBOX_WIDTH = 15;
+        final int HITBOX_HEIGHT = 25;
+        final int ENTITY_SIZE = 50;
+        final int TILE_SIZE = 32;
+        final int COLLISION_TILE_ID = 2;
 
+        final double nextX = posX + speedX * deltaTime * MOVE_SPEED;
+        final Rectangle nextHitboxX = new Rectangle(
+            (int) (nextX + (ENTITY_SIZE - HITBOX_WIDTH) / 2),
+            (int) (posY + (ENTITY_SIZE - HITBOX_HEIGHT) / 2),
+            HITBOX_WIDTH, HITBOX_HEIGHT
+        );
+
+        final int leftX = nextHitboxX.x / TILE_SIZE;
+        final int rightX = (nextHitboxX.x + nextHitboxX.width - 1) / TILE_SIZE;
+        final int topX = nextHitboxX.y / TILE_SIZE;
+        final int bottomX = (nextHitboxX.y + nextHitboxX.height - 1) / TILE_SIZE;
+
+        boolean collisionX = false;
+        outerX:
+        for (int tx = leftX; tx <= rightX; tx++) {
+            for (int ty = topX; ty <= bottomX; ty++) {
+                final Tile tileX = tileMap.getTileAt(tx, ty);
+                if (tileX != null && tileX.getId() == COLLISION_TILE_ID) {
+                    collisionX = true;
+                    break outerX;
+                }
+            }
+        }
+
+        if (!collisionX) {
+            posX = nextX;
+        }
+
+        final double nextY = posY + speedY * deltaTime * MOVE_SPEED;
+        final Rectangle nextHitboxY = new Rectangle(
+            (int) (posX + (ENTITY_SIZE - HITBOX_WIDTH) / 2),
+            (int) (nextY + (ENTITY_SIZE - HITBOX_HEIGHT) / 2),
+            HITBOX_WIDTH, HITBOX_HEIGHT
+        );
+
+        final int leftY = nextHitboxY.x / TILE_SIZE;
+        final int rightY = (nextHitboxY.x + nextHitboxY.width - 1) / TILE_SIZE;
+        final int topY = nextHitboxY.y / TILE_SIZE;
+        final int bottomY = (nextHitboxY.y + nextHitboxY.height - 1) / TILE_SIZE;
+
+        boolean collisionY = false;
+        outerY:
+        for (int tx = leftY; tx <= rightY; tx++) {
+            for (int ty = topY; ty <= bottomY; ty++) {
+                final Tile tileY = tileMap.getTileAt(tx, ty);
+                if (tileY != null && tileY.getId() == COLLISION_TILE_ID) {
+                    collisionY = true;
+                    break outerY;
+                }
+            }
+        }
+
+        if (!collisionY) {
+            posY = nextY;
+        }
+
+        this.x = (int) Math.round(posX);
+        this.y = (int) Math.round(posY);
     }
 
     public int getHeight() {
@@ -261,7 +331,6 @@ public class Bald extends Entity implements Combatant {
     public void applyBuff(Buff buff) {
         buffManager.applyBuff(buff);
     }
-    
     public void updateBuffs() {
         buffManager.update();
     }

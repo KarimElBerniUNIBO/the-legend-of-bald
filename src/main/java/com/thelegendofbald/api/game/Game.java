@@ -29,6 +29,16 @@ public interface Game {
     void stopGame();
 
     /**
+     * Resumes the game if it is paused.
+     */
+    void resumeGame();
+
+    /**
+     * Pauses the game, freezing the current state.
+     */
+    void pauseGame();
+
+    /**
      * Sets the frames per second (FPS) for the game.
      *
      * @param fps the desired FPS.

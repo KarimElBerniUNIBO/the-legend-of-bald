@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
-
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.Box;
@@ -29,9 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
 import org.apache.commons.lang3.tuple.Pair;
-
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.game.Game;
 import com.thelegendofbald.api.inventory.Inventory;
@@ -128,8 +125,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private volatile boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
-    
-    private final JButton shopButton = new JButton("Shop");
 
     public GamePanel() {
         super();
@@ -208,56 +203,53 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     private void setupKeyBindings() {
-        InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = this.getActionMap();
+        final InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
+        final ActionMap am = this.getActionMap();
 
+        // Tasti premuti
         bindKey(im, am, "pressed UP", KeyEvent.VK_UP, true, () -> pressedKeys.add(KeyEvent.VK_UP));
         bindKey(im, am, "pressed DOWN", KeyEvent.VK_DOWN, true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
         bindKey(im, am, "pressed LEFT", KeyEvent.VK_LEFT, true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
         bindKey(im, am, "pressed RIGHT", KeyEvent.VK_RIGHT, true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
         bindKey(im, am, "pressed SPACE", ControlsSettings.ATTACK.getKey(), true, combatManager::tryToAttack);
+        bindKey(im, am, "pressed E", ControlsSettings.INVENTORY.getKey(), true, () -> {
+            inventoryPanel.setVisible(!inventoryPanel.isVisible());
+        });
 
+        // Tasti rilasciati
         bindKey(im, am, "released UP", KeyEvent.VK_UP, false, () -> pressedKeys.remove(KeyEvent.VK_UP));
         bindKey(im, am, "released DOWN", KeyEvent.VK_DOWN, false, () -> pressedKeys.remove(KeyEvent.VK_DOWN));
         bindKey(im, am, "released LEFT", KeyEvent.VK_LEFT, false, () -> pressedKeys.remove(KeyEvent.VK_LEFT));
         bindKey(im, am, "released RIGHT", KeyEvent.VK_RIGHT, false, () -> pressedKeys.remove(KeyEvent.VK_RIGHT));
-
-        bindKey(im, am, "interact", KeyEvent.VK_E, true, this::interactWithItems);
     }
 
-    private void bindKey(InputMap im, ActionMap am, String name, int key, boolean pressed, Runnable action) {
+    private void bindKey(final InputMap im, final ActionMap am, final String name, final int key,
+                         final boolean pressed, final Runnable action) {
         im.put(KeyStroke.getKeyStroke(key, 0, !pressed), name);
         am.put(name, new AbstractAction() {
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(final java.awt.event.ActionEvent e) {
                 action.run();
             }
         });
     }
 
-    private static final double MOVE_SPEED = 2.0;
-
     private void handleInput() {
         double dx = 0;
         double dy = 0;
 
-        if (pressedKeys.contains(KeyEvent.VK_LEFT))
-            dx -= 1;
-        if (pressedKeys.contains(KeyEvent.VK_RIGHT))
-            dx += 1;
-        if (pressedKeys.contains(KeyEvent.VK_UP))
-            dy -= 1;
-        if (pressedKeys.contains(KeyEvent.VK_DOWN))
-            dy += 1;
+        if (pressedKeys.contains(KeyEvent.VK_LEFT)) { dx -= 1; }
+        if (pressedKeys.contains(KeyEvent.VK_RIGHT)) { dx += 1; }
+        if (pressedKeys.contains(KeyEvent.VK_UP)) { dy -= 1; }
+        if (pressedKeys.contains(KeyEvent.VK_DOWN)) { dy += 1; }
 
-        if (pressedKeys.contains(ControlsSettings.ATTACK.getKey())) {
-            combatManager.tryToAttack();
-        }
+        if (pressedKeys.contains(ControlsSettings.ATTACK.getKey())) { combatManager.tryToAttack(); }
 
-        double magnitude = Math.hypot(dx, dy);
+        // Normalizza il vettore per garantire velocità costante
+        double magnitude = Math.hypot(dx, dy); // meglio di sqrt(x^2 + y^2)
         if (magnitude > 0) {
-            dx = (dx / magnitude) * MOVE_SPEED;
-            dy = (dy / magnitude) * MOVE_SPEED;
+            dx /= magnitude;
+            dy /= magnitude;
         }
 
         if (dx > 0) {
@@ -268,15 +260,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
         bald.setSpeedX(dx);
         bald.setSpeedY(dy);
-    }
-
-    private void interactWithItems() {
-        gameItems.stream()
-                .filter(item -> bald.getBounds().intersects(item.getBounds()))
-                .filter(item -> item instanceof Interactable)
-                .map(item -> (Interactable) item)
-                .findFirst()
-                .ifPresent(interactableItem -> interactableItem.interact(bald, inventory));
     }
 
     boolean intersects(Combatant e1, Combatant e2) {
@@ -290,17 +273,22 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private void setPlayerName() {
         String nickname = "";
 
+        // TODO: Mettere in pausa il gioco e mostrare un dialogo per inserire il nome
+
         while (Optional.ofNullable(nickname).isEmpty() || nickname.isBlank()) {
             nickname = javax.swing.JOptionPane.showInputDialog("Enter your nickname:");
         }
         gameRun = new GameRun(nickname, timer.getFormattedTime());
+
+        // TODO: Continua il gioco
     }
 
     @Override
     public void startGame() {
-        gameThread = new Thread(this);
-        gameThread.start();
-        timer.start();
+        this.running = true;
+        this.gameThread = new Thread(this);
+        this.gameThread.start();
+        this.timer.start();
         this.setPlayerName();
     }
 
@@ -316,10 +304,13 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.stopGame();
     }
 
+    /**
+     * Esegue il ciclo principale del gioco.
+     * Gestisce il calcolo del delta time, aggiornamento dello stato e FPS.
+     */
     @Override
     public void run() {
-        running = true;
-        System.out.println("Game loop started!");
+
 
         long lastTime = System.nanoTime();
         double interval = 0;
@@ -328,6 +319,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         double delta = 0;
 
         while (true) {
+
             long now = System.nanoTime();
             updateInterval += (now - lastTime);
             interval = 1e9 / maxFPS;
@@ -338,7 +330,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 update();
                 repaint();
                 delta--;
-                drawCount++;
+                drawCount++; // check FPS
             }
 
             if (updateInterval >= 1e9) {
@@ -346,46 +338,15 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 drawCount = 0;
                 updateInterval = 0;
             }
+
         }
     }
 
-    private void handleItemCollection() {
-        gameItems.removeIf(item -> {
-            if (bald.getBounds().intersects(item.getBounds())) {
-                // DEBUG: Controlla le coordinate e le dimensioni per il debug delle collisioni
-                System.out.printf("DEBUG: Bald Bounds: %s, Item Bounds: %s%n", bald.getBounds(), item.getBounds());
-                System.out.println("DEBUG: Collisione rilevata con: " + item.getName() + " (" + item.getClass().getSimpleName() + ")");
-                
-                if (item instanceof Chest) {
-                    System.out.println("DEBUG: Colliso con Chest, ignorato per raccolta automatica.");
-                    return false; // La cassa non viene rimossa dalla handleItemCollection
-                }
-                
-                if (item instanceof UsableItem) {
-                    ((UsableItem) item).applyEffect(bald);
-                    System.out.println("DEBUG: Item " + item.getName() + " (UsableItem) usato automaticamente.");
-                    return true; // Gli UsableItem vengono rimossi dopo l'uso
-                } else if (item instanceof InventoryItem) {
-                    ((InventoryItem) item).onCollect(inventory);
-                    System.out.println("DEBUG: Item " + item.getName() + " (InventoryItem) raccolto automaticamente.");
-                    return true; // Gli InventoryItem vengono rimossi dopo la raccolta
-                } else if (item instanceof Trap) { 
-                    Trap trap = (Trap) item;
-                    System.out.println("DEBUG: Colliso con Trap. isTriggered: " + trap.isTriggered());
-                    if (!trap.isTriggered()) {
-                        trap.interact(bald, inventory); 
-                        System.out.println("DEBUG: Trap " + item.getName() + " attivata (non rimossa dalla lista).");
-                    } else {
-                        System.out.println("DEBUG: Trap " + item.getName() + " già attivata, ignorata.");
-                    }
-                    return false; // <--- CAMBIATO QUI! La trappola NON viene rimossa.
-                }
-            }
-            return false; // Nessuna collisione, o collisione con item che non devono essere rimossi qui
-        });
-    }
+    private void update() {
+        handleInput();
+        bald.updateAnimation();
+        bald.move();
 
-    private boolean isAtMapTransitionPoint() {
         int baldX = bald.getX();
         int baldY = bald.getY();
         int baldH = bald.getHeight();
@@ -415,45 +376,15 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         enemies.removeIf(enemy -> !enemy.isAlive());
         enemies.forEach(enemy -> {
             if(enemy.isCloseTo(bald)){
-                enemy.followPlayer(bald);
+                enemy.followPlayer(bald, tileMap, deltatime);
                 enemy.updateAnimation();
             }
         });
     
         combatManager.getProjectiles().forEach(Projectile::move);
         combatManager.checkProjectiles();
-    
-        handleItemCollection();
-    
-        // !!! AGGIUNGI QUESTO BLOCCO !!!
-        // Aggiorna l'animazione di tutti gli item che ne hanno una
-        gameItems.forEach(item -> {
-            if (item instanceof Trap) { // O qualsiasi altro item che ha updateAnimation()
-                ((Trap) item).updateAnimation();
-            }
-            // Aggiungi qui altri if per altri tipi di item animati
-        });
 
-        checkIfNearShopTile();
-        this.revalidate();
-        this.repaint();
-    }
-
-    private void spawnEnemiesFromMap() {
-        enemies.clear(); // rigenera ad ogni cambio mappa
-
-        List<Point> spawns = tileMap.findAllWithId(8); // id 8 = spawn nemici
-        int tileSize = tileMap.TILE_SIZE;
-
-        for (Point topLeft : spawns) {
-            int enemyW = 60, enemyH = 60;
-
-            // centra il nemico nel tile
-            int x = topLeft.x + (tileSize - enemyW) / 2;
-            int y = topLeft.y + (tileSize - enemyH) / 2;
-
-            enemies.add(new DummyEnemy(x, y, enemyW, "ZioBilly", 10));
-        }
+        repaint();
     }
 
     public void changeMap(String mapName) {
@@ -466,17 +397,21 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         Point spawnPoint = tileMap.findSpawnPoint(5);
         if (spawnPoint != null) {
             int tileSize = tileMap.TILE_SIZE;
-            bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
-            bald.setY(spawnPoint.y + tileSize - bald.getHeight());
+            int x = spawnPoint.x + (tileSize - bald.getWidth()) / 2;
+            int y = spawnPoint.y + tileSize - bald.getHeight();
+            bald.setX(x);
+            bald.setY(y);
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            spawnPoint = null;
         } else {
             System.out.println("Punto di spawn non trovato per la mappa: " + mapName);
         }
-
-        spawnEnemiesFromMap();
-    }
-
-    private String getNextMapName(String currentMap) {
-        return mapTransitions.get(currentMap);
     }
 
     private void switchToNextMap() {
@@ -656,6 +591,14 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     @Override
     public void stopGame() {
         this.running = false;
+        this.timer.stop();
+        if (gameThread != null) {
+            try {
+                gameThread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     @Override
@@ -679,4 +622,5 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     public boolean isShowingTimer() {
         return showingTimer;
     }
+
 }
