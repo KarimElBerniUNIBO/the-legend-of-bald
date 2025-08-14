@@ -105,76 +105,78 @@ public class DummyEnemy extends Entity  implements Combatant{
 
     private static final double MOVE_SPEED = 90; // pixels per second
 
-    public void followPlayer(Bald bald, TileMap tileMap, double deltaTime) {
-        int hitboxX = 15;
-        int hitboxY = 25;
+    /**
+     * Aggiorna la posizione del nemico seguendo il giocatore, evitando ostacoli sulla mappa.
+     *
+     * @param bald il giocatore da inseguire
+     * @param tileMap la mappa di gioco
+     * @param deltaTime il tempo trascorso dall'ultimo aggiornamento
+     */
+    public void followPlayer(final Bald bald, final TileMap tileMap, final double deltaTime) {
+        final int HITBOX_WIDTH = 15;
+        final int HITBOX_HEIGHT = 25;
+        final int ENTITY_SIZE = 50;
+        final int TILE_SIZE = 32;
 
-        // Calcola la direzione verso Bald
-        double dirX = bald.getX() - this.x;
-        double dirY = bald.getY() - this.y;
+        final double dirX = bald.getX() - this.x;
+        final double dirY = bald.getY() - this.y;
 
-        // Normalizzo
-        double magnitude = Math.hypot(dirX, dirY);
-        double speedX = 0;
-        double speedY = 0;
-        if (magnitude != 0) {
-            speedX = dirX / magnitude;
-            speedY = dirY / magnitude;
-        }
+        final double magnitude = Math.hypot(dirX, dirY);
+        final double speedX = (magnitude != 0) ? dirX / magnitude : 0;
+        final double speedY = (magnitude != 0) ? dirY / magnitude : 0;
 
         facingRight = speedX >= 0;
 
-        double nextX = x + speedX * deltaTime * MOVE_SPEED;
-        Rectangle nextHitboxX = new Rectangle(
-            (int)(nextX + (50 - hitboxX) / 2),
-            (int)(y + (50 - hitboxY) / 2),
-            hitboxX, hitboxY
+        final double nextX = x + speedX * deltaTime * MOVE_SPEED;
+        final Rectangle nextHitboxX = new Rectangle(
+            (int) (nextX + (ENTITY_SIZE - HITBOX_WIDTH) / 2),
+            (int) (y + (ENTITY_SIZE - HITBOX_HEIGHT) / 2),
+            HITBOX_WIDTH, HITBOX_HEIGHT
         );
 
-        int tileSize = 32;
-        int leftX = nextHitboxX.x / tileSize;
-        int rightX = (nextHitboxX.x + nextHitboxX.width - 1) / tileSize;
-        int topX = nextHitboxX.y / tileSize;
-        int bottomX = (nextHitboxX.y + nextHitboxX.height - 1) / tileSize;
+        final int leftX = nextHitboxX.x / TILE_SIZE;
+        final int rightX = (nextHitboxX.x + nextHitboxX.width - 1) / TILE_SIZE;
+        final int topX = nextHitboxX.y / TILE_SIZE;
+        final int bottomX = (nextHitboxX.y + nextHitboxX.height - 1) / TILE_SIZE;
 
         boolean collisionX = false;
+        outerX:
         for (int tx = leftX; tx <= rightX; tx++) {
             for (int ty = topX; ty <= bottomX; ty++) {
-                Tile tileX = tileMap.getTileAt(tx, ty);
+                final Tile tileX = tileMap.getTileAt(tx, ty);
                 if (tileX != null && tileX.getId() == 2) {
                     collisionX = true;
-                    break;
+                    break outerX;
                 }
             }
-            if (collisionX) break;
         }
 
         if (!collisionX) {
             x = (int) nextX;
         }
 
-        double nextY = y + speedY * deltaTime * MOVE_SPEED;
-        Rectangle nextHitboxY = new Rectangle(
-            (int)(x + (50 - hitboxX) / 2),
-            (int)(nextY + (50 - hitboxY) / 2),
-            hitboxX, hitboxY
+        final double nextY = y + speedY * deltaTime * MOVE_SPEED;
+        final Rectangle nextHitboxY = new Rectangle(
+            (int) (x + (ENTITY_SIZE - HITBOX_WIDTH) / 2),
+            (int) (nextY + (ENTITY_SIZE - HITBOX_HEIGHT) / 2),
+            HITBOX_WIDTH, HITBOX_HEIGHT
         );
 
-        int leftY = nextHitboxY.x / tileSize;
-        int rightY = (nextHitboxY.x + nextHitboxY.width - 1) / tileSize;
-        int topY = nextHitboxY.y / tileSize;
-        int bottomY = (nextHitboxY.y + nextHitboxY.height - 1) / tileSize;
+        final int leftY = nextHitboxY.x / TILE_SIZE;
+        final int rightY = (nextHitboxY.x + nextHitboxY.width - 1) / TILE_SIZE;
+        final int topY = nextHitboxY.y / TILE_SIZE;
+        final int bottomY = (nextHitboxY.y + nextHitboxY.height - 1) / TILE_SIZE;
 
         boolean collisionY = false;
+        outerY:
         for (int tx = leftY; tx <= rightY; tx++) {
             for (int ty = topY; ty <= bottomY; ty++) {
-                Tile tileY = tileMap.getTileAt(tx, ty);
+                final Tile tileY = tileMap.getTileAt(tx, ty);
                 if (tileY != null && tileY.getId() == 2) {
                     collisionY = true;
-                    break;
+                    break outerY;
                 }
             }
-            if (collisionY) break;
         }
 
         if (!collisionY) {

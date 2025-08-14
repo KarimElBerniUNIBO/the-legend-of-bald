@@ -3,7 +3,6 @@ package com.thelegendofbald.characters;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -13,23 +12,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import javax.imageio.ImageIO;
-
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
-
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.common.Wallet;
 import com.thelegendofbald.model.weapons.Weapon;
-import com.thelegendofbald.view.main.TileMap;
+
 
 
 public class Bald extends Entity implements Combatant {
 
     private static final int WIDTH = 50; // Larghezza del frame
     private static final int HEIGHT = 50; // Altezza del frame
+    private static final int tileSize = 32;
 
     private Optional<Weapon> weapon = Optional.empty();
     public static final String SpeedX = null;
@@ -60,7 +57,7 @@ public class Bald extends Entity implements Combatant {
     private int currentFrame = 0; // Indice del frame corrente
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
-    private double MOVE_SPEED = 60.0; // Velocità di movimento in pixel al secondo
+    private double MOVE_SPEED = 100.0; // Velocità di movimento in pixel al secondo
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
     private boolean facingRight = true; // Direzione in cui Bald sta guardando
@@ -195,11 +192,6 @@ public class Bald extends Entity implements Combatant {
             g.setColor(Color.RED);
             g.fillRect(x, y, 50, 50);
         }
-
-        // Disegna la hitbox in rosso per debug
-        Rectangle hitbox = getHitbox();
-        g.setColor(Color.RED);
-        g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
     }
 
     public void setSpeedX(double speedX) {
@@ -212,63 +204,69 @@ public class Bald extends Entity implements Combatant {
         // this.updateAnimation();
     }
 
-    public void move(TileMap tileMap, double deltaTime) {
+    /**
+     * Muove il nemico lungo gli assi X e Y sulla mappa, gestendo le collisioni con i tile solidi.
+     *
+     * @param tileMap mappa del mondo di gioco
+     * @param deltaTime tempo trascorso dall'ultimo aggiornamento, in secondi
+     */
+    public void move(final TileMap tileMap, final double deltaTime) {
+        final int HITBOX_WIDTH = 15;
+        final int HITBOX_HEIGHT = 25;
+        final int ENTITY_SIZE = 50;
+        final int TILE_SIZE = 32;
+        final int COLLISION_TILE_ID = 2;
 
-        int hitboxX = 15;
-        int hitboxY = 25;
-
-        double nextX = posX + speedX * deltaTime * MOVE_SPEED; // deltaTime per rendere il movimento costante al variare degli FPS
-        
-        Rectangle nextHitboxX = new Rectangle(
-            (int)(nextX + (50 - hitboxX) / 2),
-            (int)(posY + (50 - hitboxY) / 2),
-            hitboxX, hitboxY
+        final double nextX = posX + speedX * deltaTime * MOVE_SPEED;
+        final Rectangle nextHitboxX = new Rectangle(
+            (int) (nextX + (ENTITY_SIZE - HITBOX_WIDTH) / 2),
+            (int) (posY + (ENTITY_SIZE - HITBOX_HEIGHT) / 2),
+            HITBOX_WIDTH, HITBOX_HEIGHT
         );
 
-        int tileSize = 32;
-        int leftX = nextHitboxX.x / tileSize;
-        int rightX = (nextHitboxX.x + nextHitboxX.width - 1) / tileSize;
-        int topX = nextHitboxX.y / tileSize;
-        int bottomX = (nextHitboxX.y + nextHitboxX.height - 1) / tileSize;
+        final int leftX = nextHitboxX.x / TILE_SIZE;
+        final int rightX = (nextHitboxX.x + nextHitboxX.width - 1) / TILE_SIZE;
+        final int topX = nextHitboxX.y / TILE_SIZE;
+        final int bottomX = (nextHitboxX.y + nextHitboxX.height - 1) / TILE_SIZE;
 
         boolean collisionX = false;
+        outerX:
         for (int tx = leftX; tx <= rightX; tx++) {
             for (int ty = topX; ty <= bottomX; ty++) {
-                Tile tileX = tileMap.getTileAt(tx, ty);
-                if (tileX != null && tileX.getId() == 2) {
+                final Tile tileX = tileMap.getTileAt(tx, ty);
+                if (tileX != null && tileX.getId() == COLLISION_TILE_ID) {
                     collisionX = true;
-                    break;
+                    break outerX;
                 }
             }
-            if (collisionX) break;
         }
 
         if (!collisionX) {
             posX = nextX;
         }
 
-        double nextY = posY + speedY * deltaTime * MOVE_SPEED;
-        Rectangle nextHitboxY = new Rectangle(
-            (int)(posX + (50 - hitboxX) / 2),
-            (int)(nextY + (50 - hitboxY) / 2),
-            hitboxX, hitboxY
+        final double nextY = posY + speedY * deltaTime * MOVE_SPEED;
+        final Rectangle nextHitboxY = new Rectangle(
+            (int) (posX + (ENTITY_SIZE - HITBOX_WIDTH) / 2),
+            (int) (nextY + (ENTITY_SIZE - HITBOX_HEIGHT) / 2),
+            HITBOX_WIDTH, HITBOX_HEIGHT
         );
 
-        int leftY = nextHitboxY.x / tileSize;
-        int rightY = (nextHitboxY.x + nextHitboxY.width - 1) / tileSize;
-        int topY = nextHitboxY.y / tileSize;
-        int bottomY = (nextHitboxY.y + nextHitboxY.height - 1) / tileSize;
+        final int leftY = nextHitboxY.x / TILE_SIZE;
+        final int rightY = (nextHitboxY.x + nextHitboxY.width - 1) / TILE_SIZE;
+        final int topY = nextHitboxY.y / TILE_SIZE;
+        final int bottomY = (nextHitboxY.y + nextHitboxY.height - 1) / TILE_SIZE;
 
         boolean collisionY = false;
+        outerY:
         for (int tx = leftY; tx <= rightY; tx++) {
             for (int ty = topY; ty <= bottomY; ty++) {
-                Tile tileY = tileMap.getTileAt(tx, ty);
-                if (tileY != null && tileY.getId() == 2) {
+                final Tile tileY = tileMap.getTileAt(tx, ty);
+                if (tileY != null && tileY.getId() == COLLISION_TILE_ID) {
                     collisionY = true;
-                    break;
+                    break outerY;
                 }
             }
-            if (collisionY) break;
         }
 
         if (!collisionY) {
@@ -278,15 +276,6 @@ public class Bald extends Entity implements Combatant {
         this.x = (int) Math.round(posX);
         this.y = (int) Math.round(posY);
     }
-
-    public Rectangle getHitbox() {
-        int width = 15;
-        int height = 25;
-        int offsetX = x + (50 - width) / 2;
-        int offsetY = y + (50 - height) / 2;
-        return new Rectangle(offsetX, offsetY, width, height);
-    }
-
 
     public int getHeight() {
         return 50;
@@ -331,12 +320,5 @@ public class Bald extends Entity implements Combatant {
     public void attack() {
         this.isAttacking = true;
         this.startAttackAnimation();
-    }
-
-    public void setPosition(int x, int y) {
-        this.setX(x);
-        this.setY(y);
-        this.posX = x;
-        this.posY = y;
     }
 }
