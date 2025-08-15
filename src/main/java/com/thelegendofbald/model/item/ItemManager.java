@@ -2,10 +2,10 @@ package com.thelegendofbald.model.item;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.thelegendofbald.api.common.animation.Animatable;
-import com.thelegendofbald.api.interactable.Interactable;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
@@ -66,8 +66,11 @@ public class ItemManager {
      */
     public void handleItemCollection(Bald bald) {
         List<GameItem> newItems = new ArrayList<>();
+        Iterator<GameItem> it = items.iterator();
     
-        items.removeIf(item -> {
+        while (it.hasNext()) {
+            GameItem item = it.next();
+    
             if (bald.getBounds().intersects(item.getBounds())) {
     
                 if (item instanceof Chest chest) {
@@ -81,30 +84,27 @@ public class ItemManager {
                             newItems.add(loot);
                         }
                     }
-                    return false;
-                }
-    
-                if (item instanceof UsableItem usable) {
+                    // Chest non viene rimossa, quindi nessun it.remove()
+                } 
+                else if (item instanceof UsableItem usable) {
                     usable.applyEffect(bald);
-                    return true;
-                }
-    
-                if (item instanceof Trap trap) {
+                    it.remove(); // Rimuoviamo l’item raccolto
+                } 
+                else if (item instanceof Trap trap) {
                     if (!trap.isTriggered()) {
                         trap.interact(bald);
                         if (trap.shouldRemoveOnTrigger()) {
-                            return true;
+                            it.remove();
                         }
                     }
-                    return false;
                 }
             }
-            return false;
-        });
+        }
     
-        // Aggiungiamo il loot dopo la rimozione, per evitare ConcurrentModificationException
+        // Aggiungiamo loot dopo aver iterato
         items.addAll(newItems);
     }
+    
     
 
 

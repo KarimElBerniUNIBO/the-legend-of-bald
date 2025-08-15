@@ -2,7 +2,6 @@ package com.thelegendofbald.model.item.traps;
 
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.api.common.animation.Animatable;
-import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.buffs.PoisonBuff;
 
 import java.awt.image.BufferedImage;
@@ -18,6 +17,8 @@ public class PoisonTrap extends Trap implements Animatable{
     private static final int POISON_DAMAGE_PER_TICK = 5;
     private static final long POISON_TICK_INTERVAL_MS = 1000;
     private static final long POISON_DURATION_MS = 5000;
+    private long lastTriggerTime = 0;
+    private static final long REACTIVATION_DELAY_MS = 2000; // 2 secondi di cooldown
 
     private BufferedImage[] idleFrames;
     private int currentFrameIndex = 0;
@@ -50,12 +51,13 @@ public class PoisonTrap extends Trap implements Animatable{
 
     @Override
     public void interact(Bald bald) {
-        if (!isTriggered) {
+        long now = System.currentTimeMillis();
+        if (now - lastTriggerTime >= REACTIVATION_DELAY_MS) {
             bald.applyBuff(new PoisonBuff(POISON_DURATION_MS, POISON_DAMAGE_PER_TICK, POISON_TICK_INTERVAL_MS));
-            isTriggered = true;
+            lastTriggerTime = now;
             System.out.println("You stepped on a poison trap! You are now poisoned.");
         }
-    }
+    }   
 
     @Override
     public void updateAnimation() {
