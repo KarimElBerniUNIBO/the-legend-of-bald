@@ -1,16 +1,16 @@
 package com.thelegendofbald.model.item.traps;
 
 import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.api.common.animation.Animatable;
 import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.buffs.PoisonBuff;
 
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 
-public class PoisonTrap extends Trap {
+public class PoisonTrap extends Trap implements Animatable{
 
     private static final int WIDTH = 32;
     private static final int HEIGHT = 32;
