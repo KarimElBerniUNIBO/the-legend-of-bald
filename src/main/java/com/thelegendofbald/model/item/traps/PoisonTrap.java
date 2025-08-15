@@ -49,7 +49,7 @@ public class PoisonTrap extends Trap implements Animatable{
     }
 
     @Override
-    public void interact(Bald bald, Inventory inventory) {
+    public void interact(Bald bald) {
         if (!isTriggered) {
             bald.applyBuff(new PoisonBuff(POISON_DURATION_MS, POISON_DAMAGE_PER_TICK, POISON_TICK_INTERVAL_MS));
             isTriggered = true;

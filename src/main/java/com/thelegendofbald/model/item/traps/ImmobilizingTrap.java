@@ -33,7 +33,7 @@ public class ImmobilizingTrap extends Trap {
     }
 
     @Override
-    public void interact(Bald bald, Inventory inventory) {
+    public void interact(Bald bald) {
         if (!isTriggered) {
             isTriggered = true;
             bald.immobilize(2000); 

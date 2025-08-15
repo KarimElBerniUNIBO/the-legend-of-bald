@@ -18,8 +18,6 @@ public class Chest extends GameItem implements Interactable {
     private static final int HEIGHT = 35;
     private static final String ITEM_NAME = "Treasure Chest";
     private static final int REWARD_AMOUNT = 10;
-    
-    private final int requiredKeyId;
 
     /**
      * Constructs a new Chest instance.
@@ -29,10 +27,9 @@ public class Chest extends GameItem implements Interactable {
      * @param y The y-position of the chest on the map.
      * @param requiredKeyId The ID of the key needed to open this chest.
      */
-    public Chest(final int x, final int y, final int requiredKeyId) {
+    public Chest(final int x, final int y) {
         super(x, y, WIDTH, HEIGHT, ITEM_NAME);
         this.isOpen = false;
-        this.requiredKeyId = requiredKeyId;
         loadImage("/images/items/chestClosed.png");
     }
 
@@ -55,16 +52,8 @@ public class Chest extends GameItem implements Interactable {
      * @param inventory The player's inventory.
      */
     @Override
-    public void interact(final Bald bald, final Inventory inventory) {
-        if (!isOpen) {
-            if (inventory.hasKey(requiredKeyId)) {
-                open(bald, inventory);
-            } else {
-                System.out.println("You need the correct key to open this chest!");
-            }
-        } else {
-            System.out.println("This chest has already been opened.");
-        }
+    public void interact(final Bald bald) {
+        this.open(bald);
     }
 
     /**
@@ -74,11 +63,9 @@ public class Chest extends GameItem implements Interactable {
      * @param bald The player instance.
      * @param inventory The player's inventory.
      */
-    private void open(final Bald bald, final Inventory inventory) {
+    private void open(final Bald bald) {
         this.isOpen = true;
         loadImage("/images/items/chestOpen.png");
         bald.getWallet().addCoins(REWARD_AMOUNT);
-        inventory.removeKey(requiredKeyId); 
-        System.out.printf("You opened the %s and found %d coins! Current coins: %d%n", ITEM_NAME, REWARD_AMOUNT, bald.getWallet().getCoins());
     }
 }

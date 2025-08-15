@@ -28,7 +28,7 @@ public abstract class Trap extends GameItem implements Interactable {
     }
 
     @Override
-    public abstract void interact(Bald bald, Inventory inventory);
+    public abstract void interact(Bald bald);
 
     public void updateAnimation() {
         // di default non fa nulla, le sottoclassi animate lo sovrascrivono

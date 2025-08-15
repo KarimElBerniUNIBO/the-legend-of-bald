@@ -219,7 +219,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 .filter(item -> item instanceof Interactable)
                 .map(item -> (Interactable) item)
                 .findFirst()
-                .ifPresent(interactableItem -> interactableItem.interact(bald, inventory));
+                .ifPresent(interactableItem -> interactableItem.interact(bald));
     }
 
 

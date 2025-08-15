@@ -29,8 +29,7 @@ public class ItemFactory {
         
         // Pass the required key ID to the Chest and Key constructors.
         // This decouples the factory from the Bald instance.
-        registry.put(9, (x, y) -> new Chest(x, y, 8)); // Chest requiring key ID 8
-        registry.put(10, (x, y) -> new Key(x, y, 8)); // Key with ID 8
+        registry.put(9, (x, y) -> new Chest(x, y)); // Chest requiring key ID 8
         registry.put(11, (x, y) -> new PoisonTrap(x, y));
         registry.put(12, (x, y) -> new ImmobilizingTrap(x, y));
     }

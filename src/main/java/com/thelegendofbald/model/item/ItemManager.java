@@ -66,20 +66,16 @@ public class ItemManager {
             if (bald.getBounds().intersects(item.getBounds())) {
                 
                 if (item instanceof Chest) {
-                    return false; // Le chest non si raccolgono automaticamente
+                    return false;
                 }
                 if (item instanceof UsableItem) {
                     ((UsableItem) item).applyEffect(bald);
                     return true;
                 }
-                if (item instanceof InventoryItem) {
-                    ((InventoryItem) item).onCollect(inventory);
-                    return true;
-                }
                 if (item instanceof Trap) {
                     Trap trap = (Trap) item;
                     if (!trap.isTriggered()) {
-                        trap.interact(bald, inventory);
+                        trap.interact(bald);
                         if (trap.shouldRemoveOnTrigger()) {
                             return true;
                         }

@@ -1,7 +1,6 @@
 package com.thelegendofbald.api.interactable;
 
 import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.api.inventory.Inventory;
 
 /**
  * Interface for objects that the player can actively interact with.
@@ -18,5 +17,5 @@ public interface Interactable {
      * @param bald The player instance.
      * @param inventory The player's inventory.
      */
-    void interact(Bald bald, Inventory inventory);
+    void interact(Bald bald);
 }
