@@ -1,18 +1,11 @@
 package com.thelegendofbald.view.game;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.*;
 
@@ -36,6 +29,7 @@ import com.thelegendofbald.model.common.GameRun;
 import com.thelegendofbald.model.common.Timer;
 import com.thelegendofbald.model.common.Timer.TimeData;
 import com.thelegendofbald.model.item.*;
+import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
 import com.thelegendofbald.model.item.weapons.Axe;
 import com.thelegendofbald.model.item.weapons.FireBall;
@@ -44,11 +38,7 @@ import com.thelegendofbald.model.weapons.MeleeWeapon;
 import com.thelegendofbald.model.weapons.Weapon;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.inventory.InventoryPanel;
-import com.thelegendofbald.view.main.GameWindow;
-import com.thelegendofbald.view.main.GridPanel;
-import com.thelegendofbald.view.main.ShopPanel;
-import com.thelegendofbald.view.main.Tile;
-import com.thelegendofbald.view.main.TileMap;
+import com.thelegendofbald.view.main.*;
 
 public class GamePanel extends MenuPanel implements Runnable, Game {
 
@@ -78,6 +68,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private final GridPanel gridPanel;
     private transient final TileMap tileMap;
     private transient ItemManager itemManager;
+    private transient LootGenerator lootGenerator;
 
     private final LifePanel lifePanel;
     private transient List<DummyEnemy> enemies = new ArrayList<>();
@@ -122,7 +113,14 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.combatManager = new CombatManager(bald, enemies);
         this.bald.setWeapon(new FireBall(0, 0, 50, 50, combatManager));
 
-        this.itemManager = new ItemManager(tileMap, new ItemFactory(), new MapItemLoader());
+        // Inizializzazione LootGenerator con pool di item possibili
+        this.lootGenerator = new LootGenerator(
+                new ItemFactory(),
+                List.of(7, 8, 11, 12) // ID loot possibili
+        );
+
+        // Inizializzazione ItemManager con loot
+        this.itemManager = new ItemManager(tileMap, new ItemFactory(), new MapItemLoader(), lootGenerator);
         this.itemManager.loadItemsForMap("map_1");
 
         tileMap.changeMap("map_1");
@@ -138,9 +136,11 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.addWeaponsToInventory();
 
         for (int i = 0; i < num_enemies; i++) {
-            enemies.add(new DummyEnemy(ThreadLocalRandom.current().nextInt(300, 1000),
+            enemies.add(new DummyEnemy(
+                    ThreadLocalRandom.current().nextInt(300, 1000),
                     ThreadLocalRandom.current().nextInt(300, 600),
-                    60, "ZioBilly", 10));
+                    60, "ZioBilly", 10
+            ));
         }
 
         setupKeyBindings();
@@ -222,7 +222,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 .ifPresent(interactableItem -> interactableItem.interact(bald));
     }
 
-
     boolean intersects(Combatant e1, Combatant e2) {
         return e1.getBounds().intersects(e2.getBounds());
     }
@@ -233,7 +232,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
     private void setPlayerName() {
         String nickname = "";
-
         while (Optional.ofNullable(nickname).isEmpty() || nickname.isBlank()) {
             nickname = javax.swing.JOptionPane.showInputDialog("Enter your nickname:");
         }
@@ -256,7 +254,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         this.stopGame();
     }
 
@@ -310,7 +307,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         combatManager.getProjectiles().forEach(Projectile::move);
         combatManager.checkProjectiles();
         itemManager.updateAll();
-        itemManager.handleItemCollection(bald, inventory);
+        itemManager.handleItemCollection(bald);
         checkIfNearShopTile();
         this.revalidate();
         this.repaint();
