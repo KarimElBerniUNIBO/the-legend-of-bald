@@ -36,6 +36,7 @@ public class Bald extends Entity implements Combatant {
     private int attackPower; // Potenza d'attacco base
     private double speedX = 0.0; // Velocità lungo l'asse X
     private final Wallet wallet = new Wallet(0);
+    private boolean immobilized = false;
 
     private final List<Buff> activeBuffs = new ArrayList<>();
     
@@ -200,6 +201,23 @@ public class Bald extends Entity implements Combatant {
         // this.updateAnimation();
     }
 
+    public void immobilize(long durationMillis) {
+        immobilized = true;
+        setSpeedX(0);
+        setSpeedY(0);
+    
+        new Thread(() -> {
+            try {
+                Thread.sleep(durationMillis);
+            } catch (InterruptedException ignored) {}
+            immobilized = false;
+        }).start();
+    }
+    
+    public boolean isImmobilized() {
+        return immobilized;
+    }
+
     public void move() {
         if (speedX > 0) {
             facingRight = true; // Bald si muove verso destra
@@ -210,6 +228,10 @@ public class Bald extends Entity implements Combatant {
         // Spostamento
         this.x += speedX;
         this.y += speedY;
+
+        if(this.isImmobilized()){
+            return;
+        }
 
     }
 
