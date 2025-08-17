@@ -22,6 +22,7 @@ import static org.yaml.snakeyaml.nodes.Tag.MAP;
 import org.yaml.snakeyaml.representer.Representer;
 
 import com.thelegendofbald.model.common.Timer.TimeData;
+import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * DataManager is responsible for loading and saving game runs to a YAML file.
@@ -124,8 +125,7 @@ public final class DataManager {
         try (FileWriter writer = new FileWriter(saveFile, StandardCharsets.UTF_8)) {
             yaml.dump(gameRuns, writer);
         } catch (final IOException e) {
-            // TODO: Log the error
-            e.printStackTrace();
+            LoggerUtils.error("Failed to save game run: " + e.getMessage());
         }
 
     }
