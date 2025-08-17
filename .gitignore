@@ -21,6 +21,7 @@ bin/
 
 # Ignore log files
 *.log
+logs/
 
 # Ignore local runs data
 game_data/runs/users_data.yml
