@@ -1,7 +1,7 @@
 package com.thelegendofbald.model.item.potions;
 
+import com.thelegendofbald.api.item.UsableItem;
 import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.model.item.UsableItem;
 
 /**
  * A potion that restores a certain amount of the player's health.

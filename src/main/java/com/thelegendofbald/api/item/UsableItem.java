@@ -1,4 +1,4 @@
-package com.thelegendofbald.model.item;
+package com.thelegendofbald.api.item;
 
 import com.thelegendofbald.characters.Bald;
 

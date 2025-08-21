@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.thelegendofbald.api.common.animation.Animatable;
+import com.thelegendofbald.api.item.UsableItem;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
