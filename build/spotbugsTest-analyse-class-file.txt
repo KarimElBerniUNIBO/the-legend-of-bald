@@ -1,3 +1,5 @@
-C:\Users\Utente\Desktop\the-legend-of-bald\build\classes\java\test\com\thelegendofbald\model\common\DataManagerTest.class
-C:\Users\Utente\Desktop\the-legend-of-bald\build\classes\java\test\com\thelegendofbald\model\inventory\InventoryManagerTest.class
-C:\Users\Utente\Desktop\the-legend-of-bald\build\classes\java\test\com\thelegendofbald\model\sounds\SoundManagerTest.class
+/Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/test/com/thelegendofbald/model/sounds/SoundManagerTest.class
+/Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/test/com/thelegendofbald/model/common/DataManagerTest.class
+/Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/test/com/thelegendofbald/model/item/GameItemTest.class
+/Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/test/com/thelegendofbald/model/item/ItemFactoryTest.class
+/Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/test/com/thelegendofbald/model/inventory/InventoryManagerTest.class

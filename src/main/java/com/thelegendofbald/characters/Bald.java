@@ -6,7 +6,6 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +14,9 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
-import com.thelegendofbald.buffs.Buff;
-import com.thelegendofbald.buffs.BuffManager;
-import com.thelegendofbald.buffs.PoisonBuff;
-import com.thelegendofbald.buffs.StrengthBuff;
 import com.thelegendofbald.combat.Combatant;
+import com.thelegendofbald.effects.StatusEffect;
+import com.thelegendofbald.effects.StatusEffectManager;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.common.Wallet;
 import com.thelegendofbald.model.weapons.Weapon;
@@ -37,8 +34,6 @@ public class Bald extends Entity implements Combatant {
     private double speedX = 0.0; // Velocità lungo l'asse X
     private final Wallet wallet = new Wallet(0);
     private boolean immobilized = false;
-
-    private final List<Buff> activeBuffs = new ArrayList<>();
     
     public double getSpeedX() {
         return speedX;
@@ -62,7 +57,7 @@ public class Bald extends Entity implements Combatant {
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
     private boolean facingRight = true; // Direzione in cui Bald sta guardando
-    private final BuffManager buffManager = new BuffManager(this);
+    private final StatusEffectManager buffManager = new StatusEffectManager(this);
 
     public Bald(int x, int y, int maxHealth, String name, int attackPower) {
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(maxHealth));
@@ -280,8 +275,8 @@ public class Bald extends Entity implements Combatant {
         this.startAttackAnimation();
     }
     
-    public void applyBuff(Buff buff) {
-        buffManager.applyBuff(buff);
+    public void applyBuff(StatusEffect buff) {
+        buffManager.applyeffect(buff);
     }
     
     public void updateBuffs() {
