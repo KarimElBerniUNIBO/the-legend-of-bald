@@ -59,7 +59,7 @@ public class Bald extends Entity implements Combatant {
     private int currentFrame = 0; // Indice del frame corrente
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
-    private double MOVE_SPEED = 100.0; // Velocità di movimento in pixel al secondo
+    private double MOVE_SPEED = 110.0; // Velocità di movimento in pixel al secondo
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
     private boolean facingRight = true; // Direzione in cui Bald sta guardando
@@ -198,6 +198,11 @@ public class Bald extends Entity implements Combatant {
 
     public void setSpeedX(double speedX) {
         this.speedX = speedX;
+        if (speedX > 0) {
+            this.facingRight = true;
+        } else if (speedX < 0) {
+            this.facingRight = false;
+        }
         // this.updateAnimation();
     }
 
@@ -220,18 +225,21 @@ public class Bald extends Entity implements Combatant {
         final int COLLISION_TILE_ID = 2;
 
         final double nextX = posX + speedX * deltaTime * MOVE_SPEED;
+        final double nextY = posY + speedY * deltaTime * MOVE_SPEED;
+
+        // Hitbox per il movimento sull'asse X
         final Rectangle nextHitboxX = new Rectangle(
             (int) (nextX + (ENTITY_SIZE - HITBOX_WIDTH) / 2),
             (int) (posY + (ENTITY_SIZE - HITBOX_HEIGHT) / 2),
             HITBOX_WIDTH, HITBOX_HEIGHT
         );
 
+        boolean collisionX = false;
         final int leftX = nextHitboxX.x / TILE_SIZE;
         final int rightX = (nextHitboxX.x + nextHitboxX.width - 1) / TILE_SIZE;
         final int topX = nextHitboxX.y / TILE_SIZE;
         final int bottomX = (nextHitboxX.y + nextHitboxX.height - 1) / TILE_SIZE;
 
-        boolean collisionX = false;
         outerX:
         for (int tx = leftX; tx <= rightX; tx++) {
             for (int ty = topX; ty <= bottomX; ty++) {
@@ -243,23 +251,19 @@ public class Bald extends Entity implements Combatant {
             }
         }
 
-        if (!collisionX) {
-            posX = nextX;
-        }
-
-        final double nextY = posY + speedY * deltaTime * MOVE_SPEED;
+        // Hitbox per il movimento sull'asse Y
         final Rectangle nextHitboxY = new Rectangle(
             (int) (posX + (ENTITY_SIZE - HITBOX_WIDTH) / 2),
             (int) (nextY + (ENTITY_SIZE - HITBOX_HEIGHT) / 2),
             HITBOX_WIDTH, HITBOX_HEIGHT
         );
 
+        boolean collisionY = false;
         final int leftY = nextHitboxY.x / TILE_SIZE;
         final int rightY = (nextHitboxY.x + nextHitboxY.width - 1) / TILE_SIZE;
         final int topY = nextHitboxY.y / TILE_SIZE;
         final int bottomY = (nextHitboxY.y + nextHitboxY.height - 1) / TILE_SIZE;
 
-        boolean collisionY = false;
         outerY:
         for (int tx = leftY; tx <= rightY; tx++) {
             for (int ty = topY; ty <= bottomY; ty++) {
@@ -269,6 +273,10 @@ public class Bald extends Entity implements Combatant {
                     break outerY;
                 }
             }
+        }
+
+        if (!collisionX) {
+            posX = nextX;
         }
 
         if (!collisionY) {
