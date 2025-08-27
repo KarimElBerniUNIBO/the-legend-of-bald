@@ -2,8 +2,8 @@ package com.thelegendofbald.characters;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,13 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
+
 import javax.imageio.ImageIO;
-import com.thelegendofbald.view.main.Tile;
-import com.thelegendofbald.view.main.TileMap;
+
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.common.Wallet;
 import com.thelegendofbald.model.weapons.Weapon;
+import com.thelegendofbald.view.main.Tile;
+import com.thelegendofbald.view.main.TileMap;
 
 
 
@@ -119,8 +121,8 @@ public class Bald extends Entity implements Combatant {
             // Centra i piedi di Bald nel tile di spawn
             int x = spawnPoint.x + (tileSize - getWidth()) / 2;
             int y = spawnPoint.y + tileSize - getHeight();
-            this.setX(x);
-            this.setY(y);
+            this.setPosX(x);
+            this.setPosY(y);
         }
     }
 
@@ -320,5 +322,21 @@ public class Bald extends Entity implements Combatant {
     public void attack() {
         this.isAttacking = true;
         this.startAttackAnimation();
+    }
+
+    public double getPosX() {
+        return posX;
+    }
+
+    public void setPosX(double posX) {
+        this.posX = posX;
+    }
+
+    public double getPosY() {
+        return posY;
+    }
+
+    public void setPosY(double posY) {
+        this.posY = posY;
     }
 }

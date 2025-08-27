@@ -40,7 +40,6 @@ import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
-import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.combat.projectile.Projectile;
 import com.thelegendofbald.item.weapons.Axe;
 import com.thelegendofbald.item.weapons.FireBall;
@@ -153,8 +152,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         Point spawnPoint = tileMap.findSpawnPoint(5);
         if (spawnPoint != null) {
             int tileSize = tileMap.TILE_SIZE;
-            bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
-            bald.setY(spawnPoint.y - bald.getHeight());
+            bald.setPosX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
+            bald.setPosY(spawnPoint.y - bald.getHeight());
         }
 
         this.addWeaponsToInventory();
@@ -266,11 +265,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         bald.setSpeedY(dy);
     }
 
-
-    boolean intersects(Combatant e1, Combatant e2) {
-        return e1.getBounds().intersects(e2.getBounds());
-    }
-
     public GameRun getGameRun() {
         return gameRun;
     }
@@ -281,7 +275,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.pauseGame();
 
         while (Optional.ofNullable(nickname).isEmpty() || nickname.isBlank()) {
-            nickname = javax.swing.JOptionPane.showInputDialog("Enter your nickname:");
+            nickname = JOptionPane.showInputDialog("Enter your nickname:");
         }
 
         this.gameRun = new GameRun(nickname, timer.getFormattedTime());

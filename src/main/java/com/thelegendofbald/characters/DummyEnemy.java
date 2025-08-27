@@ -3,11 +3,11 @@ package com.thelegendofbald.characters;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.awt.Rectangle;
 import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
