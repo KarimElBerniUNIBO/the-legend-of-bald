@@ -4,7 +4,10 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
+
+import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * The base class for all items within the game.
@@ -175,11 +178,9 @@ public class GameItem {
             // Use getClass().getResourceAsStream() for robust resource loading.
             this.sprite = ImageIO.read(getClass().getResourceAsStream(imagePath));
         } catch (IOException e) {
-            System.err.println("Error loading image: " + imagePath);
-            e.printStackTrace();
+            LoggerUtils.error("Error loading image: " + imagePath);
         } catch (IllegalArgumentException e) {
-            System.err.println("Invalid image path: " + imagePath);
-            e.printStackTrace();
+            LoggerUtils.error("Invalid image path: " + imagePath);
         }
     }
 }

@@ -1,13 +1,15 @@
 package com.thelegendofbald.model.item.traps;
 
-import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.api.common.animation.Animatable;
-import com.thelegendofbald.buffs.PoisonBuff;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.imageio.ImageIO;
+
+import com.thelegendofbald.api.common.animation.Animatable;
+import com.thelegendofbald.buffs.PoisonBuff;
+import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.utils.LoggerUtils;
 
 public class PoisonTrap extends Trap implements Animatable{
 
@@ -45,7 +47,7 @@ public class PoisonTrap extends Trap implements Animatable{
                 idleFrames[i] = spriteSheet.getSubimage(i * frameWidth, 0, frameWidth, spriteSheet.getHeight());
             }
         } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
+            LoggerUtils.error("Failed to load image: " + path);
         }
     }
 
@@ -55,7 +57,7 @@ public class PoisonTrap extends Trap implements Animatable{
         if (now - lastTriggerTime >= REACTIVATION_DELAY_MS) {
             bald.applyBuff(new PoisonBuff(POISON_DURATION_MS, POISON_DAMAGE_PER_TICK, POISON_TICK_INTERVAL_MS));
             lastTriggerTime = now;
-            System.out.println("You stepped on a poison trap! You are now poisoned.");
+            LoggerUtils.info("You stepped on a poison trap! You are now poisoned.");
         }
     }   
 

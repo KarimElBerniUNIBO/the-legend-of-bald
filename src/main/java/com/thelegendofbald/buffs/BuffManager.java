@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.utils.LoggerUtils;
 
 public class BuffManager {
     private final Bald owner;
@@ -21,7 +22,7 @@ public class BuffManager {
         buff.activate();
         activeBuffs.add(buff);       // lo rendiamo “visibile” subito
         buff.apply(owner);           // hook di applicazione
-        System.out.println("Buff di " + buff.getName() + " attivato!");
+        LoggerUtils.info("Buff di " + buff.getName() + " attivato!");
     }
 
     /** Tick di gioco: aggiorna e rimuove quelli scaduti. */

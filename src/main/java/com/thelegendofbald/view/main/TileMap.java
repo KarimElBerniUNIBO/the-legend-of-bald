@@ -14,6 +14,8 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import com.thelegendofbald.utils.LoggerUtils;
+
 public class TileMap {
 
     private final int width, height;
@@ -45,7 +47,7 @@ public class TileMap {
             tileTypes.put(6, new Tile(floor, TILE_SIZE, TILE_SIZE, 6, false, true, true, true, shop));
             tileTypes.put(8, new Tile(floor, TILE_SIZE, TILE_SIZE, 8, false, true, true, true, null));
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtils.error("Errore nel caricamento delle immagini dei tile.");
             throw new RuntimeException("Errore nel caricamento delle immagini dei tile.");
         }
     }
@@ -123,7 +125,7 @@ public class TileMap {
                 rows.add(row);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtils.error("Errore nel caricamento della mappa: " + fileName);
         }
 
         int[][] map = new int[rows.size()][];
@@ -138,7 +140,7 @@ public class TileMap {
         try {
             return ImageIO.read(getClass().getResourceAsStream(path));
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtils.error("Errore nel caricamento dell'immagine: " + path);
             return null;
         }
     }

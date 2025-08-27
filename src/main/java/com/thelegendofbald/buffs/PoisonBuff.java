@@ -1,6 +1,7 @@
 package com.thelegendofbald.buffs;
 
 import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.utils.LoggerUtils;
 
 public class PoisonBuff extends Buff {
     private final int damagePerTick;
@@ -16,12 +17,12 @@ public class PoisonBuff extends Buff {
 
     @Override
     public void apply(Bald player) {
-        System.out.println("Player is poisoned!");
+        LoggerUtils.info("Poison effect applied to player!");
     }
 
     @Override
     public void remove(Bald player) {
-        System.out.println("Poison effect worn off!");
+        LoggerUtils.info("Poison effect worn off!");
     }
 
     @Override

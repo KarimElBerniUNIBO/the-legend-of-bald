@@ -11,6 +11,7 @@ import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
 import com.thelegendofbald.model.item.map.MapItemSpawner;
 import com.thelegendofbald.model.item.traps.Trap;
+import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.main.TileMap;
 
 public class ItemManager {
@@ -39,7 +40,7 @@ public class ItemManager {
             spawner.spawnItems();
             this.items = new ArrayList<>(spawner.getItems());
         } catch (Exception e) {
-            System.err.println("[ItemManager] Nessun file " + itemFile + " trovato o errore di caricamento: " + e.getMessage());
+            LoggerUtils.error("[ItemManager] Nessun file " + itemFile + " trovato o errore di caricamento: " + e.getMessage());
             this.items = new ArrayList<>();
         }
     }

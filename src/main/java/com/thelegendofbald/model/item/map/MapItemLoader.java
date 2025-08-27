@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thelegendofbald.utils.LoggerUtils;
+
 public class MapItemLoader {
 
     /**
@@ -28,7 +30,7 @@ public class MapItemLoader {
 
                 String[] tokens = line.split("\\s+");
                 if (tokens.length != 3) {
-                    System.err.println("Formato riga non valido in " + fileName + ": " + line);
+                    LoggerUtils.error("Formato riga non valido in " + fileName + ": " + line);
                     continue;
                 }
 
@@ -38,7 +40,7 @@ public class MapItemLoader {
                     int col = Integer.parseInt(tokens[2]);
                     data.add(new ItemSpawnData(id, row, col));
                 } catch (NumberFormatException e) {
-                    System.err.println("Errore di formato numerico: " + line);
+                    LoggerUtils.error("Errore di formato numerico: " + line);
                 }
             }
         }

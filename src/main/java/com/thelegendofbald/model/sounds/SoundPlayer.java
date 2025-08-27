@@ -12,6 +12,8 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import com.thelegendofbald.utils.LoggerUtils;
+
 /**
  * The {@code SoundPlayer} class is responsible for loading and playing audio
  * clips from the application's resources.
@@ -56,8 +58,7 @@ public final class SoundPlayer {
             clip = Optional.of(AudioSystem.getClip());
             clip.get().open(audioStream);
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
-            // TODO Log exception
-            e.printStackTrace();
+            LoggerUtils.error("Error preloading sound: " + path);
         }
     }
 

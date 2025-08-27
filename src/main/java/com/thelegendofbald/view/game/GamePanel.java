@@ -58,6 +58,7 @@ import com.thelegendofbald.model.item.weapons.FireBall;
 import com.thelegendofbald.model.item.weapons.Sword;
 import com.thelegendofbald.model.weapons.MeleeWeapon;
 import com.thelegendofbald.model.weapons.Weapon;
+import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.inventory.InventoryPanel;
 import com.thelegendofbald.view.main.GameWindow;
@@ -343,7 +344,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         try {
             saveDataManager.saveGameRun(gameRun);
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtils.error("Error saving game run: " + e.getMessage());
         }
         this.stopGame();
     }
@@ -437,7 +438,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         if (nextMapName != null) {
             changeAndLoadMap(nextMapName);
         } else {
-            System.out.println("Nessuna mappa successiva definita.");
+            LoggerUtils.error("Nessuna mappa successiva definita.");
         }
     }
 

@@ -5,9 +5,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.thelegendofbald.model.item.ShopItem;
 import com.thelegendofbald.model.combat.CombatManager;
+import com.thelegendofbald.model.item.ShopItem;
 import com.thelegendofbald.model.weapons.HeavyMeleeWeapon;
+import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * The {@code Axe} class represents an axe weapon in the game.
@@ -26,7 +27,7 @@ public class Axe extends HeavyMeleeWeapon implements ShopItem {
         try {
             this.sprite = ImageIO.read(getClass().getResource("/images/weapon/axe.png"));
         } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace(); // Così non crasha se l'immagine non viene trovata
+            LoggerUtils.error(NAME + " sprite not found");
         }
     }
 

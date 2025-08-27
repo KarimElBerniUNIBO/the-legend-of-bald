@@ -3,6 +3,7 @@ package com.thelegendofbald.model.item.potions;
 import com.thelegendofbald.buffs.StrengthBuff;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.model.item.UsableItem;
+import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * A potion that temporarily increases the player's attack strength.
@@ -38,7 +39,7 @@ public class StrengthPotion extends Potion implements UsableItem {
     public void applyEffect(Bald bald) {
         StrengthBuff buff = new StrengthBuff(DURATION_MS, STRENGTH_BONUS);
         bald.applyBuff(buff);
-        System.out.println("You used a Strength Potion! Attack strength increased for " + (DURATION_MS / 1000) + " seconds.");
-        System.out.println("Current attack power: " + bald.getAttackPower());
+        LoggerUtils.info(String.format("You used a Strength Potion! Attack strength increased for %d seconds.", (DURATION_MS / 1000)));
+        LoggerUtils.info("Current attack power: " + bald.getAttackPower());
     }
 }

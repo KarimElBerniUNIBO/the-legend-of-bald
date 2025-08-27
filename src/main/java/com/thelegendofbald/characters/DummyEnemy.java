@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
+import com.thelegendofbald.utils.LoggerUtils;
 
 public class DummyEnemy extends Entity  implements Combatant{
 
@@ -53,11 +54,11 @@ public class DummyEnemy extends Entity  implements Combatant{
                 if (is != null) {
                     runFrames[i] = ImageIO.read(is);
                 } else {
-                    System.err.println("Frame " + framePath + " not found");
+                    LoggerUtils.error("Frame " + framePath + " not found");
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtils.error("Error loading run frames: " + e.getMessage());
         }
     }
 

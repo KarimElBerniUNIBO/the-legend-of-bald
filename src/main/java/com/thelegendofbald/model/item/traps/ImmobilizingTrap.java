@@ -1,12 +1,12 @@
 package com.thelegendofbald.model.item.traps;
 
-import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.api.inventory.Inventory;
-
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.imageio.ImageIO;
+
+import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.utils.LoggerUtils;
 
 public class ImmobilizingTrap extends Trap {
 
@@ -28,7 +28,7 @@ public class ImmobilizingTrap extends Trap {
         try (InputStream is = getClass().getResourceAsStream(path)) {
             currentSprite = ImageIO.read(is);
         } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
+            LoggerUtils.error("Failed to load image: " + path);
         }
     }
 
@@ -36,8 +36,8 @@ public class ImmobilizingTrap extends Trap {
     public void interact(Bald bald) {
         if (!isTriggered) {
             isTriggered = true;
-            bald.immobilize(2000); 
-            System.out.println("You are immobilized!");
+            bald.immobilize(2000);
+            LoggerUtils.info("You are immobilized!");
     }
 }
 

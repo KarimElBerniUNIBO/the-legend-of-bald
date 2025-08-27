@@ -22,6 +22,7 @@ import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.common.Wallet;
 import com.thelegendofbald.model.weapons.Weapon;
+import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
@@ -99,16 +100,16 @@ public class Bald extends Entity implements Combatant {
                         frames[i] = ImageIO.read(is);
 
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        LoggerUtils.error("Error loading frame " + framePath + ": " + e.getMessage());
                     }
 
-                }, () -> System.err.println("Frame " + framePath + " not found"));
+                }, () -> LoggerUtils.error("Frame " + framePath + " not found"));
             });
 
             attackFrames.put(weaponName, frames);
         });
 
-        System.out.println("Attack frames loaded: " + attackFrames.size());
+        LoggerUtils.info("Attack frames loaded: " + attackFrames.size());
     }
 
     public void setTileMap(TileMap tileMap) {
@@ -135,11 +136,11 @@ public class Bald extends Entity implements Combatant {
                 if (is != null) {
                     runFrames[i] = ImageIO.read(is);
                 } else {
-                    System.err.println("Frame " + framePath + " not found");
+                    LoggerUtils.error("Frame " + framePath + " not found");
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtils.error("Error loading run frames: " + e.getMessage());
         }
     }
     
@@ -318,7 +319,7 @@ public class Bald extends Entity implements Combatant {
     @Override
     public void takeDamage(int damage) {
         this.lifeComponent.damageTaken(damage);
-        System.out.println(lifeComponent.getCurrentHealth());
+        LoggerUtils.info("Player took damage: " + damage + ". Current health: " + lifeComponent.getCurrentHealth());
 
     }
 
