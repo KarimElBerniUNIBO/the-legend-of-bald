@@ -62,7 +62,7 @@ public class Bald extends Entity implements Combatant {
     private int currentFrame = 0; // Indice del frame corrente
     private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
     private int frameCounter = 0; // Contatore per il ritardo tra i frame
-    private double MOVE_SPEED = 110.0; // Velocità di movimento in pixel al secondo
+    private double SPEED_MOLTIPLICATOR = 50.0;
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
     private boolean facingRight = true; // Direzione in cui Bald sta guardando
@@ -255,8 +255,8 @@ public class Bald extends Entity implements Combatant {
         final int TILE_SIZE = 32;
         final int COLLISION_TILE_ID = 2;
 
-        final double nextX = posX + speedX * deltaTime * MOVE_SPEED;
-        final double nextY = posY + speedY * deltaTime * MOVE_SPEED;
+        final double nextX = posX + speedX * deltaTime * SPEED_MOLTIPLICATOR;
+        final double nextY = posY + speedY * deltaTime * SPEED_MOLTIPLICATOR;
 
         // Hitbox per il movimento sull'asse X
         final Rectangle nextHitboxX = new Rectangle(

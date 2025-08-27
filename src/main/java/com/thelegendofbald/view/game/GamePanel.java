@@ -1,12 +1,25 @@
 package com.thelegendofbald.view.game;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.Box;
@@ -16,25 +29,29 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.game.Game;
-import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.api.interactable.Interactable;
+import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.api.panels.LifePanel;
 import com.thelegendofbald.api.panels.MenuPanel;
+import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.combat.projectile.Projectile;
+import com.thelegendofbald.controller.common.SwitchToOtherPanel;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.DataManager;
 import com.thelegendofbald.model.common.GameRun;
 import com.thelegendofbald.model.common.Timer;
 import com.thelegendofbald.model.common.Timer.TimeData;
-import com.thelegendofbald.model.item.*;
+import com.thelegendofbald.model.item.ItemFactory;
+import com.thelegendofbald.model.item.ItemManager;
 import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
 import com.thelegendofbald.model.item.weapons.Axe;
@@ -44,7 +61,11 @@ import com.thelegendofbald.model.weapons.MeleeWeapon;
 import com.thelegendofbald.model.weapons.Weapon;
 import com.thelegendofbald.view.constraints.GridBagConstraintsFactoryImpl;
 import com.thelegendofbald.view.inventory.InventoryPanel;
-import com.thelegendofbald.view.main.*;
+import com.thelegendofbald.view.main.GameWindow;
+import com.thelegendofbald.view.main.GridPanel;
+import com.thelegendofbald.view.main.ShopPanel;
+import com.thelegendofbald.view.main.Tile;
+import com.thelegendofbald.view.main.TileMap;
 
 public class GamePanel extends MenuPanel implements Runnable, Game {
 
@@ -91,13 +112,18 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private transient Thread gameThread;
     private volatile boolean running = false;
 
-    private volatile int maxFPS = (int) VideoSettings.FPS.getValue();
+    private volatile int maxFPS = 60;
     private volatile boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
     private volatile int currentFPS = 0;
     private volatile boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
     private final JButton shopButton = new JButton("Shop");
+
+    private volatile boolean paused;
+    private static final long NANOS_IN_SECOND = 1_000_000_000L;
+    private static final long MILLIS_IN_SECOND = 1000L;
+    private static final long SLEEP_INTERVAL_WHEN_PAUSED = 100L;
 
     public GamePanel() {
         super();
@@ -170,35 +196,69 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         weapons.forEach(inventory::add);
     }
 
+    private void toggleOptionsPanel() {
+        if (paused && !inventoryPanel.isVisible()) {
+            closeOptionsPanel();
+        } else if (!inventoryPanel.isVisible()) {
+            openOptionsPanel();
+        } else {
+            inventoryPanel.setVisible(false);
+            openOptionsPanel();
+        }
+    }
+
+    private void openOptionsPanel() {
+        pauseGame();
+        pressedKeys.clear();
+        this.optionsPanel.setVisible(true);
+        this.optionsPanel.requestFocusInWindow();
+        this.repaint();
+    }
+
+    private void closeOptionsPanel() {
+        this.optionsPanel.setVisible(false);
+        pressedKeys.clear();
+        resumeGame();
+        this.requestFocusInWindow();
+        this.repaint();
+    }
+
+    @Override
+    public void pauseGame() {
+        this.paused = true;
+        this.timer.stop();
+    }
+
+    @Override
+    public void resumeGame() {
+        this.paused = false;
+        this.timer.resume();
+    }
+
+    public void refreshKeyBindings() {
+        pressedKeys.clear();
+        setupKeyBindings();
+    }
+
     private void setupKeyBindings() {
         final InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
         final ActionMap am = this.getActionMap();
 
         // Tasti premuti
-        bindKey(im, am, "pressed UP", ControlsSettings.UP.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_UP));
-        bindKey(im, am, "pressed DOWN", ControlsSettings.DOWN.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
-        bindKey(im, am, "pressed LEFT", ControlsSettings.LEFT.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
-        bindKey(im, am, "pressed RIGHT", ControlsSettings.RIGHT.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
-        bindKey(im, am, "pressed ESCAPE", KeyEvent.VK_ESCAPE, true, () -> {
-            if (paused && !inventoryPanel.isVisible()) {
-                closeOptionsPanel();
-            } else if (!inventoryPanel.isVisible()) {
-                openOptionsPanel();
-            } else {
-                inventoryPanel.setVisible(false);
-                openOptionsPanel();
-            }
-        });
+        bindKey(im, am, "pressed UP", ControlsSettings.UP.getKey(), true, () -> pressedKeys.add(ControlsSettings.UP.getKey()));
+        bindKey(im, am, "pressed DOWN", ControlsSettings.DOWN.getKey(), true, () -> pressedKeys.add(ControlsSettings.DOWN.getKey()));
+        bindKey(im, am, "pressed LEFT", ControlsSettings.LEFT.getKey(), true, () -> pressedKeys.add(ControlsSettings.LEFT.getKey()));
+        bindKey(im, am, "pressed RIGHT", ControlsSettings.RIGHT.getKey(), true, () -> pressedKeys.add(ControlsSettings.RIGHT.getKey()));
+        bindKey(im, am, "pressed ESCAPE", KeyEvent.VK_ESCAPE, true, this::toggleOptionsPanel);
         bindKey(im, am, "pressed SPACE", ControlsSettings.ATTACK.getKey(), true, combatManager::tryToAttack);
-        bindKey(im, am, "pressed E", ControlsSettings.INVENTORY.getKey(), true, () -> {
-            inventoryPanel.setVisible(!inventoryPanel.isVisible());
-        });
+        bindKey(im, am, "pressed I", ControlsSettings.INVENTORY.getKey(), true, () -> inventoryPanel.setVisible(!inventoryPanel.isVisible()));
+        bindKey(im, am, "interact", ControlsSettings.INTERACT.getKey(), true, this::interactWithItems);
 
         // Tasti rilasciati
-        bindKey(im, am, "released UP", ControlsSettings.UP.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_UP));
-        bindKey(im, am, "released DOWN", ControlsSettings.DOWN.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_DOWN));
-        bindKey(im, am, "released LEFT", ControlsSettings.LEFT.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_LEFT));
-        bindKey(im, am, "released RIGHT", ControlsSettings.RIGHT.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_RIGHT));
+        bindKey(im, am, "released UP", ControlsSettings.UP.getKey(), false, () -> pressedKeys.remove(ControlsSettings.UP.getKey()));
+        bindKey(im, am, "released DOWN", ControlsSettings.DOWN.getKey(), false, () -> pressedKeys.remove(ControlsSettings.DOWN.getKey()));
+        bindKey(im, am, "released LEFT", ControlsSettings.LEFT.getKey(), false, () -> pressedKeys.remove(ControlsSettings.LEFT.getKey()));
+        bindKey(im, am, "released RIGHT", ControlsSettings.RIGHT.getKey(), false, () -> pressedKeys.remove(ControlsSettings.RIGHT.getKey()));
     }
 
     private void bindKey(InputMap im, ActionMap am, String name, int key, boolean pressed, Runnable action) {
@@ -214,17 +274,21 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private static final double MOVE_SPEED = 2.0;
 
     private void handleInput() {
-        double dx = 0;
-        double dy = 0;
+        if (bald.isImmobilized()) {
+            bald.setSpeedX(0);
+            bald.setSpeedY(0);
+            return;
+        }
+        double dx = 0, dy = 0;
+        if (pressedKeys.contains(ControlsSettings.LEFT.getKey())) dx -= 1;
+        if (pressedKeys.contains(ControlsSettings.RIGHT.getKey())) dx += 1;
+        if (!"map_1".equals(currentMapName)) {
+            if (pressedKeys.contains(ControlsSettings.UP.getKey())) dy -= 1;
+            if (pressedKeys.contains(ControlsSettings.DOWN.getKey())) dy += 1;
+        }
+        if (pressedKeys.contains(ControlsSettings.ATTACK.getKey())) combatManager.tryToAttack();
 
-        if (pressedKeys.contains(KeyEvent.VK_LEFT)) { dx -= 1; }
-        if (pressedKeys.contains(KeyEvent.VK_RIGHT)) { dx += 1; }
-        if (pressedKeys.contains(KeyEvent.VK_UP)) { dy -= 1; }
-        if (pressedKeys.contains(KeyEvent.VK_DOWN)) { dy += 1; }
-
-        if (pressedKeys.contains(ControlsSettings.ATTACK.getKey())) { combatManager.tryToAttack(); }
-
-        final double magnitude = Math.hypot(dx, dy);
+        double magnitude = Math.hypot(dx, dy);
         if (magnitude > 0) {
             dx = (dx / magnitude) * MOVE_SPEED;
             dy = (dy / magnitude) * MOVE_SPEED;
@@ -234,9 +298,13 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         bald.setSpeedY(dy);
     }
 
-
-    boolean intersects(Combatant e1, Combatant e2) {
-        return e1.getBounds().intersects(e2.getBounds());
+    private void interactWithItems() {
+        itemManager.getItems().stream()
+                .filter(item -> bald.getBounds().intersects(item.getBounds()))
+                .filter(item -> item instanceof Interactable)
+                .map(item -> (Interactable) item)
+                .findFirst()
+                .ifPresent(interactableItem -> interactableItem.interact(bald));
     }
 
     public GameRun getGameRun() {
@@ -245,14 +313,25 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
     private void setPlayerName() {
         String nickname = "";
-        while (Optional.ofNullable(nickname).isEmpty() || nickname.isBlank()) {
+
+        this.pauseGame();
+        while (nickname.isBlank()) {
             nickname = JOptionPane.showInputDialog("Enter your nickname:");
+            if (Optional.ofNullable(nickname).isEmpty()) {
+                this.stopGame();
+                GameWindow window = (GameWindow) SwingUtilities.getWindowAncestor(this);
+                new SwitchToOtherPanel(window, Panels.MAIN_MENU).actionPerformed(null);
+                return;
+            }
         }
+
         gameRun = new GameRun(nickname, timer.getFormattedTime());
+        this.resumeGame();
     }
 
     @Override
     public void startGame() {
+        this.running = true;
         gameThread = new Thread(this);
         gameThread.start();
         timer.start();
@@ -272,38 +351,53 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
     @Override
     public void run() {
-        running = true;
-        System.out.println("Game loop started!");
         long lastTime = System.nanoTime();
-        double interval = 0, delta = 0;
-        int drawCount = 0;
-        long updateInterval = 0;
+        int frames = 0;
+        long fpsTimer = System.currentTimeMillis();
 
-        while (true) {
-            long now = System.nanoTime();
-            updateInterval += (now - lastTime);
-            interval = 1e9 / maxFPS;
-            delta += (now - lastTime) / interval;
+        while (gameThread != null && running) {
+            if (paused) {
+                try {
+                    Thread.sleep(SLEEP_INTERVAL_WHEN_PAUSED);
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                lastTime = System.nanoTime();
+                continue;
+            }
+
+            final long now = System.nanoTime();
+            final double deltaTime = (now - lastTime) / (double) NANOS_IN_SECOND;
             lastTime = now;
 
-            if (delta >= 1) {
-                update();
-                repaint();
-                delta--;
-                drawCount++;
+            update(deltaTime);
+            repaint();
+
+            frames++;
+            if (System.currentTimeMillis() - fpsTimer >= MILLIS_IN_SECOND) {
+                currentFPS = frames;
+                frames = 0;
+                fpsTimer += MILLIS_IN_SECOND;
             }
-            if (updateInterval >= 1e9) {
-                currentFPS = drawCount;
-                drawCount = 0;
-                updateInterval = 0;
+
+            final long frameTime = (System.nanoTime() - now) / 1_000_000; // in ms
+            final long targetFrameTime = MILLIS_IN_SECOND / maxFPS;
+            final long sleepTime = targetFrameTime - frameTime;
+
+            if (sleepTime > 0) {
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
     }
 
-    public void update() {
+    public void update(double deltatime) {
         handleInput();
         bald.updateAnimation();
-        bald.move();
+        bald.move(tileMap, deltatime);
         bald.updateBuffs();
         if (isAtMapTransitionPoint()) {
             switchToNextMap();
@@ -507,6 +601,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     @Override
     public void stopGame() {
         this.running = false;
+        this.timer.stop();
+        
     }
 
     @Override

@@ -77,14 +77,19 @@ public final class GameOptionsPanel extends AdapterPanel {
                     enumButton.getPanel().ifPresentOrElse(
                             panel -> enumButton.getButton()
                                     .addActionListener(e -> {
-                                        new SwitchToOtherPanel((GameWindow) SwingUtilities.getWindowAncestor(this),
-                                                panel).actionPerformed(e);
                                         if (enumButton == Buttons.LEAVE) {
                                             ((Game) this.getParent()).stopGame();
                                             this.setVisible(false);
                                         }
+                                        new SwitchToOtherPanel((GameWindow) SwingUtilities.getWindowAncestor(this),
+                                                panel).actionPerformed(e);
                                     }),
-                            () -> enumButton.getButton().addActionListener(e -> this.setVisible(false)));
+                            () -> enumButton.getButton().addActionListener(e -> {
+                                if (enumButton == Buttons.RESUME) {
+                                    ((Game) this.getParent()).resumeGame();
+                                }
+                                this.setVisible(false);
+                            }));
                 });
     }
 

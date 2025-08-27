@@ -27,27 +27,31 @@ public enum ControlsSettings implements SettingOption {
     /**
      * Represents the "Up" key binding.
      */
-    UP("UP", KeyEvent.VK_UP),
+    UP("UP", KeyEvent.VK_W),
     /**
      * Represents the "Down" key binding.
      */
-    DOWN("DOWN", KeyEvent.VK_DOWN),
+    DOWN("DOWN", KeyEvent.VK_S),
     /**
      * Represents the "Left" key binding.
      */
-    LEFT("LEFT", KeyEvent.VK_LEFT),
+    LEFT("LEFT", KeyEvent.VK_A),
     /**
      * Represents the "Right" key binding.
      */
-    RIGHT("RIGHT", KeyEvent.VK_RIGHT),
+    RIGHT("RIGHT", KeyEvent.VK_D),
     /**
      * Represents the "Opening Inventory" key binding.
      */
-    INVENTORY("INVENTORY", KeyEvent.VK_E),
+    INVENTORY("INVENTORY", KeyEvent.VK_I),
     /**
      * Represents the "Attack" key binding.
      */
-    ATTACK("ATTACK", KeyEvent.VK_SPACE);
+    ATTACK("ATTACK", KeyEvent.VK_SPACE),
+    /**
+     * Represents the "Interact" key binding.
+     */
+    INTERACT("INTERACT", KeyEvent.VK_E);
 
     private static final double BUTTONS_ARC_PROPORTION = 0.05;
 
