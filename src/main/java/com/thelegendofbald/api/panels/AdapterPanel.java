@@ -66,7 +66,4 @@ public abstract class AdapterPanel extends BasePanel implements Resizable {
         }
     }
 
-    @Override
-    public abstract void addComponentsToPanel();
-
 }

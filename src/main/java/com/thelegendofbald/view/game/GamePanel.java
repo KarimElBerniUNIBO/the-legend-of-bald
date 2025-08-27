@@ -207,6 +207,14 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         }
     }
 
+    private void toggleOpenInventory() {
+        if (!paused && !optionsPanel.isVisible() && !inventoryPanel.isVisible()) {
+            inventoryPanel.setVisible(true);
+        } else if (inventoryPanel.isVisible()) {
+            inventoryPanel.setVisible(false);
+        }
+    }
+
     private void openOptionsPanel() {
         pauseGame();
         pressedKeys.clear();
@@ -251,7 +259,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         bindKey(im, am, "pressed RIGHT", ControlsSettings.RIGHT.getKey(), true, () -> pressedKeys.add(ControlsSettings.RIGHT.getKey()));
         bindKey(im, am, "pressed ESCAPE", KeyEvent.VK_ESCAPE, true, this::toggleOptionsPanel);
         bindKey(im, am, "pressed SPACE", ControlsSettings.ATTACK.getKey(), true, combatManager::tryToAttack);
-        bindKey(im, am, "pressed I", ControlsSettings.INVENTORY.getKey(), true, () -> inventoryPanel.setVisible(!inventoryPanel.isVisible()));
+        bindKey(im, am, "pressed I", ControlsSettings.INVENTORY.getKey(), true, this::toggleOpenInventory);
         bindKey(im, am, "interact", ControlsSettings.INTERACT.getKey(), true, this::interactWithItems);
 
         // Tasti rilasciati
@@ -555,7 +563,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         shopButton.setVisible(false);
         shopButton.addActionListener(e -> {
             ShopPanel shopPanel = new ShopPanel(this.combatManager, bald.getWallet());
-            JOptionPane.showMessageDialog(this, shopPanel, "Negozio", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(this, shopPanel, "SHOP", JOptionPane.PLAIN_MESSAGE);
         });
         GridBagConstraints fillerGBC = new GridBagConstraints();
         fillerGBC.gridx = 0;

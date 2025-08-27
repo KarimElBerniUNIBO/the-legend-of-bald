@@ -52,7 +52,7 @@ public final class SlotPanel extends AdapterPanel {
     protected void initializeComponents() {
         slot.getItem().ifPresent(item -> {
             this.itemLabel = Optional.of(tlFactory.createTextLabelWithProportion(item.getName(), this.getSize(),
-                    Optional.of(Pair.of(0.5, 0.5)), Optional.of(Pair.of(2.0, 2.0)), Optional.empty(),
+                    Optional.of(Pair.of(0.9, 0.9)), Optional.of(Pair.of(1.75, 1.75)), Optional.empty(),
                     Optional.empty()));
         });
         super.initializeComponents();

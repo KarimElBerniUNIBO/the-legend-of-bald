@@ -16,7 +16,7 @@ import com.thelegendofbald.utils.LoggerUtils;
  */
 public class Axe extends HeavyMeleeWeapon implements ShopItem {
 
-    private static final String NAME = "Ascia pesante";
+    private static final String NAME = "Axe";
     private static final int DAMAGE = 50;
     private static final int ATTACK_RANGE = 60;
     private static final int PRICE = 40;
@@ -30,8 +30,6 @@ public class Axe extends HeavyMeleeWeapon implements ShopItem {
             LoggerUtils.error(NAME + " sprite not found");
         }
     }
-
-    // Metodi dell’interfaccia ShopItem
 
     @Override
     public String getDisplayName() {
