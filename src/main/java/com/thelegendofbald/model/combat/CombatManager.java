@@ -94,6 +94,8 @@ public class CombatManager {
                         return false;
                     });
                 });
+
+        projectiles.removeIf(projectile -> !projectile.isAlive());
     }
 
     /**

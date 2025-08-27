@@ -6,6 +6,8 @@ import java.awt.Rectangle;
 
 import com.thelegendofbald.characters.Entity;
 import com.thelegendofbald.combat.Combatant;
+import com.thelegendofbald.view.main.Tile;
+import com.thelegendofbald.view.main.TileMap;
 
 
 public class Projectile extends Entity implements Combatant {
@@ -24,10 +26,32 @@ public class Projectile extends Entity implements Combatant {
         this.damage = damage;
     }
 
-    public void move() {
-        if (direction == 0) x += speed;
-        if (direction == 1) x -= speed;
+    public void move(TileMap tileMap) {
+        int nextX = x;
+        int nextY = y;
+        if (direction == 0) nextX += speed;
+        if (direction == 1) nextX -= speed;
         // aggiungi altre direzioni se vuoi (sopra, sotto)
+
+        // Controllo collisione su tutti gli angoli del proiettile
+        int[][] points = {
+            {nextX, nextY},
+            {nextX + 5, nextY},
+            {nextX, nextY + 5},
+            {nextX + 5, nextY + 5}
+        };
+        for (int[] p : points) {
+            int tileX = p[0] / tileMap.TILE_SIZE;
+            int tileY = p[1] / tileMap.TILE_SIZE;
+            Tile tile = tileMap.getTileAt(tileX, tileY);
+            if (tile != null && tile.isSolid()) {
+                this.active = false;
+                return;
+            }
+        }
+
+        this.x = nextX;
+        this.y = nextY;
     }
 
     public void render(Graphics g) {

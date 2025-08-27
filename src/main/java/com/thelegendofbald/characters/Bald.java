@@ -227,21 +227,6 @@ public class Bald extends Entity implements Combatant {
         return immobilized;
     }
 
-    /*public void move() {
-        if (speedX > 0) {
-            facingRight = true; // Bald si muove verso destra
-        } else if (speedX < 0) {
-            facingRight = false; // Bald si muove verso sinistra
-        }
-    
-        // Spostamento
-        this.x += speedX;
-        this.y += speedY;
-
-        if(this.isImmobilized()){
-            return;
-        }*/
-
     /**
      * Muove il nemico lungo gli assi X e Y sulla mappa, gestendo le collisioni con i tile solidi.
      *

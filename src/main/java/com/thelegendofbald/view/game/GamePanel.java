@@ -43,7 +43,6 @@ import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
-import com.thelegendofbald.combat.projectile.Projectile;
 import com.thelegendofbald.controller.common.SwitchToOtherPanel;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.DataManager;
@@ -411,7 +410,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 enemy.updateAnimation();
             }
         });
-        combatManager.getProjectiles().forEach(Projectile::move);
+        combatManager.getProjectiles().forEach(p -> p.move(tileMap));
         combatManager.checkProjectiles();
         itemManager.updateAll();
         itemManager.handleItemCollection(bald);
