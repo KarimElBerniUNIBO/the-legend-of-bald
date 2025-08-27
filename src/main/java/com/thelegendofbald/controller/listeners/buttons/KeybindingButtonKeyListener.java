@@ -5,8 +5,10 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.SwingUtilities;
 
+import com.thelegendofbald.api.panels.Panels;
 import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.view.buttons.KeybindingButton;
+import com.thelegendofbald.view.game.GamePanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -50,9 +52,11 @@ public class KeybindingButtonKeyListener extends KeyAdapter {
         super.keyPressed(e);
         if (button.isChanging()) {
             final var keyCode = e.getKeyCode();
+            final var gamePanel = (GamePanel) Panels.GAME_MENU.getPanel();
             button.setChanging(false);
             SwingUtilities.invokeLater(() -> {
                 ControlsSettings.setKeyCode(ControlsSettings.getKeybind(button), keyCode);
+                gamePanel.refreshKeyBindings();
             });
         }
     }

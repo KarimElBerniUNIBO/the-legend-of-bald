@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.Box;
@@ -27,7 +28,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import org.apache.commons.lang3.tuple.Pair;
+
 import com.thelegendofbald.api.common.GridBagConstraintsFactory;
 import com.thelegendofbald.api.game.Game;
 import com.thelegendofbald.api.inventory.Inventory;
@@ -189,35 +192,40 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         weapons.forEach(inventory::add);
     }
 
+    private void toggleOptionsPanel() {
+        if (paused && !inventoryPanel.isVisible()) {
+            closeOptionsPanel();
+        } else if (!inventoryPanel.isVisible()) {
+            openOptionsPanel();
+        } else {
+            inventoryPanel.setVisible(false);
+            openOptionsPanel();
+        }
+    }
+
+    public void refreshKeyBindings() {
+        pressedKeys.clear();
+        setupKeyBindings();
+    }
+
     private void setupKeyBindings() {
         final InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
         final ActionMap am = this.getActionMap();
 
         // Tasti premuti
-        bindKey(im, am, "pressed UP", ControlsSettings.UP.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_UP));
-        bindKey(im, am, "pressed DOWN", ControlsSettings.DOWN.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_DOWN));
-        bindKey(im, am, "pressed LEFT", ControlsSettings.LEFT.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_LEFT));
-        bindKey(im, am, "pressed RIGHT", ControlsSettings.RIGHT.getKey(), true, () -> pressedKeys.add(KeyEvent.VK_RIGHT));
-        bindKey(im, am, "pressed ESCAPE", KeyEvent.VK_ESCAPE, true, () -> {
-            if (paused && !inventoryPanel.isVisible()) {
-                closeOptionsPanel();
-            } else if (!inventoryPanel.isVisible()) {
-                openOptionsPanel();
-            } else {
-                inventoryPanel.setVisible(false);
-                openOptionsPanel();
-            }
-        });
+        bindKey(im, am, "pressed UP", ControlsSettings.UP.getKey(), true, () -> pressedKeys.add(ControlsSettings.UP.getKey()));
+        bindKey(im, am, "pressed DOWN", ControlsSettings.DOWN.getKey(), true, () -> pressedKeys.add(ControlsSettings.DOWN.getKey()));
+        bindKey(im, am, "pressed LEFT", ControlsSettings.LEFT.getKey(), true, () -> pressedKeys.add(ControlsSettings.LEFT.getKey()));
+        bindKey(im, am, "pressed RIGHT", ControlsSettings.RIGHT.getKey(), true, () -> pressedKeys.add(ControlsSettings.RIGHT.getKey()));
+        bindKey(im, am, "pressed ESCAPE", KeyEvent.VK_ESCAPE, true, this::toggleOptionsPanel);
         bindKey(im, am, "pressed SPACE", ControlsSettings.ATTACK.getKey(), true, combatManager::tryToAttack);
-        bindKey(im, am, "pressed E", ControlsSettings.INVENTORY.getKey(), true, () -> {
-            inventoryPanel.setVisible(!inventoryPanel.isVisible());
-        });
+        bindKey(im, am, "pressed E", ControlsSettings.INVENTORY.getKey(), true, () -> inventoryPanel.setVisible(!inventoryPanel.isVisible()));
 
         // Tasti rilasciati
-        bindKey(im, am, "released UP", ControlsSettings.UP.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_UP));
-        bindKey(im, am, "released DOWN", ControlsSettings.DOWN.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_DOWN));
-        bindKey(im, am, "released LEFT", ControlsSettings.LEFT.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_LEFT));
-        bindKey(im, am, "released RIGHT", ControlsSettings.RIGHT.getKey(), false, () -> pressedKeys.remove(KeyEvent.VK_RIGHT));
+        bindKey(im, am, "released UP", ControlsSettings.UP.getKey(), false, () -> pressedKeys.remove(ControlsSettings.UP.getKey()));
+        bindKey(im, am, "released DOWN", ControlsSettings.DOWN.getKey(), false, () -> pressedKeys.remove(ControlsSettings.DOWN.getKey()));
+        bindKey(im, am, "released LEFT", ControlsSettings.LEFT.getKey(), false, () -> pressedKeys.remove(ControlsSettings.LEFT.getKey()));
+        bindKey(im, am, "released RIGHT", ControlsSettings.RIGHT.getKey(), false, () -> pressedKeys.remove(ControlsSettings.RIGHT.getKey()));
     }
 
     private void bindKey(final InputMap im, final ActionMap am, final String name, final int key,
@@ -235,10 +243,10 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         double dx = 0;
         double dy = 0;
 
-        if (pressedKeys.contains(KeyEvent.VK_LEFT)) { dx -= 1; }
-        if (pressedKeys.contains(KeyEvent.VK_RIGHT)) { dx += 1; }
-        if (pressedKeys.contains(KeyEvent.VK_UP)) { dy -= 1; }
-        if (pressedKeys.contains(KeyEvent.VK_DOWN)) { dy += 1; }
+        if (pressedKeys.contains(ControlsSettings.LEFT.getKey())) { dx -= 1; }
+        if (pressedKeys.contains(ControlsSettings.RIGHT.getKey())) { dx += 1; }
+        if (pressedKeys.contains(ControlsSettings.UP.getKey())) { dy -= 1; }
+        if (pressedKeys.contains(ControlsSettings.DOWN.getKey())) { dy += 1; }
 
         if (pressedKeys.contains(ControlsSettings.ATTACK.getKey())) { combatManager.tryToAttack(); }
 
