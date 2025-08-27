@@ -3,6 +3,7 @@ package com.thelegendofbald;
 import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.model.sounds.SoundManager;
+import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.main.GameWindow;
 
 public final class Main {
@@ -19,7 +20,8 @@ public final class Main {
         });
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            //System.out.println("Closing all sounds...");
+            LoggerUtils.info("Closing all sounds...");
+            LoggerUtils.closeLogger();
             SoundManager.closeAll();
         }));
     }

@@ -5,12 +5,10 @@ package com.thelegendofbald.model.common;
  * It can be started, stopped, reset, and resumed.
  * Provides formatted time data in hours, minutes, and seconds.
  */
-
 public final class Timer {
 
     private long startTime;
     private long elapsedTime;
-    private boolean running;
 
     /**
      * Default constructor initializes the timer.
@@ -19,7 +17,6 @@ public final class Timer {
     public Timer() {
         this.startTime = 0;
         this.elapsedTime = 0;
-        this.running = false;
     }
 
     /**
@@ -29,7 +26,6 @@ public final class Timer {
     public void start() {
         this.startTime = System.currentTimeMillis();
         this.elapsedTime = 0;
-        this.running = true;
     }
 
     /**
@@ -37,10 +33,7 @@ public final class Timer {
      * It calculates the elapsed time since the timer was started.
      */
     public void stop() {
-        if (running) {
-            this.elapsedTime += System.currentTimeMillis() - this.startTime;
-            this.running = false;
-        }
+        this.elapsedTime += System.currentTimeMillis() - this.startTime;
     }
 
     /**
@@ -50,7 +43,6 @@ public final class Timer {
     public void reset() {
         this.startTime = System.currentTimeMillis();
         this.elapsedTime = 0;
-        this.running = false;
     }
 
     /**
@@ -58,10 +50,7 @@ public final class Timer {
      * The timer continues counting from where it left off.
      */
     public void resume() {
-        if (!running) {
-            this.startTime = System.currentTimeMillis();
-            this.running = true;
-        }
+        this.startTime = System.currentTimeMillis();
     }
 
     /**
@@ -71,11 +60,7 @@ public final class Timer {
      * @return The total elapsed time in milliseconds.
      */
     public long getElapsedTime() {
-        if (running) {
-            return this.elapsedTime + System.currentTimeMillis() - this.startTime;
-        } else {
-            return this.elapsedTime;
-        }
+        return this.elapsedTime + System.currentTimeMillis() - this.startTime;
     }
 
     /**

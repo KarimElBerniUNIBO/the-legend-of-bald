@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.thelegendofbald.item.GameItem;
-import com.thelegendofbald.item.weapons.Axe;
-import com.thelegendofbald.item.weapons.FireBall;
-import com.thelegendofbald.item.weapons.Sword;
+import com.thelegendofbald.model.item.GameItem;
+import com.thelegendofbald.model.item.weapons.Axe;
+import com.thelegendofbald.model.item.weapons.FireBall;
+import com.thelegendofbald.model.item.weapons.Sword;
 import com.thelegendofbald.model.weapons.Weapon;
 
 class InventoryManagerTest {

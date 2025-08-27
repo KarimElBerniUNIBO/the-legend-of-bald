@@ -2,7 +2,7 @@ package com.thelegendofbald.model.inventory;
 
 import java.util.Optional;
 
-import com.thelegendofbald.item.GameItem;
+import com.thelegendofbald.model.item.GameItem;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

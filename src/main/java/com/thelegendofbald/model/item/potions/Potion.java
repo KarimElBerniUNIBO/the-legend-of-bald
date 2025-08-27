@@ -1,0 +1,33 @@
+package com.thelegendofbald.model.item.potions;
+
+import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.model.item.GameItem;
+
+/**
+ * An abstract base class for all potions in the game.
+ * This class extends {@link GameItem} and provides the common structure
+ * for potions, forcing subclasses to implement their specific effects.
+ */
+public abstract class Potion extends GameItem {
+
+    /**
+     * Constructs a new Potion instance.
+     *
+     * @param x The x-coordinate of the potion.
+     * @param y The y-coordinate of the potion.
+     * @param width The width of the potion's bounding box.
+     * @param height The height of the potion's bounding box.
+     * @param name The name of the potion.
+     */
+    public Potion(int x, int y, int width, int height, String name) {
+        super(x, y, width, height, name);
+    }
+
+    /**
+     * Applies the unique effect of this potion to the specified player.
+     * This method must be implemented by all concrete potion subclasses.
+     *
+     * @param bald The player instance to whom the effect will be applied.
+     */
+    public abstract void applyEffect(Bald bald);
+}

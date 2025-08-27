@@ -15,12 +15,12 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.thelegendofbald.item.ShopItem;
-import com.thelegendofbald.item.weapons.Axe;
-import com.thelegendofbald.item.weapons.FireBall;
-import com.thelegendofbald.item.weapons.Sword;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.Wallet;
+import com.thelegendofbald.model.item.ShopItem;
+import com.thelegendofbald.model.item.weapons.Axe;
+import com.thelegendofbald.model.item.weapons.FireBall;
+import com.thelegendofbald.model.item.weapons.Sword;
 
 public class ShopPanel extends JPanel {
 

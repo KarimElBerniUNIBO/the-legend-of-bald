@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import com.thelegendofbald.buffs.Buff;
+import com.thelegendofbald.buffs.BuffManager;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.common.Wallet;
@@ -28,17 +31,17 @@ public class Bald extends Entity implements Combatant {
 
     private static final int WIDTH = 50; // Larghezza del frame
     private static final int HEIGHT = 50; // Altezza del frame
-    private static final int tileSize = 32;
 
     private Optional<Weapon> weapon = Optional.empty();
     public static final String SpeedX = null;
     private TileMap tileMap;
-    private int attackPower; // Potenza d'attacco
-    private BufferedImage image;
-    private String path = "/images/bald.png"; // Percorso dell'immagine
-    private double speedX = 1.0; // Velocità lungo l'asse X
+    private int attackPower; // Potenza d'attacco base
+    private double speedX = 0.0; // Velocità lungo l'asse X
     private final Wallet wallet = new Wallet(0);
+    private boolean immobilized = false;
 
+    private final List<Buff> activeBuffs = new ArrayList<>();
+    
     public double getSpeedX() {
         return speedX;
     }
@@ -51,7 +54,7 @@ public class Bald extends Entity implements Combatant {
         return wallet;
     }
 
-    private double speedY = 1.0; // Velocità lungo l'asse Y
+    private double speedY = 0.0; // Velocità lungo l'asse Y
     private double posX, posY;
     private BufferedImage[] runFrames; // Array di immagini per l'animazione della corsa
     private Map<String, BufferedImage[]> attackFrames = new HashMap<>(); // Mappa per i frame di attacco
@@ -63,14 +66,11 @@ public class Bald extends Entity implements Combatant {
     private boolean isAttacking = false; // Indica se Bald sta attaccando
     private int currentAttackFrame = 0; // Indice del frame corrente nell'animazione di attacco
     private boolean facingRight = true; // Direzione in cui Bald sta guardando
-    private int health = 100; // Salute di Bald
-    private String name; // Nome di Bald
+    private final BuffManager buffManager = new BuffManager(this);
 
     public Bald(int x, int y, int maxHealth, String name, int attackPower) {
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(maxHealth));
         this.attackPower = attackPower;
-        this.posX = x;
-        this.posY = y;
         loadRunFrames();
         loadAllAttackFrames();
     }
@@ -118,7 +118,6 @@ public class Bald extends Entity implements Combatant {
     public void setSpawnPosition(int spawnTileId, int tileSize) {
         Point spawnPoint = tileMap.findSpawnPoint(spawnTileId);
         if (spawnPoint != null) {
-            // Centra i piedi di Bald nel tile di spawn
             int x = spawnPoint.x + (tileSize - getWidth()) / 2;
             int y = spawnPoint.y + tileSize - getHeight();
             this.setPosX(x);
@@ -128,11 +127,10 @@ public class Bald extends Entity implements Combatant {
 
     private void loadRunFrames() {
         try {
-            int numFrames = 9; // Supponiamo di avere 6 frame
+            int numFrames = 9;
             runFrames = new BufferedImage[numFrames];
             for (int i = 0; i < numFrames; i++) {
-                String framePath = String.format("/images/bald_run/PS_BALD GUY_Run_00%d.png", i + 1); // Percorso dei
-                                                                                                      // frame
+                String framePath = String.format("/images/bald_run/PS_BALD GUY_Run_00%d.png", i + 1);
                 InputStream is = getClass().getResourceAsStream(framePath);
                 if (is != null) {
                     runFrames[i] = ImageIO.read(is);
@@ -144,9 +142,10 @@ public class Bald extends Entity implements Combatant {
             e.printStackTrace();
         }
     }
-
-    public int getAttackPower() {
-        return attackPower;
+    
+    @Override
+    public int getAttackPower(){
+        return buffManager.modifyAttackPower(attackPower);
     }
 
     public void setAttackPower(int attackPower) {
@@ -166,7 +165,7 @@ public class Bald extends Entity implements Combatant {
                 }
 
             } else {
-                currentFrame = (currentFrame + 1) % runFrames.length; // Cicla tra i frame
+                currentFrame = (currentFrame + 1) % runFrames.length;
             }
         }
 
@@ -210,6 +209,38 @@ public class Bald extends Entity implements Combatant {
         this.speedY = speedY;
         // this.updateAnimation();
     }
+
+    public void immobilize(long durationMillis) {
+        immobilized = true;
+        setSpeedX(0);
+        setSpeedY(0);
+    
+        new Thread(() -> {
+            try {
+                Thread.sleep(durationMillis);
+            } catch (InterruptedException ignored) {}
+            immobilized = false;
+        }).start();
+    }
+    
+    public boolean isImmobilized() {
+        return immobilized;
+    }
+
+    /*public void move() {
+        if (speedX > 0) {
+            facingRight = true; // Bald si muove verso destra
+        } else if (speedX < 0) {
+            facingRight = false; // Bald si muove verso sinistra
+        }
+    
+        // Spostamento
+        this.x += speedX;
+        this.y += speedY;
+
+        if(this.isImmobilized()){
+            return;
+        }*/
 
     /**
      * Muove il nemico lungo gli assi X e Y sulla mappa, gestendo le collisioni con i tile solidi.
@@ -285,6 +316,10 @@ public class Bald extends Entity implements Combatant {
 
         this.x = (int) Math.round(posX);
         this.y = (int) Math.round(posY);
+
+        if(this.isImmobilized()){
+            return;
+        }
     }
 
     public int getHeight() {
@@ -347,4 +382,13 @@ public class Bald extends Entity implements Combatant {
     public void setPosY(double posY) {
         this.posY = posY;
     }
+    
+    public void applyBuff(Buff buff) {
+        buffManager.applyBuff(buff);
+    }
+    
+    public void updateBuffs() {
+        buffManager.update();
+    }
+
 }

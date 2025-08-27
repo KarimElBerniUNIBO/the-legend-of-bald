@@ -7,8 +7,9 @@ import java.util.stream.Stream;
 
 import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.item.GameItem;
+import com.thelegendofbald.model.item.GameItem;
 import com.thelegendofbald.model.weapons.Weapon;
+import com.thelegendofbald.view.inventory.InventoryPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -125,6 +126,4 @@ public final class InventoryManager implements Inventory {
     public List<Slot> getSlots() {
         return this.inventory;
     }
-
-
 }
