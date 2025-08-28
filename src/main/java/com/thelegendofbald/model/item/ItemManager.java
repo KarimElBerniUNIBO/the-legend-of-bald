@@ -3,7 +3,6 @@ package com.thelegendofbald.model.item;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
 import com.thelegendofbald.api.common.animation.Animatable;
@@ -22,7 +21,7 @@ import com.thelegendofbald.view.main.TileMap;
  */
 public class ItemManager {
 
-    private List<GameItem> items = new CopyOnWriteArrayList<>();
+    private List<GameItem> items = new ArrayList<>();
     private final ItemFactory itemFactory;
     private final MapItemLoader mapItemLoader;
     private final TileMap tileMap;
@@ -40,7 +39,7 @@ public class ItemManager {
                        final ItemFactory itemFactory,
                        final MapItemLoader mapItemLoader,
                        final LootGenerator lootGenerator) {
-        this.items = new CopyOnWriteArrayList<>();
+        this.items = new ArrayList<>();
         this.itemFactory = itemFactory;
         this.mapItemLoader = mapItemLoader;
         this.tileMap = tileMap;
@@ -56,10 +55,10 @@ public class ItemManager {
         try {
             final MapItemSpawner spawner = new MapItemSpawner(tileMap, itemFactory, mapItemLoader, itemFile);
             spawner.spawnItems();
-            this.items = new CopyOnWriteArrayList<>(spawner.getItems());
+            this.items = new ArrayList<>(spawner.getItems());
         } catch (Exception e) {
             LoggerUtils.error("[ItemManager] Nessun file " + itemFile + " trovato o errore di caricamento: " + e.getMessage());
-            this.items = new CopyOnWriteArrayList<>();
+            this.items = new ArrayList<>();
         }
     }
 
@@ -78,7 +77,8 @@ public class ItemManager {
      * @param g the Graphics context to draw on
      */
     public void renderAll(final Graphics g) {
-        items.forEach(item -> item.render(g));
+        List<GameItem> snapshot = new ArrayList<>(items);
+        snapshot.forEach(item -> item.render(g));
     }
 
     /**
