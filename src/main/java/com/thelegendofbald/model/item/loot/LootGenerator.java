@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Random;
 
 import com.thelegendofbald.model.item.GameItem;
-import com.thelegendofbald.model.item.ItemFactory;
-
+import com.thelegendofbald.model.item.ItemFactory;/**
+ * The LootGenerator class is responsible for generating random loot items
+ * based on a predefined loot pool. It uses an {@link ItemFactory} to create
+ * items and a {@link Random} instance to determine randomness.
+ */
 public class LootGenerator {
 
     private final ItemFactory itemFactory;
@@ -14,15 +17,25 @@ public class LootGenerator {
     // Lista di ID item che possono uscire come loot
     private final List<Integer> lootPool;
 
-    public LootGenerator(ItemFactory itemFactory, List<Integer> lootPool) {
+    /**
+     * Constructs a LootGenerator with the specified {@link ItemFactory} and loot pool.
+     *
+     * @param itemFactory the factory used to create items
+     * @param lootPool    the list of item IDs that can be generated as loot
+     */
+    public LootGenerator(final ItemFactory itemFactory,final List<Integer> lootPool) {
         this.itemFactory = itemFactory;
         this.lootPool = lootPool;
     }
 
     /**
-     * Genera un singolo item casuale preso dalla loot pool.
+     * Generates a single random item from the loot pool.
+     *
+     * @param x the x-coordinate where the item will be placed
+     * @param y the y-coordinate where the item will be placed
+     * @return a {@link GameItem} created from the loot pool, or {@code null} if the loot pool is empty
      */
-    public GameItem generateRandomItem(int x, int y) {
+    public GameItem generateRandomItem(final int x,final int y) {
         if (lootPool.isEmpty()) {
             return null;
         }
@@ -31,11 +44,17 @@ public class LootGenerator {
     }
 
     /**
-     * Genera N item casuali dalla loot pool.
+     * Generates a specified number of random items from the loot pool.
+     *
+     * @param count the number of items to generate
+     * @param x     the x-coordinate where the items will be placed
+     * @param y     the y-coordinate where the items will be placed
+     * @return a list of {@link GameItem} objects created from the loot pool
      */
-    public List<GameItem> generateRandomItems(int count, int x, int y) {
+    public List<GameItem> generateRandomItems(final int count,final int x,final int y) {
         return random.ints(count, 0, lootPool.size())
                      .mapToObj(index -> itemFactory.createItemById(lootPool.get(index), x, y))
                      .toList();
     }
 }
+

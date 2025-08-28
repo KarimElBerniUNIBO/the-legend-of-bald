@@ -10,7 +10,10 @@ import com.thelegendofbald.model.item.ItemFactory;
 import com.thelegendofbald.view.main.TileMap;
 
 /**
- * Si occupa di spawnare GameItem leggendo i dati da un file tramite MapItemLoader.
+ * The MapItemSpawner class is responsible for spawning items on the game map
+ * based on predefined spawn data loaded from a file. It utilizes an
+ * {@link ItemFactory} to create items and a {@link MapItemLoader} to load the
+ * spawn data.
  */
 public class MapItemSpawner {
 
@@ -21,6 +24,15 @@ public class MapItemSpawner {
 
     private final List<GameItem> items = new ArrayList<>();
 
+    /**
+     * Constructs a MapItemSpawner with the specified {@link TileMap},
+     * {@link ItemFactory}, {@link MapItemLoader}, and item file path.
+     *
+     * @param tileMap     the tile map where items will be spawned
+     * @param itemFactory the factory used to create items
+     * @param loader      the loader used to load item spawn data
+     * @param itemFile    the path to the file containing item spawn data
+     */
     public MapItemSpawner(final TileMap tileMap, final ItemFactory itemFactory,
                           final MapItemLoader loader, final String itemFile) {
         this.tileMap = tileMap;
@@ -29,10 +41,19 @@ public class MapItemSpawner {
         this.itemFile = itemFile;
     }
 
+    /**
+     * Returns an unmodifiable list of currently spawned items.
+     *
+     * @return a list of spawned {@link GameItem} objects
+     */
     public List<GameItem> getItems() {
         return Collections.unmodifiableList(items);
     }
 
+    /**
+     * Spawns items on the map based on the spawn data loaded from the item file.
+     * Existing items are cleared before spawning new ones.
+     */
     public void spawnItems() {
         items.clear();
         try {
