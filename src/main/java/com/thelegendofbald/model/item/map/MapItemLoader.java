@@ -6,6 +6,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Loader class for reading item spawn data files from resources.
+ * Each line in the file should contain: ID row col
+ */
 public class MapItemLoader {
 
     /**
@@ -15,8 +19,8 @@ public class MapItemLoader {
      * @return Lista di ItemSpawnData
      * @throws IOException Se il file non può essere letto
      */
-    public List<ItemSpawnData> load(String fileName) throws IOException {
-        List<ItemSpawnData> data = new ArrayList<>();
+    public List<ItemSpawnData> load(final String fileName) throws IOException {
+        final List<ItemSpawnData> data = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(getClass().getResourceAsStream("/item_map/" + fileName)))) {
@@ -24,20 +28,22 @@ public class MapItemLoader {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
-                if (line.isEmpty()) continue;
+                if (line.isEmpty()) {
+                    continue;
+                }
 
-                String[] tokens = line.split("\\s+");
+                final String[] tokens = line.split("\\s+");
                 if (tokens.length != 3) {
                     System.err.println("Formato riga non valido in " + fileName + ": " + line);
                     continue;
                 }
 
                 try {
-                    int id = Integer.parseInt(tokens[0]);
-                    int row = Integer.parseInt(tokens[1]);
-                    int col = Integer.parseInt(tokens[2]);
+                    final int id = Integer.parseInt(tokens[0]);
+                    final int row = Integer.parseInt(tokens[1]);
+                    final int col = Integer.parseInt(tokens[2]);
                     data.add(new ItemSpawnData(id, row, col));
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     System.err.println("Errore di formato numerico: " + line);
                 }
             }

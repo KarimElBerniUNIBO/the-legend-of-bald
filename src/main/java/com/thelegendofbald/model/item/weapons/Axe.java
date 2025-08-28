@@ -24,7 +24,7 @@ public class Axe extends HeavyMeleeWeapon implements ShopItem {
                final CombatManager combatManager) {
         super(x, y, preferredSizeX, preferredSizeY, NAME, DAMAGE, combatManager, ATTACK_RANGE);
         try {
-            this.sprite = ImageIO.read(getClass().getResource("/images/weapon/axe.png"));
+            setSprite(ImageIO.read(getClass().getResource("/images/weapon/axe.png")));
         } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace(); // Così non crasha se l'immagine non viene trovata
         }
@@ -49,6 +49,6 @@ public class Axe extends HeavyMeleeWeapon implements ShopItem {
 
     @Override
     public Image getSprite() {
-        return this.sprite;
+        return super.getSprite();
     }
 }

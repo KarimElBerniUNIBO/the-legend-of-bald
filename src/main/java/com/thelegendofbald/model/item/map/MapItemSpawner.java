@@ -57,21 +57,22 @@ public class MapItemSpawner {
     public void spawnItems() {
         items.clear();
         try {
-            List<ItemSpawnData> spawnData = loader.load(itemFile);
-            for (ItemSpawnData data : spawnData) {
-                GameItem item = itemFactory.createItemById(
-                        data.id,
-                        data.col * tileMap.TILE_SIZE,
-                        data.row * tileMap.TILE_SIZE
+            final List<ItemSpawnData> spawnData = loader.load(itemFile);
+            for (final ItemSpawnData data : spawnData) {
+                final GameItem item = itemFactory.createItemById(
+                        data.getId(),
+                        data.getCol() * tileMap.TILE_SIZE,
+                        data.getRow() * tileMap.TILE_SIZE
                 );
                 if (item != null) {
                     items.add(item);
-                    System.out.printf("Creato item ID %d in posizione: (%d,%d)%n", data.id, data.col, data.row);
+                    System.out.printf("Creato item ID %d in posizione: (%d,%d)%n",
+                            data.getId(), data.getCol(), data.getRow());
                 } else {
-                    System.err.println("Item con ID " + data.id + " non riconosciuto.");
+                    System.err.println("Item con ID " + data.getId() + " non riconosciuto.");
                 }
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("Errore nel caricamento del file item: " + itemFile);
             e.printStackTrace();
         }

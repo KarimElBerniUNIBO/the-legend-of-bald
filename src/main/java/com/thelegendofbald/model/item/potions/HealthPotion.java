@@ -10,6 +10,11 @@ import com.thelegendofbald.characters.Bald;
  */
 public class HealthPotion extends Potion implements UsableItem {
 
+    private static final int DEFAULT_HEAL_AMOUNT = 20;
+    private static final int DEFAULT_WIDTH = 32;
+    private static final int DEFAULT_HEIGHT = 32;
+    private static final int DEFAULT_PRICE = 30;
+
     private final int healAmount;
 
     /**
@@ -18,11 +23,11 @@ public class HealthPotion extends Potion implements UsableItem {
      * @param x The x-coordinate of the potion.
      * @param y The y-coordinate of the potion.
      */
-    public HealthPotion(int x, int y) {
-        super(x, y, 32, 32, "Healing Potion");
-        this.healAmount = 20;
+    public HealthPotion(final int x, final int y) {
+        super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, "Healing Potion");
+        this.healAmount = DEFAULT_HEAL_AMOUNT;
         setDescription("Restores " + healAmount + " health points.");
-        setPrice(30);
+        setPrice(DEFAULT_PRICE);
         loadImage("/images/potions/health_potion.png");
     }
 
@@ -32,7 +37,7 @@ public class HealthPotion extends Potion implements UsableItem {
      * @param player The player instance to be healed.
      */
     @Override
-    public void applyEffect(Bald player) {
+    public void applyEffect(final Bald player) {
         player.getLifeComponent().heal(healAmount);
         System.out.printf("You used a %s and recovered %d health points.%n", getName(), healAmount);
         System.out.println("Bald now has: " + player.getLifeComponent().getCurrentHealth());

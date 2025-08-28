@@ -20,7 +20,7 @@ public class Sword extends LightMeleeWeapon implements ShopItem {
                  final CombatManager combatManager) {
         super(x, y, preferredSizeX, preferredSizeY, NAME, DAMAGE, combatManager, ATTACK_RANGE);
         try {
-            this.sprite = ImageIO.read(getClass().getResource("/images/weapon/sword.png"));
+            setSprite(ImageIO.read(getClass().getResource("/images/weapon/sword.png")));
         } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace(); // Così non crasha se l'immagine non viene trovata
         }
@@ -45,6 +45,6 @@ public class Sword extends LightMeleeWeapon implements ShopItem {
 
     @Override
     public Image getSprite() {
-        return sprite;
+        return super.getSprite();
     }
 }

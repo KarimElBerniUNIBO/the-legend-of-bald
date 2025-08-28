@@ -7,128 +7,132 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /**
- * The base class for all items within the game.
- * It provides common properties such as position, dimensions, name, and sprite,
- * as well as fundamental behaviors like rendering and collision detection.
+ * The base class for all items in the game.
+ * Provides position, size, name, description, price, sprite, and rendering/collision utilities.
  */
 public class GameItem {
 
-    // Common game world properties. Using 'protected' for subclasses to access.
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int height;
+    /** The x-coordinate of the item in the game world. */
+    private int x;
 
-    // Item-specific properties, often used for UI or game logic.
-    protected String name;
-    protected String description;
-    protected int price;
+    /** The y-coordinate of the item in the game world. */
+    private int y;
 
-    // The visual representation of the item.
-    protected Image sprite;
+    /** The width of the item's bounding box. */
+    private int width;
+
+    /** The height of the item's bounding box. */
+    private int height;
+
+    /** The name of the item. */
+    private String name;
+
+    /** The description of the item. */
+    private String description;
+
+    /** The price of the item. */
+    private int price;
+
+    /** The sprite image representing the item. */
+    private Image sprite;
 
     /**
-     * Constructs a new GameItem with specified coordinates and dimensions.
-     * This is the base constructor used by all subclasses.
+     * Constructs a new GameItem with the specified position, size, and name.
      *
-     * @param x The x-coordinate of the item in the game world.
-     * @param y The y-coordinate of the item in the game world.
-     * @param width The width of the item's bounding box.
-     * @param height The height of the item's bounding box.
-     * @param name The name of the item.
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @param width the width of the item
+     * @param height the height of the item
+     * @param name the name of the item
      */
-    public GameItem(int x, int y, int width, int height, String name) {
+    public GameItem(final int x, final int y, final int width, final int height, final String name) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.name = name;
-        this.description = ""; // Initialize with an empty string
-        this.price = 0;        // Initialize with a default price
+        this.description = "";
+        this.price = 0;
     }
 
     /**
-     * Renders the item's sprite on the screen at its current position.
-     * This method should be called by the game loop to draw the item.
+     * Renders the item's sprite at its current position.
      *
-     * @param g The Graphics object used for drawing.
+     * @param g the Graphics object used to render
      */
-    public void render(Graphics g) {
+    public void render(final Graphics g) {
         if (sprite != null) {
             g.drawImage(sprite, x, y, width, height, null);
         }
     }
 
-    // --- GETTERS FOR ITEM PROPERTIES ---
-    
     /**
-     * Retrieves the name of the item.
+     * Returns the name of the item.
      *
-     * @return The name of the item.
+     * @return the item's name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Retrieves the description of the item.
+     * Returns the description of the item.
      *
-     * @return The description of the item, or an empty string if none is set.
+     * @return the item's description
      */
     public String getDescription() {
         return description != null ? description : "";
     }
 
     /**
-     * Retrieves the price of the item.
+     * Returns the price of the item.
      *
-     * @return The price of the item.
+     * @return the item's price
      */
     public int getPrice() {
         return price;
     }
 
     /**
-     * Retrieves the x-coordinate of the item in the game world.
+     * Returns the x-coordinate of the item.
      *
-     * @return The x-coordinate of the item.
+     * @return the item's x-coordinate
      */
     public int getX() {
         return x;
     }
 
     /**
-     * Retrieves the y-coordinate of the item in the game world.
+     * Returns the y-coordinate of the item.
      *
-     * @return The y-coordinate of the item.
+     * @return the item's y-coordinate
      */
-
     public int getY() {
         return y;
     }
 
     /**
-     * Retrieves the width of the item's bounding box.
+     * Returns the width of the item.
      *
-     * @return The width of the item.
+     * @return the item's width
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Retrieves the height of the item's bounding box.
+     * Returns the height of the item.
      *
-     * @return The height of the item.
+     * @return the item's height
      */
     public int getHeight() {
         return height;
     }
 
     /**
-     * Retrieves the sprite image of the item.
+     * Returns the sprite image of the item.
      *
-     * @return The Image object representing the item's sprite.
+     * @return the item's sprite
      */
     public Image getSprite() {
         return sprite;
@@ -138,46 +142,52 @@ public class GameItem {
      * Returns a Rectangle representing the item's bounding box.
      * Useful for collision detection.
      *
-     * @return A Rectangle object defining the item's boundaries.
+     * @return a Rectangle defining the item's bounds
      */
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
 
-    // --- SETTERS FOR ITEM PROPERTIES ---
-    
     /**
      * Sets the price of the item.
      *
-     * @param price The new price to set.
+     * @param price the price to set
      */
-    public void setPrice(int price) {
+    public void setPrice(final int price) {
         this.price = price;
     }
 
     /**
      * Sets the description of the item.
      *
-     * @param description The new description to set.
+     * @param description the description to set
      */
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
     /**
-     * Synchronously loads the item's sprite image from the given path.
+     * Sets the sprite image of the item.
+     *
+     * @param sprite the sprite image to set
+     */
+    public void setSprite(final Image sprite) {
+        this.sprite = sprite;
+    }
+
+    /**
+     * Loads a sprite image for the item from the specified path.
      * This method should be called by subclasses in their constructors.
      *
-     * @param imagePath The resource path to the image file (e.g., "/images/items/key.png").
+     * @param imagePath the path to the image resource
      */
-    protected void loadImage(String imagePath) {
+    protected void loadImage(final String imagePath) {
         try {
-            // Use getClass().getResourceAsStream() for robust resource loading.
             this.sprite = ImageIO.read(getClass().getResourceAsStream(imagePath));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("Error loading image: " + imagePath);
             e.printStackTrace();
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             System.err.println("Invalid image path: " + imagePath);
             e.printStackTrace();
         }

@@ -9,7 +9,6 @@ import com.thelegendofbald.api.inventory.Inventory;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.model.item.GameItem;
 import com.thelegendofbald.model.weapons.Weapon;
-import com.thelegendofbald.view.inventory.InventoryPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

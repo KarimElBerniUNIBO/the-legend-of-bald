@@ -19,7 +19,7 @@ public abstract class Potion extends GameItem {
      * @param height The height of the potion's bounding box.
      * @param name The name of the potion.
      */
-    public Potion(int x, int y, int width, int height, String name) {
+    public Potion(final int x, final int y, final int width, final int height, final String name) {
         super(x, y, width, height, name);
     }
 
@@ -27,7 +27,7 @@ public abstract class Potion extends GameItem {
      * Applies the unique effect of this potion to the specified player.
      * This method must be implemented by all concrete potion subclasses.
      *
-     * @param bald The player instance to whom the effect will be applied.
+     * @param player The player instance to whom the effect will be applied.
      */
-    public abstract void applyEffect(Bald bald);
+    public abstract void applyEffect(Bald player);
 }

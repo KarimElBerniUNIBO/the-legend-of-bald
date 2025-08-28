@@ -24,7 +24,7 @@ public class FireBall extends RangedWeapon implements ShopItem {
                  final CombatManager combatManager) {
         super(x, y, preferredSizeX, preferredSizeY, NAME, DAMAGE, ATTACK_COOLDOWN, combatManager);
         try {
-            this.sprite = ImageIO.read(getClass().getResource("/images/weapon/fireball.png"));
+            setSprite(ImageIO.read(getClass().getResource("/images/weapon/fireball.png")));
         } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace(); // Così non crasha se l'immagine non viene trovata
         }
@@ -49,6 +49,6 @@ public class FireBall extends RangedWeapon implements ShopItem {
 
     @Override
     public Image getSprite() {
-        return this.sprite;
+        return super.getSprite();
     }
 }

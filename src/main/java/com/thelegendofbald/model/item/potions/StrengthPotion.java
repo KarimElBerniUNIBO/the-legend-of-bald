@@ -11,8 +11,11 @@ import com.thelegendofbald.effects.buffs.StrengthBuff;
  */
 public class StrengthPotion extends Potion implements UsableItem { 
 
-    private static final int STRENGTH_BONUS = 50; 
+    private static final int STRENGTH_BONUS = 50;
     private static final long DURATION_MS = 10000; // 10 seconds
+    private static final int DEFAULT_WIDTH = 32;
+    private static final int DEFAULT_HEIGHT = 32;
+    private static final int DEFAULT_PRICE = 50;
 
     /**
      * Constructs a new StrengthPotion instance.
@@ -20,9 +23,9 @@ public class StrengthPotion extends Potion implements UsableItem {
      * @param x The x-coordinate of the potion.
      * @param y The y-coordinate of the potion.
      */
-    public StrengthPotion(int x, int y) {
-        super(x, y, 32, 32, "Strength Potion");
-        setPrice(50);
+    public StrengthPotion(final int x, final int y) {
+        super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, "Strength Potion");
+        setPrice(DEFAULT_PRICE);
         setDescription("Increases attack strength by " + STRENGTH_BONUS + " for " + (DURATION_MS / 1000) + " seconds.");
         loadImage("/images/potions/strength_potion.png");
     }
@@ -35,8 +38,8 @@ public class StrengthPotion extends Potion implements UsableItem {
      * @param bald The player instance to apply the buff to.
      */
     @Override
-    public void applyEffect(Bald bald) {
-        StrengthBuff buff = new StrengthBuff(DURATION_MS, STRENGTH_BONUS);
+    public void applyEffect(final Bald bald) {
+        final StrengthBuff buff = new StrengthBuff(DURATION_MS, STRENGTH_BONUS);
         bald.applyBuff(buff);
         System.out.println("You used a Strength Potion! Attack strength increased for " + (DURATION_MS / 1000) + " seconds.");
         System.out.println("Current attack power: " + bald.getAttackPower());

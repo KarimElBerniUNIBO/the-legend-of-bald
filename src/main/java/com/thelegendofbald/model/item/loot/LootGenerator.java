@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import com.thelegendofbald.model.item.GameItem;
-import com.thelegendofbald.model.item.ItemFactory;/**
+import com.thelegendofbald.model.item.ItemFactory;
+
+/**
  * The LootGenerator class is responsible for generating random loot items
  * based on a predefined loot pool. It uses an {@link ItemFactory} to create
  * items and a {@link Random} instance to determine randomness.
@@ -23,7 +25,7 @@ public class LootGenerator {
      * @param itemFactory the factory used to create items
      * @param lootPool    the list of item IDs that can be generated as loot
      */
-    public LootGenerator(final ItemFactory itemFactory,final List<Integer> lootPool) {
+    public LootGenerator(final ItemFactory itemFactory, final List<Integer> lootPool) {
         this.itemFactory = itemFactory;
         this.lootPool = lootPool;
     }
@@ -35,11 +37,11 @@ public class LootGenerator {
      * @param y the y-coordinate where the item will be placed
      * @return a {@link GameItem} created from the loot pool, or {@code null} if the loot pool is empty
      */
-    public GameItem generateRandomItem(final int x,final int y) {
+    public GameItem generateRandomItem(final int x, final int y) {
         if (lootPool.isEmpty()) {
             return null;
         }
-        int randomId = lootPool.get(random.nextInt(lootPool.size()));
+        final int randomId = lootPool.get(random.nextInt(lootPool.size()));
         return itemFactory.createItemById(randomId, x, y);
     }
 
@@ -51,10 +53,9 @@ public class LootGenerator {
      * @param y     the y-coordinate where the items will be placed
      * @return a list of {@link GameItem} objects created from the loot pool
      */
-    public List<GameItem> generateRandomItems(final int count,final int x,final int y) {
+    public List<GameItem> generateRandomItems(final int count, final int x, final int y) {
         return random.ints(count, 0, lootPool.size())
                      .mapToObj(index -> itemFactory.createItemById(lootPool.get(index), x, y))
                      .toList();
     }
 }
-

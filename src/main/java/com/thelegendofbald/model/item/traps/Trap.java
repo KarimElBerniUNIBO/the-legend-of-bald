@@ -1,87 +1,96 @@
 package com.thelegendofbald.model.item.traps;
 
-import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.model.item.GameItem;
-import com.thelegendofbald.api.interactable.Interactable;
-
-import java.awt.Graphics;
+import com.thelegendofbald.characters.Bald;
 import java.awt.image.BufferedImage;
 
 /**
- * An abstract base class for all traps in the game.
- * This class extends {@link GameItem} and implements the
- * {@link Interactable} interface, providing a common structure
- * for traps that can be triggered by the player.
+ * Abstract base class for all traps in the game.
+ * Handles the triggered state and whether the trap should be removed after activation.
  */
-public abstract class Trap extends GameItem implements Interactable {
+public abstract class Trap extends GameItem {
 
-    protected boolean isTriggered = false;
-    protected boolean removeOnTrigger = false;
+    /** True if the trap has been triggered. */
+    private boolean triggered;
 
-    protected BufferedImage currentSprite;
+    /** True if the trap should be removed after being triggered. */
+    private boolean removeOnTrigger;
+
+    /** The current sprite image of the trap. */
+    private BufferedImage currentSprite;
 
     /**
      * Constructs a new Trap instance.
      *
-     * @param x The x-coordinate of the trap.
-     * @param y The y-coordinate of the trap.
-     * @param width The width of the trap's bounding box.
-     * @param height The height of the trap's bounding box.
-     * @param name The name of the trap.
+     * @param x the X-coordinate
+     * @param y the Y-coordinate
+     * @param width the width of the trap
+     * @param height the height of the trap
+     * @param name the trap's name
      */
-    public Trap(final int x,final int y,final int width,final int height,final String name) {
+    public Trap(final int x, final int y, final int width, final int height, final String name) {
         super(x, y, width, height, name);
     }
 
     /**
-     * Checks if the trap has been triggered.
-     * @return true if the trap is triggered, false otherwise.
+     * Returns true if the trap has been triggered.
+     *
+     * @return true if the trap is triggered, false otherwise
      */
     public boolean isTriggered() {
-        return isTriggered;
+        return triggered;
     }
 
     /**
-     * Determines if the trap should be removed from the game after being triggered.
-     * @return true if the trap should be removed, false otherwise.
+     * Sets the triggered state of the trap.
+     *
+     * @param triggered the new triggered state
+     */
+    public void setTriggered(final boolean triggered) {
+        this.triggered = triggered;
+    }
+
+    /**
+     * Returns true if the trap should be removed after being triggered.
+     *
+     * @return true if the trap should be removed after trigger
      */
     public boolean shouldRemoveOnTrigger() {
         return removeOnTrigger;
     }
 
     /**
-     * Defines the interaction behavior when the trap is triggered by Bald.
+     * Sets whether the trap should be removed after triggering.
+     *
+     * @param remove true if the trap should be removed after trigger, false otherwise
      */
-    @Override
-    public abstract void interact(Bald bald);
-
-    /**
-     * Updates the trap's animation state.
-     */
-    public void updateAnimation() {
-        // Default: no animation update
-    }
-
-    /*
-     * Renders the trap on the screen.
-     * @param g the Graphics context to draw on
-     */
-    @Override
-    public void render(final Graphics g) {
-        if (currentSprite != null) {
-            g.drawImage(currentSprite, x, y, width, height, null);
-        }
+    public void setRemoveOnTrigger(final boolean remove) {
+        this.removeOnTrigger = remove;
     }
 
     /**
-     * Determines if the trap should be triggered based on Bald's position.
-     * @param bald the Bald {@code Bald} player
-     * @return true if the trap should be triggered, false otherwise
+     * Returns the current sprite of the trap.
+     *
+     * @return the current sprite image
      */
-    public boolean shouldTrigger(final Bald bald) {
-        // Default: trigger se il centro di Bald è dentro la trappola
-        int baldCenterX = bald.getX() + bald.getWidth() / 2;
-        int baldCenterY = bald.getY() + bald.getHeight() / 2;
-        return !isTriggered() && getBounds().contains(baldCenterX, baldCenterY);
+    public BufferedImage getCurrentSprite() {
+        return currentSprite;
     }
+
+    /**
+     * Sets the current sprite of the trap.
+     *
+     * @param sprite the sprite image to set
+     */
+    public void setCurrentSprite(final BufferedImage sprite) {
+        this.currentSprite = sprite;
+    }
+
+    /**
+     * Defines the interaction behavior when the trap is triggered by the player.
+     * Subclasses must implement their specific effect.
+     *
+     * @param player the player character affected by the trap
+     */
+    public abstract void interact(Bald player);
 }

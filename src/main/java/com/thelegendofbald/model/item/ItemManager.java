@@ -17,10 +17,6 @@ import com.thelegendofbald.view.main.TileMap;
 /**
  * Manages all game items, including loading, updating, rendering,
  * and handling interactions with the player character (Bald).
- * This class utilizes an {@link ItemFactory} to create items,
- * a {@link MapItemLoader} to load items from files,
- * and a {@link LootGenerator} to generate loot from chests.
- * It also handles automatic item collection when Bald intersects with items.
  */
 public class ItemManager {
 
@@ -38,7 +34,10 @@ public class ItemManager {
      * @param mapItemLoader  the loader used to load items from files
      * @param lootGenerator  the generator used to create loot from chests
      */
-    public ItemManager(final TileMap tileMap,final ItemFactory itemFactory,final MapItemLoader mapItemLoader,final LootGenerator lootGenerator) {
+    public ItemManager(final TileMap tileMap,
+                       final ItemFactory itemFactory,
+                       final MapItemLoader mapItemLoader,
+                       final LootGenerator lootGenerator) {
         this.items = new ArrayList<>();
         this.itemFactory = itemFactory;
         this.mapItemLoader = mapItemLoader;
@@ -47,18 +46,16 @@ public class ItemManager {
     }
 
     /**
-     * Load items for the specified map from a corresponding item file.
-     * If the file does not exist or cannot be loaded, initializes with an empty item list.
-     * @param mapName the name of the map to load items for
-     * @throws IOException if there is an error reading the item file
+     * Loads items for the specified map from a corresponding item file.
+     * @param mapName the name of the map
      */
     public void loadItemsForMap(final String mapName) {
-        String itemFile = "item_" + mapName + ".txt";
+        final String itemFile = "item_" + mapName + ".txt";
         try {
-            MapItemSpawner spawner = new MapItemSpawner(tileMap, itemFactory, mapItemLoader, itemFile);
+            final MapItemSpawner spawner = new MapItemSpawner(tileMap, itemFactory, mapItemLoader, itemFile);
             spawner.spawnItems();
             this.items = new ArrayList<>(spawner.getItems());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println("[ItemManager] Nessun file " + itemFile + " trovato o errore di caricamento: " + e.getMessage());
             this.items = new ArrayList<>();
         }
@@ -66,14 +63,12 @@ public class ItemManager {
 
     /**
      * Updates all animatable items.
-     * Items that implement the {@link Animatable} interface will have their animations updated.
-     * This method should be called in the game loop to ensure smooth animations.
      */
     public void updateAll() {
         items.stream()
-            .filter(item -> item instanceof Animatable)
-            .map(item -> (Animatable) item)
-            .forEach(Animatable::updateAnimation);
+             .filter(item -> item instanceof Animatable)
+             .map(item -> (Animatable) item)
+             .forEach(Animatable::updateAnimation);
     }
 
     /**
@@ -86,34 +81,34 @@ public class ItemManager {
 
     /**
      * Handles item collection when Bald intersects with items.
-     * Chests are opened to generate loot, usable items apply their effects and are removed,
+     * Chests are opened to generate loot, usable items apply effects and are removed,
      * and traps are triggered to apply their effects.
-     * @param bald the Bald {@code Bald} player character who may collect items
+     * @param bald the Bald player character
      */
     public void handleItemCollection(final Bald bald) {
-        List<GameItem> newItems = new ArrayList<>();
-        Iterator<GameItem> it = items.iterator();
+        final List<GameItem> newItems = new ArrayList<>();
+        final Iterator<GameItem> it = items.iterator();
 
         while (it.hasNext()) {
-            GameItem item = it.next();
+            final GameItem item = it.next();
+
             if (bald.getBounds().intersects(item.getBounds())) {
+
                 if (item instanceof Chest chest) {
                     if (!chest.isOpen()) {
                         chest.open(bald);
-                        GameItem loot = lootGenerator.generateRandomItem(
-                                chest.getX() + chest.getWidth() + 5,
-                                chest.getY()
+                        final GameItem loot = lootGenerator.generateRandomItem(
+                            chest.getX() + chest.getWidth() + 5,
+                            chest.getY()
                         );
                         if (loot != null) {
                             newItems.add(loot);
                         }
                     }
-                } 
-                else if (item instanceof UsableItem usable) {
+                } else if (item instanceof UsableItem usable) {
                     usable.applyEffect(bald);
-                    it.remove(); 
-                } 
-                else if (item instanceof Trap trap) {
+                    it.remove();
+                } else if (item instanceof Trap trap) {
                     if (!trap.isTriggered()) {
                         trap.interact(bald);
                         if (trap.shouldRemoveOnTrigger()) {
@@ -123,12 +118,13 @@ public class ItemManager {
                 }
             }
         }
+
         items.addAll(newItems);
     }
-    
+
     /**
      * Returns the list of all current items managed by this ItemManager.
-     * @return a list of all {@link GameItem} objects
+     * @return a list of all GameItem objects
      */
     public List<GameItem> getItems() {
         return items;
@@ -136,10 +132,9 @@ public class ItemManager {
 
     /**
      * Adds a new item to the item list.
-     * @param item the {@link GameItem} to add
+     * @param item the GameItem to add
      */
     public void addItem(final GameItem item) {
         items.add(item);
     }
-    
 }
