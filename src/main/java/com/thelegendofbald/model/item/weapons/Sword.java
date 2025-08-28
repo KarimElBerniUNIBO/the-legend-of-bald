@@ -8,10 +8,12 @@ import javax.imageio.ImageIO;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.item.ShopItem;
 import com.thelegendofbald.model.weapons.LightMeleeWeapon;
+import com.thelegendofbald.utils.LoggerUtils;
 
 public class Sword extends LightMeleeWeapon implements ShopItem {
 
-    private static final String NAME = "Spada di ferro";
+    private static final String NAME = "Sword";
+    private static final String DESCRIPTION = "A simple iron sword, suitable for beginners.";
     private static final int DAMAGE = 30;
     private static final int ATTACK_RANGE = 75;
     private static final int PRICE = 10;
@@ -22,7 +24,7 @@ public class Sword extends LightMeleeWeapon implements ShopItem {
         try {
             setSprite(ImageIO.read(getClass().getResource("/images/weapon/sword.png")));
         } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace(); // Così non crasha se l'immagine non viene trovata
+            LoggerUtils.error(NAME + " sprite not found");
         }
     }
 
@@ -35,7 +37,7 @@ public class Sword extends LightMeleeWeapon implements ShopItem {
 
     @Override
     public String getDescription() {
-        return "Una semplice spada in ferro, adatta ai principianti.";
+        return DESCRIPTION;
     }
 
     @Override

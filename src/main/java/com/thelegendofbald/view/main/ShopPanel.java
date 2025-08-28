@@ -21,6 +21,7 @@ import com.thelegendofbald.model.item.ShopItem;
 import com.thelegendofbald.model.item.weapons.Axe;
 import com.thelegendofbald.model.item.weapons.FireBall;
 import com.thelegendofbald.model.item.weapons.Sword;
+import com.thelegendofbald.utils.LoggerUtils;
 
 public class ShopPanel extends JPanel {
 
@@ -60,7 +61,7 @@ public class ShopPanel extends JPanel {
                     if (rect.contains(e.getPoint())) {
                         selectedIndex = i;
                         repaint();
-                        System.out.println("Selezionato: " + items.get(i).getDisplayName());
+                        LoggerUtils.info("Selezionato: " + items.get(i).getDisplayName());
                         break;
                     }
                     y += 50;

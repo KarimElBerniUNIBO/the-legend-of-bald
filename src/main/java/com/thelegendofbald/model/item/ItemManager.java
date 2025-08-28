@@ -3,6 +3,7 @@ package com.thelegendofbald.model.item;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
 import com.thelegendofbald.api.common.animation.Animatable;
@@ -12,6 +13,7 @@ import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
 import com.thelegendofbald.model.item.map.MapItemSpawner;
 import com.thelegendofbald.model.item.traps.Trap;
+import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.main.TileMap;
 
 /**
@@ -20,7 +22,7 @@ import com.thelegendofbald.view.main.TileMap;
  */
 public class ItemManager {
 
-    private List<GameItem> items;
+    private List<GameItem> items = new CopyOnWriteArrayList<>();
     private final ItemFactory itemFactory;
     private final MapItemLoader mapItemLoader;
     private final TileMap tileMap;
@@ -38,7 +40,7 @@ public class ItemManager {
                        final ItemFactory itemFactory,
                        final MapItemLoader mapItemLoader,
                        final LootGenerator lootGenerator) {
-        this.items = new ArrayList<>();
+        this.items = new CopyOnWriteArrayList<>();
         this.itemFactory = itemFactory;
         this.mapItemLoader = mapItemLoader;
         this.tileMap = tileMap;
@@ -54,10 +56,10 @@ public class ItemManager {
         try {
             final MapItemSpawner spawner = new MapItemSpawner(tileMap, itemFactory, mapItemLoader, itemFile);
             spawner.spawnItems();
-            this.items = new ArrayList<>(spawner.getItems());
-        } catch (final Exception e) {
-            System.err.println("[ItemManager] Nessun file " + itemFile + " trovato o errore di caricamento: " + e.getMessage());
-            this.items = new ArrayList<>();
+            this.items = new CopyOnWriteArrayList<>(spawner.getItems());
+        } catch (Exception e) {
+            LoggerUtils.error("[ItemManager] Nessun file " + itemFile + " trovato o errore di caricamento: " + e.getMessage());
+            this.items = new CopyOnWriteArrayList<>();
         }
     }
 

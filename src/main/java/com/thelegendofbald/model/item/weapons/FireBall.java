@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.item.ShopItem;
 import com.thelegendofbald.model.weapons.RangedWeapon;
+import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * The {@code Magic} class represents a magic weapon in the game.
@@ -15,9 +16,10 @@ import com.thelegendofbald.model.weapons.RangedWeapon;
  */
 public class FireBall extends RangedWeapon implements ShopItem {
 
-    private static final String NAME = "Palla di fuoco";
-    private static final int DAMAGE = 10;
-    private static final int ATTACK_COOLDOWN = 300; // milliseconds
+    private static final String NAME = "Fireball";
+    private static final String DESCRIPTION = "A fiery projectile";
+    private static final int DAMAGE = 25;
+    private static final int ATTACK_COOLDOWN = 600; // milliseconds
     private static final int PRICE = 25;
 
     public FireBall(final int x, final int y, final int preferredSizeX, final int preferredSizeY,
@@ -26,11 +28,9 @@ public class FireBall extends RangedWeapon implements ShopItem {
         try {
             setSprite(ImageIO.read(getClass().getResource("/images/weapon/fireball.png")));
         } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace(); // Così non crasha se l'immagine non viene trovata
+            LoggerUtils.error(NAME + " sprite not found");
         }
     }
-
-    // Metodi dell’interfaccia ShopItem
 
     @Override
     public String getDisplayName() {
@@ -39,7 +39,7 @@ public class FireBall extends RangedWeapon implements ShopItem {
 
     @Override
     public String getDescription() {
-        return "Una serie di sfere infuocate che possono essere lanciate a distanza.";
+        return DESCRIPTION;
     }
 
     @Override

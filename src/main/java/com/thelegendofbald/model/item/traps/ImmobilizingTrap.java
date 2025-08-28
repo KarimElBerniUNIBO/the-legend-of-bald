@@ -1,9 +1,12 @@
 package com.thelegendofbald.model.item.traps;
 
-import com.thelegendofbald.characters.Bald;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.imageio.ImageIO;
+
+import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * A trap that immobilizes the player for a short duration when triggered.
@@ -38,7 +41,7 @@ public final class ImmobilizingTrap extends Trap {
         try (InputStream is = getClass().getResourceAsStream(path)) {
             setCurrentSprite(ImageIO.read(is));
         } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
+            LoggerUtils.error("Failed to load image: " + path);
         }
     }
 
@@ -48,11 +51,12 @@ public final class ImmobilizingTrap extends Trap {
      * @param bald the player affected by the trap
      */
     @Override
-    public void interact(final Bald bald) {
+    public void interact(Bald bald) {
         if (!isTriggered()) {
             setTriggered(true);
             bald.immobilize(IMMOBILIZE_DURATION_MS);
-            System.out.println("You are immobilized!");
+            LoggerUtils.info("You are immobilized!");
         }
     }
-}
+}   
+

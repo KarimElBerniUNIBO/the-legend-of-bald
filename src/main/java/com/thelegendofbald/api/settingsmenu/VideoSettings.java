@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 
 import com.thelegendofbald.api.views.MainView;
@@ -24,10 +23,6 @@ public enum VideoSettings implements SettingOption {
      * Represents the window mode setting.
      */
     WINDOW_MODE("WINDOW MODE", createWindowModeComboBox()),
-    /**
-     * Represents the framerate setting.
-     */
-    FPS("FRAMERATE PER SECOND", createFPSSlider()),
     /**
      * Represents the show FPS setting.
      */
@@ -96,22 +91,6 @@ public enum VideoSettings implements SettingOption {
             }
         });
         return comboBox;
-    }
-
-    private static CustomSlider createFPSSlider() {
-        final var customSlider = new CustomSlider(JSlider.HORIZONTAL, 30, 144, 60);
-        final var slider = customSlider.getSlider();
-
-        slider.addChangeListener(e -> {
-            if (!slider.getValueIsAdjusting()
-                    && customSlider.getLastValue() != customSlider.getValue()) {
-                final var window = (MainView) SwingUtilities.getWindowAncestor(customSlider);
-                window.setFPS(slider.getValue());
-                customSlider.setLastValue(slider.getValue());
-            }
-        });
-
-        return customSlider;
     }
 
     private static CustomCheckBox createShowFPSCheckBox() {

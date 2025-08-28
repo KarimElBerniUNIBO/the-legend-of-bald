@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.thelegendofbald.model.item.GameItem;
 import com.thelegendofbald.model.item.ItemFactory;
+import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.main.TileMap;
 
 /**
@@ -66,15 +67,13 @@ public class MapItemSpawner {
                 );
                 if (item != null) {
                     items.add(item);
-                    System.out.printf("Creato item ID %d in posizione: (%d,%d)%n",
-                            data.getId(), data.getCol(), data.getRow());
+                    LoggerUtils.info(String.format("Creato item ID %d in posizione: (%d,%d)%n", data.getId(), data.getCol(), data.getRow()));
                 } else {
-                    System.err.println("Item con ID " + data.getId() + " non riconosciuto.");
+                    LoggerUtils.error("Item con ID " + data.getId() + " non riconosciuto.");
                 }
             }
-        } catch (final IOException e) {
-            System.err.println("Errore nel caricamento del file item: " + itemFile);
-            e.printStackTrace();
+        } catch (IOException e) {
+            LoggerUtils.error("Errore nel caricamento del file item: " + itemFile);
         }
     }
 }

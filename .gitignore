@@ -20,7 +20,9 @@ bin/
 .DS_Store
 
 # Ignore log files
+logs/
 *.log
+logs/
 
 # Ignore local runs data
 game_data/runs/users_data.yml

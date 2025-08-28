@@ -8,7 +8,8 @@ package com.thelegendofbald.model.common;
 public final class Timer {
 
     private long startTime;
-    private long elapsedTime;
+    private long pausedTime;
+    private boolean running;
 
     /**
      * Default constructor initializes the timer.
@@ -16,7 +17,8 @@ public final class Timer {
      */
     public Timer() {
         this.startTime = 0;
-        this.elapsedTime = 0;
+        this.pausedTime = 0;
+        this.running = false;
     }
 
     /**
@@ -24,8 +26,9 @@ public final class Timer {
      * The timer begins counting from the current time.
      */
     public void start() {
-        this.startTime = System.currentTimeMillis();
-        this.elapsedTime = 0;
+        startTime = System.currentTimeMillis();
+        pausedTime = 0;
+        running = true;
     }
 
     /**
@@ -33,7 +36,10 @@ public final class Timer {
      * It calculates the elapsed time since the timer was started.
      */
     public void stop() {
-        this.elapsedTime += System.currentTimeMillis() - this.startTime;
+        if (running) {
+            pausedTime = System.currentTimeMillis() - startTime;
+            running = false;
+        }
     }
 
     /**
@@ -42,7 +48,7 @@ public final class Timer {
      */
     public void reset() {
         this.startTime = System.currentTimeMillis();
-        this.elapsedTime = 0;
+        this.pausedTime = 0;
     }
 
     /**
@@ -50,7 +56,10 @@ public final class Timer {
      * The timer continues counting from where it left off.
      */
     public void resume() {
-        this.startTime = System.currentTimeMillis();
+        if (!running) {
+            startTime = System.currentTimeMillis() - pausedTime;
+            running = true;
+        }
     }
 
     /**
@@ -60,7 +69,11 @@ public final class Timer {
      * @return The total elapsed time in milliseconds.
      */
     public long getElapsedTime() {
-        return this.elapsedTime + System.currentTimeMillis() - this.startTime;
+        if (running) {
+            return System.currentTimeMillis() - startTime;
+        } else {
+            return pausedTime;
+        }
     }
 
     /**

@@ -32,7 +32,7 @@ public class ItemFactory {
         registry.put(ID_HEALTH_POTION, HealthPotion::new);
         registry.put(ID_STRENGTH_POTION, StrengthPotion::new);
         registry.put(ID_CHEST, (x, y) -> new Chest(x, y));
-        registry.put(ID_POISON_TRAP, (x, y) -> new PoisonTrap(x, y));
+        registry.put(ID_POISON_TRAP, (x, y) -> new PoisonTrap(x , y));
         registry.put(ID_IMMOBILIZING_TRAP, (x, y) -> new ImmobilizingTrap(x, y));
     }
 

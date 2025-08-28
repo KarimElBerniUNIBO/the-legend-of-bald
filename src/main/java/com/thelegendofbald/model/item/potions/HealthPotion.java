@@ -2,6 +2,7 @@ package com.thelegendofbald.model.item.potions;
 
 import com.thelegendofbald.api.item.UsableItem;
 import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * A potion that restores a certain amount of the player's health.
@@ -39,7 +40,7 @@ public class HealthPotion extends Potion implements UsableItem {
     @Override
     public void applyEffect(final Bald player) {
         player.getLifeComponent().heal(healAmount);
-        System.out.printf("You used a %s and recovered %d health points.%n", getName(), healAmount);
-        System.out.println("Bald now has: " + player.getLifeComponent().getCurrentHealth());
+        LoggerUtils.info(String.format("You used a %s and recovered %d health points.%n", getName(), healAmount));
+        LoggerUtils.info("Bald now has: " + player.getLifeComponent().getCurrentHealth());
     }
 }

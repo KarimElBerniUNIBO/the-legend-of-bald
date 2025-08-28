@@ -2,6 +2,7 @@ package com.thelegendofbald.view.game;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Arrays;
@@ -54,6 +55,7 @@ public final class GameOptionsPanel extends AdapterPanel {
         super();
         this.setLayout(new GridBagLayout());
         this.setVisible(false);
+        this.setOpaque(false);
         SwingUtilities.invokeLater(() -> this.setBackground(DEFAULT_BG_COLOR));
     }
 
@@ -77,14 +79,19 @@ public final class GameOptionsPanel extends AdapterPanel {
                     enumButton.getPanel().ifPresentOrElse(
                             panel -> enumButton.getButton()
                                     .addActionListener(e -> {
-                                        new SwitchToOtherPanel((GameWindow) SwingUtilities.getWindowAncestor(this),
-                                                panel).actionPerformed(e);
                                         if (enumButton == Buttons.LEAVE) {
                                             ((Game) this.getParent()).stopGame();
                                             this.setVisible(false);
                                         }
+                                        new SwitchToOtherPanel((GameWindow) SwingUtilities.getWindowAncestor(this),
+                                                panel).actionPerformed(e);
                                     }),
-                            () -> enumButton.getButton().addActionListener(e -> this.setVisible(false)));
+                            () -> enumButton.getButton().addActionListener(e -> {
+                                if (enumButton == Buttons.RESUME) {
+                                    ((Game) this.getParent()).resumeGame();
+                                }
+                                this.setVisible(false);
+                            }));
                 });
     }
 
@@ -115,6 +122,13 @@ public final class GameOptionsPanel extends AdapterPanel {
     public void setPreferredSize(final Dimension size) {
         super.setPreferredSize(size);
         SwingUtilities.invokeLater(this::updateView);
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        g.setColor(DEFAULT_BG_COLOR);
+        g.fillRect(0, 0, getWidth(), getHeight());
+        super.paintComponent(g);
     }
 
 }

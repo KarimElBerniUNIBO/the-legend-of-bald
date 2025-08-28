@@ -6,7 +6,9 @@ import com.thelegendofbald.api.common.animation.Animatable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.imageio.ImageIO;
+import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * A trap that poisons the player when triggered.
@@ -66,7 +68,7 @@ public class PoisonTrap extends Trap implements Animatable {
                 );
             }
         } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
+            LoggerUtils.error("Failed to load image: " + path);
         }
     }
 
@@ -85,7 +87,7 @@ public class PoisonTrap extends Trap implements Animatable {
                 POISON_TICK_INTERVAL_MS
             ));
             lastTriggerTime = now;
-            System.out.println("You stepped on a poison trap! You are now poisoned.");
+            LoggerUtils.info("You stepped on a poison trap! You are now poisoned.");
         }
     }
 
