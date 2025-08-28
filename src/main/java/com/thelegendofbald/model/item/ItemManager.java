@@ -56,7 +56,7 @@ public class ItemManager {
             final MapItemSpawner spawner = new MapItemSpawner(tileMap, itemFactory, mapItemLoader, itemFile);
             spawner.spawnItems();
             this.items = new ArrayList<>(spawner.getItems());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LoggerUtils.error("[ItemManager] Nessun file " + itemFile + " trovato o errore di caricamento: " + e.getMessage());
             this.items = new ArrayList<>();
         }
@@ -77,7 +77,7 @@ public class ItemManager {
      * @param g the Graphics context to draw on
      */
     public void renderAll(final Graphics g) {
-        List<GameItem> snapshot = new ArrayList<>(items);
+        final List<GameItem> snapshot = new ArrayList<>(items);
         snapshot.forEach(item -> item.render(g));
     }
 

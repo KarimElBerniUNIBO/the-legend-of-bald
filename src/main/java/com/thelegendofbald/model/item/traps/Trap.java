@@ -40,8 +40,8 @@ public abstract class Trap extends GameItem {
      * @param g the Graphics context to draw on
      */
     @Override
-    public void render(final Graphics g){
-        if(currentSprite != null){
+    public void render(final Graphics g) {
+    if (currentSprite != null) {
             g.drawImage(currentSprite, getX(), getY(), getWidth(), getHeight(), null);
         } else {
             g.setColor(java.awt.Color.MAGENTA);
