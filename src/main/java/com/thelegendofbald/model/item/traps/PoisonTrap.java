@@ -9,6 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 
+/**
+ * A trap that poisons the player when triggered.
+ * This class extends the abstract {@link Trap} class and implements the
+ * {@link Animatable} interface to provide animated behavior.
+ */
 public class PoisonTrap extends Trap implements Animatable{
 
     private static final int WIDTH = 32;
@@ -25,7 +30,12 @@ public class PoisonTrap extends Trap implements Animatable{
     private int frameDelay = 8;
     private int frameCounter = 0;
 
-    public PoisonTrap(int x, int y) {
+    /**
+     * Constructs a new PoisonTrap instance at the specified coordinates.
+     * @param x the x coordinate
+     * @param y the y coordinate
+     */
+    public PoisonTrap(final int x,final int y) {
         super(x, y, WIDTH, HEIGHT, ITEM_NAME);
         this.removeOnTrigger = false; // NON viene rimossa dopo attivazione
         setDescription("Inflicts " + POISON_DAMAGE_PER_TICK + " damage every " +
@@ -36,7 +46,12 @@ public class PoisonTrap extends Trap implements Animatable{
         this.currentSprite = idleFrames[0];
     }
 
-    private void loadAnimationFrames(String path, int numFrames) {
+    /**
+     * Loads animation frames from a sprite sheet.
+     * @param path the path to the sprite sheet
+     * @param numFrames the number of frames in the sprite sheet
+     */
+    private void loadAnimationFrames(final String path,final int numFrames) {
         try (InputStream is = getClass().getResourceAsStream(path)) {
             BufferedImage spriteSheet = ImageIO.read(is);
             idleFrames = new BufferedImage[numFrames];
@@ -49,8 +64,12 @@ public class PoisonTrap extends Trap implements Animatable{
         }
     }
 
+    /**
+     * Triggers the poison effect on the player if the trap is not on cooldown.
+     * @param bald the Bald {@code Bald} player instance
+     */
     @Override
-    public void interact(Bald bald) {
+    public void interact(final Bald bald) {
         long now = System.currentTimeMillis();
         if (now - lastTriggerTime >= REACTIVATION_DELAY_MS) {
             bald.applyBuff(new PoisonBuff(POISON_DURATION_MS, POISON_DAMAGE_PER_TICK, POISON_TICK_INTERVAL_MS));
@@ -59,6 +78,10 @@ public class PoisonTrap extends Trap implements Animatable{
         }
     }   
 
+    /**
+     * Updates the animation frame of the trap.
+     * This method should be called periodically to animate the trap.
+     */
     @Override
     public void updateAnimation() {
         if (idleFrames != null && idleFrames.length > 0) {
