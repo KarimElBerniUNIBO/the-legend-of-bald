@@ -27,10 +27,12 @@ public class HealthPotion extends Potion implements UsableItem {
     public HealthPotion(final int x, final int y) {
         super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, "Healing Potion");
         this.healAmount = DEFAULT_HEAL_AMOUNT;
-        setDescription("Restores " + healAmount + " health points.");
-        setPrice(DEFAULT_PRICE);
-        loadImage("/images/potions/health_potion.png");
+        super.setDescription("Restores " + healAmount + " health points.");
+        super.setPrice(DEFAULT_PRICE);
+        super.loadImage("/images/potions/health_potion.png");
     }
+
+
 
     /**
      * Applies the healing effect to the player.
@@ -43,4 +45,5 @@ public class HealthPotion extends Potion implements UsableItem {
         LoggerUtils.info(String.format("You used a %s and recovered %d health points.%n", getName(), healAmount));
         LoggerUtils.info("Bald now has: " + player.getLifeComponent().getCurrentHealth());
     }
+
 }

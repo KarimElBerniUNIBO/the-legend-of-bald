@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.utils.LoggerUtils;
 
 
 /**
@@ -25,7 +26,7 @@ public class StatusEffectManager {
      *
      * @param owner the Bald {@code Bald} character that owns this manager
      */
-    public StatusEffectManager(Bald owner) {
+    public StatusEffectManager(final Bald owner) {
         this.owner = owner;
     }
 
@@ -38,12 +39,12 @@ public class StatusEffectManager {
      * 
      * @param effect the StatusEffect {@codec StatusEffetc} effetc to apply
      */
-    public void applyeffect(StatusEffect effect) {
+    public void applyeffect(final StatusEffect effect) {
         activeeffects.removeIf(b -> b.getName().equals(effect.getName()));
         effect.activate();
-        activeeffects.add(effect);      
-        effect.apply(owner);   
-        System.out.println("effect di " + effect.getName() + " attivato!");
+        activeeffects.add(effect);     
+        effect.apply(owner); 
+        LoggerUtils.info("effect di " + effect.getName() + " attivato!");
     }
 
     /**
@@ -54,10 +55,9 @@ public class StatusEffectManager {
      * and deactivated.
      */
     public void update() {
-        List<StatusEffect> expired = new ArrayList<>();
-        for (StatusEffect effect : activeeffects) {
+        final List<StatusEffect> expired = new ArrayList<>();
+        for (final StatusEffect effect : activeeffects) {
             effect.update(owner);
-    
             if (effect.isExpired()) {
                 effect.remove(owner);
                 expired.add(effect);
@@ -76,9 +76,9 @@ public class StatusEffectManager {
      * @param basePower the base attack power before applying any effects
      * @return the modified attack power after applying all active effects
      */
-    public int modifyAttackPower(int basePower) {
+    public int modifyAttackPower(final int basePower) {
         int power = basePower;
-        for (StatusEffect effect : activeeffects) {
+        for (final StatusEffect effect : activeeffects) {
             power = effect.modifyAttackPower(owner, power);
         }
         return power;
@@ -93,7 +93,15 @@ public class StatusEffectManager {
         return List.copyOf(activeeffects);
     }
 
-    public void removeeffectByName(String name) {
+    /**
+     * Removes an effect from the Bald character by its name.
+     * This method searches for the effect with the specified name,
+     * removes it from the character, deactivates it,
+     * and removes it from the list of active effects.
+     *
+     * @param name the name of the effect to be removed
+     */
+    public void removeeffectByName(final String name) {
         activeeffects.removeIf(b -> {
             if (b.getName().equals(name)) {
                 b.remove(owner);
@@ -111,7 +119,7 @@ public class StatusEffectManager {
      * and clears the list of active effects.
      */
     public void clearAll() {
-        for (StatusEffect b : activeeffects) {
+        for (final StatusEffect b : activeeffects) {
             b.remove(owner);
             b.deactivate();
         }

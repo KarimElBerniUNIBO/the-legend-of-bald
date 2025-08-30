@@ -2,6 +2,7 @@ package com.thelegendofbald.effects.buffs;
 
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.effects.StatusEffect;
+import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * Class {@code StrengthBuff} represents a buff that increases the player's attack strength.
@@ -17,7 +18,7 @@ public class StrengthBuff extends StatusEffect {
      * @param durationMs the duration of the buff in milliseconds
      * @param bonusAmount the amount of attack power to add
      */
-    public StrengthBuff(final long durationMs,final int bonusAmount) {
+    public StrengthBuff(final long durationMs, final int bonusAmount) {
         super("Strength Buff", durationMs);
         this.bonusAmount = bonusAmount;
     }
@@ -32,13 +33,13 @@ public class StrengthBuff extends StatusEffect {
     }
 
     /**
-     * Returns the name of the buff.
-     *
-     * @return the name of the buff
+     * Applies the buff to the player.
+     * 
+     * @param player the Bald character to which the buff is applied
      */
     @Override
     public void apply(final Bald player) {
-        System.out.println(getName() + " applied buff");
+        LoggerUtils.info(getName() + " applied buff");
     }
 
     /**
@@ -48,7 +49,7 @@ public class StrengthBuff extends StatusEffect {
      */
     @Override
     public void remove(final Bald player) {
-        System.out.println(getName() + " removed");
+        LoggerUtils.info(getName() + " removed");
     }
 
     /**
@@ -59,18 +60,8 @@ public class StrengthBuff extends StatusEffect {
      * @return the modified attack power after applying the buff
      */
     @Override
-    public int modifyAttackPower(final Bald player,final int basePower) {
+    public int modifyAttackPower(final Bald player, final int basePower) {
         return basePower + bonusAmount;
     }
 
-    /**
-     * Updates the buff on the player.
-     * This method is called periodically to check if the buff is still active.
-     *
-     * @param player the Bald character whose buff is updated
-     */
-    @Override
-    public void update(final Bald player) {
-        super.update(player);
-    }
 }

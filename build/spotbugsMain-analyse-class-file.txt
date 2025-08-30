@@ -3,6 +3,7 @@
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/utils/MathUtils.class
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/utils/ImageUtils.class
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/utils/ColorUtils.class
+/Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/utils/LoggerUtils.class
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/life/LifeComponent.class
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/controller/common/SwitchToOtherSettingsEditorPanel.class
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/controller/common/SwitchToOtherPanel.class
@@ -124,6 +125,6 @@
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/characters/Entity.class
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/characters/DummyEnemy.class
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/effects/StatusEffect.class
-/Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/effects/debuffs/PoisonBuff.class
+/Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/effects/debuffs/PoisonDebuff.class
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/effects/buffs/StrengthBuff.class
 /Users/vramoscadavero/Desktop/the-legend-of-bald/build/classes/java/main/com/thelegendofbald/effects/StatusEffectManager.class

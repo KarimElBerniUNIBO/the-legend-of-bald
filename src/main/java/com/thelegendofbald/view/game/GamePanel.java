@@ -93,8 +93,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
     private final GridPanel gridPanel;
     private transient final TileMap tileMap;
-    private transient ItemManager itemManager;
-    private transient LootGenerator lootGenerator;
+    private transient final ItemManager itemManager;
+    private transient final LootGenerator lootGenerator;
 
     private final LifePanel lifePanel;
     private transient List<DummyEnemy> enemies = new ArrayList<>();

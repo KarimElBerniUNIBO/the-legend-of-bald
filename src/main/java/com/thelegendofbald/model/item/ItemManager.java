@@ -12,7 +12,6 @@ import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
 import com.thelegendofbald.model.item.map.MapItemSpawner;
 import com.thelegendofbald.model.item.traps.Trap;
-import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.main.TileMap;
 
 /**
@@ -21,7 +20,7 @@ import com.thelegendofbald.view.main.TileMap;
  */
 public class ItemManager {
 
-    private List<GameItem> items = new ArrayList<>();
+    private List<GameItem> items;
     private final ItemFactory itemFactory;
     private final MapItemLoader mapItemLoader;
     private final TileMap tileMap;
@@ -52,14 +51,9 @@ public class ItemManager {
      */
     public void loadItemsForMap(final String mapName) {
         final String itemFile = "item_" + mapName + ".txt";
-        try {
-            final MapItemSpawner spawner = new MapItemSpawner(tileMap, itemFactory, mapItemLoader, itemFile);
-            spawner.spawnItems();
-            this.items = new ArrayList<>(spawner.getItems());
-        } catch (final Exception e) {
-            LoggerUtils.error("[ItemManager] Nessun file " + itemFile + " trovato o errore di caricamento: " + e.getMessage());
-            this.items = new ArrayList<>();
-        }
+        final MapItemSpawner spawner = new MapItemSpawner(tileMap, itemFactory, mapItemLoader, itemFile);
+        spawner.spawnItems();
+        this.items = new ArrayList<>(spawner.getItems());
     }
 
     /**
@@ -96,8 +90,7 @@ public class ItemManager {
 
             if (bald.getBounds().intersects(item.getBounds())) {
 
-                if (item instanceof Chest chest) {
-                    if (!chest.isOpen()) {
+                if (item instanceof Chest chest && !chest.isOpen()) {
                         chest.open(bald);
                         final GameItem loot = lootGenerator.generateRandomItem(
                             chest.getX() + chest.getWidth() + 5,
@@ -106,16 +99,13 @@ public class ItemManager {
                         if (loot != null) {
                             newItems.add(loot);
                         }
-                    }
                 } else if (item instanceof UsableItem usable) {
                     usable.applyEffect(bald);
                     it.remove();
-                } else if (item instanceof Trap trap) {
-                    if (!trap.isTriggered()) {
-                        trap.interact(bald);
-                        if (trap.shouldRemoveOnTrigger()) {
-                            it.remove();
-                        }
+                } else if (item instanceof Trap trap && !trap.isTriggered()) {
+                    trap.interact(bald);
+                    if (trap.shouldRemoveOnTrigger()) {
+                        it.remove();
                     }
                 }
             }

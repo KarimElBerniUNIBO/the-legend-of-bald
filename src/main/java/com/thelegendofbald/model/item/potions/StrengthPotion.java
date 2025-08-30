@@ -13,7 +13,7 @@ import com.thelegendofbald.utils.LoggerUtils;
 public class StrengthPotion extends Potion implements UsableItem { 
 
     private static final int STRENGTH_BONUS = 50;
-    private static final long DURATION_MS = 10000; // 10 seconds
+    private static final long DURATION_MS = 10_000; // 10 seconds
     private static final int DEFAULT_WIDTH = 32;
     private static final int DEFAULT_HEIGHT = 32;
     private static final int DEFAULT_PRICE = 50;
@@ -26,9 +26,9 @@ public class StrengthPotion extends Potion implements UsableItem {
      */
     public StrengthPotion(final int x, final int y) {
         super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, "Strength Potion");
-        setPrice(DEFAULT_PRICE);
-        setDescription("Increases attack strength by " + STRENGTH_BONUS + " for " + (DURATION_MS / 1000) + " seconds.");
-        loadImage("/images/potions/strength_potion.png");
+        super.setPrice(DEFAULT_PRICE);
+        super.setDescription("Increases attack strength by " + STRENGTH_BONUS + " for " + (DURATION_MS / 1000) + " seconds.");
+        super.loadImage("/images/potions/strength_potion.png");
     }
 
     /**
@@ -42,7 +42,7 @@ public class StrengthPotion extends Potion implements UsableItem {
     public void applyEffect(final Bald bald) {
         final StrengthBuff buff = new StrengthBuff(DURATION_MS, STRENGTH_BONUS);
         bald.applyBuff(buff);
-        LoggerUtils.info(String.format("Strength potion used! Attack strength increased for %d seconds.", (DURATION_MS / 1000)));
+        LoggerUtils.info(String.format("Strength potion used! Attack strength increased for %d seconds.", DURATION_MS / 1000));
         LoggerUtils.info("Current attack power: " + bald.getAttackPower());
     }
 }

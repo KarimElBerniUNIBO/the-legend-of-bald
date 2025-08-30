@@ -26,8 +26,8 @@ public class MapItemLoader {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(getClass().getResourceAsStream("/item_map/" + fileName)))) {
 
-            String line;
-            while ((line = reader.readLine()) != null) {
+            String line = reader.readLine();
+            while (line != null) {
                 line = line.trim();
                 if (line.isEmpty()) {
                     continue;

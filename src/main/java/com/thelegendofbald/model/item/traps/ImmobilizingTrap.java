@@ -39,8 +39,11 @@ public final class ImmobilizingTrap extends Trap {
      */
     private void loadStaticImage(final String path) {
         try (InputStream is = getClass().getResourceAsStream(path)) {
+            if (is == null) {
+                LoggerUtils.error("Image resource not found: " + path);
+            }
             setCurrentSprite(ImageIO.read(is));
-        } catch (IOException | NullPointerException e) {
+        } catch (final IOException e) {
             LoggerUtils.error("Failed to load image: " + path);
         }
     }

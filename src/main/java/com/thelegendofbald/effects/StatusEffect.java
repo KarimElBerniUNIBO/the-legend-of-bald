@@ -47,10 +47,7 @@ public abstract class StatusEffect {
      * @return {@code true} if the status effect is expired, {@code false} otherwise
      */
     public boolean isExpired() {
-        if(!isActive){
-            return true;
-        }
-        return System.currentTimeMillis() - startTime >= durationMs;
+        return !isActive || System.currentTimeMillis() - startTime >= durationMs;
     }
 
     /**
@@ -90,7 +87,7 @@ public abstract class StatusEffect {
      * 
      * @param player the Bald {@code Bald} character to which the status effect is applied
      */
-    public abstract void apply(final Bald player);
+    public abstract void apply(Bald player);
     
     /**
      * Removes the status effect from the specified Bald player.
@@ -98,7 +95,7 @@ public abstract class StatusEffect {
      * 
      * @param player the Bald {@code Bald} character from which the status effect is removed
      */
-    public abstract void remove(final Bald player);
+    public abstract void remove(Bald player);
 
     /**
      * Updates the status effect on the specified Bald player.
@@ -114,7 +111,7 @@ public abstract class StatusEffect {
      * @param basePower base attack of the Bald player
      * @return the modified attack power
      */
-    public int modifyAttackPower(Bald player, int basePower) {
+    public int modifyAttackPower( final Bald player, final int basePower) {
         return basePower;
     }
 

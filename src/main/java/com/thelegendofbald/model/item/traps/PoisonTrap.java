@@ -1,7 +1,7 @@
 package com.thelegendofbald.model.item.traps;
 
 import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.effects.debuffs.PoisonBuff;
+import com.thelegendofbald.effects.debuffs.PoisonDebuff;
 import com.thelegendofbald.api.common.animation.Animatable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -23,11 +23,11 @@ public class PoisonTrap extends Trap implements Animatable {
     private static final long POISON_TICK_INTERVAL_MS = 1000;
     private static final long POISON_DURATION_MS = 5000;
     private static final long REACTIVATION_DELAY_MS = 2000;
+    private static final int FRAME_DELAY = 8;
 
     private long lastTriggerTime;
     private BufferedImage[] idleFrames;
     private int currentFrameIndex;
-    private int frameDelay = 8;
     private int frameCounter;
 
     /**
@@ -38,8 +38,8 @@ public class PoisonTrap extends Trap implements Animatable {
      */
     public PoisonTrap(final int x, final int y) {
         super(x, y, WIDTH, HEIGHT, NAME);
-        setRemoveOnTrigger(false);
-        setDescription(
+        super.setRemoveOnTrigger(false);
+        super.setDescription(
             "Inflicts " 
             + POISON_DAMAGE_PER_TICK 
             + " damage every " 
@@ -48,7 +48,7 @@ public class PoisonTrap extends Trap implements Animatable {
         );
 
         loadAnimationFrames("/images/items/poison_trap.png", 8);
-        setCurrentSprite(idleFrames[0]);
+        super.setCurrentSprite(idleFrames[0]);
     }
 
     /**
@@ -59,6 +59,11 @@ public class PoisonTrap extends Trap implements Animatable {
      */
     private void loadAnimationFrames(final String path, final int numFrames) {
         try (InputStream is = getClass().getResourceAsStream(path)) {
+            if (is == null) {
+                LoggerUtils.error("Resource not found: " + path);
+                return;
+            }
+
             final BufferedImage spriteSheet = ImageIO.read(is);
             idleFrames = new BufferedImage[numFrames];
             final int frameWidth = spriteSheet.getWidth() / numFrames;
@@ -67,7 +72,7 @@ public class PoisonTrap extends Trap implements Animatable {
                     i * frameWidth, 0, frameWidth, spriteSheet.getHeight()
                 );
             }
-        } catch (IOException | NullPointerException e) {
+        } catch (final IOException e) {
             LoggerUtils.error("Failed to load image: " + path);
         }
     }
@@ -81,7 +86,7 @@ public class PoisonTrap extends Trap implements Animatable {
     public void interact(final Bald bald) {
         final long now = System.currentTimeMillis();
         if (now - lastTriggerTime >= REACTIVATION_DELAY_MS) {
-            bald.applyBuff(new PoisonBuff(
+            bald.applyBuff(new PoisonDebuff(
                 POISON_DURATION_MS,
                 POISON_DAMAGE_PER_TICK,
                 POISON_TICK_INTERVAL_MS
@@ -99,7 +104,7 @@ public class PoisonTrap extends Trap implements Animatable {
     public void updateAnimation() {
         if (idleFrames != null && idleFrames.length > 0) {
             frameCounter++;
-            if (frameCounter >= frameDelay) {
+            if (frameCounter >= FRAME_DELAY) {
                 frameCounter = 0;
                 currentFrameIndex = (currentFrameIndex + 1) % idleFrames.length;
                 setCurrentSprite(idleFrames[currentFrameIndex]);

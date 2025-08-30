@@ -26,7 +26,7 @@ public class Chest extends GameItem implements Interactable {
     public Chest(final int x, final int y) {
         super(x, y, WIDTH, HEIGHT, ITEM_NAME);
         this.isOpen = false;
-        loadImage("/images/items/chestClosed.png");
+        super.loadImage(ITEM_NAME);
     }
 
     /**
@@ -60,7 +60,7 @@ public class Chest extends GameItem implements Interactable {
             return;
         }
         this.isOpen = true;
-        loadImage("/images/items/chestOpen.png");
+        super.loadImage("/images/items/chestOpen.png");
         bald.getWallet().addCoins(REWARD_AMOUNT);
     }
 }

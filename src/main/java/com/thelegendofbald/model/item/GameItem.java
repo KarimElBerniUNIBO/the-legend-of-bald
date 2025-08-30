@@ -16,19 +16,19 @@ import com.thelegendofbald.utils.LoggerUtils;
 public class GameItem {
 
     /** The x-coordinate of the item in the game world. */
-    private int x;
+    private final int x;
 
     /** The y-coordinate of the item in the game world. */
-    private int y;
+    private final int y;
 
     /** The width of the item's bounding box. */
-    private int width;
+    private final int width;
 
     /** The height of the item's bounding box. */
-    private int height;
+    private final int height;
 
     /** The name of the item. */
-    private String name;
+    private final String name;
 
     /** The description of the item. */
     private String description;
