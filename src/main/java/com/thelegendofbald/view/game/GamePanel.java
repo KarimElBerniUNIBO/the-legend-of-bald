@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -108,7 +107,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private final JPanel inventoryPanel;
     private transient final Inventory inventory;
 
-    private int num_enemies = 3;
     private transient Thread gameThread;
     private volatile boolean running = false;
 
@@ -167,13 +165,6 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
         this.addWeaponsToInventory();
 
-        for (int i = 0; i < num_enemies; i++) {
-            enemies.add(new DummyEnemy(
-                    ThreadLocalRandom.current().nextInt(300, 1000),
-                    ThreadLocalRandom.current().nextInt(300, 600),
-                    60, "ZioBilly", 10
-            ));
-        }
 
         setupKeyBindings();
         this.initialize();
@@ -449,25 +440,35 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             LoggerUtils.error("Nessuna mappa successiva definita.");
         }
     }
-
+    
+    
     private void changeAndLoadMap(String mapName) {
-        currentMapName = mapName;
-        tileMap.changeMap(mapName);
-        bald.setTileMap(tileMap);
-        Point spawnPoint = tileMap.findSpawnPoint(5);
-        if (spawnPoint != null) {
-            int tileSize = tileMap.TILE_SIZE;
-            bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
-            bald.setY(spawnPoint.y + tileSize - bald.getHeight());
-        }
-        spawnEnemiesFromMap();
-        itemManager.loadItemsForMap(mapName);
-        this.inventory.clear();
+    currentMapName = mapName;
+
+    // cambia mappa e aggiorna riferimento nel player
+    tileMap.changeMap(mapName);
+    bald.setTileMap(tileMap);
+
+    // ► POSIZIONA BALD SUL TILE id == 5 (centrato e "a terra")
+    Point spawnPoint = tileMap.findSpawnPoint(5);
+    if (spawnPoint != null) {
+        int tileSize = tileMap.TILE_SIZE;
+        bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
+        bald.setY(spawnPoint.y + tileSize - bald.getHeight());
+    } else {
+        System.out.println("⚠️ Nessun tile id==5 trovato in " + mapName);
     }
+
+    spawnEnemiesFromMap(); 
+
+    itemManager.loadItemsForMap(mapName);
+
+    shopButton.setVisible(false);
+}
 
     private void spawnEnemiesFromMap() {
         enemies.clear();
-        List<Point> spawns = tileMap.findAllWithId(8);
+        List<Point> spawns = tileMap.findAllWithId(7);
         int tileSize = tileMap.TILE_SIZE;
         for (Point topLeft : spawns) {
             int enemyW = 60, enemyH = 60;
@@ -556,7 +557,9 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.updateComponentsSize();
         this.add(optionsPanel, optionsGBC);
         this.add(inventoryPanel, inventoryGBC);
-        JButton shopButton = new JButton("Shop");
+
+        // ▼ usa il CAMPO 'shopButton' (non crearne uno nuovo)
+        shopButton.setText("Shop");
         shopButton.setBackground(Color.YELLOW);
         shopButton.setOpaque(true);
         shopButton.setFocusable(false);
@@ -565,6 +568,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             ShopPanel shopPanel = new ShopPanel(this.combatManager, bald.getWallet());
             JOptionPane.showMessageDialog(this, shopPanel, "SHOP", JOptionPane.PLAIN_MESSAGE);
         });
+
+        // filler per layout
         GridBagConstraints fillerGBC = new GridBagConstraints();
         fillerGBC.gridx = 0;
         fillerGBC.gridy = 0;
@@ -572,6 +577,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         fillerGBC.weighty = 1;
         fillerGBC.fill = GridBagConstraints.BOTH;
         this.add(Box.createGlue(), fillerGBC);
+
+        // posizionamento bottone
         GridBagConstraints shopButtonGBC = new GridBagConstraints();
         shopButtonGBC.gridx = 0;
         shopButtonGBC.gridy = 0;
@@ -584,22 +591,32 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     private void checkIfNearShopTile() {
-        int tileX = bald.getX() / tileMap.TILE_SIZE;
-        int tileY = bald.getY() / tileMap.TILE_SIZE;
-        for (int dy = -1; dy <= 1; dy++) {
-            for (int dx = -1; dx <= 1; dx++) {
-                int checkX = tileX + dx;
-                int checkY = tileY + dy;
-                if (checkX < 0 || checkY < 0) continue;
-                var tile = tileMap.getTileAt(checkX, checkY);
-                if (tile != null && tile.getId() == 6) {
-                    shopButton.setVisible(true);
-                    return;
-                }
-            }
+        final int tileSize = tileMap.TILE_SIZE;
+
+        final int baldX = bald.getX();
+        final int baldY = bald.getY();
+        final int baldW = bald.getWidth();
+        final int baldH = bald.getHeight();
+
+        final int feetY = baldY + baldH;
+
+        // 🔸 campiona 1 px "dentro" il tile dei piedi (evita il bordo superiore)
+        final int feetYInside = Math.max(0, feetY - 1);
+
+        final int tileFeetY = feetYInside / tileSize;               // riga corretta del tile sotto i piedi
+        final int tileCenterX = (baldX + baldW / 2) / tileSize;     // colonna al centro del personaggio
+
+        final Tile tileUnderFeet = tileMap.getTileAt(tileCenterX, tileFeetY);
+
+        // Mostra se davvero SEI sopra un tile id==6 (niente vincolo di allineamento)
+        final boolean onShopTile = tileUnderFeet != null && tileUnderFeet.getId() == 6;
+
+        if (shopButton.isVisible() != onShopTile) {
+            shopButton.setVisible(onShopTile);
         }
-        shopButton.setVisible(false);
-    }
+}
+
+
 
     @Override
     public boolean isRunning() {
