@@ -48,15 +48,14 @@ public final class ImmobilizingTrap extends Trap {
     /**
      * Triggers the trap and immobilizes the player if not already triggered.
      *
-     * @param bald the player affected by the trap
+     * @param player the player affected by the trap
      */
     @Override
-    public void interact(Bald bald) {
+    public void interact(final Bald player) {
         if (!isTriggered()) {
             setTriggered(true);
-            bald.immobilize(IMMOBILIZE_DURATION_MS);
+            player.immobilize(IMMOBILIZE_DURATION_MS);
             LoggerUtils.info("You are immobilized!");
         }
     }
-}   
-
+}

@@ -67,12 +67,15 @@ public class MapItemSpawner {
                 );
                 if (item != null) {
                     items.add(item);
-                    LoggerUtils.info(String.format("Creato item ID %d in posizione: (%d,%d)%n", data.getId(), data.getCol(), data.getRow()));
+                    LoggerUtils.info(String.format("Creato item ID %d in posizione: (%d,%d)%n", 
+                    data.getId(), 
+                    data.getCol(), 
+                    data.getRow()));
                 } else {
                     LoggerUtils.error("Item con ID " + data.getId() + " non riconosciuto.");
                 }
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LoggerUtils.error("Errore nel caricamento del file item: " + itemFile);
         }
     }

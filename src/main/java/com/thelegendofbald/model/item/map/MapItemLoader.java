@@ -44,7 +44,7 @@ public class MapItemLoader {
                     final int row = Integer.parseInt(tokens[1]);
                     final int col = Integer.parseInt(tokens[2]);
                     data.add(new ItemSpawnData(id, row, col));
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     LoggerUtils.error("Errore di formato numerico: " + line);
                 }
             }

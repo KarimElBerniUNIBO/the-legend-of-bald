@@ -187,9 +187,9 @@ public class GameItem {
     protected void loadImage(final String imagePath) {
         try {
             this.sprite = ImageIO.read(getClass().getResourceAsStream(imagePath));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LoggerUtils.error("Error loading image: " + imagePath);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             LoggerUtils.error("Invalid image path: " + imagePath);
         }
     }

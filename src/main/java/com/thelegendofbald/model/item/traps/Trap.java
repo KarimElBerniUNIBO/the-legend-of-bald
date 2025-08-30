@@ -3,6 +3,8 @@ package com.thelegendofbald.model.item.traps;
 import com.thelegendofbald.model.item.GameItem;
 import com.thelegendofbald.characters.Bald;
 import java.awt.image.BufferedImage;
+import java.awt.Graphics;
+import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * Abstract base class for all traps in the game.
@@ -30,6 +32,22 @@ public abstract class Trap extends GameItem {
      */
     public Trap(final int x, final int y, final int width, final int height, final String name) {
         super(x, y, width, height, name);
+    }
+
+    /**
+     * Renders the trap on the screen.
+     * If no sprite is set, it renders a magenta rectangle and logs a warning.
+     * @param g the Graphics context to draw on
+     */
+    @Override
+    public void render(final Graphics g) {
+    if (currentSprite != null) {
+            g.drawImage(currentSprite, getX(), getY(), getWidth(), getHeight(), null);
+        } else {
+            g.setColor(java.awt.Color.MAGENTA);
+            g.fillRect(getX(), getY(), getWidth(), getHeight());
+            LoggerUtils.warning(getDescription() + " has no sprite set!");
+        }
     }
 
     /**
