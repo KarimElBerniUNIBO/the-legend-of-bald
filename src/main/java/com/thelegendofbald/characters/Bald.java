@@ -113,15 +113,22 @@ public class Bald extends Entity implements Combatant {
         this.tileMap = tileMap;
     }    
 
+   // Bald.java
     public void setSpawnPosition(int spawnTileId, int tileSize) {
         Point spawnPoint = tileMap.findSpawnPoint(spawnTileId);
         if (spawnPoint != null) {
-            int x = spawnPoint.x + (tileSize - getWidth()) / 2;
-            int y = spawnPoint.y + tileSize - getHeight();
-            this.setPosX(x);
-            this.setPosY(y);
+            double newPosX = spawnPoint.x + (tileSize - getWidth()) / 2.0;
+            double newPosY = spawnPoint.y + tileSize - getHeight(); // piedi a terra (coerente)
+
+            this.posX = newPosX;
+            this.posY = newPosY;
+
+            // sincronizza anche le int usate dal render
+            this.x = (int)Math.round(newPosX);
+            this.y = (int)Math.round(newPosY);
         }
     }
+
 
     private void loadRunFrames() {
         try {
