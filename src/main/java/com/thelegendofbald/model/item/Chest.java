@@ -12,7 +12,8 @@ public class Chest extends GameItem implements Interactable {
 
     private static final int WIDTH = 35;
     private static final int HEIGHT = 35;
-    private static final String ITEM_NAME = "Treasure Chest";
+    private static final String ITEM_NAME = "Chest";
+    private static final String IMAGE_PATH = "/images/items/chestClosed.png";
     private static final int REWARD_AMOUNT = 10;
 
     private boolean isOpen;
@@ -26,7 +27,7 @@ public class Chest extends GameItem implements Interactable {
     public Chest(final int x, final int y) {
         super(x, y, WIDTH, HEIGHT, ITEM_NAME);
         this.isOpen = false;
-        super.loadImage(ITEM_NAME);
+        super.loadImage(IMAGE_PATH);
     }
 
     /**
