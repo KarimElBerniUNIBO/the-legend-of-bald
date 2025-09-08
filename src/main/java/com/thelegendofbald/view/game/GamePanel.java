@@ -88,7 +88,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private String currentMapName = "map_1";
     private final Map<String, String> mapTransitions = Map.of(
             "map_1", "map_2",
-            "map_2", "map_3"
+            "map_2", "map_3",
+            "map_3", "map_4"
     );
 
     private final GridPanel gridPanel;
@@ -155,6 +156,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
         tileMap.changeMap("map_1");
         bald.setTileMap(tileMap);
+        bald.setSpawnPosition(5, tileMap.TILE_SIZE);
+
 
         Point spawnPoint = tileMap.findSpawnPoint(5);
         if (spawnPoint != null) {
@@ -419,18 +422,63 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.repaint();
     }
 
+    // Sostituisci il tuo isAtMapTransitionPoint() con questo
     private boolean isAtMapTransitionPoint() {
-        int baldX = bald.getX();
-        int baldY = bald.getY();
-        int baldH = bald.getHeight();
-        int baldW = bald.getWidth();
-        int tileSize = tileMap.TILE_SIZE;
-        int feetY = baldY + baldH;
-        int tileFeetY = feetY / tileSize;
-        int tileCenterX = (baldX + baldW / 2) / tileSize;
-        Tile tileUnderFeet = tileMap.getTileAt(tileCenterX, tileFeetY);
-        return tileUnderFeet != null && tileUnderFeet.getId() == 4 && (feetY % tileSize == 0);
+        return isTouchingOrAdjacentToTileId(4);
     }
+
+    /** true se Bald sovrappone O TOCCA SOLO IL BORDO di un tile con id==tileId */
+    private boolean isTouchingOrAdjacentToTileId(int tileId) {
+        final int ts = tileMap.TILE_SIZE;
+
+        final int x1 = bald.getX();
+        final int y1 = bald.getY();
+        final int x2 = x1 + bald.getWidth()  - 1;
+        final int y2 = y1 + bald.getHeight() - 1;
+
+        // --- tiles coperti internamente dalla bbox (overlap anche di 1 px) ---
+        final int leftIn   = Math.max(0, x1 / ts);
+        final int rightIn  = Math.max(0, x2 / ts);
+        final int topIn    = Math.max(0, y1 / ts);
+        final int bottomIn = Math.max(0, y2 / ts);
+
+        // 1) Overlap interno
+        for (int ty = topIn; ty <= bottomIn; ty++) {
+            for (int tx = leftIn; tx <= rightIn; tx++) {
+                if (tileHasId(tx, ty, tileId)) return true;
+            }
+        }
+
+        // --- tiles immediatamente ADIACENTI ai 4 bordi della bbox ---
+        // (x1-1)/ts = tile subito a SINISTRA del bordo sinistro
+        // (x2+1)/ts = tile subito a DESTRA del bordo destro
+        // idem per sopra/sotto
+        final int leftEdgeCol   = Math.max(0, (x1 - 1) / ts);
+        final int rightEdgeCol  = Math.max(0, (x2 + 1) / ts);
+        final int topEdgeRow    = Math.max(0, (y1 - 1) / ts);
+        final int bottomEdgeRow = Math.max(0, (y2 + 1) / ts);
+
+        // 2) Contatto sui bordi verticali (sinistra/destra)
+        for (int ty = topIn; ty <= bottomIn; ty++) {
+            if (tileHasId(leftEdgeCol,  ty, tileId))  return true;
+            if (tileHasId(rightEdgeCol, ty, tileId))  return true;
+        }
+
+        // 3) Contatto sui bordi orizzontali (alto/basso)
+        for (int tx = leftIn; tx <= rightIn; tx++) {
+            if (tileHasId(tx, topEdgeRow,    tileId)) return true;
+            if (tileHasId(tx, bottomEdgeRow, tileId)) return true;
+        }
+
+        return false;
+    }
+
+    private boolean tileHasId(int tx, int ty, int id) {
+        Tile t = tileMap.getTileAt(tx, ty);
+        return t != null && t.getId() == id;
+    }
+
+
 
     private void switchToNextMap() {
         String nextMapName = mapTransitions.get(currentMapName);
@@ -443,28 +491,26 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     
     
     private void changeAndLoadMap(String mapName) {
-    currentMapName = mapName;
+        currentMapName = mapName;
 
-    // cambia mappa e aggiorna riferimento nel player
-    tileMap.changeMap(mapName);
-    bald.setTileMap(tileMap);
+        // cambia mappa e aggiorna riferimento nel player
+        tileMap.changeMap(mapName);
+        bald.setTileMap(tileMap);
 
-    // ► POSIZIONA BALD SUL TILE id == 5 (centrato e "a terra")
-    Point spawnPoint = tileMap.findSpawnPoint(5);
-    if (spawnPoint != null) {
-        int tileSize = tileMap.TILE_SIZE;
-        bald.setX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
-        bald.setY(spawnPoint.y + tileSize - bald.getHeight());
-    } else {
-        System.out.println("⚠️ Nessun tile id==5 trovato in " + mapName);
+        // ► posiziona Bald sul tile id==5 (centrato e con i piedi "a terra")
+        bald.setSpawnPosition(5, tileMap.TILE_SIZE);
+
+        // evita drift da velocità residue / tasti ancora premuti
+        bald.setSpeedX(0);
+        bald.setSpeedY(0);
+        pressedKeys.clear();
+
+        spawnEnemiesFromMap();
+        itemManager.loadItemsForMap(mapName);
+
+        shopButton.setVisible(false);
     }
 
-    spawnEnemiesFromMap(); 
-
-    itemManager.loadItemsForMap(mapName);
-
-    shopButton.setVisible(false);
-}
 
     private void spawnEnemiesFromMap() {
         enemies.clear();

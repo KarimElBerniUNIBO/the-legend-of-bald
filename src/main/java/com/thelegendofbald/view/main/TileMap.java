@@ -79,6 +79,9 @@ public class TileMap {
                 case "map_3":
                     mapData = loadMapFromFile("map_3.txt");
                     break;
+                case "map_4":
+                    mapData = loadMapFromFile("map_4.txt");
+                    break;
             }
         }
 
@@ -243,7 +246,4 @@ public class TileMap {
         return points;
     }
 
-} 
-
-    
-       
+}
