@@ -147,7 +147,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         // Inizializzazione LootGenerator con pool di item possibili
         this.lootGenerator = new LootGenerator(
                 new ItemFactory(),
-                List.of(7, 8, 11, 12) // ID loot possibili
+                List.of(7, 8) // ID loot possibili
         );
 
         // Inizializzazione ItemManager con loot
