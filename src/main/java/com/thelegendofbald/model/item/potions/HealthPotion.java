@@ -1,6 +1,5 @@
 package com.thelegendofbald.model.item.potions;
 
-import com.thelegendofbald.api.item.UsableItem;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.utils.LoggerUtils;
 
@@ -9,7 +8,7 @@ import com.thelegendofbald.utils.LoggerUtils;
  * This class extends the abstract {@link Potion} and implements the
  * {@link UsableItem} interface, allowing it to be used from the inventory.
  */
-public class HealthPotion extends Potion implements UsableItem {
+public class HealthPotion extends Potion {
 
     private static final int DEFAULT_HEAL_AMOUNT = 20;
     private static final int DEFAULT_WIDTH = 32;

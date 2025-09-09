@@ -1,6 +1,5 @@
 package com.thelegendofbald.model.item.potions;
 
-import com.thelegendofbald.api.item.UsableItem;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.effects.buffs.StrengthBuff;
 import com.thelegendofbald.utils.LoggerUtils;
@@ -10,7 +9,7 @@ import com.thelegendofbald.utils.LoggerUtils;
  * This class demonstrates a good practice by using a {@link StrengthBuff}
  * to apply its effect, showcasing a clean separation of concerns.
  */
-public class StrengthPotion extends Potion implements UsableItem { 
+public class StrengthPotion extends Potion  { 
 
     private static final int STRENGTH_BONUS = 50;
     private static final long DURATION_MS = 10_000; // 10 seconds
