@@ -19,7 +19,7 @@ import com.thelegendofbald.utils.LoggerUtils;
  */
 public class StatusEffectManager {
     private final Bald owner;
-    private final List<StatusEffect> activeeffects = new ArrayList<>();
+    private final List<StatusEffect> activeEffects = new ArrayList<>();
 
     /**
      * Constructs a StatusEffectManager for the specified Bald character.
@@ -40,9 +40,9 @@ public class StatusEffectManager {
      * @param effect the StatusEffect {@codec StatusEffetc} effetc to apply
      */
     public void applyEffect(final StatusEffect effect) {
-        activeeffects.removeIf(b -> b.getName().equals(effect.getName()));
+        activeEffects.removeIf(b -> b.getName().equals(effect.getName()));
         effect.activate();
-        activeeffects.add(effect);     
+        activeEffects.add(effect);  
         effect.apply(owner); 
         LoggerUtils.info("effect di " + effect.getName() + " attivato!");
     }
@@ -56,7 +56,7 @@ public class StatusEffectManager {
      */
     public void update() {
         final List<StatusEffect> expired = new ArrayList<>();
-        for (final StatusEffect effect : activeeffects) {
+        for (final StatusEffect effect : activeEffects) {
             effect.update(owner);
             if (effect.isExpired()) {
                 effect.remove(owner);
@@ -64,7 +64,7 @@ public class StatusEffectManager {
             }
         }
         if (!expired.isEmpty()) {
-            activeeffects.removeAll(expired);
+            activeEffects.removeAll(expired);
         }
     }
 
@@ -78,7 +78,7 @@ public class StatusEffectManager {
      */
     public int modifyAttackPower(final int basePower) {
         int power = basePower;
-        for (final StatusEffect effect : activeeffects) {
+        for (final StatusEffect effect : activeEffects) {
             power = effect.modifyAttackPower(owner, power);
         }
         return power;
@@ -89,8 +89,8 @@ public class StatusEffectManager {
      *
      * @return an unmodifiable list of active StatusEffect objects
      */
-    public List<StatusEffect> getActiveeffects() {
-        return List.copyOf(activeeffects);
+    public List<StatusEffect> getactiveEffects() {
+        return List.copyOf(activeEffects);
     }
 
 }

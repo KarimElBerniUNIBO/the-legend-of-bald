@@ -27,7 +27,7 @@ public abstract class StatusEffect {
     }
 
     /**
-     * Activates the status effect, setting the start time to the current system time.   
+     * Activates the status effect, setting the start time to the current system time.
      */
     public void activate() {
         this.startTime = System.currentTimeMillis();
@@ -60,7 +60,7 @@ public abstract class StatusEffect {
     }
 
     /**
-     * Check if the status effect is currently active
+     * Check if the status effect is currently active.
      *
      * @return {@code true} if the status effect is active , {@code false} otherwise
      */
@@ -88,20 +88,20 @@ public abstract class StatusEffect {
      * @param player the Bald {@code Bald} character to which the status effect is applied
      */
     public abstract void apply(Bald player);
-    
+
     /**
      * Removes the status effect from the specified Bald player.
      * This method must be implemented by subclasses to define the specific effects of removing the status effect.
      * 
      * @param player the Bald {@code Bald} character from which the status effect is removed
      */
-    public abstract void remove(Bald player);
+    public abstract void remove(final Bald player);
 
     /**
      * Updates the status effect on the specified Bald player.
      * @param player the Bald {@code Bald} character whose status effect is updated
      */
-    public void update(Bald player) {
+    public void update(final Bald player) {
     }
 
     /**
@@ -111,7 +111,7 @@ public abstract class StatusEffect {
      * @param basePower base attack of the Bald player
      * @return the modified attack power
      */
-    public int modifyAttackPower( final Bald player, final int basePower) {
+    public int modifyAttackPower(final Bald player, final int basePower) {
         return basePower;
     }
 
@@ -121,5 +121,5 @@ public abstract class StatusEffect {
      * such as Damage over Time (DoT) effects , healing over time(HoT) , etc.
      * @param player the Bald {@code Bald} character on which the action is executed
      */
-    public void onTick(Bald player) { }
+    public void onTick(final Bald player) { }
 }

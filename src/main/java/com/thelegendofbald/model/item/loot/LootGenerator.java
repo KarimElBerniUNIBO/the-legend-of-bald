@@ -43,5 +43,4 @@ public class LootGenerator {
         final int randomId = lootPool.get(random.nextInt(lootPool.size()));
         return itemFactory.createItemById(randomId, x, y);
     }
-    
 }

@@ -30,5 +30,6 @@ public abstract class Potion extends GameItem implements UsableItem{
      *
      * @param player The player instance to whom the effect will be applied.
      */
+    @Override
     public abstract void applyEffect(Bald player);
 }

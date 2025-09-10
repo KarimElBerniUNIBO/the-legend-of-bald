@@ -13,7 +13,7 @@ import com.thelegendofbald.life.LifeComponent;
  */
 public class LifePanel extends AdapterPanel {
 
-    private final LifeComponent lifeComponent;  
+    private final LifeComponent lifeComponent;
 
     /**
      * Constructs a new LifePanel.
@@ -21,7 +21,7 @@ public class LifePanel extends AdapterPanel {
      * @param size The preferred size of the panel.
      * @param lifeComponent The {@link LifeComponent} instance this panel will display.
      */
-    public LifePanel(Dimension size, LifeComponent lifeComponent) {
+    public LifePanel(final Dimension size, final LifeComponent lifeComponent) {
         super();
         this.lifeComponent = lifeComponent;
     }
@@ -60,11 +60,11 @@ public class LifePanel extends AdapterPanel {
      * @param g The Graphics object used for drawing.
      */
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(final Graphics g) {
         super.paintComponent(g);
 
-        double perc = lifeComponent.getPercentage(); 
-        int width = (int) (perc * getWidth());
+        final double perc = lifeComponent.getPercentage(); 
+        final int width = (int) (perc * getWidth());
 
         // Draw the gray background
         g.setColor(Color.GRAY);

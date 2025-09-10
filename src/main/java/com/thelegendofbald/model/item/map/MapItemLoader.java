@@ -28,34 +28,32 @@ public class MapItemLoader {
         final InputStream stream = getClass().getResourceAsStream(resourcePath);
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
-            String line;
-            while ((line = reader.readLine())!= null) {
+            String line = reader.readLine();
+            while (line != null) {
 
                 line = line.trim();
 
-                if(line.isEmpty()) {
+                if (line.isEmpty()) {
                     continue;
                 }
 
                 final String[] tokens = line.split("\\s+");
-                if(tokens.length != 3) {
+                if (tokens.length != 3) {
                     LoggerUtils.error("Invalid line in item file: " + line);
                     continue;
-                }   
+                }
 
                 try {
                     final int id = Integer.parseInt(tokens[0]);
                     final int row = Integer.parseInt(tokens[1]);
                     final int col = Integer.parseInt(tokens[2]);
                     data.add(new ItemSpawnData(id, row, col));
-                } catch ( final NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     LoggerUtils.error("Invalid number format in line: " + line);
                 }
-
+                line = reader.readLine();
             }
         }
-    
         return data;
-
     }
 }

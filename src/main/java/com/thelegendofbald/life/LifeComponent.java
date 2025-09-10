@@ -7,7 +7,7 @@ package com.thelegendofbald.life;
  */
 public class LifeComponent {
 
-    private int maxHealth;
+    private final int maxHealth;
     private int currentHealth;
 
     /**
@@ -16,7 +16,7 @@ public class LifeComponent {
      *
      * @param maxHealth The maximum health value for the entity.
      */
-    public LifeComponent(int maxHealth){
+    public LifeComponent(final int maxHealth) {
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
     }
@@ -37,7 +37,7 @@ public class LifeComponent {
      *
      * @param currentHealth The new health value.
      */
-    public void setCurrentHealth(int currentHealth) {
+    public void setCurrentHealth(final int currentHealth) {
         this.currentHealth = currentHealth;
     }
 
@@ -47,7 +47,7 @@ public class LifeComponent {
      *
      * @param damage The amount of damage to be inflicted.
      */
-    public void damageTaken(int damage){
+    public void damageTaken(final int damage) {
         this.currentHealth= Math.max(0, this.currentHealth - damage);
     }
 
@@ -57,11 +57,11 @@ public class LifeComponent {
      *
      * @param amount The amount of health to restore.
      */
-    public void heal(int amount){
-        if(getCurrentHealth() + amount > this.maxHealth){
+    public void heal(final int amount) {
+        if (getCurrentHealth() + amount > this.maxHealth) {
             setCurrentHealth(this.maxHealth);
         } else {
-            this.currentHealth = getCurrentHealth() + amount;   
+            this.currentHealth = getCurrentHealth() + amount;
         }
     }
 
@@ -71,8 +71,8 @@ public class LifeComponent {
      *
      * @return true if the entity is dead, false otherwise.
      */
-    public boolean isDead(){
-        return this.currentHealth <= 0 ;
+    public boolean isDead() {
+        return this.currentHealth <= 0;
     }
 
     /**
@@ -80,7 +80,7 @@ public class LifeComponent {
      *
      * @return The health percentage as a double, ranging from 0.0 to 1.0.
      */
-    public double getPercentage(){
+    public double getPercentage() {
         return (double) currentHealth / maxHealth;
     }
 }
