@@ -144,13 +144,11 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.combatManager = new CombatManager(bald, enemies);
         this.bald.setWeapon(new FireBall(0, 0, 50, 50, combatManager));
 
-        // Inizializzazione LootGenerator con pool di item possibili
         this.lootGenerator = new LootGenerator(
                 new ItemFactory(),
-                List.of(7, 8) // ID loot possibili
+                List.of(7, 8) 
         );
 
-        // Inizializzazione ItemManager con loot
         this.itemManager = new ItemManager(tileMap, new ItemFactory(), new MapItemLoader(), lootGenerator);
         this.itemManager.loadItemsForMap("map_1");
 

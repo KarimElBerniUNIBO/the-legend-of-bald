@@ -39,7 +39,7 @@ public class StatusEffectManager {
      * 
      * @param effect the StatusEffect {@codec StatusEffetc} effetc to apply
      */
-    public void applyeffect(final StatusEffect effect) {
+    public void applyEffect(final StatusEffect effect) {
         activeeffects.removeIf(b -> b.getName().equals(effect.getName()));
         effect.activate();
         activeeffects.add(effect);     
@@ -93,36 +93,4 @@ public class StatusEffectManager {
         return List.copyOf(activeeffects);
     }
 
-    /**
-     * Removes an effect from the Bald character by its name.
-     * This method searches for the effect with the specified name,
-     * removes it from the character, deactivates it,
-     * and removes it from the list of active effects.
-     *
-     * @param name the name of the effect to be removed
-     */
-    public void removeeffectByName(final String name) {
-        activeeffects.removeIf(b -> {
-            if (b.getName().equals(name)) {
-                b.remove(owner);
-                b.deactivate();
-                return true;
-            }
-            return false;
-        });
-    }
-
-    /**
-     * Clears all active effects from the Bald character.
-     * This method iterates through all active effects,
-     * removes them from the character, deactivates them,
-     * and clears the list of active effects.
-     */
-    public void clearAll() {
-        for (final StatusEffect b : activeeffects) {
-            b.remove(owner);
-            b.deactivate();
-        }
-        activeeffects.clear();
-    }
 }

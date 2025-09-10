@@ -44,18 +44,5 @@ public class LootGenerator {
         final int randomId = lootPool.get(random.nextInt(lootPool.size()));
         return itemFactory.createItemById(randomId, x, y);
     }
-
-    /**
-     * Generates a specified number of random items from the loot pool.
-     *
-     * @param count the number of items to generate
-     * @param x     the x-coordinate where the items will be placed
-     * @param y     the y-coordinate where the items will be placed
-     * @return a list of {@link GameItem} objects created from the loot pool
-     */
-    public List<GameItem> generateRandomItems(final int count, final int x, final int y) {
-        return random.ints(count, 0, lootPool.size())
-                     .mapToObj(index -> itemFactory.createItemById(lootPool.get(index), x, y))
-                     .toList();
-    }
+    
 }

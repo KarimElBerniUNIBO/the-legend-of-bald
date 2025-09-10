@@ -374,7 +374,7 @@ public class Bald extends Entity implements Combatant {
     }
     
     public void applyBuff(StatusEffect buff) {
-        buffManager.applyeffect(buff);
+        buffManager.applyEffect(buff);
     }
     
     public void updateBuffs() {

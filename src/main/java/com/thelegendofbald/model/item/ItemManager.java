@@ -93,8 +93,8 @@ public class ItemManager {
                 if (item instanceof Chest chest && !chest.isOpen()) {
                         chest.open(bald);
                         final GameItem loot = lootGenerator.generateRandomItem(
-                            chest.getX() + chest.getWidth() + 5,
-                            chest.getY()
+                            chest.getX() ,
+                            chest.getY() + chest.getWidth()/2
                         );
                         if (loot != null) {
                             newItems.add(loot);
