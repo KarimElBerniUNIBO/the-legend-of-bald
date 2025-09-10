@@ -15,11 +15,11 @@ import com.thelegendofbald.utils.LoggerUtils;
 public class MapItemLoader {
 
     /**
-     * Legge un file item e restituisce la lista di item da spawnare.
+     * Read file item spawn data from resources.
      *
-     * @param fileName Nome del file dentro resources/item_map/
-     * @return Lista di ItemSpawnData
-     * @throws IOException Se il file non può essere letto
+     * @param fileName Filename to read
+     * @return List of ItemSpawnData read from file 
+     * @throws IOException if file cannot be read
      */
     public List<ItemSpawnData> load(final String fileName) throws IOException {
         final List<ItemSpawnData> data = new ArrayList<>();

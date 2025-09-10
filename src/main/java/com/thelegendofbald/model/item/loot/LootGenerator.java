@@ -16,7 +16,6 @@ public class LootGenerator {
     private final ItemFactory itemFactory;
     private final Random random = new Random();
 
-    // Lista di ID item che possono uscire come loot
     private final List<Integer> lootPool;
 
     /**
