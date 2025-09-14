@@ -518,7 +518,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             int enemyW = 60, enemyH = 60;
             int x = topLeft.x + (tileSize - enemyW) / 2;
             int y = topLeft.y + (tileSize - enemyH) / 2;
-            enemies.add(new DummyEnemy(x, y, enemyW, "ZioBilly", 10));
+            enemies.add(new DummyEnemy(x, y, 60, "ZioBilly", 10, tileMap));
         }
     }
 

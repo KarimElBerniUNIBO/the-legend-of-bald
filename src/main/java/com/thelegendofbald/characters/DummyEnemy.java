@@ -11,11 +11,13 @@ import javax.imageio.ImageIO;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.utils.LoggerUtils;
+import com.thelegendofbald.view.main.Tile;
+import com.thelegendofbald.view.main.TileMap;
 
 public class DummyEnemy extends Entity  implements Combatant{
 
-    private static final int WIDTH = 128; // Larghezza del frame
-    private static final int HEIGHT = 128; // Altezza del frame
+    private static final int WIDTH = 50; // Larghezza del frame
+    private static final int HEIGHT = 50; // Altezza del frame
 
     private BufferedImage spritesheet; 
     private BufferedImage walkFrames[];
@@ -32,11 +34,12 @@ public class DummyEnemy extends Entity  implements Combatant{
 
     private long lastAttackTime = 0; // Tempo dell'ultimo attacco
     private final double minDistance = 100;
+    private transient TileMap tileMap;
 
-    public DummyEnemy(int x, int y, int health, String name, int attackPower) {
+    public DummyEnemy(int x, int y, int health, String name, int attackPower, TileMap tileMap) {
         super(x, y, WIDTH, HEIGHT, name, new LifeComponent(health));
         this.attackPower = attackPower;
-
+        this.tileMap = tileMap;
         loadRunFrames();
     }
     private String path = "/images/enemyWalkSpritesheet.png"; 
@@ -103,20 +106,65 @@ public class DummyEnemy extends Entity  implements Combatant{
     }
 
     public void followPlayer(Bald bald) {
-        if (bald.getX() > this.x ) {
-            x += speedX;
+        double dx = 0;
+        double dy = 0;
+
+        if (bald.getX() > this.x) {
+            dx = speedX;
             facingRight = true;
-        } else if (bald.getX() < this.x ) {
-            x -= speedX;
+        } else if (bald.getX() < this.x) {
+            dx = -speedX;
             facingRight = false;
         }
-    
-        if (bald.getY() > this.y ) {
-            y += speedY;
-        } else if (bald.getY() < this.y ) {
-            y -= speedY;
+
+        if (bald.getY() > this.y) {
+            dy = speedY;
+        } else if (bald.getY() < this.y) {
+            dy = -speedY;
         }
-        
+
+        move(dx, dy);
+    }
+
+    private void move(double dx, double dy) {
+        double nextX = x + dx;
+        double nextY = y + dy;
+
+        // Controlla collisione sull'asse X
+        if (!isColliding(nextX, y)) {
+            x = (int) nextX;
+        }
+
+        // Controlla collisione sull'asse Y
+        if (!isColliding(x, nextY)) {
+            y = (int) nextY;
+        }
+    }
+
+    private boolean isColliding(double nextX, double nextY) {
+        if (tileMap == null) {
+            return false; // Non fare nulla se la mappa non è impostata
+        }
+
+        int tileSize = tileMap.getTileSize();
+        int entityWidth = getWidth();
+        int entityHeight = getHeight();
+
+        // Calcola i tile con cui la bounding box potrebbe collidere
+        int leftTile = (int) nextX / tileSize;
+        int rightTile = (int) (nextX + entityWidth - 1) / tileSize;
+        int topTile = (int) nextY / tileSize;
+        int bottomTile = (int) (nextY + entityHeight - 1) / tileSize;
+
+        for (int row = topTile; row <= bottomTile; row++) {
+            for (int col = leftTile; col <= rightTile; col++) {
+                Tile tile = tileMap.getTileAt(col, row);
+                if (tile != null && tile.isSolid()) {
+                    return true; // Collisione rilevata
+                }
+            }
+        }
+        return false; // Nessuna collisione
     }
 
 
