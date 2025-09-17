@@ -36,7 +36,11 @@ public enum Buttons {
     /**
      * Button to view the leaderboard.
      */
-    LEADERBOARD("LEADERBOARD");
+    LEADERBOARD("LEADERBOARD"),
+    /**
+     * Button to quit the application.
+     */
+    QUIT("QUIT");
 
     private static final double DEFAULT_ARC_PROPORTION = 0.2;
 

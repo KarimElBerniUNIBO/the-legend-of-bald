@@ -3,6 +3,7 @@ package com.thelegendofbald.view.mainmenu;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -62,6 +63,11 @@ final class CenterPanel extends AdapterPanel implements InteractivePanel {
                 final var parent = (GameWindow) SwingUtilities.getWindowAncestor(this);
                 new SwitchToOtherPanel(parent, panel).actionPerformed(e);
             }));
+        });
+
+        Buttons.QUIT.getButton().addActionListener(e -> {
+            final var parent = SwingUtilities.getWindowAncestor(this);
+            parent.dispatchEvent(new WindowEvent(parent, WindowEvent.WINDOW_CLOSING));
         });
     }
 

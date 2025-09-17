@@ -243,6 +243,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private void setupKeyBindings() {
         final InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
         final ActionMap am = this.getActionMap();
+        im.clear();
+        am.clear();
 
         // Tasti premuti
         bindKey(im, am, "pressed UP", ControlsSettings.UP.getKey(), true, () -> pressedKeys.add(ControlsSettings.UP.getKey()));
