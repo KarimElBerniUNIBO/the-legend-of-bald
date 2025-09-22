@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.util.Objects;
 import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
@@ -14,100 +14,132 @@ import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
-public class DummyEnemy extends Entity  implements Combatant{
+/**
+ * Very simple enemy that follows the player and collides with solid tiles.
+ */
+public class DummyEnemy extends Entity implements Combatant {
 
-    private static final int WIDTH = 50; // Larghezza del frame
-    private static final int HEIGHT = 50; // Altezza del frame
+    // ---- Constants ----
+    private static final int FRAME_WIDTH = 50;
+    private static final int FRAME_HEIGHT = 50;
 
-    private BufferedImage spritesheet; 
-    private BufferedImage walkFrames[];
-    private BufferedImage image; // Variable to store the loaded image
+    private static final int RENDER_SIZE = 50;     // draw size (kept square)
+    private static final int RUN_FRAMES = 9;
+    private static final int DEFAULT_FRAME_DELAY = 5;
 
-    private int attackPower; 
-    private int speedY = 1;
-    private int speedX = 1;
+    private static final double DEFAULT_SPEED = 1.0;   // px per tick (prima era int 1)
 
-    private BufferedImage[] runFrames; // Array di immagini per l'animazione della corsa
-    private int currentFrame = 0; // Indice del frame corrente
-    private int frameDelay = 5; // Numero di aggiornamenti prima di cambiare frame
-    private int frameCounter = 0; // Contatore per il ritardo tra i frame
+    // ---- State ----
+    private final int attackPower;
+    private final transient TileMap tileMap;
 
-    private long lastAttackTime = 0; // Tempo dell'ultimo attacco
-    private final double minDistance = 100;
-    private transient TileMap tileMap;
+    private double speedX = DEFAULT_SPEED;
+    private double speedY = DEFAULT_SPEED;
 
-    public DummyEnemy(int x, int y, int health, String name, int attackPower, TileMap tileMap) {
-        super(x, y, WIDTH, HEIGHT, name, new LifeComponent(health));
+    private BufferedImage[] runFrames;
+    private int currentFrame;
+    private int frameDelay = DEFAULT_FRAME_DELAY;
+    private int frameCounter;
+
+    private long lastAttackTime;           // usato dal combat manager altrove?
+    private final double minDistance = 200;
+
+    /**
+     * Creates a dummy enemy.
+     *
+     * @param x           spawn x
+     * @param y           spawn y
+     * @param health      starting health
+     * @param name        entity name
+     * @param attackPower base attack power
+     * @param tileMap     map for collisions
+     */
+    public DummyEnemy(final int x, final int y, final int health, final String name,
+                      final int attackPower, final TileMap tileMap) {
+        super(x, y, FRAME_WIDTH, FRAME_HEIGHT, name, new LifeComponent(health));
         this.attackPower = attackPower;
-        this.tileMap = tileMap;
+        this.tileMap = Objects.requireNonNull(tileMap, "tileMap must not be null");
         loadRunFrames();
     }
-    private String path = "/images/enemyWalkSpritesheet.png"; 
 
-
-
+    // ------------------- Resources -------------------
 
     private void loadRunFrames() {
-        try {
-            int numFrames = 9; // Supponiamo di avere 6 frame
-            runFrames = new BufferedImage[numFrames];
-            for (int i = 0; i < numFrames; i++) {
-                String framePath = String.format("/images/dummyenemy_run/__TRAINEE_Run_00%d.png", i + 1); // Percorso dei frame
-                InputStream is = getClass().getResourceAsStream(framePath);
+        runFrames = new BufferedImage[RUN_FRAMES];
+        for (int i = 0; i < RUN_FRAMES; i++) {
+            final String framePath = String.format("/images/dummyenemy_run/__TRAINEE_Run_00%d.png", i + 1);
+            try (InputStream is = getClass().getResourceAsStream(framePath)) {
                 if (is != null) {
                     runFrames[i] = ImageIO.read(is);
                 } else {
-                    LoggerUtils.error("Frame " + framePath + " not found");
+                    LoggerUtils.error("Enemy run frame not found: " + framePath);
                 }
+            } catch (IOException e) {
+                LoggerUtils.error("Error loading enemy run frame " + framePath + ": " + e.getMessage());
             }
-        } catch (IOException e) {
-            LoggerUtils.error("Error loading run frames: " + e.getMessage());
         }
     }
 
-    public int getAttackPower() { 
-        return attackPower; 
+    // ------------------- Combatant -------------------
+
+    @Override
+    public int getAttackPower() {
+        return attackPower;
     }
 
-
-    public void takeDamage(int damage) {
-       this.lifeComponent.damageTaken(damage);
+    @Override
+    public void takeDamage(final int damage) {
+        this.lifeComponent.damageTaken(damage);
     }
 
-    public void heal(int amount) {
+    public void heal(final int amount) {
         this.lifeComponent.heal(amount);
     }
 
-
+    // ------------------- Animation & Render -------------------
 
     public void updateAnimation() {
         frameCounter++;
-        if (frameCounter >= frameDelay) {
-            frameCounter = 0;
-            currentFrame = (currentFrame + 1) % runFrames.length; // Cicla tra i frame
+        if (frameCounter < frameDelay) {
+            return;
+        }
+        frameCounter = 0;
+
+        if (runFrames != null && runFrames.length > 0) {
+            currentFrame = (currentFrame + 1) % runFrames.length;
         }
     }
 
-    
-    public void render(Graphics g) {
-        if (runFrames != null && runFrames[currentFrame] != null) {
+    public void render(final Graphics g) {
+        final BufferedImage frame =
+                (runFrames != null && runFrames.length > 0) ? runFrames[currentFrame] : null;
+
+        if (frame != null) {
             if (!facingRight) {
-                // Draw normally if facing right
-                g.drawImage(runFrames[currentFrame], x, y, 50, 50, null);
+                g.drawImage(frame, x, y, RENDER_SIZE, RENDER_SIZE, null);
             } else {
-                // Draw flipped horizontally without changing the position
-                g.drawImage(runFrames[currentFrame], x + 50, y, -50, 50, null);
+                g.drawImage(frame, x + RENDER_SIZE, y, -RENDER_SIZE, RENDER_SIZE, null);
             }
         } else {
-            // Fallback to a red square if frames are not loaded
             g.setColor(Color.RED);
-            g.fillRect(x, y, 50, 50);
+            g.fillRect(x, y, RENDER_SIZE, RENDER_SIZE);
         }
     }
 
-    public void followPlayer(Bald bald) {
-        double dx = 0;
-        double dy = 0;
+    // ------------------- AI & Movement -------------------
+
+    /**
+     * Simple chase logic: set per-axis deltas toward Bald, then move with tile collision.
+     *
+     * @param bald player to follow
+     */
+    public void followPlayer(final Bald bald) {
+        if (bald == null) {
+            return;
+        }
+
+        double dx = 0.0;
+        double dy = 0.0;
 
         if (bald.getX() > this.x) {
             dx = speedX;
@@ -123,68 +155,78 @@ public class DummyEnemy extends Entity  implements Combatant{
             dy = -speedY;
         }
 
-        move(dx, dy);
+        moveWithCollision(dx, dy);
     }
 
-    private void move(double dx, double dy) {
-        double nextX = x + dx;
-        double nextY = y + dy;
+    private void moveWithCollision(final double dx, final double dy) {
+        final double nextX = x + dx;
+        final double nextY = y + dy;
 
-        // Controlla collisione sull'asse X
+        // asse X
         if (!isColliding(nextX, y)) {
-            x = (int) nextX;
+            x = (int) Math.round(nextX);
         }
-
-        // Controlla collisione sull'asse Y
+        // asse Y
         if (!isColliding(x, nextY)) {
-            y = (int) nextY;
+            y = (int) Math.round(nextY);
         }
     }
 
-    private boolean isColliding(double nextX, double nextY) {
-        if (tileMap == null) {
-            return false; // Non fare nulla se la mappa non è impostata
-        }
+    private boolean isColliding(final double nextX, final double nextY) {
+        // tileMap è final e non null per contratto
+        final int tileSize = tileMap.getTileSize();
+        final int entityWidth = getWidth();
+        final int entityHeight = getHeight();
 
-        int tileSize = tileMap.getTileSize();
-        int entityWidth = getWidth();
-        int entityHeight = getHeight();
-
-        // Calcola i tile con cui la bounding box potrebbe collidere
-        int leftTile = (int) nextX / tileSize;
-        int rightTile = (int) (nextX + entityWidth - 1) / tileSize;
-        int topTile = (int) nextY / tileSize;
-        int bottomTile = (int) (nextY + entityHeight - 1) / tileSize;
+        final int leftTile = (int) nextX / tileSize;
+        final int rightTile = (int) (nextX + entityWidth - 1) / tileSize;
+        final int topTile = (int) nextY / tileSize;
+        final int bottomTile = (int) (nextY + entityHeight - 1) / tileSize;
 
         for (int row = topTile; row <= bottomTile; row++) {
             for (int col = leftTile; col <= rightTile; col++) {
-                Tile tile = tileMap.getTileAt(col, row);
+                final Tile tile = tileMap.getTileAt(col, row);
                 if (tile != null && tile.isSolid()) {
-                    return true; // Collisione rilevata
+                    return true;
                 }
             }
         }
-        return false; // Nessuna collisione
+        return false;
     }
 
+    // ------------------- Misc -------------------
 
     public boolean isAlive() {
         return !this.lifeComponent.isDead();
     }
 
- 
     public long getLastAttackTime() {
         return lastAttackTime;
     }
 
-    public void setLastAttackTime(long time) {
+    public void setLastAttackTime(final long time) {
         this.lastAttackTime = time;
     }
 
-    public boolean isCloseTo(Bald bald) {
-            double dx = this.x - bald.getX();
-            double dy = this.y - bald.getY();
-            double distance = Math.sqrt(dx * dx + dy * dy);
+    public boolean isCloseTo(final Bald bald) {
+        if (bald == null) {
+            return false;
+        }
+        final double dx = this.x - bald.getX();
+        final double dy = this.y - bald.getY();
+        final double distance = Math.hypot(dx, dy);
         return distance < this.minDistance;
+    }
+
+    // ------------------- Overrides -------------------
+
+    @Override
+    public int getWidth() {
+        return FRAME_WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return FRAME_HEIGHT;
     }
 }
