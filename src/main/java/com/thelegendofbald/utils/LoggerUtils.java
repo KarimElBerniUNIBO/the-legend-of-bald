@@ -99,6 +99,18 @@ public class LoggerUtils {
         LOGGER.log(Level.SEVERE, message);
     }
 
+    public static void info(String message, Throwable t) {
+        LOGGER.log(Level.INFO, message, t);
+    }
+
+    public static void warning(String message, Throwable t) {
+        LOGGER.log(Level.WARNING, message, t);
+    }
+
+    public static void error(String message, Throwable t) {
+        LOGGER.log(Level.SEVERE, message, t);
+    }
+
     public static void closeLogger() {
         if (fileHandler != null) {
             fileHandler.close();

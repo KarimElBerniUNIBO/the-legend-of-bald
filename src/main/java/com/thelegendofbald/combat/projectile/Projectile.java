@@ -41,8 +41,8 @@ public class Projectile extends Entity implements Combatant {
             {nextX + 5, nextY + 5}
         };
         for (int[] p : points) {
-            int tileX = p[0] / tileMap.TILE_SIZE;
-            int tileY = p[1] / tileMap.TILE_SIZE;
+            int tileX = p[0] / tileMap.getTileSize();
+            int tileY = p[1] / tileMap.getTileSize();
             Tile tile = tileMap.getTileAt(tileX, tileY);
             if (tile != null && tile.isSolid()) {
                 this.active = false;

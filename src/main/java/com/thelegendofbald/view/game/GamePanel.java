@@ -12,12 +12,15 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.locks.LockSupport;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -66,9 +69,43 @@ import com.thelegendofbald.view.main.ShopPanel;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
-public class GamePanel extends MenuPanel implements Runnable, Game {
+/**
+ * Pannello principale del gioco: ciclo di gioco, input, rendering, UI.
+ * <p>Non pensato per estensione.</p>
+ */
+public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private static final long serialVersionUID = 1L;
+
+    /* ===================== Costanti di configurazione ===================== */
+    private static final String MAP_1 = "map_1";
+    private static final String MAP_2 = "map_2";
+    private static final String MAP_3 = "map_3";
+    private static final String MAP_4 = "map_4";
+
+    private static final int DEFAULT_W = 1280;
+    private static final int DEFAULT_H = 704;
+
+    private static final int LIFE_W = 200;
+    private static final int LIFE_H = 20;
+    private static final int LIFE_Y = 800; // posizione Y attuale (UI esterna allo scaling)
+
+    private static final int TILE_SIZE = 32;
+    private static final int DEFAULT_MAX_FPS = 60;
+
+    // dimensioni Bald (prima erano magic number 60)
+    private static final int BALD_W = 60;
+    private static final int BALD_H = 60;
+
+    private static final int ENEMY_W = 60;
+    private static final int ENEMY_H = 60;
+
+    // ID mappa (coerenti con TileMap)
+    private static final int ID_PORTAL = 4;
+    private static final int ID_SPAWN = 5;
+    private static final int ID_SHOP = 6;
+    private static final int ID_ENEMY = 7;
+    private static final int ID_PREV_PORTAL = 8;
 
     private static final double OPTIONS_WIDTH_INSETS = 0.25;
     private static final double OPTIONS_HEIGHT_INSETS = 0.1;
@@ -80,97 +117,121 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     private static final Pair<Integer, Integer> TIMER_POSITION = Pair.of(1085, 25);
     private static final Color ATTACK_AREA_COLOR = new Color(200, 200, 200, 100);
 
-    private transient final GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    private static final double MOVE_SPEED = 2.0;
+
+    private static final long NANOS_IN_SECOND = 1_000_000_000L;
+    private static final long MILLIS_IN_SECOND = 1000L;
+    private static final long NANOS_IN_MILLI = 1_000_000L; // per evitare magic number 1_000_000L
+    private static final long SLEEP_INTERVAL_WHEN_PAUSED = 100L;
+    private static final long LATE_FRAME_BACKOFF_NANOS = 250_000L; // 0.25 ms
+
+    private static final int WEAPON_ICON = 50;
+
+    // passi input (prima erano campi in mezzo ai metodi)
+    private static final double DX_STEP = 1.0;
+    private static final double DY_STEP = 1.0;
+
+    // dimensioni griglia inventario (prima 5 e 3 erano magic numbers)
+    private static final int INVENTORY_COLS = 5;
+    private static final int INVENTORY_ROWS = 3;
+
+    // livelli/parametri di loot (prima 7 e 8 erano magic numbers)
+    private static final int LOOT_LVL_MIN = 7;
+    private static final int LOOT_LVL_MAX = 8;
+
+    /* ===================== Stato e componenti ===================== */
+    // ordine JLS: access, static, final, transient, volatile
+    private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints optionsGBC = gbcFactory.createBothGridBagConstraints();
     private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
 
-    private transient final Bald bald = new Bald(60, 60, 100, "Bald", 50);
-    private String currentMapName = "map_1";
+    private final transient Bald bald = new Bald(BALD_W, BALD_H, 100, "Bald", 50);
+    private String currentMapName = MAP_1;
+
     private final Map<String, String> mapTransitions = Map.of(
-            "map_1", "map_2",
-            "map_2", "map_3",
-            "map_3", "map_4"
+            MAP_1, MAP_2,
+            MAP_2, MAP_3,
+            MAP_3, MAP_4
+    );
+
+    private final Map<String, String> reverseTransitions = Map.of(
+            MAP_2, MAP_1,
+            MAP_3, MAP_2
     );
 
     private final GridPanel gridPanel;
-    private transient final TileMap tileMap;
-    private transient final ItemManager itemManager;
-    private transient final LootGenerator lootGenerator;
+    private final transient TileMap tileMap;
+    private final transient ItemManager itemManager;
+    private final transient LootGenerator lootGenerator;
 
     private final LifePanel lifePanel;
     private transient List<DummyEnemy> enemies = new ArrayList<>();
     private final JPanel optionsPanel;
-    private transient final Timer timer = new Timer();
+    private final transient Timer timer = new Timer();
     private transient GameRun gameRun;
-    private transient final CombatManager combatManager;
-    private transient final DataManager saveDataManager = new DataManager();
+    private final transient CombatManager combatManager;
+    private final transient DataManager saveDataManager = new DataManager();
 
     private final JPanel inventoryPanel;
-    private transient final Inventory inventory;
+    private final transient Inventory inventory;
 
     private transient Thread gameThread;
-    private volatile boolean running = false;
-
-    private volatile int maxFPS = 60;
+    private volatile boolean running; // default false
+    private volatile boolean paused;
+    private volatile int maxFPS = DEFAULT_MAX_FPS;
     private volatile boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
-    private volatile int currentFPS = 0;
+    private volatile int currentFPS; // default 0
     private volatile boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
     private final JButton shopButton = new JButton("Shop");
 
-    private volatile boolean paused;
-    private static final long NANOS_IN_SECOND = 1_000_000_000L;
-    private static final long MILLIS_IN_SECOND = 1000L;
-    private static final long SLEEP_INTERVAL_WHEN_PAUSED = 100L;
+    /* ===================== Costruttore ===================== */
 
+    /** Crea il pannello di gioco con le componenti necessarie. */
     public GamePanel() {
         super();
-        Dimension size = new Dimension(1280, 704);
+        final Dimension size = new Dimension(DEFAULT_W, DEFAULT_H);
 
         this.gridPanel = new GridPanel();
         this.gridPanel.setOpaque(false);
         this.gridPanel.setBounds(0, 0, size.width, size.height);
 
-        this.lifePanel = new LifePanel(new Dimension(200, 20), bald.getLifeComponent());
-        this.lifePanel.setBounds(100, 800, 200, 20);
+        this.lifePanel = new LifePanel(new Dimension(LIFE_W, LIFE_H), bald.getLifeComponent());
+        this.lifePanel.setBounds(100, LIFE_Y, LIFE_W, LIFE_H);
 
         this.optionsPanel = new GameOptionsPanel();
-        this.inventoryPanel = new InventoryPanel("INVENTORY", 5, 3);
+        this.inventoryPanel = new InventoryPanel("INVENTORY", INVENTORY_COLS, INVENTORY_ROWS);
         this.inventory = ((InventoryPanel) this.inventoryPanel).getInventory();
         this.inventory.setBald(bald);
 
-        this.tileMap = new TileMap(size.width, size.height, 32);
+        this.tileMap = new TileMap(size.width, size.height, TILE_SIZE);
         this.combatManager = new CombatManager(bald, enemies);
-        this.bald.setWeapon(new FireBall(0, 0, 50, 50, combatManager));
+        this.bald.setWeapon(new FireBall(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager));
 
-        this.lootGenerator = new LootGenerator(
-                new ItemFactory(),
-                List.of(7, 8) 
-        );
-
+        this.lootGenerator = new LootGenerator(new ItemFactory(), List.of(LOOT_LVL_MIN, LOOT_LVL_MAX));
         this.itemManager = new ItemManager(tileMap, new ItemFactory(), new MapItemLoader(), lootGenerator);
-        this.itemManager.loadItemsForMap("map_1");
+        this.itemManager.loadItemsForMap(MAP_1);
 
-        tileMap.changeMap("map_1");
+        tileMap.changeMap(MAP_1);
         bald.setTileMap(tileMap);
-        bald.setSpawnPosition(5, tileMap.TILE_SIZE);
+        bald.setSpawnPosition(ID_SPAWN, tileMap.getTileSize());
 
-
-        Point spawnPoint = tileMap.findSpawnPoint(5);
+        final Point spawnPoint = tileMap.findSpawnPoint(ID_SPAWN);
         if (spawnPoint != null) {
-            int tileSize = tileMap.TILE_SIZE;
+            final int tileSize = tileMap.getTileSize();
             bald.setPosX(spawnPoint.x + (tileSize - bald.getWidth()) / 2);
             bald.setPosY(spawnPoint.y - bald.getHeight());
         }
 
-        this.addWeaponsToInventory();
-
-
+        addWeaponsToInventory();
         setupKeyBindings();
-        this.initialize();
+        initialize();
     }
 
+    /* ===================== Setup UI & input ===================== */
+
+    /** Inizializza proprietà Swing del pannello. */
     private void initialize() {
         SwingUtilities.invokeLater(() -> {
             this.setBackground(Color.BLACK);
@@ -179,11 +240,20 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         });
     }
 
+    private void readObject(final ObjectInputStream in) 
+        throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.enemies = new ArrayList<>();
+    }
+
+
+
+    /** Aggiunge alcune armi di base all'inventario. */
     private void addWeaponsToInventory() {
-        List<Weapon> weapons = List.of(
-                new FireBall(0, 0, 50, 50, combatManager),
-                new Sword(0, 0, 50, 50, combatManager),
-                new Axe(0, 0, 50, 50, combatManager)
+        final List<Weapon> weapons = List.of(
+                new FireBall(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager),
+                new Sword(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager),
+                new Axe(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager)
         );
         weapons.forEach(inventory::add);
     }
@@ -223,83 +293,108 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.repaint();
     }
 
-    @Override
-    public void pauseGame() {
-        this.paused = true;
-        this.timer.stop();
-    }
-
-    @Override
-    public void resumeGame() {
-        this.paused = false;
-        this.timer.resume();
-    }
-
+    /** Reimposta completamente i key binding (utile dopo modifiche a runtime). */
     public void refreshKeyBindings() {
         pressedKeys.clear();
         setupKeyBindings();
     }
 
+    /** Configura i key binding in modalità WHEN_IN_FOCUSED_WINDOW. */
     private void setupKeyBindings() {
         final InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
         final ActionMap am = this.getActionMap();
         im.clear();
         am.clear();
 
-        // Tasti premuti
-        bindKey(im, am, "pressed UP", ControlsSettings.UP.getKey(), true, () -> pressedKeys.add(ControlsSettings.UP.getKey()));
-        bindKey(im, am, "pressed DOWN", ControlsSettings.DOWN.getKey(), true, () -> pressedKeys.add(ControlsSettings.DOWN.getKey()));
-        bindKey(im, am, "pressed LEFT", ControlsSettings.LEFT.getKey(), true, () -> pressedKeys.add(ControlsSettings.LEFT.getKey()));
-        bindKey(im, am, "pressed RIGHT", ControlsSettings.RIGHT.getKey(), true, () -> pressedKeys.add(ControlsSettings.RIGHT.getKey()));
+        // Pressed
+        bindKey(im, am, "pressed UP", ControlsSettings.UP.getKey(), true,
+                () -> pressedKeys.add(ControlsSettings.UP.getKey()));
+        bindKey(im, am, "pressed DOWN", ControlsSettings.DOWN.getKey(), true,
+                () -> pressedKeys.add(ControlsSettings.DOWN.getKey()));
+        bindKey(im, am, "pressed LEFT", ControlsSettings.LEFT.getKey(), true,
+                () -> pressedKeys.add(ControlsSettings.LEFT.getKey()));
+        bindKey(im, am, "pressed RIGHT", ControlsSettings.RIGHT.getKey(), true,
+                () -> pressedKeys.add(ControlsSettings.RIGHT.getKey()));
         bindKey(im, am, "pressed ESCAPE", KeyEvent.VK_ESCAPE, true, this::toggleOptionsPanel);
-        bindKey(im, am, "pressed SPACE", ControlsSettings.ATTACK.getKey(), true, combatManager::tryToAttack);
-        bindKey(im, am, "pressed I", ControlsSettings.INVENTORY.getKey(), true, this::toggleOpenInventory);
-        bindKey(im, am, "interact", ControlsSettings.INTERACT.getKey(), true, this::interactWithItems);
+        bindKey(im, am, "pressed SPACE", ControlsSettings.ATTACK.getKey(), true,
+                combatManager::tryToAttack);
+        bindKey(im, am, "pressed I", ControlsSettings.INVENTORY.getKey(), true,
+                this::toggleOpenInventory);
+        bindKey(im, am, "interact", ControlsSettings.INTERACT.getKey(), true,
+                this::interactWithItems);
 
-        // Tasti rilasciati
-        bindKey(im, am, "released UP", ControlsSettings.UP.getKey(), false, () -> pressedKeys.remove(ControlsSettings.UP.getKey()));
-        bindKey(im, am, "released DOWN", ControlsSettings.DOWN.getKey(), false, () -> pressedKeys.remove(ControlsSettings.DOWN.getKey()));
-        bindKey(im, am, "released LEFT", ControlsSettings.LEFT.getKey(), false, () -> pressedKeys.remove(ControlsSettings.LEFT.getKey()));
-        bindKey(im, am, "released RIGHT", ControlsSettings.RIGHT.getKey(), false, () -> pressedKeys.remove(ControlsSettings.RIGHT.getKey()));
+        // Released
+        bindKey(im, am, "released UP", ControlsSettings.UP.getKey(), false,
+                () -> pressedKeys.remove(ControlsSettings.UP.getKey()));
+        bindKey(im, am, "released DOWN", ControlsSettings.DOWN.getKey(), false,
+                () -> pressedKeys.remove(ControlsSettings.DOWN.getKey()));
+        bindKey(im, am, "released LEFT", ControlsSettings.LEFT.getKey(), false,
+                () -> pressedKeys.remove(ControlsSettings.LEFT.getKey()));
+        bindKey(im, am, "released RIGHT", ControlsSettings.RIGHT.getKey(), false,
+                () -> pressedKeys.remove(ControlsSettings.RIGHT.getKey()));
     }
 
-    private void bindKey(InputMap im, ActionMap am, String name, int key, boolean pressed, Runnable action) {
+    private void bindKey(
+            final InputMap im,
+            final ActionMap am,
+            final String name,
+            final int key,
+            final boolean pressed,
+            final Runnable action
+    ) {
         im.put(KeyStroke.getKeyStroke(key, 0, !pressed), name);
         am.put(name, new AbstractAction() {
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(final java.awt.event.ActionEvent e) {
                 action.run();
             }
         });
     }
 
-    private static final double MOVE_SPEED = 2.0;
+    /* ===================== Ciclo di gioco & input ===================== */
 
+    /** Gestisce l’input e aggiorna velocità/direzione del player. */
     private void handleInput() {
         if (bald.isImmobilized()) {
             bald.setSpeedX(0);
             bald.setSpeedY(0);
             return;
         }
-        double dx = 0, dy = 0;
-        if (pressedKeys.contains(ControlsSettings.LEFT.getKey())) dx -= 1;
-        if (pressedKeys.contains(ControlsSettings.RIGHT.getKey())) dx += 1;
-        if (!"map_1".equals(currentMapName)) {
-            if (pressedKeys.contains(ControlsSettings.UP.getKey())) dy -= 1;
-            if (pressedKeys.contains(ControlsSettings.DOWN.getKey())) dy += 1;
-        }
-        if (pressedKeys.contains(ControlsSettings.ATTACK.getKey())) combatManager.tryToAttack();
+        double dx = 0;
+        double dy = 0;
 
-        double magnitude = Math.hypot(dx, dy);
-        if (magnitude > 0) {
-            dx = (dx / magnitude) * MOVE_SPEED;
-            dy = (dy / magnitude) * MOVE_SPEED;
+        if (pressedKeys.contains(ControlsSettings.LEFT.getKey())) {
+            dx -= DX_STEP;
         }
-        bald.setFacingRight(dx > 0 || (dx == 0 && bald.isFacingRight()));
+        if (pressedKeys.contains(ControlsSettings.RIGHT.getKey())) {
+            dx += DX_STEP;
+        }
+        if (!MAP_1.equals(currentMapName)) {
+            if (pressedKeys.contains(ControlsSettings.UP.getKey())) {
+                dy -= DY_STEP;
+            }
+            if (pressedKeys.contains(ControlsSettings.DOWN.getKey())) {
+                dy += DY_STEP;
+            }
+        }
+        if (pressedKeys.contains(ControlsSettings.ATTACK.getKey())) {
+            combatManager.tryToAttack();
+        }
+
+        final double magnitude = Math.hypot(dx, dy);
+        if (magnitude > 0) {
+            dx = dx / magnitude * MOVE_SPEED;
+            dy = dy / magnitude * MOVE_SPEED;
+
+        }
+
+        // VERSIONE OK
+        bald.setFacingRight(dx > 0 || dx == 0 && bald.isFacingRight());
         bald.setSpeedX(dx);
         bald.setSpeedY(dy);
     }
 
+    /** Interagisce con il primo oggetto toccato che implementa {@link Interactable}. */
     private void interactWithItems() {
         itemManager.getItems().stream()
                 .filter(item -> bald.getBounds().intersects(item.getBounds()))
@@ -309,10 +404,12 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 .ifPresent(interactableItem -> interactableItem.interact(bald));
     }
 
+    /** @return l’ultima run di gioco creata. */
     public GameRun getGameRun() {
         return gameRun;
     }
 
+    /** Richiede il nickname e inizializza la run. */
     private void setPlayerName() {
         String nickname = "";
 
@@ -321,7 +418,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
             nickname = JOptionPane.showInputDialog("Enter your nickname:");
             if (Optional.ofNullable(nickname).isEmpty()) {
                 this.stopGame();
-                GameWindow window = (GameWindow) SwingUtilities.getWindowAncestor(this);
+                final GameWindow window = (GameWindow) SwingUtilities.getWindowAncestor(this);
                 new SwitchToOtherPanel(window, Panels.MAIN_MENU).actionPerformed(null);
                 return;
             }
@@ -330,6 +427,8 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         gameRun = new GameRun(nickname, timer.getFormattedTime());
         this.resumeGame();
     }
+
+    /* ===================== Game lifecycle ===================== */
 
     @Override
     public void startGame() {
@@ -345,10 +444,22 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         gameRun = new GameRun(gameRun.name(), timer.getFormattedTime());
         try {
             saveDataManager.saveGameRun(gameRun);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LoggerUtils.error("Error saving game run: " + e.getMessage());
         }
         this.stopGame();
+    }
+
+    @Override
+    public void pauseGame() {
+        this.paused = true;
+        this.timer.stop();
+    }
+
+    @Override
+    public void resumeGame() {
+        this.paused = false;
+        this.timer.resume();
     }
 
     @Override
@@ -359,11 +470,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
 
         while (gameThread != null && running) {
             if (paused) {
-                try {
-                    Thread.sleep(SLEEP_INTERVAL_WHEN_PAUSED);
-                } catch (final InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+                LockSupport.parkNanos(SLEEP_INTERVAL_WHEN_PAUSED * NANOS_IN_MILLI);
                 lastTime = System.nanoTime();
                 continue;
             }
@@ -382,29 +489,39 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
                 fpsTimer += MILLIS_IN_SECOND;
             }
 
-            final long frameTime = (System.nanoTime() - now) / 1_000_000; // in ms
-            final long targetFrameTime = MILLIS_IN_SECOND / maxFPS;
+            final long frameTime = (System.nanoTime() - now) / NANOS_IN_MILLI; // ms
+            final long targetFrameTime = MILLIS_IN_SECOND / Math.max(1, maxFPS);
             final long sleepTime = targetFrameTime - frameTime;
 
             if (sleepTime > 0) {
-                try {
-                    Thread.sleep(sleepTime);
-                } catch (final InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+                LockSupport.parkNanos(sleepTime * NANOS_IN_MILLI);
+            } else {
+                // micro-backoff per non saturare la CPU
+                LockSupport.parkNanos(LATE_FRAME_BACKOFF_NANOS);
             }
         }
     }
 
-    public void update(double deltatime) {
+    /**
+     * Aggiorna lo stato del gioco per il frame corrente.
+     *
+     * @param deltatime tempo trascorso (in secondi) dal frame precedente
+     */
+    public void update(final double deltatime) {
         handleInput();
         bald.updateAnimation();
         bald.move(tileMap, deltatime);
         bald.updateBuffs();
-        if (isAtMapTransitionPoint()) {
+
+        if (isTouchingOrAdjacentToTileId(ID_PORTAL)) {
             switchToNextMap();
             return;
         }
+        if (isTouchingOrAdjacentToTileId(ID_PREV_PORTAL)) {
+            switchToPreviousMap();
+            return;
+        }
+
         combatManager.checkEnemyAttacks();
         enemies.removeIf(enemy -> !enemy.isAlive());
         enemies.forEach(enemy -> {
@@ -415,92 +532,103 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         });
         combatManager.getProjectiles().forEach(p -> p.move(tileMap));
         combatManager.checkProjectiles();
+
         itemManager.updateAll();
         itemManager.handleItemCollection(bald);
         checkIfNearShopTile();
+
         this.revalidate();
         this.repaint();
     }
 
-    // Sostituisci il tuo isAtMapTransitionPoint() con questo
-    private boolean isAtMapTransitionPoint() {
-        return isTouchingOrAdjacentToTileId(4);
-    }
+    /* ===================== Logica mappa ===================== */
 
-    /** true se Bald sovrappone O TOCCA SOLO IL BORDO di un tile con id==tileId */
-    private boolean isTouchingOrAdjacentToTileId(int tileId) {
-        final int ts = tileMap.TILE_SIZE;
+    /**
+     * Verifica se Bald è sopra o adiacente a un tile con l'id indicato.
+     *
+     * @param tileId id del tile da verificare
+     * @return {@code true} se tocca o è adiacente, altrimenti {@code false}.
+     */
+    private boolean isTouchingOrAdjacentToTileId(final int tileId) {
+        final int ts = tileMap.getTileSize();
 
         final int x1 = bald.getX();
         final int y1 = bald.getY();
-        final int x2 = x1 + bald.getWidth()  - 1;
+        final int x2 = x1 + bald.getWidth() - 1;
         final int y2 = y1 + bald.getHeight() - 1;
 
-        // --- tiles coperti internamente dalla bbox (overlap anche di 1 px) ---
-        final int leftIn   = Math.max(0, x1 / ts);
-        final int rightIn  = Math.max(0, x2 / ts);
-        final int topIn    = Math.max(0, y1 / ts);
+        // tiles coperti internamente dalla bbox
+        final int leftIn = Math.max(0, x1 / ts);
+        final int rightIn = Math.max(0, x2 / ts);
+        final int topIn = Math.max(0, y1 / ts);
         final int bottomIn = Math.max(0, y2 / ts);
 
-        // 1) Overlap interno
         for (int ty = topIn; ty <= bottomIn; ty++) {
             for (int tx = leftIn; tx <= rightIn; tx++) {
-                if (tileHasId(tx, ty, tileId)) return true;
+                if (tileHasId(tx, ty, tileId)) {
+                    return true;
+                }
             }
         }
 
-        // --- tiles immediatamente ADIACENTI ai 4 bordi della bbox ---
-        // (x1-1)/ts = tile subito a SINISTRA del bordo sinistro
-        // (x2+1)/ts = tile subito a DESTRA del bordo destro
-        // idem per sopra/sotto
-        final int leftEdgeCol   = Math.max(0, (x1 - 1) / ts);
-        final int rightEdgeCol  = Math.max(0, (x2 + 1) / ts);
-        final int topEdgeRow    = Math.max(0, (y1 - 1) / ts);
+        // tiles adiacenti ai bordi
+        final int leftEdgeCol = Math.max(0, (x1 - 1) / ts);
+        final int rightEdgeCol = Math.max(0, (x2 + 1) / ts);
+        final int topEdgeRow = Math.max(0, (y1 - 1) / ts);
         final int bottomEdgeRow = Math.max(0, (y2 + 1) / ts);
 
-        // 2) Contatto sui bordi verticali (sinistra/destra)
         for (int ty = topIn; ty <= bottomIn; ty++) {
-            if (tileHasId(leftEdgeCol,  ty, tileId))  return true;
-            if (tileHasId(rightEdgeCol, ty, tileId))  return true;
+            if (tileHasId(leftEdgeCol, ty, tileId)) {
+                return true;
+            }
+            if (tileHasId(rightEdgeCol, ty, tileId)) {
+                return true;
+            }
         }
-
-        // 3) Contatto sui bordi orizzontali (alto/basso)
         for (int tx = leftIn; tx <= rightIn; tx++) {
-            if (tileHasId(tx, topEdgeRow,    tileId)) return true;
-            if (tileHasId(tx, bottomEdgeRow, tileId)) return true;
+            if (tileHasId(tx, topEdgeRow, tileId)) {
+                return true;
+            }
+            if (tileHasId(tx, bottomEdgeRow, tileId)) {
+                return true;
+            }
         }
 
         return false;
     }
 
-    private boolean tileHasId(int tx, int ty, int id) {
-        Tile t = tileMap.getTileAt(tx, ty);
+    private boolean tileHasId(final int tx, final int ty, final int id) {
+        final Tile t = tileMap.getTileAt(tx, ty);
         return t != null && t.getId() == id;
     }
 
-
-
     private void switchToNextMap() {
-        String nextMapName = mapTransitions.get(currentMapName);
+        final String nextMapName = mapTransitions.get(currentMapName);
         if (nextMapName != null) {
             changeAndLoadMap(nextMapName);
         } else {
             LoggerUtils.error("Nessuna mappa successiva definita.");
         }
     }
-    
-    
-    private void changeAndLoadMap(String mapName) {
+
+    private void switchToPreviousMap() {
+        final String prevMapName = reverseTransitions.get(currentMapName);
+        if (prevMapName != null) {
+            changeAndLoadMap(prevMapName);
+        } else {
+            LoggerUtils.error("Nessuna mappa precedente definita.");
+        }
+    }
+
+    private void changeAndLoadMap(final String mapName) {
         currentMapName = mapName;
 
-        // cambia mappa e aggiorna riferimento nel player
         tileMap.changeMap(mapName);
         bald.setTileMap(tileMap);
 
-        // ► posiziona Bald sul tile id==5 (centrato e con i piedi "a terra")
-        bald.setSpawnPosition(5, tileMap.TILE_SIZE);
+        // posiziona Bald sul tile spawn
+        bald.setSpawnPosition(ID_SPAWN, tileMap.getTileSize());
 
-        // evita drift da velocità residue / tasti ancora premuti
         bald.setSpeedX(0);
         bald.setSpeedY(0);
         pressedKeys.clear();
@@ -511,24 +639,24 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         shopButton.setVisible(false);
     }
 
-
     private void spawnEnemiesFromMap() {
         enemies.clear();
-        List<Point> spawns = tileMap.findAllWithId(7);
-        int tileSize = tileMap.TILE_SIZE;
-        for (Point topLeft : spawns) {
-            int enemyW = 60, enemyH = 60;
-            int x = topLeft.x + (tileSize - enemyW) / 2;
-            int y = topLeft.y + (tileSize - enemyH) / 2;
-            enemies.add(new DummyEnemy(x, y, 60, "ZioBilly", 10, tileMap));
+        final List<Point> spawns = tileMap.findAllWithId(ID_ENEMY);
+        final int tileSize = tileMap.getTileSize();
+        for (final Point topLeft : spawns) {
+            final int x = topLeft.x + (tileSize - ENEMY_W) / 2;
+            final int y = topLeft.y + (tileSize - ENEMY_H) / 2;
+            enemies.add(new DummyEnemy(x, y, ENEMY_W, "ZioBilly", 10, tileMap));
         }
     }
 
+    /* ===================== Rendering ===================== */
+
     @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g.create();
+    protected void paintComponent(final Graphics g) {
+        final Graphics2D g2d = (Graphics2D) g.create();
         super.paintComponent(g2d);
-        this.scaleGraphics(g2d);
+        scaleGraphics(g2d);
         tileMap.paint(g2d);
         gridPanel.paintComponent(g2d);
         itemManager.renderAll(g2d);
@@ -542,11 +670,11 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         g2d.dispose();
     }
 
-    private void drawAttackArea(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
+    private void drawAttackArea(final Graphics g) {
+        final Graphics2D g2d = (Graphics2D) g;
         bald.getWeapon().ifPresent(weapon -> {
             if (bald.isAttacking() && weapon instanceof MeleeWeapon) {
-                Arc2D attackArea = ((MeleeWeapon) weapon).getAttackArea();
+                final Arc2D attackArea = ((MeleeWeapon) weapon).getAttackArea();
                 Optional.ofNullable(attackArea).ifPresent(atk -> {
                     g2d.setColor(ATTACK_AREA_COLOR);
                     g2d.fill(atk);
@@ -555,17 +683,18 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         });
     }
 
-    private void drawFPS(Graphics g) {
+    private void drawFPS(final Graphics g) {
         if (showingFPS) {
             g.setColor(Color.YELLOW);
             g.setFont(DEFAULT_FONT);
-            g.drawString("FPS: " + currentFPS, FPS_POSITION.getLeft(), FPS_POSITION.getRight());
+            g.drawString("FPS: " + currentFPS,
+                    FPS_POSITION.getLeft(), FPS_POSITION.getRight());
         }
     }
 
-    private void drawTimer(Graphics g) {
+    private void drawTimer(final Graphics g) {
         if (showingTimer) {
-            TimeData timeData = timer.getFormattedTime();
+            final TimeData timeData = timer.getFormattedTime();
             g.setColor(Color.WHITE);
             g.setFont(DEFAULT_FONT);
             g.drawString(
@@ -575,27 +704,35 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         }
     }
 
-    private void scaleGraphics(Graphics g) {
+    private void scaleGraphics(final Graphics g) {
         Optional.ofNullable(SwingUtilities.getWindowAncestor(this))
                 .filter(window -> window instanceof GameWindow)
                 .map(window -> (GameWindow) window)
                 .ifPresent(window -> {
-                    double scaleX = this.getWidth() / window.getInternalSize().getWidth();
-                    double scaleY = this.getHeight() / window.getInternalSize().getHeight();
+                    final double scaleX =
+                            this.getWidth() / window.getInternalSize().getWidth();
+                    final double scaleY =
+                            this.getHeight() / window.getInternalSize().getHeight();
                     ((Graphics2D) g).scale(scaleX, scaleY);
                 });
     }
 
+    /* ===================== Layout secondario/UI ===================== */
+
     @Override
     public void updateComponentsSize() {
-        optionsGBC.insets.set((int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
+        optionsGBC.insets.set(
+                (int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
                 (int) (this.getWidth() * OPTIONS_WIDTH_INSETS),
                 (int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
-                (int) (this.getWidth() * OPTIONS_WIDTH_INSETS));
-        inventoryGBC.insets.set((int) (this.getHeight() * INVENTORY_HEIGHT_INSETS),
+                (int) (this.getWidth() * OPTIONS_WIDTH_INSETS)
+        );
+        inventoryGBC.insets.set(
+                (int) (this.getHeight() * INVENTORY_HEIGHT_INSETS),
                 (int) (this.getWidth() * INVENTORY_WIDTH_INSETS),
                 (int) (this.getHeight() * INVENTORY_HEIGHT_INSETS),
-                (int) (this.getWidth() * INVENTORY_WIDTH_INSETS));
+                (int) (this.getWidth() * INVENTORY_WIDTH_INSETS)
+        );
     }
 
     @Override
@@ -604,19 +741,15 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.add(optionsPanel, optionsGBC);
         this.add(inventoryPanel, inventoryGBC);
 
-        // ▼ usa il CAMPO 'shopButton' (non crearne uno nuovo)
         shopButton.setText("Shop");
         shopButton.setBackground(Color.YELLOW);
         shopButton.setOpaque(true);
         shopButton.setFocusable(false);
         shopButton.setVisible(false);
-        shopButton.addActionListener(e -> {
-            ShopPanel shopPanel = new ShopPanel(this.combatManager, bald.getWallet());
-            JOptionPane.showMessageDialog(this, shopPanel, "SHOP", JOptionPane.PLAIN_MESSAGE);
-        });
+        shopButton.addActionListener(this::onShopButtonClicked);
 
         // filler per layout
-        GridBagConstraints fillerGBC = new GridBagConstraints();
+        final GridBagConstraints fillerGBC = new GridBagConstraints();
         fillerGBC.gridx = 0;
         fillerGBC.gridy = 0;
         fillerGBC.weightx = 1;
@@ -625,7 +758,7 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.add(Box.createGlue(), fillerGBC);
 
         // posizionamento bottone
-        GridBagConstraints shopButtonGBC = new GridBagConstraints();
+        final GridBagConstraints shopButtonGBC = new GridBagConstraints();
         shopButtonGBC.gridx = 0;
         shopButtonGBC.gridy = 0;
         shopButtonGBC.insets = new Insets(10, 10, 10, 10);
@@ -636,8 +769,15 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         this.add(shopButton, shopButtonGBC);
     }
 
+    private void onShopButtonClicked(final java.awt.event.ActionEvent event) {
+        Objects.requireNonNull(event, "event");
+        final ShopPanel shopPanel = new ShopPanel(this.combatManager, bald.getWallet());
+        JOptionPane.showMessageDialog(this, shopPanel, "SHOP", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    /** Mostra il pulsante shop quando Bald è sopra un tile {@link #ID_SHOP}. */
     private void checkIfNearShopTile() {
-        final int tileSize = tileMap.TILE_SIZE;
+        final int tileSize = tileMap.getTileSize();
 
         final int baldX = bald.getX();
         final int baldY = bald.getY();
@@ -645,24 +785,20 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
         final int baldH = bald.getHeight();
 
         final int feetY = baldY + baldH;
-
-        // 🔸 campiona 1 px "dentro" il tile dei piedi (evita il bordo superiore)
         final int feetYInside = Math.max(0, feetY - 1);
 
-        final int tileFeetY = feetYInside / tileSize;               // riga corretta del tile sotto i piedi
-        final int tileCenterX = (baldX + baldW / 2) / tileSize;     // colonna al centro del personaggio
+        final int tileFeetY = feetYInside / tileSize;
+        final int tileCenterX = (baldX + baldW / 2) / tileSize;
 
         final Tile tileUnderFeet = tileMap.getTileAt(tileCenterX, tileFeetY);
-
-        // Mostra se davvero SEI sopra un tile id==6 (niente vincolo di allineamento)
-        final boolean onShopTile = tileUnderFeet != null && tileUnderFeet.getId() == 6;
+        final boolean onShopTile = tileUnderFeet != null && tileUnderFeet.getId() == ID_SHOP;
 
         if (shopButton.isVisible() != onShopTile) {
             shopButton.setVisible(onShopTile);
         }
-}
+    }
 
-
+    /* ===================== Getters/Setters richiesti dall'interfaccia ===================== */
 
     @Override
     public boolean isRunning() {
@@ -673,27 +809,33 @@ public class GamePanel extends MenuPanel implements Runnable, Game {
     public void stopGame() {
         this.running = false;
         this.timer.stop();
-        
     }
 
     @Override
-    public void setFPS(int fps) {
+    public void setFPS(final int fps) {
         this.maxFPS = fps;
     }
 
     @Override
-    public void setShowingFPS(boolean showingFPS) {
-        this.showingFPS = showingFPS;
+    public void setShowingFPS(final boolean value) {
+        this.showingFPS = value;
     }
 
+    /** @return {@code true} se la UI mostra gli FPS. */
     public boolean isShowingFPS() {
         return showingFPS;
     }
 
-    public void setShowingTimer(boolean showingTimer) {
+    /**
+     * Abilita/Disabilita la visualizzazione del timer di gioco.
+     *
+     * @param showingTimer se {@code true} il timer viene mostrato in overlay.
+     */
+    public void setShowingTimer(final boolean showingTimer) {
         this.showingTimer = showingTimer;
     }
 
+    /** @return {@code true} se la UI mostra il timer. */
     public boolean isShowingTimer() {
         return showingTimer;
     }

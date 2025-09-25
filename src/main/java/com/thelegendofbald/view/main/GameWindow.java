@@ -27,23 +27,23 @@ public final class GameWindow extends JFrame implements View, MainView {
     private static final int DEFAULT_WINDOW_WIDTH = 1280;
     private static final int DEFAULT_WINDOW_HEIGHT = 704;
 
-    private Dimension internalSize = new Dimension(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+    // volatile per garantire visibilità del riferimento tra thread
+    private volatile Dimension internalSize = new Dimension(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
     private Panels currentPanel = Panels.MAIN_MENU;
     private transient Optional<Panels> lastPanel = Optional.empty();
 
-    /**
-     * Default constructor for the GameWindow.
-     * Initializes the window with default settings and updates the size of the panels.
-     */
+    /** Default constructor. */
     public GameWindow() {
         super();
         this.updatePanelsSize();
     }
 
-    private void updatePanelsSize() {
+    // SINCRONIZZATO: legge la size tramite getter sincronizzato e la applica ai pannelli
+    private synchronized void updatePanelsSize() {
+        final Dimension size = this.getInternalSize(); // usa il getter synchronized + clone
         Arrays.stream(Panels.values())
                 .map(Panels::getPanel)
-                .forEach(panel -> panel.setPreferredSize(internalSize));
+                .forEach(panel -> panel.setPreferredSize(size));
         this.updateView();
     }
 
@@ -74,18 +74,20 @@ public final class GameWindow extends JFrame implements View, MainView {
         this.repaint();
         panel.requestFocusInWindow();
         if (panel instanceof GamePanel gamePanel && !gamePanel.isRunning()) {
-            gamePanel.startGame(); // <-- solo se è GamePanel
+            gamePanel.startGame();
             gamePanel.requestFocusInWindow();
         }
     }
 
     @Override
     public synchronized Dimension getInternalSize() {
+        // restituisci una copia per non esporre lo stato interno mutabile
         return (Dimension) internalSize.clone();
     }
 
     @Override
     public synchronized void setInternalSize(final Dimension size) {
+        // copia difensiva + aggiornamento coerente dei pannelli sotto lo stesso lock
         internalSize = (Dimension) size.clone();
         this.updatePanelsSize();
     }
@@ -141,5 +143,4 @@ public final class GameWindow extends JFrame implements View, MainView {
         final GamePanel game = (GamePanel) Panels.GAME_MENU.getPanel();
         game.setShowingTimer(showTimer);
     }
-
 }
