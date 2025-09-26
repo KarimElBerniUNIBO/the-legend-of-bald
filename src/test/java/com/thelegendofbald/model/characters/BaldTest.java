@@ -2,42 +2,51 @@ package com.thelegendofbald.model.characters;
 
 import com.thelegendofbald.model.common.Wallet;
 import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.life.LifeComponent;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class BaldTest {
 
-    @Test
-    void testAttackPower_ModifiedBySetter() {
-        Bald bald = new Bald(0, 0, 100, "Hero", 10);
-        assertEquals(10, bald.getAttackPower());
+    private static final int INITIAL_ATTACK_POWER = 10;
+    private static final int UPDATED_ATTACK_POWER = 25;
+    private static final int INITIAL_HEALTH = 50;
+    private static final int DAMAGE_30 = 30;
+    private static final int DAMAGE_25 = 25;
+    private static final int INITIAL_COINS = 0;
+    private static final int ADDED_COINS = 100;
 
-        bald.setAttackPower(25);
-        assertEquals(25, bald.getAttackPower());
+    @Test
+    void testAttackPowerModifiedBySetter() {
+        final Bald bald = new Bald(0, 0, 100, "Hero", INITIAL_ATTACK_POWER);
+        assertEquals(INITIAL_ATTACK_POWER, bald.getAttackPower());
+
+        bald.setAttackPower(UPDATED_ATTACK_POWER);
+        assertEquals(UPDATED_ATTACK_POWER, bald.getAttackPower());
     }
 
     @Test
     void testTakeDamageAndIsAlive() {
-        Bald bald = new Bald(0, 0, 50, "Hero", 10);
+        final Bald bald = new Bald(0, 0, INITIAL_HEALTH, "Hero", INITIAL_ATTACK_POWER);
         assertTrue(bald.isAlive());
 
-        bald.takeDamage(30);
+        bald.takeDamage(DAMAGE_30);
         assertTrue(bald.isAlive());
 
-        bald.takeDamage(25); // total > 50
+        bald.takeDamage(DAMAGE_25); // total damage > health
         assertFalse(bald.isAlive());
     }
 
     @Test
     void testWalletStartsEmptyAndCanAdd() {
-        Bald bald = new Bald(0, 0, 100, "Hero", 10);
-        Wallet wallet = bald.getWallet();
+        final Bald bald = new Bald(0, 0, 100, "Hero", INITIAL_ATTACK_POWER);
+        final Wallet wallet = bald.getWallet();
 
-        assertEquals(0, wallet.getCoins());
+        assertEquals(INITIAL_COINS, wallet.getCoins());
 
-        wallet.addCoins(100);
-        assertEquals(100, wallet.getCoins());
+        wallet.addCoins(ADDED_COINS);
+        assertEquals(ADDED_COINS, wallet.getCoins());
     }
 }

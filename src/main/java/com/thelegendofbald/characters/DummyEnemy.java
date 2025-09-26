@@ -17,32 +17,31 @@ import com.thelegendofbald.view.main.TileMap;
 /**
  * Very simple enemy that follows the player and collides with solid tiles.
  */
-public class DummyEnemy extends Entity implements Combatant {
+public final class DummyEnemy extends Entity implements Combatant {
 
     // ---- Constants ----
     private static final int FRAME_WIDTH = 50;
     private static final int FRAME_HEIGHT = 50;
-
-    private static final int RENDER_SIZE = 50;     // draw size (kept square)
+    private static final int RENDER_SIZE = 50;
     private static final int RUN_FRAMES = 9;
     private static final int DEFAULT_FRAME_DELAY = 5;
 
-    private static final double DEFAULT_SPEED = 1.0;   // px per tick (prima era int 1)
+    private static final double DEFAULT_SPEED = 1.0;
+    private static final double MIN_DISTANCE = 200;
 
     // ---- State ----
     private final int attackPower;
     private final transient TileMap tileMap;
 
-    private double speedX = DEFAULT_SPEED;
-    private double speedY = DEFAULT_SPEED;
+    private final double speedX = DEFAULT_SPEED;
+    private final double speedY = DEFAULT_SPEED;
 
     private BufferedImage[] runFrames;
     private int currentFrame;
-    private int frameDelay = DEFAULT_FRAME_DELAY;
+    private final int frameDelay = DEFAULT_FRAME_DELAY;
     private int frameCounter;
 
-    private long lastAttackTime;           // usato dal combat manager altrove?
-    private final double minDistance = 200;
+    private long lastAttackTime;
 
     /**
      * Creates a dummy enemy.
@@ -64,6 +63,9 @@ public class DummyEnemy extends Entity implements Combatant {
 
     // ------------------- Resources -------------------
 
+    /**
+     * Loads running animation frames from resources.
+     */
     private void loadRunFrames() {
         runFrames = new BufferedImage[RUN_FRAMES];
         for (int i = 0; i < RUN_FRAMES; i++) {
@@ -74,7 +76,7 @@ public class DummyEnemy extends Entity implements Combatant {
                 } else {
                     LoggerUtils.error("Enemy run frame not found: " + framePath);
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LoggerUtils.error("Error loading enemy run frame " + framePath + ": " + e.getMessage());
             }
         }
@@ -82,22 +84,40 @@ public class DummyEnemy extends Entity implements Combatant {
 
     // ------------------- Combatant -------------------
 
+    /**
+     * Returns the base attack power of this enemy.
+     *
+     * @return base attack power
+     */
     @Override
     public int getAttackPower() {
         return attackPower;
     }
 
+    /**
+     * Applies damage to this enemy, reducing its health.
+     *
+     * @param damage amount of damage to apply
+     */
     @Override
     public void takeDamage(final int damage) {
-        this.lifeComponent.damageTaken(damage);
+        this.getLifeComponent().damageTaken(damage);
     }
 
+    /**
+     * Heals this enemy by the specified amount.
+     *
+     * @param amount health points to restore
+     */
     public void heal(final int amount) {
-        this.lifeComponent.heal(amount);
+        this.getLifeComponent().heal(amount);
     }
 
     // ------------------- Animation & Render -------------------
 
+    /**
+     * Advances the animation frame based on an internal frame counter.
+     */
     public void updateAnimation() {
         frameCounter++;
         if (frameCounter < frameDelay) {
@@ -110,19 +130,25 @@ public class DummyEnemy extends Entity implements Combatant {
         }
     }
 
+    /**
+     * Renders the current frame or a fallback rectangle if frames are missing.
+     *
+     * @param g graphics context
+     */
     public void render(final Graphics g) {
         final BufferedImage frame =
                 (runFrames != null && runFrames.length > 0) ? runFrames[currentFrame] : null;
 
         if (frame != null) {
-            if (!facingRight) {
-                g.drawImage(frame, x, y, RENDER_SIZE, RENDER_SIZE, null);
+            if (!isFacingRight()) {
+                g.drawImage(frame, getX(), getY(), RENDER_SIZE, RENDER_SIZE, null);
             } else {
-                g.drawImage(frame, x + RENDER_SIZE, y, -RENDER_SIZE, RENDER_SIZE, null);
+                g.drawImage(frame, getX() + RENDER_SIZE, getY(),
+                        -RENDER_SIZE, RENDER_SIZE, null);
             }
         } else {
             g.setColor(Color.RED);
-            g.fillRect(x, y, RENDER_SIZE, RENDER_SIZE);
+            g.fillRect(getX(), getY(), RENDER_SIZE, RENDER_SIZE);
         }
     }
 
@@ -141,37 +167,48 @@ public class DummyEnemy extends Entity implements Combatant {
         double dx = 0.0;
         double dy = 0.0;
 
-        if (bald.getX() > this.x) {
+        if (bald.getX() > getX()) {
             dx = speedX;
-            facingRight = true;
-        } else if (bald.getX() < this.x) {
+            setFacingRight(true);
+        } else if (bald.getX() < getX()) {
             dx = -speedX;
-            facingRight = false;
+            setFacingRight(false);
         }
 
-        if (bald.getY() > this.y) {
+        if (bald.getY() > getY()) {
             dy = speedY;
-        } else if (bald.getY() < this.y) {
+        } else if (bald.getY() < getY()) {
             dy = -speedY;
         }
 
         moveWithCollision(dx, dy);
     }
 
+    /**
+     * Moves the entity while checking collisions on the tile map.
+     *
+     * @param dx delta X in pixels
+     * @param dy delta Y in pixels
+     */
     private void moveWithCollision(final double dx, final double dy) {
-        final double nextX = x + dx;
-        final double nextY = y + dy;
+        final double nextX = getX() + dx;
+        final double nextY = getY() + dy;
 
-        // asse X
-        if (!isColliding(nextX, y)) {
-            x = (int) Math.round(nextX);
+        if (!isColliding(nextX, getY())) {
+            setX((int) Math.round(nextX));
         }
-        // asse Y
-        if (!isColliding(x, nextY)) {
-            y = (int) Math.round(nextY);
+        if (!isColliding(getX(), nextY)) {
+            setY((int) Math.round(nextY));
         }
     }
 
+    /**
+     * Checks whether the rectangle at the next position hits a solid tile.
+     *
+     * @param nextX next X position
+     * @param nextY next Y position
+     * @return true if colliding with a solid tile
+     */
     private boolean isColliding(final double nextX, final double nextY) {
         // tileMap è final e non null per contratto
         final int tileSize = tileMap.getTileSize();
@@ -196,35 +233,59 @@ public class DummyEnemy extends Entity implements Combatant {
 
     // ------------------- Misc -------------------
 
+    /**
+     * @return true if this enemy is alive (health &gt; 0)
+     */
+    @Override
     public boolean isAlive() {
-        return !this.lifeComponent.isDead();
+        return !this.getLifeComponent().isDead();
     }
 
+    /**
+     * @return timestamp of the last attack, implementation-defined unit
+     */
     public long getLastAttackTime() {
         return lastAttackTime;
     }
 
+    /**
+     * Sets the last attack timestamp.
+     *
+     * @param time timestamp to store
+     */
     public void setLastAttackTime(final long time) {
         this.lastAttackTime = time;
     }
 
+    /**
+     * Checks whether the enemy is closer than a threshold to the given player.
+     *
+     * @param bald player to compare distance with
+     * @return true if closer than the internal threshold
+     */
     public boolean isCloseTo(final Bald bald) {
         if (bald == null) {
             return false;
         }
-        final double dx = this.x - bald.getX();
-        final double dy = this.y - bald.getY();
+        final double dx = this.getX() - bald.getX();
+        final double dy = this.getY() - bald.getY();
         final double distance = Math.hypot(dx, dy);
-        return distance < this.minDistance;
+        return distance < MIN_DISTANCE;
     }
 
     // ------------------- Overrides -------------------
 
+    /**
+     * @return render width in pixels
+     */
     @Override
     public int getWidth() {
         return FRAME_WIDTH;
     }
 
+    /**
+     * @return render height in pixels
+     */
     @Override
     public int getHeight() {
         return FRAME_HEIGHT;

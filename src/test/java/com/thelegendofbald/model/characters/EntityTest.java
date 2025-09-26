@@ -6,77 +6,118 @@ import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class EntityTest {
 
-    /** Fake TileMap: no solid tiles, fixed tile size. */
-    static class EmptyTileMap extends TileMap {
-        EmptyTileMap() {
-            super( 0, 0, 32); // tileSize = 32
-        }
-        @Override
-        public Tile getTileAt(int x, int y) {
-            return null; // always empty
-        }
-    }
+    // ---- Costanti per evitare MagicNumber ----
+    private static final int X0 = 0;
+    private static final int Y0 = 0;
 
-    /** Fake TileMap: every tile is solid. */
-static class SolidTileMap extends TileMap {
-    SolidTileMap() {
-        super( 0, 0, 32); // tileSize = 32, righe/colonne = 0 per test
-    }
+    private static final int HEALTH_50 = 50;
+    private static final int ATTACK_7 = 7;
 
-    @Override
-    public Tile getTileAt(int x, int y) {
-        // Ritorna sempre un Tile solido
-        return new Tile(
-            null,    // image
-            32,      // width
-            32,      // height
-            1,       // id
-            true,    // solid
-            false,   // resize
-            false,   // isSpawn
-            true,    // walkable
-            null     // overlayImage
-        );
-    }
-}
+    private static final int HEALTH_20 = 20;
+    private static final int ATTACK_5 = 5;
+
+    private static final int DAMAGE_15 = 15;
+    private static final int DAMAGE_10 = 10;
+
+    private static final int HEALTH_30 = 30;
+
+    private static final int BALD_X_100 = 100;
+    private static final int BALD_Y_100 = 100;
+    private static final int BALD_HEALTH_100 = 100;
+    private static final int BALD_ATTACK_10 = 10;
+
+    private static final int START_X_10 = 10;
+    private static final int START_Y_10 = 10;
+
+    private static final int TILE_SIZE_32 = 32;
+    private static final int TILE_ID_1 = 1;
+    private static final int TILE_WIDTH_32 = 32;
+    private static final int TILE_HEIGHT_32 = 32;
+
+    private static final String ENEMY_NAME = "Goblin";
+    private static final String HERO_NAME = "Hero";
 
     @Test
     void attackPowerIsValuePassedInConstructor() {
-        DummyEnemy enemy = new DummyEnemy(0, 0, 50, "Goblin", 7, new EmptyTileMap());
-        assertEquals(7, enemy.getAttackPower());
+        final DummyEnemy enemy = new DummyEnemy(X0, Y0, HEALTH_50, ENEMY_NAME, ATTACK_7, new EmptyTileMap());
+        assertEquals(ATTACK_7, enemy.getAttackPower());
     }
 
     @Test
-    void takeDamageReducesHealth_andIsAliveReflectsIt() {
-        DummyEnemy enemy = new DummyEnemy(0, 0, 20, "Goblin", 5, new EmptyTileMap());
+    void takeDamageReducesHealthAndIsAliveReflectsIt() {
+        final DummyEnemy enemy = new DummyEnemy(X0, Y0, HEALTH_20, ENEMY_NAME, ATTACK_5, new EmptyTileMap());
         assertTrue(enemy.isAlive());
 
-        enemy.takeDamage(15);
+        enemy.takeDamage(DAMAGE_15);
         assertTrue(enemy.isAlive(), "Enemy should still be alive after partial damage");
 
-        enemy.takeDamage(10); // total damage > health
+        enemy.takeDamage(DAMAGE_10); // total damage 25 > 20
         assertFalse(enemy.isAlive(), "Enemy should be dead after lethal damage");
     }
 
     @Test
     void followPlayerMovesTowardBaldUnlessBlocked() {
         // Free map: enemy moves closer
-        DummyEnemy enemyFree = new DummyEnemy(0, 0, 30, "Goblin", 5, new EmptyTileMap());
-        Bald bald = new Bald(100, 100, 100, "Hero", 10);
+        final DummyEnemy enemyFree = new DummyEnemy(X0, Y0, HEALTH_30, ENEMY_NAME, ATTACK_5, new EmptyTileMap());
+        final Bald bald = new Bald(BALD_X_100, BALD_Y_100, BALD_HEALTH_100, HERO_NAME, BALD_ATTACK_10);
 
         enemyFree.followPlayer(bald);
-        assertTrue(enemyFree.getX() > 0 && enemyFree.getY() > 0,
+        assertTrue(enemyFree.getX() > X0 && enemyFree.getY() > Y0,
                 "Enemy should have moved closer on free map");
 
         // Solid map: enemy blocked
-        DummyEnemy enemyBlocked = new DummyEnemy(10, 10, 30, "Goblin", 5, new SolidTileMap());
+        final DummyEnemy enemyBlocked = new DummyEnemy(
+            START_X_10,
+            START_Y_10,
+            HEALTH_30,
+            ENEMY_NAME,
+            ATTACK_5,
+            new SolidTileMap()
+        );
+
         enemyBlocked.followPlayer(bald);
-        assertEquals(10, enemyBlocked.getX());
-        assertEquals(10, enemyBlocked.getY());
+        assertEquals(START_X_10, enemyBlocked.getX());
+        assertEquals(START_Y_10, enemyBlocked.getY());
+    }
+
+    // ---- Inner types alla fine (InnerTypeLast) ----
+
+    /** Fake TileMap: no solid tiles, fixed tile size. */
+    static class EmptyTileMap extends TileMap {
+        EmptyTileMap() {
+            super(X0, Y0, TILE_SIZE_32); // niente spazio dopo '(' (ParenPad)
+        }
+        @Override
+        public Tile getTileAt(final int x, final int y) { // parametri final
+            return null; // always empty
+        }
+    }
+
+    /** Fake TileMap: every tile is solid. */
+    static class SolidTileMap extends TileMap {
+        SolidTileMap() {
+            super(X0, Y0, TILE_SIZE_32); // niente spazio dopo '(' (ParenPad)
+        }
+
+        @Override
+        public Tile getTileAt(final int x, final int y) { // parametri final
+            return new Tile(
+                null,               // image
+                TILE_WIDTH_32,      // width
+                TILE_HEIGHT_32,     // height
+                TILE_ID_1,          // id
+                true,               // solid
+                false,              // resize
+                false,              // isSpawn
+                true,               // walkable
+                null                // overlayImage
+            );
+        }
     }
 }
-

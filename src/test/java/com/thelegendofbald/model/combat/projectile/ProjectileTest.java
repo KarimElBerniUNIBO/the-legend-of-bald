@@ -5,78 +5,138 @@ import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ProjectileTest {
 
-    /** Mappa vuota: nessuna tile solida. (Costruttore a 3 int come nel tuo snippet: super(0,0,32)) */
-    static class EmptyMap extends TileMap {
-        EmptyMap() { super(0, 0, 32); }
-        @Override public Tile getTileAt(int x, int y) { return null; }
-    }
+    // ---- Costanti per eliminare magic numbers ----
+    private static final int TILE_SIZE_32 = 32;
+    private static final int TILE_WIDTH_32 = 32;
+    private static final int TILE_HEIGHT_32 = 32;
+    private static final int TILE_ID_1 = 1;
+    private static final int TILE_ID_0 = 0;
 
-    /** Mappa con una tile solida in (solidX, solidY). */
-    static class SolidAtMap extends TileMap {
-        final int solidX, solidY;
-        SolidAtMap(int solidX, int solidY) {
-            super(0, 0, 32);
-            this.solidX = solidX; this.solidY = solidY;
-        }
-        @Override public Tile getTileAt(int x, int y) {
-            if (x == solidX && y == solidY) {
-                // Tile solida: usa il costruttore lungo che hai indicato
-                return new Tile(
-                        null,   // image
-                        32,     // width
-                        32,     // height
-                        1,      // id
-                        true,   // solid
-                        false,  // resize
-                        false,  // isSpawn
-                        true,   // walkable (irrilevante qui)
-                        null    // overlayImage
-                );
-            }
-            // Tile non solida altrove
-            return new Tile(null, 32, 32, 0, false, false, false, true, null);
-        }
-    }
+    private static final int X_10 = 10;
+    private static final int Y_20 = 20;
+    private static final int DIR_RIGHT = 0;
+    private static final int SPEED_5 = 5;
+    private static final int DMG_12 = 12;
+    private static final int EXPECT_X_15 = 15;
+
+    private static final int START_X_63 = 63;
+    private static final int START_Y_0 = 0;
+    private static final int SPEED_4 = 4;
+    private static final int DMG_5 = 5;
+    private static final int SOLID_COL_2 = 2;
+    private static final int SOLID_ROW_0 = 0;
+
+    private static final int X_100 = 100;
+    private static final int Y_200 = 200;
+    private static final int DIR_DOWN = 1;
+    private static final int SPEED_3 = 3;
+    private static final int DMG_1 = 1;
+    private static final int BOUNDS_6 = 6;
 
     @Test
-    void movesRightOnEmptyMap_andStaysActive() {
-        TileMap map = new EmptyMap();
-        Projectile p = new Projectile(10, 20, /*direction=*/0, /*speed=*/5, /*damage=*/12);
+    void movesRightOnEmptyMapAndStaysActive() {
+        final TileMap map = new EmptyMap();
+        final Projectile p = new Projectile(X_10, Y_20, DIR_RIGHT, SPEED_5, DMG_12);
 
         p.move(map);
 
-        // N.B. Projectile mantiene x,y privati ⇒ leggiamo da getBounds()
-        assertEquals(15, p.getBounds().x);
-        assertEquals(20, p.getBounds().y);
+        // Leggiamo posizione dalle bounds
+        assertEquals(EXPECT_X_15, p.getBounds().x);
+        assertEquals(Y_20, p.getBounds().y);
         assertTrue(p.isAlive());
-        assertEquals(12, p.getAttackPower());
+        assertEquals(DMG_12, p.getAttackPower());
     }
 
     @Test
-    void deactivatesOnCollision_withSolidTile_cornerCheck() {
-        // TILE_SIZE = 32; solid in (2,0)
-        // Start x=63, speed=4 ⇒ nextX=67; top-right corner: 67+5=72 ⇒ 72/32=2 (colonna 2), y=0 ⇒ riga 0
-        TileMap map = new SolidAtMap(/*solidX=*/2, /*solidY=*/0);
-        Projectile p = new Projectile(63, 0, /*direction=*/0, /*speed=*/4, /*damage=*/5);
+    void deactivatesOnCollisionWithSolidTileCornerCheck() {
+        // Solido in (2,0): con startX=63 e speed=4 il corner destro entra nella colonna 2
+        final TileMap map = new SolidAtMap(SOLID_COL_2, SOLID_ROW_0);
+        final Projectile p = new Projectile(START_X_63, START_Y_0, DIR_RIGHT, SPEED_4, DMG_5);
 
         p.move(map);
 
-        // Collisione ⇒ non avanza e diventa inactive
-        assertEquals(63, p.getBounds().x);
-        assertEquals(0, p.getBounds().y);
+        // Collisione ⇒ posizione invariata e proiettile inattivo
+        assertEquals(START_X_63, p.getBounds().x);
+        assertEquals(START_Y_0, p.getBounds().y);
         assertFalse(p.isAlive());
     }
 
     @Test
-    void boundsAre6x6_andFollowPosition() {
-        Projectile p = new Projectile(100, 200, /*direction=*/1, /*speed=*/3, /*damage=*/1);
-        assertEquals(100, p.getBounds().x);
-        assertEquals(200, p.getBounds().y);
-        assertEquals(6, p.getBounds().width);
-        assertEquals(6, p.getBounds().height);
+    void boundsAre6x6AndFollowPosition() {
+        final Projectile p = new Projectile(X_100, Y_200, DIR_DOWN, SPEED_3, DMG_1);
+        assertEquals(X_100, p.getBounds().x);
+        assertEquals(Y_200, p.getBounds().y);
+        assertEquals(BOUNDS_6, p.getBounds().width);
+        assertEquals(BOUNDS_6, p.getBounds().height);
+    }
+
+    // ---- Inner types alla fine (InnerTypeLast) ----
+
+    /** Mappa vuota: nessuna tile solida. */
+    static class EmptyMap extends TileMap {
+        EmptyMap() {
+            super(0, 0, TILE_SIZE_32);
+        }
+
+        @Override
+        public Tile getTileAt(final int x, final int y) {
+            return null; // nessuna collisione
+        }
+    }
+
+    /** Mappa con una tile solida in (solidX, solidY). */
+    static class SolidAtMap extends TileMap {
+        private final int solidX;
+        private final int solidY;
+
+        SolidAtMap(final int solidX, final int solidY) {
+            super(0, 0, TILE_SIZE_32);
+            this.solidX = solidX;
+            this.solidY = solidY;
+        }
+
+        public int getSolidX() {
+            return this.solidX;
+        }
+
+        public int getSolidY() {
+            return this.solidY;
+        }
+
+        @Override
+        public Tile getTileAt(final int x, final int y) {
+            if (x == this.solidX && y == this.solidY) {
+                // Tile solida
+                return new Tile(
+                    null,            // image
+                    TILE_WIDTH_32,   // width
+                    TILE_HEIGHT_32,  // height
+                    TILE_ID_1,       // id
+                    true,            // solid
+                    false,           // resize
+                    false,           // isSpawn
+                    true,            // walkable (irrilevante qui)
+                    null             // overlayImage
+                );
+            }
+            // Tile non solida altrove
+            return new Tile(
+                null,
+                TILE_WIDTH_32,
+                TILE_HEIGHT_32,
+                TILE_ID_0,
+                false,
+                false,
+                false,
+                true,
+                null
+            );
+        }
     }
 }

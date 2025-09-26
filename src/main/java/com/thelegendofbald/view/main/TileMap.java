@@ -22,7 +22,7 @@ import com.thelegendofbald.utils.LoggerUtils;
  * Gestisce il caricamento e il rendering della mappa a tile.
  * <p>La classe è final per evitare il warning "designed for extension".</p>
  */
-public final class TileMap {
+public class TileMap {
 
     /* ====== Costanti per evitare MagicNumber ====== */
     private static final int ID_EMPTY   = 0;
