@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.characters.Entity;
 import com.thelegendofbald.combat.projectile.Projectile;
 import com.thelegendofbald.model.weapons.Weapon;
 

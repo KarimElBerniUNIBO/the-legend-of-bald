@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.LockSupport;
-
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.Box;
@@ -45,6 +44,7 @@ import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.model.characters.FinalBoss;
 import com.thelegendofbald.controller.common.SwitchToOtherPanel;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.DataManager;
@@ -100,12 +100,16 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private static final int ENEMY_W = 60;
     private static final int ENEMY_H = 60;
 
+    private static final int BOSS_W = 96;
+    private static final int BOSS_H = 96;
+
     // ID mappa (coerenti con TileMap)
     private static final int ID_PORTAL = 4;
     private static final int ID_SPAWN = 5;
     private static final int ID_SHOP = 6;
     private static final int ID_ENEMY = 7;
     private static final int ID_PREV_PORTAL = 8;
+    private static final int ID_BOSS = 9;
 
     private static final double OPTIONS_WIDTH_INSETS = 0.25;
     private static final double OPTIONS_HEIGHT_INSETS = 0.1;
@@ -185,6 +189,8 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private final Set<Integer> pressedKeys = new HashSet<>();
     private final JButton shopButton = new JButton("Shop");
+
+    private FinalBoss boss;
 
     /* ===================== Costruttore ===================== */
 
@@ -621,6 +627,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     private void changeAndLoadMap(final String mapName) {
+        boss = null;
         currentMapName = mapName;
 
         tileMap.changeMap(mapName);
