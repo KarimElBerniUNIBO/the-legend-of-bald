@@ -22,20 +22,19 @@ import com.thelegendofbald.utils.LoggerUtils;
  * Gestisce il caricamento e il rendering della mappa a tile.
  * <p>La classe è final per evitare il warning "designed for extension".</p>
  */
-public final class TileMap {
+public class TileMap {
 
-    /* ====== Costanti per evitare MagicNumber ====== */
     private static final int ID_EMPTY   = 0;
     private static final int ID_FLOOR_A = 1;
     private static final int ID_WALL    = 2;
     private static final int ID_FLOOR_B = 4;
-    private static final int ID_SPAWN   = 5; // <- prima era "5"
-    private static final int ID_SHOP    = 6; // <- prima era "6"
-    private static final int ID_SPECIAL = 7; // <- prima era "7"
+    private static final int ID_SPAWN   = 5; 
+    private static final int ID_SHOP    = 6; 
+    private static final int ID_SPECIAL = 7; 
     private static final int ID_PREV_PORTAL = 8;
 
-    private static final int DEFAULT_ROWS = 22; // <- prima era "22"
-    private static final int DEFAULT_COLS = 40; // <- prima era "40"
+    private static final int DEFAULT_ROWS = 22; 
+    private static final int DEFAULT_COLS = 40; 
 
     /** Larghezza in pixel dell'area di disegno. */
     private final int width;

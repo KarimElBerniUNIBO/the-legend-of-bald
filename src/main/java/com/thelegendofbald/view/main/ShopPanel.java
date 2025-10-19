@@ -34,7 +34,6 @@ public final class ShopPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    /* ====== Costanti UI (no magic numbers) ====== */
     private static final int PANEL_W = 400;
     private static final int PANEL_H = 300;
 
