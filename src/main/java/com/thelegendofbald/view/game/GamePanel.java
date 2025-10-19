@@ -44,7 +44,7 @@ import com.thelegendofbald.api.settingsmenu.ControlsSettings;
 import com.thelegendofbald.api.settingsmenu.VideoSettings;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
-import com.thelegendofbald.model.characters.FinalBoss;
+import com.thelegendofbald.characters.FinalBoss;
 import com.thelegendofbald.controller.common.SwitchToOtherPanel;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.DataManager;

@@ -1,7 +1,5 @@
-package com.thelegendofbald.model.characters;
+package com.thelegendofbald.characters;
 
-import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.characters.Entity;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.view.main.Tile;
