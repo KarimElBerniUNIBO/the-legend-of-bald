@@ -1,73 +1,82 @@
 package com.thelegendofbald.model.sounds;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class SoundManagerTest {
 
     private static final String RANDOM_SOUND_PATH = "/interactive-components/mousehover.wav";
+    private static final float DELTA = 0.0001f;
+    private static final float INITIAL_MASTER_VOLUME = 1.0f;
 
     @BeforeEach
     void reset() {
         SoundManager.closeAll();
-        SoundManager.setMasterVolume(1.0f);
-    }
-
-    @Test
-    void testAddSoundPlayerSetsVolume() {
-        SoundPlayer player = new SoundPlayer(RANDOM_SOUND_PATH);
-        // The player is added in its constructor, so just check master volume is correct
-        assertEquals(1.0f, SoundManager.getMasterVolume(), 0.0001f);
+        SoundManager.setMasterVolume(INITIAL_MASTER_VOLUME);
     }
 
     @Test
     void testSetMasterVolumeUpdatesPlayers() {
-        SoundPlayer p1 = new SoundPlayer(RANDOM_SOUND_PATH);
-        SoundPlayer p2 = new SoundPlayer(RANDOM_SOUND_PATH);
+        final SoundPlayer p1 = new SoundPlayer(RANDOM_SOUND_PATH);
+        final SoundPlayer p2 = new SoundPlayer(RANDOM_SOUND_PATH);
         SoundManager.setMasterVolume(0.5f);
-        assertEquals(0.5f, SoundManager.getMasterVolume(), 0.0001f);
+        assertEquals(0.5f, SoundManager.getMasterVolume(), DELTA);
     }
 
     @Test
     void testSetMasterVolumeThrowsOnInvalid() {
-        assertThrows(IllegalArgumentException.class, () -> SoundManager.setMasterVolume(-0.1f));
-        assertThrows(IllegalArgumentException.class, () -> SoundManager.setMasterVolume(1.1f));
+        final List<Float> invalidVolumes = List.of(-0.1f, 1.1f);
+        for (final float volume: invalidVolumes) {
+            assertThrows(IllegalArgumentException.class, () -> SoundManager.setMasterVolume(volume));
+        }
     }
 
     @Test
     void testCloseAllDoesNotThrow() {
-        SoundPlayer p1 = new SoundPlayer(RANDOM_SOUND_PATH);
-        SoundPlayer p2 = new SoundPlayer(RANDOM_SOUND_PATH);
+        final SoundPlayer p1 = new SoundPlayer(RANDOM_SOUND_PATH);
+        final SoundPlayer p2 = new SoundPlayer(RANDOM_SOUND_PATH);
         assertDoesNotThrow(SoundManager::closeAll);
     }
 
     @Test
     void testSoundPlayerSetVolumeValid() {
-        SoundPlayer player = new SoundPlayer(RANDOM_SOUND_PATH);
-        assertDoesNotThrow(() -> player.setVolume(0.0f));
-        assertDoesNotThrow(() -> player.setVolume(1.0f));
-        assertDoesNotThrow(() -> player.setVolume(0.5f));
+        final SoundPlayer player = new SoundPlayer(RANDOM_SOUND_PATH);
+        final List<Float> validVolumes = List.of(0.0f, 1.0f, 0.5f);
+        for (final float volume: validVolumes) {
+            assertDoesNotThrow(() -> player.setVolume(volume));
+        }
     }
 
     @Test
     void testSoundPlayerSetVolumeInvalid() {
-        SoundPlayer player = new SoundPlayer(RANDOM_SOUND_PATH);
-        assertThrows(IllegalArgumentException.class, () -> player.setVolume(-0.1f));
-        assertThrows(IllegalArgumentException.class, () -> player.setVolume(1.1f));
+        final SoundPlayer player = new SoundPlayer(RANDOM_SOUND_PATH);
+        final List<Float> invalidVolumes = List.of(-0.1f, 1.1f);
+        for (final float volume: invalidVolumes) {
+            assertThrows(IllegalArgumentException.class, () -> player.setVolume(volume));
+        }
     }
 
     @Test
     void testSoundPlayerCloseDoesNotThrow() {
-        SoundPlayer player = new SoundPlayer(RANDOM_SOUND_PATH);
+        final SoundPlayer player = new SoundPlayer(RANDOM_SOUND_PATH);
         assertDoesNotThrow(player::close);
     }
 
     @Test
     void testSoundPlayerPlayDoesNotThrow() {
-        SoundPlayer player = new SoundPlayer(RANDOM_SOUND_PATH);
+        final SoundPlayer player = new SoundPlayer(RANDOM_SOUND_PATH);
         assertDoesNotThrow(player::play);
+    }
+
+    @AfterAll
+    static void closeAll() {
+        SoundManager.closeAll();
     }
 }

@@ -27,6 +27,8 @@ public final class SlotPanel extends AdapterPanel {
     private static final long serialVersionUID = 1L;
 
     private static final Color DEFAULT_BG_COLOR = new Color(60, 60, 60, 180);
+    private static final Pair<Double, Double> LABEL_SIZE_PROPORTION = Pair.of(0.9, 0.9);
+    private static final Pair<Double, Double> LABEL_FONT_MULTIPLICATOR = Pair.of(1.75, 1.75);
 
     private final transient TextLabelFactory tlFactory = new TextLabelFactoryImpl();
     private transient Optional<TextLabel> itemLabel = Optional.empty();
@@ -52,7 +54,7 @@ public final class SlotPanel extends AdapterPanel {
     protected void initializeComponents() {
         slot.getItem().ifPresent(item -> {
             this.itemLabel = Optional.of(tlFactory.createTextLabelWithProportion(item.getName(), this.getSize(),
-                    Optional.of(Pair.of(0.9, 0.9)), Optional.of(Pair.of(1.75, 1.75)), Optional.empty(),
+                    Optional.of(LABEL_SIZE_PROPORTION), Optional.of(LABEL_FONT_MULTIPLICATOR), Optional.empty(),
                     Optional.empty()));
         });
         super.initializeComponents();

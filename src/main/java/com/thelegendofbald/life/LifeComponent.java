@@ -48,7 +48,7 @@ public class LifeComponent {
      * @param damage The amount of damage to be inflicted.
      */
     public void damageTaken(final int damage) {
-        this.currentHealth= Math.max(0, this.currentHealth - damage);
+        this.currentHealth = Math.max(0, this.currentHealth - damage);
     }
 
     /**

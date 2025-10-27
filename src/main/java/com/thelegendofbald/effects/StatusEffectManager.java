@@ -42,7 +42,7 @@ public class StatusEffectManager {
     public void applyEffect(final StatusEffect effect) {
         activeEffects.removeIf(b -> b.getName().equals(effect.getName()));
         effect.activate();
-        activeEffects.add(effect);  
+        activeEffects.add(effect);
         effect.apply(owner); 
         LoggerUtils.info("effect di " + effect.getName() + " attivato!");
     }

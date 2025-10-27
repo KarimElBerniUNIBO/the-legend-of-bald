@@ -95,7 +95,7 @@ public abstract class StatusEffect {
      * 
      * @param player the Bald {@code Bald} character from which the status effect is removed
      */
-    public abstract void remove(final Bald player);
+    public abstract void remove(Bald player);
 
     /**
      * Updates the status effect on the specified Bald player.

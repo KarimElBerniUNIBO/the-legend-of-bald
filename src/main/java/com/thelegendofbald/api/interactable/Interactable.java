@@ -15,7 +15,6 @@ public interface Interactable {
      * The specific action performed depends on the implementing class.
      *
      * @param bald The player instance.
-     * @param inventory The player's inventory.
      */
     void interact(Bald bald);
 }
