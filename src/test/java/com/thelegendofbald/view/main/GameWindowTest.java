@@ -61,10 +61,8 @@ class GameWindowTest {
         input.setSize(10, 10);
         assertEquals(input, window.getInternalSize());
 
-        // Dopo updatePanelsSize() + updateView(), il content pane deve avere quella preferredSize
-        final JComponent content = (JComponent) window.getContentPane();
-        assertNotNull(content, "Content pane non deve essere null");
-        assertEquals(input, content.getPreferredSize(),
+        assertNotNull(window.getContentPane(), "Content pane non deve essere null");
+        assertEquals(input, window.getContentPane().getPreferredSize(),
                 "La preferredSize del content deve essere aggiornata");
     }
 

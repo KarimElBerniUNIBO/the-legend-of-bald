@@ -1,6 +1,5 @@
 package com.thelegendofbald.model.item.weapons;
 
-import java.awt.Image;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -55,8 +54,4 @@ public final class Axe extends HeavyMeleeWeapon implements ShopItem {
         return PRICE;
     }
 
-    @Override
-    public Image getSprite() {
-        return super.getSprite();
-    }
 }

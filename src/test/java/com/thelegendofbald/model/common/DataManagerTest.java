@@ -2,6 +2,8 @@ package com.thelegendofbald.model.common;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -20,22 +22,16 @@ class DataManagerTest {
     private DataManager dataManager;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         dataManager = new DataManager();
         // Clean up the save file before each test
-        final File saveFile = new File(SAVE_FILE_PATH);
-        if (saveFile.exists()) {
-            saveFile.delete();
-        }
+        Files.deleteIfExists(Paths.get(SAVE_FILE_PATH));
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown() throws IOException {
         // Clean up the save file after each test
-        final File saveFile = new File(SAVE_FILE_PATH);
-        if (saveFile.exists()) {
-            saveFile.delete();
-        }
+        Files.deleteIfExists(Paths.get(SAVE_FILE_PATH));
     }
 
     @Test

@@ -197,7 +197,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         this.gridPanel.setOpaque(false);
         this.gridPanel.setBounds(0, 0, size.width, size.height);
 
-        this.lifePanel = new LifePanel(new Dimension(LIFE_W, LIFE_H), bald.getLifeComponent());
+        this.lifePanel = new LifePanel(bald.getLifeComponent());
         this.lifePanel.setBounds(100, LIFE_Y, LIFE_W, LIFE_H);
 
         this.optionsPanel = new GameOptionsPanel();
