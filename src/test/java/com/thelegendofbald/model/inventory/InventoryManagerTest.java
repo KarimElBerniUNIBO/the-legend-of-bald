@@ -16,9 +16,10 @@ import com.thelegendofbald.model.weapons.Weapon;
 
 class InventoryManagerTest {
 
+    private static final int ROWS = 2;
+    private static final int COLS = 2;
+
     private InventoryManager inventoryManager;
-    private final int ROWS = 2;
-    private final int COLS = 2;
 
     @BeforeEach
     void setUp() {
@@ -27,16 +28,16 @@ class InventoryManagerTest {
 
     @Test
     void testAddWeapon() {
-        Weapon weapon = new Sword(0, 0, 0, 0, null);
+        final Weapon weapon = new Sword(0, 0, 0, 0, null);
         inventoryManager.add(weapon);
-        boolean found = inventoryManager.getSlots().stream()
+        final boolean found = inventoryManager.getSlots().stream()
                 .anyMatch(slot -> slot.getItem().isPresent() && slot.getItem().get() == weapon);
         assertTrue(found, "Weapon should be present in inventory after adding");
     }
 
     @Test
     void testRemoveWeapon() {
-        Weapon weapon = new Axe(0, 0, 0, 0, null);
+        final Weapon weapon = new Axe(0, 0, 0, 0, null);
         inventoryManager.set(weapon, 0, 0);
         inventoryManager.remove(0, 0);
         assertFalse(inventoryManager.get(0, 0).getItem().isPresent(), "Slot should be empty after removal");
@@ -44,20 +45,20 @@ class InventoryManagerTest {
 
     @Test
     void testSetWeaponAtSpecificPosition() {
-        Weapon weapon = new FireBall(0, 0, 0, 0, null);
+        final Weapon weapon = new FireBall(0, 0, 0, 0, null);
         inventoryManager.set(weapon, 1, 1);
-        Optional<GameItem> item = inventoryManager.get(1, 1).getItem();
+        final Optional<GameItem> item = inventoryManager.get(1, 1).getItem();
         assertTrue(item.isPresent(), "Item should be present at (1,1)");
         assertEquals(weapon, item.get(), "The item at (1,1) should be the weapon set");
     }
 
     @Test
     void testClearInventory() {
-        Weapon weapon = new Sword(0, 0, 0, 0, null);
+        final Weapon weapon = new Sword(0, 0, 0, 0, null);
         inventoryManager.set(weapon, 0, 0);
         inventoryManager.set(weapon, 1, 1);
         inventoryManager.clear();
-        boolean allEmpty = inventoryManager.getSlots().stream()
+        final boolean allEmpty = inventoryManager.getSlots().stream()
                 .allMatch(slot -> slot.getItem().isEmpty());
         assertTrue(allEmpty, "All slots should be empty after clearing inventory");
     }

@@ -1,7 +1,6 @@
 package com.thelegendofbald.api.panels;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 
 import com.thelegendofbald.life.LifeComponent;
@@ -13,15 +12,16 @@ import com.thelegendofbald.life.LifeComponent;
  */
 public class LifePanel extends AdapterPanel {
 
+    private static final long serialVersionUID = 1L;
+
     private final LifeComponent lifeComponent;
 
     /**
      * Constructs a new LifePanel.
-     *
-     * @param size The preferred size of the panel.
+     * 
      * @param lifeComponent The {@link LifeComponent} instance this panel will display.
      */
-    public LifePanel(final Dimension size, final LifeComponent lifeComponent) {
+    public LifePanel(final LifeComponent lifeComponent) {
         super();
         this.lifeComponent = lifeComponent;
     }

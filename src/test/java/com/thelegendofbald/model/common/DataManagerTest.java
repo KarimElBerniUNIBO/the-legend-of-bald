@@ -2,6 +2,8 @@ package com.thelegendofbald.model.common;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -14,45 +16,40 @@ import org.junit.jupiter.api.Test;
 
 class DataManagerTest {
 
-    private DataManager dataManager;
     private static final String SAVE_FILE_DIRECTORY = "game_data" + File.separator + "runs";
     private static final String SAVE_FILE_PATH = SAVE_FILE_DIRECTORY + File.separator + "users_data.yml";
 
+    private DataManager dataManager;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         dataManager = new DataManager();
         // Clean up the save file before each test
-        File saveFile = new File(SAVE_FILE_PATH);
-        if (saveFile.exists()) {
-            saveFile.delete();
-        }
+        Files.deleteIfExists(Paths.get(SAVE_FILE_PATH));
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown() throws IOException {
         // Clean up the save file after each test
-        File saveFile = new File(SAVE_FILE_PATH);
-        if (saveFile.exists()) {
-            saveFile.delete();
-        }
+        Files.deleteIfExists(Paths.get(SAVE_FILE_PATH));
     }
 
     @Test
     void testLoadGameRunsReturnsEmptyListIfFileDoesNotExist() {
-        List<GameRun> runs = dataManager.loadGameRuns();
+        final List<GameRun> runs = dataManager.loadGameRuns();
         assertNotNull(runs);
         assertTrue(runs.isEmpty());
     }
 
     @Test
     void testSaveAndLoadGameRun() throws IOException {
-        GameRun run = new GameRun("TestUser", new Timer.TimeData(1, 2, 3));
+        final GameRun run = new GameRun("TestUser", new Timer.TimeData(1, 2, 3));
         dataManager.saveGameRun(run);
 
-        List<GameRun> runs = dataManager.loadGameRuns();
+        final List<GameRun> runs = dataManager.loadGameRuns();
         assertNotNull(runs);
         assertFalse(runs.isEmpty());
-        GameRun loaded = runs.get(runs.size() - 1);
+        final GameRun loaded = runs.get(runs.size() - 1);
         assertEquals("TestUser", loaded.name());
         assertEquals(1, loaded.timedata().hours());
         assertEquals(2, loaded.timedata().minutes());
@@ -61,19 +58,27 @@ class DataManagerTest {
 
     @Test
     void testSaveMultipleGameRuns() throws IOException {
-        GameRun run1 = new GameRun("User1", new Timer.TimeData(0, 1, 2));
-        GameRun run2 = new GameRun("User2", new Timer.TimeData(3, 4, 5));
+        final int run1Hours = 0;
+        final int run1Minutes = 1;
+        final int run1Seconds = 2;
+        final int run2Hours = 3;
+        final int run2Minutes = 4;
+        final int run2Seconds = 5;
+
+        final GameRun run1 = new GameRun("User1", new Timer.TimeData(run1Hours, run1Minutes, run1Seconds));
+        final GameRun run2 = new GameRun("User2", new Timer.TimeData(run2Hours, run2Minutes, run2Seconds));
+
         dataManager.saveGameRun(run1);
         dataManager.saveGameRun(run2);
 
-        List<GameRun> runs = dataManager.loadGameRuns();
+        final List<GameRun> runs = dataManager.loadGameRuns();
         assertNotNull(runs);
         assertTrue(runs.size() >= 2);
 
-        GameRun last = runs.get(runs.size() - 1);
+        final GameRun last = runs.get(runs.size() - 1);
         assertEquals("User2", last.name());
-        assertEquals(3, last.timedata().hours());
-        assertEquals(4, last.timedata().minutes());
-        assertEquals(5, last.timedata().seconds());
+        assertEquals(run2Hours, last.timedata().hours());
+        assertEquals(run2Minutes, last.timedata().minutes());
+        assertEquals(run2Seconds, last.timedata().seconds());
     }
 }

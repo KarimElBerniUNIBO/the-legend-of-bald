@@ -62,8 +62,8 @@ public class MapItemSpawner {
             for (final ItemSpawnData data : spawnData) {
                 final GameItem item = itemFactory.createItemById(
                         data.getId(),
-                        data.getCol() * tileMap.TILE_SIZE,
-                        data.getRow() * tileMap.TILE_SIZE
+                        data.getCol() * tileMap.getTileSize(),
+                        data.getRow() * tileMap.getTileSize()
                 );
                 if (item != null) {
                     items.add(item);

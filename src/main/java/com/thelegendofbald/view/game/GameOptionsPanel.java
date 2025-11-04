@@ -125,7 +125,7 @@ public final class GameOptionsPanel extends AdapterPanel {
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(final Graphics g) {
         g.setColor(DEFAULT_BG_COLOR);
         g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);

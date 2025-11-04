@@ -9,7 +9,7 @@ import com.thelegendofbald.model.item.GameItem;
  * This class extends {@link GameItem} and provides the common structure
  * for potions, forcing subclasses to implement their specific effects.
  */
-public abstract class Potion extends GameItem implements UsableItem{
+public abstract class Potion extends GameItem implements UsableItem {
 
     /**
      * Constructs a new Potion instance.

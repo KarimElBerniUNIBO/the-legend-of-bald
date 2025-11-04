@@ -1,6 +1,5 @@
 package com.thelegendofbald.model.item.weapons;
 
-import java.awt.Image;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -10,7 +9,11 @@ import com.thelegendofbald.model.item.ShopItem;
 import com.thelegendofbald.model.weapons.LightMeleeWeapon;
 import com.thelegendofbald.utils.LoggerUtils;
 
-public class Sword extends LightMeleeWeapon implements ShopItem {
+/**
+ * The Sword class represents a sword in the game.
+ * It is a light melee weapon and can be purchased from a shop.
+ */
+public final class Sword extends LightMeleeWeapon implements ShopItem {
 
     private static final String NAME = "Sword";
     private static final String DESCRIPTION = "A simple iron sword, suitable for beginners.";
@@ -18,6 +21,15 @@ public class Sword extends LightMeleeWeapon implements ShopItem {
     private static final int ATTACK_RANGE = 75;
     private static final int PRICE = 10;
 
+    /**
+     * Constructs a new Sword object.
+     *
+     * @param x              the initial x-coordinate of the sword.
+     * @param y              the initial y-coordinate of the sword.
+     * @param preferredSizeX the preferred width for the sword's sprite.
+     * @param preferredSizeY the preferred height for the sword's sprite.
+     * @param combatManager  the combat manager that will handle the sword's attacks.
+     */
     public Sword(final int x, final int y, final int preferredSizeX, final int preferredSizeY,
                  final CombatManager combatManager) {
         super(x, y, preferredSizeX, preferredSizeY, NAME, DAMAGE, combatManager, ATTACK_RANGE);
@@ -27,8 +39,6 @@ public class Sword extends LightMeleeWeapon implements ShopItem {
             LoggerUtils.error(NAME + " sprite not found");
         }
     }
-
-    // Metodi dell’interfaccia ShopItem
 
     @Override
     public String getDisplayName() {
@@ -45,8 +55,4 @@ public class Sword extends LightMeleeWeapon implements ShopItem {
         return PRICE;
     }
 
-    @Override
-    public Image getSprite() {
-        return super.getSprite();
-    }
 }
