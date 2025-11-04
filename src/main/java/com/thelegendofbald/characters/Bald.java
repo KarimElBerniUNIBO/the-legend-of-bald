@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,7 +31,7 @@ import com.thelegendofbald.view.main.TileMap;
 /**
  * Main player character with movement, animation and tile-based collisions.
  */
-public class Bald extends Entity implements Combatant {
+public final class Bald extends Entity implements Combatant {
 
     // ---- Constants (no magic numbers) ----
     private static final int FRAME_WIDTH = 50;
@@ -80,7 +81,7 @@ public class Bald extends Entity implements Combatant {
     private BufferedImage[] actualAttackFrames;
 
     private int currentFrame;
-    private int frameDelay = DEFAULT_FRAME_DELAY;
+    private final int frameDelay = DEFAULT_FRAME_DELAY;
     private int frameCounter;
 
     private boolean attacking;
@@ -90,6 +91,12 @@ public class Bald extends Entity implements Combatant {
 
     /**
      * Creates a Bald instance.
+     *
+     * @param x initial x position in pixels
+     * @param y initial y position in pixels
+     * @param maxHealth maximum health points
+     * @param name display name of the character
+     * @param baseAttackPower base attack power before buffs
      */
     public Bald(final int x, final int y, final int maxHealth, final String name, final int baseAttackPower) {
         super(x, y, FRAME_WIDTH, FRAME_HEIGHT, name, new LifeComponent(maxHealth));
@@ -110,8 +117,8 @@ public class Bald extends Entity implements Combatant {
                 } else {
                     LoggerUtils.error("Run frame not found: " + framePath);
                 }
-            } catch (IOException e) {
-                LoggerUtils.error("Error loading run frame " + framePath + ": " + e.getMessage());
+            } catch (final IOException e) {
+                 LoggerUtils.error("Error loading run frame " + framePath + ": " + e.getMessage());
             }
         }
     }
@@ -120,7 +127,7 @@ public class Bald extends Entity implements Combatant {
         final String basePath = "/images/bald_attack";
         final List<String> weaponNames = List.of("def", "sword", "axe");
 
-        for (String weaponName : weaponNames) {
+        for (final String weaponName : weaponNames) {
             final String dir = basePath + "/" + weaponName;
             final BufferedImage[] frames = new BufferedImage[ATTACK_FRAMES];
 
@@ -132,7 +139,7 @@ public class Bald extends Entity implements Combatant {
                     } else {
                         LoggerUtils.error("Attack frame not found: " + framePath);
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     LoggerUtils.error("Error loading attack frame " + framePath + ": " + e.getMessage());
                 }
             });
@@ -144,13 +151,18 @@ public class Bald extends Entity implements Combatant {
     }
 
     // ------------------- Spawn / Map -------------------
-
+    /**
+     * Sets the current tile map used for collisions and spawn computations.
+     * @param map the tile map to use
+     */
     public void setTileMap(final TileMap map) {
         this.tileMap = map;
     }
 
     /**
-     * Places Bald centered on a spawn tile (feet placed on ground).
+     * Places Bald centered on the spawn tile; feet rest on ground.
+     * @param spawnTileId the spawn tile identifier to search
+     * @param tileSize the tile size in pixels
      */
     public void setSpawnPosition(final int spawnTileId, final int tileSize) {
         if (tileMap == null) {
@@ -165,8 +177,8 @@ public class Bald extends Entity implements Combatant {
             this.posX = newPosX;
             this.posY = newPosY;
 
-            this.x = (int) Math.round(newPosX);
-            this.y = (int) Math.round(newPosY);
+            setX((int) Math.round(newPosX));
+            setY((int) Math.round(newPosY));
         } else {
             LoggerUtils.error("Spawn point not found for tile id: " + spawnTileId);
         }
@@ -174,51 +186,86 @@ public class Bald extends Entity implements Combatant {
 
     // ------------------- Combat / Effects -------------------
 
+    /**
+     * @return the current attack power after buffs are applied
+     */
     @Override
     public int getAttackPower() {
         return buffManager.modifyAttackPower(attackPower);
     }
 
+    /**
+     * Sets the base (unbuffed) attack power.
+     * @param value new base attack power
+     */
     public void setAttackPower(final int value) {
         this.attackPower = value;
     }
 
+    /**
+     * Applies a status effect/buff to the player.
+     * @param buff the effect to apply
+     */
     public void applyBuff(final StatusEffect buff) {
         buffManager.applyEffect(buff);
     }
 
+    /**
+     * Updates active status effects and their timers.
+     */
     public void updateBuffs() {
         buffManager.update();
     }
 
+    /**
+     * Inflicts damage to the player, reducing health.
+     * @param damage the amount of damage to apply
+     */
     @Override
     public void takeDamage(final int damage) {
-        this.lifeComponent.damageTaken(damage);
+        this.getLifeComponent().damageTaken(damage);
         LoggerUtils.info("Player took damage: " + damage
-                + ". Current health: " + lifeComponent.getCurrentHealth());
+                + ". Current health: " + getLifeComponent().getCurrentHealth());
     }
 
+    /**
+     * @return true if the player is alive (health > 0)
+     */
+    @Override
     public boolean isAlive() {
-        return !this.lifeComponent.isDead();
+        return !this.getLifeComponent().isDead();
     }
 
+    /**
+     * @return true if the player is currently allowed to shoot
+     */
     public boolean canShoot() {
         return true;
     }
 
+    /**
+     * Shoots a projectile from the player.
+     * @throws UnsupportedOperationException until implemented
+     */
     public void shootProjectile() {
         throw new UnsupportedOperationException("Unimplemented method 'shootProjectile'");
     }
 
     // ------------------- Animation -------------------
 
+    /**
+     * Starts the attack animation based on the current weapon.
+     */
     public void startAttackAnimation() {
         weapon.ifPresent(w ->
                 actualAttackFrames = attackFrames.getOrDefault(
-                        w.getName().toLowerCase(), attackFrames.get("def")));
+                        w.getName().toLowerCase(Locale.ROOT), attackFrames.get("def")));
         currentAttackFrame = 0;
     }
 
+    /**
+     * Updates the current animation frame (run/attack).
+     */
     public void updateAnimation() {
         frameCounter++;
         if (frameCounter < frameDelay) {
@@ -237,28 +284,37 @@ public class Bald extends Entity implements Combatant {
         }
     }
 
+    /**
+     * Renders the player sprite (run/attack) or a fallback rectangle.
+     * @param g the graphics context
+     */
     public void render(final Graphics g) {
         if (attacking && actualAttackFrames != null && actualAttackFrames[currentAttackFrame] != null) {
-            if (!facingRight) {
-                g.drawImage(actualAttackFrames[currentAttackFrame], x, y, RENDER_SIZE, RENDER_SIZE, null);
+            if (!isFacingRight()) {
+                g.drawImage(actualAttackFrames[currentAttackFrame], getX(), getY(), RENDER_SIZE, RENDER_SIZE, null);
             } else {
-                g.drawImage(actualAttackFrames[currentAttackFrame], x + RENDER_SIZE, y, -RENDER_SIZE, RENDER_SIZE, null);
+                g.drawImage(actualAttackFrames[currentAttackFrame], getX() + RENDER_SIZE, getY(),
+                        -RENDER_SIZE, RENDER_SIZE, null);
             }
             return;
         }
 
         if (runFrames != null && runFrames[currentFrame] != null) {
-            if (!facingRight) {
-                g.drawImage(runFrames[currentFrame], x, y, getWidth(), getHeight(), null);
+            if (!isFacingRight()) {
+                g.drawImage(runFrames[currentFrame], getX(), getY(), getWidth(), getHeight(), null);
             } else {
-                g.drawImage(runFrames[currentFrame], x + RENDER_SIZE, y, -RENDER_SIZE, getHeight(), null);
+                g.drawImage(runFrames[currentFrame], getX() + RENDER_SIZE, getY(),
+                        -RENDER_SIZE, getHeight(), null);
             }
         } else {
             g.setColor(Color.RED);
-            g.fillRect(x, y, RENDER_SIZE, RENDER_SIZE);
+            g.fillRect(getX(), getY(), RENDER_SIZE, RENDER_SIZE);
         }
     }
 
+    /**
+     * Triggers an attack and its animation.
+     */
     public void attack() {
         this.attacking = true;
         this.startAttackAnimation();
@@ -266,6 +322,10 @@ public class Bald extends Entity implements Combatant {
 
     // ------------------- Movement & Collisions -------------------
 
+    /**
+     * Sets horizontal speed; also updates facing direction.
+     * @param value horizontal speed in px/s (sign gives direction)
+     */
     public void setSpeedX(final double value) {
         this.speedX = value;
         if (value > 0) {
@@ -275,18 +335,35 @@ public class Bald extends Entity implements Combatant {
         }
     }
 
+    /**
+     * Sets vertical speed.
+     * @param value vertical speed in px/s
+     */
     public void setSpeedY(final double value) {
         this.speedY = value;
     }
 
+    /**
+     * @return true if the player is currently facing right
+     */
+    @Override
     public boolean isFacingRight() {
         return facingRight;
     }
 
+    /**
+     * Sets the current facing direction.
+     * @param value true if facing right, false if facing left
+     */
+    @Override
     public void setFacingRight(final boolean value) {
         this.facingRight = value;
     }
 
+    /**
+     * Temporarily prevents movement for the given duration.
+     * @param durationMillis immobilization duration in milliseconds
+     */
     public void immobilize(final long durationMillis) {
         immobilized = true;
         setSpeedX(0);
@@ -295,6 +372,9 @@ public class Bald extends Entity implements Combatant {
         SCHEDULER.schedule(() -> immobilized = false, durationMillis, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * @return true if movement is currently disabled (immobilized)
+     */
     public boolean isImmobilized() {
         return immobilized;
     }
@@ -371,59 +451,97 @@ public class Bald extends Entity implements Combatant {
             posY = nextY;
         }
 
-        this.x = (int) Math.round(posX);
-        this.y = (int) Math.round(posY);
+        this.setX((int) Math.round(posX));
+        this.setY((int) Math.round(posY));
     }
 
     // ------------------- Accessors -------------------
 
+    /**
+     * @return current horizontal speed in px/s
+     */
     public double getSpeedX() {
         return speedX;
     }
 
+    /**
+     * @return current vertical speed in px/s
+     */
     public double getSpeedY() {
         return speedY;
     }
 
+    /**
+     * @return the player's wallet instance
+     */
     public Wallet getWallet() {
         return wallet;
     }
 
+    /**
+     * @return the currently equipped weapon, if any
+     */
     public Optional<Weapon> getWeapon() {
         return weapon;
     }
 
+    /**
+     * Sets/equips the current weapon.
+     * @param wpn the weapon to equip (nullable)
+     */
     public void setWeapon(final Weapon wpn) {
         this.weapon = Optional.ofNullable(wpn);
     }
 
+    /**
+     * @return true if an attack is in progress (animation state)
+     */
     public boolean isAttacking() {
         return attacking;
     }
 
+    /**
+     * @return precise X position in world coordinates (pixels)
+     */
     public double getPosX() {
         return posX;
     }
 
+    /**
+     * Sets precise X position and syncs integer render X.
+     * @param value new X position in pixels
+     */
     public void setPosX(final double value) {
         this.posX = value;
-        this.x = (int) Math.round(value);
+        setX((int) Math.round(value));
     }
-
+    /**
+     * @return precise Y position in world coordinates (pixels)
+     */
     public double getPosY() {
         return posY;
     }
 
+    /**
+     * Sets precise Y position and syncs integer render Y.
+     * @param value new Y position in pixels
+     */
     public void setPosY(final double value) {
         this.posY = value;
-        this.y = (int) Math.round(value);
+        setY((int) Math.round(value));
     }
 
+    /**
+     * @return sprite/render height in pixels
+     */
     @Override
     public int getHeight() {
         return FRAME_HEIGHT;
     }
 
+    /**
+     * @return sprite/render width in pixels
+     */
     @Override
     public int getWidth() {
         return FRAME_WIDTH;
