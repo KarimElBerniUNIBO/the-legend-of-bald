@@ -47,7 +47,7 @@ public class Entity {
         this.width = width;
         this.height = height;
         this.name = name;
-        this.lifeComponent = lifeComponent;
+        this.lifeComponent = new LifeComponent(lifeComponent);
     }
 
     /**
@@ -134,7 +134,7 @@ public class Entity {
      * @return life component of this entity
      */
     public LifeComponent getLifeComponent() {
-        return this.lifeComponent;
+        return new LifeComponent(lifeComponent);
     }
 
     /**
@@ -143,7 +143,7 @@ public class Entity {
      * @param lifeComponent new life component
      */
     public void setLifeComponent(final LifeComponent lifeComponent) {
-        this.lifeComponent = lifeComponent;
+        this.lifeComponent = new LifeComponent(lifeComponent);
     }
 
     /**

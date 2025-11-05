@@ -21,6 +21,18 @@ public class LifeComponent {
         this.currentHealth = maxHealth;
     }
 
+    
+    public LifeComponent(LifeComponent other) {
+        this.maxHealth = other.maxHealth;
+        this.currentHealth = other.currentHealth;
+    }
+
+    public static LifeComponent noLife() {
+        LifeComponent lc = new LifeComponent(1);
+        lc.setCurrentHealth(0);
+        return lc; 
+    }
+
     /**
      * Retrieves the current health of the entity.
      *

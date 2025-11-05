@@ -47,6 +47,7 @@ public final class Bald extends Entity implements Combatant {
     private static final int RUN_FRAMES = 9;
 
     private static final int DEFAULT_FRAME_DELAY = 5;
+    private static final int FRAME_DELAY = DEFAULT_FRAME_DELAY;
 
     /** Speed multiplier to convert units/sec into pixels per update. */
     private static final double SPEED_MULTIPLIER = 50.0;
@@ -81,7 +82,6 @@ public final class Bald extends Entity implements Combatant {
     private BufferedImage[] actualAttackFrames;
 
     private int currentFrame;
-    private final int frameDelay = DEFAULT_FRAME_DELAY;
     private int frameCounter;
 
     private boolean attacking;
@@ -268,7 +268,7 @@ public final class Bald extends Entity implements Combatant {
      */
     public void updateAnimation() {
         frameCounter++;
-        if (frameCounter < frameDelay) {
+        if (frameCounter < FRAME_DELAY) {
             return;
         }
         frameCounter = 0;
@@ -475,7 +475,7 @@ public final class Bald extends Entity implements Combatant {
      * @return the player's wallet instance
      */
     public Wallet getWallet() {
-        return wallet;
+        return new Wallet(wallet);
     }
 
     /**

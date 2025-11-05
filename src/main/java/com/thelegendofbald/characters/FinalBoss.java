@@ -38,7 +38,7 @@ public class FinalBoss extends Entity implements Combatant {
     private int phase = 1;
     private boolean alive = true;
 
-    private int maxHealth;
+    private final int maxHealth;
     private int health;
 
     private final TileMap map;
@@ -81,7 +81,9 @@ public class FinalBoss extends Entity implements Combatant {
 
     @Override
     public void takeDamage(final int damage) {
-        if (!alive || damage <= 0) return;
+        if (!alive || damage <= 0){
+            return;
+        }
         health -= damage;
         if (health <= 0) {
             health = 0;
@@ -89,9 +91,9 @@ public class FinalBoss extends Entity implements Combatant {
         } else {
             updatePhase();
         }
-        if (getLifeComponent() != null) {
-            getLifeComponent().setCurrentHealth(health);
-        }
+        
+        getLifeComponent().setCurrentHealth(health);
+        
     }
 
     @Override
@@ -109,11 +111,12 @@ public class FinalBoss extends Entity implements Combatant {
     // ============================================================
 
     public void followPlayer(final Bald bald) {
-        if (!alive || bald == null) return;
-
-        int dx = bald.getX() - getX();
-        int dy = bald.getY() - getY();
-        double dist = Math.hypot(dx, dy);
+        if (!alive || bald == null) {
+            return;
+        }
+        final int dx = bald.getX() - getX();
+        final int dy = bald.getY() - getY();
+        final double dist = Math.hypot(dx, dy);
 
         // Se vicino: attacco melee e prova AOE
         if (dist <= MELEE_RANGE_PX) {
@@ -122,19 +125,17 @@ public class FinalBoss extends Entity implements Combatant {
             return;
         }
 
-        long now = System.currentTimeMillis();
+        final long now = System.currentTimeMillis();
         // Dash se lontano
-        if (dist >= DASH_MIN_DISTANCE_PX && (now - lastDashAt) >= DASH_COOLDOWN_MS) {
-            if (tryDash(dx, dy)) {
-                lastDashAt = now;
-                return;
-            }
+        if ( (dist >= DASH_MIN_DISTANCE_PX && (now - lastDashAt) >= DASH_COOLDOWN_MS ) && tryDash(dx, dy)) {
+            lastDashAt = now;
+            return;
         }
 
         // Movimento normale
-        int speed = getCurrentSpeed();
-        int stepX = (int) Math.signum(dx) * speed;
-        int stepY = (int) Math.signum(dy) * speed;
+        final int speed = getCurrentSpeed();
+        final int stepX = (int) Math.signum(dx) * speed;
+        final int stepY = (int) Math.signum(dy) * speed;
         tryMove(stepX, stepY);
         setFacingRight(stepX >= 0);
     }
@@ -156,12 +157,18 @@ public class FinalBoss extends Entity implements Combatant {
     }
 
     private void updatePhase() {
-        double ratio = (double) health / (double) maxHealth;
-        if (ratio <= PHASE3_THRESHOLD) phase = 3;
-        else if (ratio <= PHASE2_THRESHOLD) phase = 2;
-        else phase = 1;
+        final int ratio =  health / maxHealth;
+        if (ratio <= PHASE3_THRESHOLD) {
+            phase = 3;
+        }
+        else if (ratio <= PHASE2_THRESHOLD) {
+            phase = 2;
+        }
+        else {
+            phase = 1;
+        }
     }
-
+    //DA SISTEMARE
     private void performMelee(final Bald bald) {
         try {
             bald.takeDamage(getAttackPower());
@@ -169,11 +176,15 @@ public class FinalBoss extends Entity implements Combatant {
     }
 
     private void tryAoe(final Bald bald) {
-        long now = System.currentTimeMillis();
-        if ((now - lastAoeAt) < AOE_COOLDOWN_MS) return;
+        final long now = System.currentTimeMillis();
+        if ((now - lastAoeAt) < AOE_COOLDOWN_MS) {
+            return;
+        }
 
-        int dx = bald.getX() - getX();
-        int dy = bald.getY() - getY();
+        final int dx = bald.getX() - getX();
+        final int dy = bald.getY() - getY();
+
+        //DA SISTEMARE
         if (Math.hypot(dx, dy) <= AOE_RANGE_PX) {
             try {
                 bald.takeDamage(getAttackPower() + AOE_EXTRA_DAMAGE);
@@ -183,24 +194,28 @@ public class FinalBoss extends Entity implements Combatant {
     }
 
     private boolean tryDash(final int dx, final int dy) {
-        if (map == null) return false;
+        if (map == null) {
+            return false;
+        }
         double len = Math.hypot(dx, dy);
-        if (len == 0) return false;
+        if (len == 0) {
+            return false;
+        }
 
-        double nx = dx / len;
-        double ny = dy / len;
-        int targetX = getX() + (int) Math.round(nx * DASH_DISTANCE_PX);
-        int targetY = getY() + (int) Math.round(ny * DASH_DISTANCE_PX);
+        final double nx = dx / len;
+        final double ny = dy / len;
+        final int targetX = getX() + (int) Math.round(nx * DASH_DISTANCE_PX);
+        final int targetY = getY() + (int) Math.round(ny * DASH_DISTANCE_PX);
 
-        int steps = 3;
-        int stepX = (targetX - getX()) / steps;
-        int stepY = (targetY - getY()) / steps;
+        final int steps = 3;
+        final int stepX = (targetX - getX()) / steps;
+        final int stepY = (targetY - getY()) / steps;
 
         int curX = getX();
         int curY = getY();
         for (int i = 0; i < steps; i++) {
-            int nextX = curX + stepX;
-            int nextY = curY + stepY;
+            final int nextX = curX + stepX;
+            final int nextY = curY + stepY;
             if (!canMoveTo(nextX, nextY)) {
                 setX(curX);
                 setY(curY);
@@ -226,12 +241,14 @@ public class FinalBoss extends Entity implements Combatant {
     }
 
     private boolean canMoveTo(final int nextX, final int nextY) {
-        if (map == null) return true;
+        if (map == null) {
+            return true;
+        }
 
-        int left   = nextX / tileSize;
-        int right  = (nextX + getWidth() - 1) / tileSize;
-        int top    = nextY / tileSize;
-        int bottom = (nextY + getHeight() - 1) / tileSize;
+        final int left   = nextX / tileSize;
+        final int right  = (nextX + getWidth() - 1) / tileSize;
+        final int top    = nextY / tileSize;
+        final int bottom = (nextY + getHeight() - 1) / tileSize;
 
         return isTileFree(left, top)
             && isTileFree(right, top)
@@ -240,7 +257,7 @@ public class FinalBoss extends Entity implements Combatant {
     }
 
     private boolean isTileFree(final int tx, final int ty) {
-        Tile t = map.getTileAt(tx, ty);
+        final Tile t = map.getTileAt(tx, ty);
         return t == null || !t.isSolid();
     }
 }

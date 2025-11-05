@@ -4,10 +4,14 @@ public class Wallet {
 
     private int coins;
 
-    // ✅ Costruttore vuoto
+    // Costruttore vuoto
     public Wallet() {
         this.coins = 0;
     }
+    public Wallet(Wallet other) { 
+        this.coins = other.coins;
+    }
+
 
     // Costruttore con inizializzazione
     public Wallet(int initialCoins) {

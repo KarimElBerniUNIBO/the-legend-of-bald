@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 
 import com.thelegendofbald.characters.Entity;
 import com.thelegendofbald.combat.Combatant;
+import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
@@ -38,7 +39,7 @@ public final class Projectile extends Entity implements Combatant {
      */
     public Projectile(final int x, final int y, final int direction, final int speed, final int damage) {
         // LifeComponent is not used by a projectile; pass null
-        super(x, y, WIDTH, HEIGHT, "bullet", null);
+        super(x, y, WIDTH, HEIGHT, "bullet", LifeComponent.noLife());
         this.direction = direction;
         this.speed = speed;
         this.damage = damage;
@@ -62,7 +63,7 @@ public final class Projectile extends Entity implements Combatant {
         }
 
         // Check collision on the four corners of the projectile
-        final int[][] points = new int[][] {
+        final int[][] points = {
             { nextX, nextY },
             { nextX + CORNER_OFFSET, nextY },
             { nextX, nextY + CORNER_OFFSET },

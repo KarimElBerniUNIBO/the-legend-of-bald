@@ -33,12 +33,12 @@ public final class DummyEnemy extends Entity implements Combatant {
     private final int attackPower;
     private final transient TileMap tileMap;
 
-    private final double speedX = DEFAULT_SPEED;
-    private final double speedY = DEFAULT_SPEED;
+    private final static double speedX = DEFAULT_SPEED;
+    private final static double speedY = DEFAULT_SPEED;
 
     private BufferedImage[] runFrames;
     private int currentFrame;
-    private final int frameDelay = DEFAULT_FRAME_DELAY;
+    private final static int frameDelay = DEFAULT_FRAME_DELAY;
     private int frameCounter;
 
     private long lastAttackTime;
