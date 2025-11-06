@@ -1,10 +1,15 @@
 package com.thelegendofbald.characters;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
-import java.awt.Rectangle;
+
+
 
 /**
  * FinalBoss — nemico finale che estende Entity e implementa Combatant.
@@ -260,4 +265,18 @@ public class FinalBoss extends Entity implements Combatant {
         final Tile t = map.getTileAt(tx, ty);
         return t == null || !t.isSolid();
     }
+
+    /**
+ * Render minimale del boss.
+ * Sostituisci il rettangolo con la sprite quando la avrai.
+ */
+public void render(final Graphics2D g2d) {
+    if (!alive || g2d == null) {
+        return;
+    }
+    // Placeholder: rettangolo rosso
+    g2d.setColor(Color.RED);
+    g2d.fillRect(getX(), getY(), getWidth(), getHeight());
+}
+
 }

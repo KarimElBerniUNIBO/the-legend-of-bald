@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.LockSupport;
+
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.Box;
@@ -46,6 +47,7 @@ import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.characters.FinalBoss;
 import com.thelegendofbald.controller.common.SwitchToOtherPanel;
+import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.common.DataManager;
 import com.thelegendofbald.model.common.GameRun;
@@ -68,6 +70,7 @@ import com.thelegendofbald.view.main.GridPanel;
 import com.thelegendofbald.view.main.ShopPanel;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
+
 
 /**
  * Pannello principale del gioco: ciclo di gioco, input, rendering, UI.
@@ -128,6 +131,8 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private static final long NANOS_IN_MILLI = 1_000_000L; // per evitare magic number 1_000_000L
     private static final long SLEEP_INTERVAL_WHEN_PAUSED = 100L;
     private static final long LATE_FRAME_BACKOFF_NANOS = 250_000L; // 0.25 ms
+    private static final long PORTAL_COOLDOWN_MS = 2000; // 0.3s, regola a piacere
+    private long portalCooldownUntil = 0L;
 
     private static final int WEAPON_ICON = 50;
 
@@ -142,6 +147,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     // livelli/parametri di loot (prima 7 e 8 erano magic numbers)
     private static final int LOOT_LVL_MIN = 7;
     private static final int LOOT_LVL_MAX = 8;
+
+    private Integer pendingEntryTileId = null;   // es. ID_PREV_PORTAL o ID_PORTAL
+    private Integer pendingEntryIndex = null;    // indice del portale usato in uscita
 
     /* ===================== Stato e componenti ===================== */
     // ordine JLS: access, static, final, transient, volatile
@@ -519,13 +527,16 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         bald.move(tileMap, deltatime);
         bald.updateBuffs();
 
-        if (isTouchingOrAdjacentToTileId(ID_PORTAL)) {
-            switchToNextMap();
-            return;
-        }
-        if (isTouchingOrAdjacentToTileId(ID_PREV_PORTAL)) {
-            switchToPreviousMap();
-            return;
+        // ---- controllo portali, rispettando il cooldown ----
+        if (System.currentTimeMillis() >= portalCooldownUntil) {
+            if (isTouchingOrAdjacentToTileId(ID_PORTAL)) {
+                switchToNextMap();
+                return;
+            }
+            if (isTouchingOrAdjacentToTileId(ID_PREV_PORTAL)) {
+                switchToPreviousMap();
+                return;
+            }
         }
 
         combatManager.checkEnemyAttacks();
@@ -611,15 +622,21 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private void switchToNextMap() {
         final String nextMapName = mapTransitions.get(currentMapName);
         if (nextMapName != null) {
+            // forza l’ingresso sul tile ID 5 della mappa successiva
+            pendingEntryTileId = ID_SPAWN;  // 5
+            pendingEntryIndex = 0;           // prendi il primo ID 4 trovato
             changeAndLoadMap(nextMapName);
         } else {
             LoggerUtils.error("Nessuna mappa successiva definita.");
         }
     }
 
+
     private void switchToPreviousMap() {
         final String prevMapName = reverseTransitions.get(currentMapName);
         if (prevMapName != null) {
+            pendingEntryTileId = ID_PORTAL; // 4 anche quando torni indietro
+            pendingEntryIndex = 0;
             changeAndLoadMap(prevMapName);
         } else {
             LoggerUtils.error("Nessuna mappa precedente definita.");
@@ -633,29 +650,100 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         tileMap.changeMap(mapName);
         bald.setTileMap(tileMap);
 
-        // posiziona Bald sul tile spawn
-        bald.setSpawnPosition(ID_SPAWN, tileMap.getTileSize());
+        boolean placed = false;
 
+        // 1) Se il chiamante ha indicato un entry specifico (es. ID_PORTAL con index 0), usa quello
+        if (pendingEntryTileId != null && pendingEntryIndex != null) {
+            final List<Point> entries = tileMap.findAllWithId(pendingEntryTileId);
+            if (!entries.isEmpty()) {
+                final int idx = Math.max(0, Math.min(pendingEntryIndex, entries.size() - 1));
+                final Point topLeft = entries.get(idx);
+                final int ts = tileMap.getTileSize();
+                bald.setPosX(topLeft.x + (ts - bald.getWidth()) / 2);
+                bald.setPosY(topLeft.y - bald.getHeight());
+                placed = true;
+            }
+        }
+
+        // 2) Se non posizionato e vuoi forzare "sempre ID 4", prova il primo ID_PORTAL (ID 4)
+        if (!placed) {
+            final List<Point> portals = tileMap.findAllWithId(ID_PORTAL); // ID 4
+            if (!portals.isEmpty()) {
+                final Point topLeft = portals.get(0); // primo ID 4 trovato
+                final int ts = tileMap.getTileSize();
+                bald.setPosX(topLeft.x + (ts - bald.getWidth()) / 2);
+                bald.setPosY(topLeft.y - bald.getHeight());
+                placed = true;
+            }
+        }
+
+        // pulizia stato pending
+        pendingEntryTileId = null;
+        pendingEntryIndex = null;
+
+        // 3) Fallback finale: spawn classico
+        if (!placed) {
+            bald.setSpawnPosition(ID_SPAWN, tileMap.getTileSize());
+        }
+
+        // Cooldown anti-rimbalzo tra portali
+        portalCooldownUntil = System.currentTimeMillis() + PORTAL_COOLDOWN_MS;
+
+        // Reset movimento / input
         bald.setSpeedX(0);
         bald.setSpeedY(0);
         pressedKeys.clear();
 
-        spawnEnemiesFromMap();
+        // Ricarica contenuti mappa
+        spawnActorsFromMap();
+
         itemManager.loadItemsForMap(mapName);
 
         shopButton.setVisible(false);
     }
 
-    private void spawnEnemiesFromMap() {
+
+
+    private void spawnActorsFromMap() {
         enemies.clear();
-        final List<Point> spawns = tileMap.findAllWithId(ID_ENEMY);
-        final int tileSize = tileMap.getTileSize();
-        for (final Point topLeft : spawns) {
-            final int x = topLeft.x + (tileSize - ENEMY_W) / 2;
-            final int y = topLeft.y + (tileSize - ENEMY_H) / 2;
-            enemies.add(new DummyEnemy(x, y, ENEMY_W, "ZioBilly", 10, tileMap));
-        }
+        boss = null;
+
+        final List<Point> enemyTiles = tileMap.findAllWithId(ID_ENEMY);
+        final List<Point> bossTiles  = tileMap.findAllWithId(ID_BOSS);
+
+        enemyTiles.forEach(this::spawnEnemyAt);
+        bossTiles.stream().findFirst().ifPresent(this::spawnBossAt);
     }
+
+    private void spawnEnemyAt(final Point topLeft) {
+        final int ts = tileMap.getTileSize();
+        final int x = topLeft.x + (ts - ENEMY_W) / 2;
+        final int y = topLeft.y + (ts - ENEMY_H) / 2;
+        enemies.add(new DummyEnemy(x, y, ENEMY_W, "ZioBilly", 10, tileMap));
+    }
+
+    private void spawnBossAt(final Point topLeft) {
+        if (boss != null) return; // garantisci unicità
+
+        final int ts = tileMap.getTileSize();
+        final int x = topLeft.x + (ts - BOSS_W) / 2;
+        final int y = topLeft.y + (ts - BOSS_H) / 2;
+
+        final int bossHp  = 500;     // punti vita
+        final int bossAtk = 25;      // attacco base
+        final LifeComponent life = new LifeComponent(bossHp); // componente vita
+
+        boss = new FinalBoss(
+            x, y,
+            BOSS_W, BOSS_H,          // larghezza e altezza del boss
+            "Final Boss",            // nome
+            bossHp,                  // salute massima
+            bossAtk,                 // attacco base
+            life,                    // componente vita
+            tileMap                  // mappa corrente
+        );
+    }
+
 
     /* ===================== Rendering ===================== */
 
@@ -664,16 +752,31 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         final Graphics2D g2d = (Graphics2D) g.create();
         super.paintComponent(g2d);
         scaleGraphics(g2d);
+
         tileMap.paint(g2d);
         gridPanel.paintComponent(g2d);
         itemManager.renderAll(g2d);
+
         bald.render(g2d);
         enemies.forEach(enemy -> enemy.render(g2d));
+
+        // DISEGNA IL BOSS (sopra bald/nemici, sotto i proiettili)
+        if (boss != null && boss.isAlive()) {
+            boss.render(g2d);
+        }
+
+        // proiettili sopra tutto il “mondo”
         combatManager.getProjectiles().forEach(p -> p.render(g2d));
+
+        // HUD
         lifePanel.paintComponent(g2d);
         drawFPS(g2d);
         drawTimer(g2d);
         drawAttackArea(g2d);
+
+        // ⬇️ BARRA HP DEL BOSS (HUD)
+        drawBossHP(g2d);
+
         g2d.dispose();
     }
 
@@ -689,6 +792,35 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
             }
         });
     }
+
+    private void drawBossHP(final Graphics2D g2d) {
+        if (boss == null || !boss.isAlive()) return;
+
+        final int w = 420, h = 18;
+        final int x = (getWidth() - w) / 2;
+        final int y = 12;
+
+        final int hp  = boss.getHealth();
+        final int max = boss.getMaxHealth();
+        final double ratio = Math.max(0.0, Math.min(1.0, hp / (double) max));
+        final int fill = (int) (w * ratio);
+
+        g2d.setColor(new Color(0, 0, 0, 140));
+        g2d.fillRoundRect(x - 6, y - 6, w + 12, h + 18, 12, 12);
+
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.fillRect(x, y, w, h);
+
+        g2d.setColor(new Color(200, 40, 40));
+        g2d.fillRect(x, y, fill, h);
+
+        g2d.setColor(Color.WHITE);
+        g2d.drawRect(x, y, w, h);
+
+        g2d.setFont(DEFAULT_FONT.deriveFont(14f));
+        g2d.drawString("FINAL BOSS  " + hp + "/" + max, x + 6, y + h + 16);
+    }
+
 
     private void drawFPS(final Graphics g) {
         if (showingFPS) {
