@@ -17,7 +17,7 @@ import com.thelegendofbald.view.main.TileMap;
 /**
  * Very simple enemy that follows the player and collides with solid tiles.
  */
-public final class DummyEnemy extends Entity implements Combatant {
+public class DummyEnemy extends Entity implements Combatant {
 
     // ---- Constants ----
     private static final int FRAME_WIDTH = 50;

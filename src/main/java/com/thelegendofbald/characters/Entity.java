@@ -134,7 +134,7 @@ public class Entity {
      * @return life component of this entity
      */
     public LifeComponent getLifeComponent() {
-        return new LifeComponent(lifeComponent);
+        return this.lifeComponent;
     }
 
     /**

@@ -3,6 +3,9 @@ package com.thelegendofbald.model.weapons;
 import java.util.List;
 
 import com.thelegendofbald.characters.Entity;
+// Import aggiunti
+import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.characters.FinalBoss;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.combat.projectile.Projectile;
 import com.thelegendofbald.model.combat.CombatManager;
@@ -40,25 +43,21 @@ public abstract class RangedWeapon extends Weapon {
     }
 
     /**
-     * Performs an attack with this ranged weapon.
+     * Performs an attack by creating a projectile.
      * <p>
-     * <b>Override notes:</b>
-     * <ul>
-     * <li>When overriding, always call
-     * <code>super.performAttack(attacker, targets)</code> if you want to preserve
-     * the default projectile logic.</li>
-     * <li>Ensure that the <code>attacker</code> is an instance of {@link Entity}
-     * and that the direction logic is handled correctly.</li>
-     * <li>Be careful with thread-safety and game state consistency if you modify
-     * this method.</li>
-     * </ul>
+     * Questa implementazione ignora la lista dei nemici e il boss,
+     * perché il CombatManager gestisce le collisioni dei proiettili.
      * </p>
      *
      * @param attacker the entity performing the attack
-     * @param targets  the list of possible targets (may be empty)
+     * @param targets  (Ignorato) the list of possible targets
+     * @param boss     (Ignorato) the boss entity
      */
     @Override
-    public void performAttack(final Combatant attacker, final List<? extends Combatant> targets) {
+    public void performAttack(final Combatant attacker,
+                              final List<? extends Combatant> targets,
+                              final FinalBoss boss) {
+        
         final Entity entityAttacker = (Entity) attacker;
         final int attackX = entityAttacker.getX() + entityAttacker.getWidth() / 2;
         final int attackY = entityAttacker.getY() + entityAttacker.getHeight() / 3;

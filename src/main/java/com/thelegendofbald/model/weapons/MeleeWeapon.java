@@ -4,6 +4,9 @@ import java.awt.geom.Arc2D;
 import java.util.List;
 
 import com.thelegendofbald.characters.Entity;
+// Import aggiunti
+import com.thelegendofbald.characters.DummyEnemy;
+import com.thelegendofbald.characters.FinalBoss;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.model.combat.CombatManager;
 
@@ -43,25 +46,17 @@ public abstract class MeleeWeapon extends Weapon {
     /**
      * Performs an attack with this melee weapon.
      * <p>
-     * <b>Override notes:</b>
-     * <ul>
-     * <li>When overriding, always call
-     * <code>super.performAttack(attacker, targets)</code> if you want to preserve
-     * the default area attack logic.</li>
-     * <li>Ensure that the <code>attacker</code> is an instance of {@link Entity}
-     * and that the direction logic is handled correctly.</li>
-     * <li>Be careful with thread-safety and game state consistency if you modify
-     * this method.</li>
-     * <li>Check that the attack area is updated consistently with the attacker's
-     * position and facing direction.</li>
-     * </ul>
+     * Calcola l'area di attacco e danneggia tutti i nemici (inclusi
+     * DummyEnemy e FinalBoss) che si trovano al suo interno.
      * </p>
      *
      * @param attacker the entity performing the attack
-     * @param targets  the list of possible targets (may be empty)
+     * @param targets  the list of enemies (usa un tipo generico per la compatibilità)
+     * @param boss     the final boss
      */
     @Override
-    public void performAttack(final Combatant attacker, final List<? extends Combatant> targets) {
+    public void performAttack(final Combatant attacker, final List<? extends Combatant> targets, final FinalBoss boss) {
+        
         final Entity entityAttacker = (Entity) attacker;
         final int attackX = entityAttacker.getX() + entityAttacker.getWidth() / 2;
         final int attackY = entityAttacker.getY();
@@ -69,6 +64,7 @@ public abstract class MeleeWeapon extends Weapon {
         final int height = entityAttacker.getHeight();
         final int correction = 22;
 
+        // 1. Calcola l'area di attacco
         if (entityAttacker.isFacingRight()) {
             attackArea = new Arc2D.Double(attackX - correction, attackY, width, height, STARTING_ARC_DEGREE,
                     -DRAWING_ANGLE_ARC_DEGREE, Arc2D.PIE);
@@ -77,11 +73,18 @@ public abstract class MeleeWeapon extends Weapon {
                     DRAWING_ANGLE_ARC_DEGREE, Arc2D.PIE);
         }
 
+        // 2. Controlla i nemici normali
         targets.stream()
                 .filter(target -> target.isAlive() && attackArea.intersects(target.getBounds()))
                 .forEach(target -> target.takeDamage(this.getDamage()));
+        
+        // 3. Controlla il boss
+        if (boss != null && boss.isAlive()) {
+            if (attackArea.intersects(boss.getBounds())) {
+                boss.takeDamage(this.getDamage());
+            }
+        }
     }
-
     /**
      * Gets the attack range of the melee weapon.
      *

@@ -546,4 +546,18 @@ public final class Bald extends Entity implements Combatant {
     public int getWidth() {
         return FRAME_WIDTH;
     }
+
+    /**
+     * Ritorna la hitbox di combattimento (piccola e centrata), 
+     * non quella di rendering (grande).
+     */
+    @Override
+    public Rectangle getBounds() {
+        // Calcola l'offset per centrare la hitbox (come nel metodo move)
+        final int xOffset = (int) Math.round((ENTITY_SIZE - HITBOX_WIDTH) / 2.0);
+        final int yOffset = (int) Math.round((ENTITY_SIZE - HITBOX_HEIGHT) / 2.0);
+
+        // Ritorna la hitbox reale
+        return new Rectangle(getX() + xOffset, getY() + yOffset, HITBOX_WIDTH, HITBOX_HEIGHT);
+    }
 }

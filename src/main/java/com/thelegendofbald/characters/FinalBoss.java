@@ -1,25 +1,28 @@
 package com.thelegendofbald.characters;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.life.LifeComponent;
+import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
-
-
 /**
  * FinalBoss — nemico finale che estende Entity e implementa Combatant.
- * Ha 3 fasi, un dash per avvicinarsi e un attacco ad area (AOE).
+ * Utilizza il sistema di collisione di DummyEnemy.
  */
 public class FinalBoss extends Entity implements Combatant {
 
     // --- Costanti di tuning ---
-    private static final double PHASE2_THRESHOLD = 0.66; // < 66% HP → fase 2
-    private static final double PHASE3_THRESHOLD = 0.33; // < 33% HP → fase 3
+    private static final double PHASE2_THRESHOLD = 0.66;
+    private static final double PHASE3_THRESHOLD = 0.33;
 
     private static final double PHASE1_ATK_MULT = 1.00;
     private static final double PHASE2_ATK_MULT = 1.25;
@@ -38,6 +41,16 @@ public class FinalBoss extends Entity implements Combatant {
     private static final int AOE_EXTRA_DAMAGE = 6;
     private static final long AOE_COOLDOWN_MS = 2000;
 
+    // --- Costante per l'attivazione (ispirata a DummyEnemy.MIN_DISTANCE) ---
+    private static final int AGGRO_RANGE_PX = 200; 
+
+    // --- Costanti per Rendering & Animazione ---
+    private static final int FRAME_WIDTH = 64;
+    private static final int FRAME_HEIGHT = 64;
+    private static final int RENDER_SIZE = 64;
+    private static final int RUN_FRAMES = 2; 
+    private static final int DEFAULT_FRAME_DELAY = 10;
+
     // --- Stato ---
     private final int baseAttackPower;
     private int phase = 1;
@@ -46,11 +59,18 @@ public class FinalBoss extends Entity implements Combatant {
     private final int maxHealth;
     private int health;
 
+    // 'map' è l'equivalente di 'tileMap' di DummyEnemy
     private final TileMap map;
     private final int tileSize;
 
     private long lastDashAt = -DASH_COOLDOWN_MS;
-    private long lastAoeAt  = -AOE_COOLDOWN_MS;
+    private long lastAoeAt = -AOE_COOLDOWN_MS;
+
+    // --- Stato Animazione ---
+    private BufferedImage[] runFrames;
+    private int currentFrame;
+    private final int frameDelay = DEFAULT_FRAME_DELAY;
+    private int frameCounter;
 
     /**
      * Crea il boss finale.
@@ -62,19 +82,60 @@ public class FinalBoss extends Entity implements Combatant {
                      final int baseAttackPower,
                      final LifeComponent lifeComponent,
                      final TileMap map) {
-        super(x, y, width, height, name != null ? name : "Final Boss", lifeComponent);
+        super(x, y, FRAME_WIDTH, FRAME_HEIGHT, name != null ? name : "Final Boss", lifeComponent);
         this.maxHealth = Math.max(1, maxHealth);
         this.health = this.maxHealth;
         this.baseAttackPower = baseAttackPower;
-        this.map = map;
-        this.tileSize = (map != null) ? map.getTileSize() : 32;
+        // Salva la mappa (equivalente di tileMap in DummyEnemy)
+        this.map = java.util.Objects.requireNonNull(map, "TileMap must not be null");
+        this.tileSize = map.getTileSize();
+        loadRunFrames(); 
         updatePhase();
+    }
+
+    // ============================================================
+    // RISORSE E ANIMAZIONE
+    // ============================================================
+    
+    // ... (loadRunFrames, updateAnimation - NESSUNA MODIFICA) ...
+
+    private void loadRunFrames() {
+        runFrames = new BufferedImage[RUN_FRAMES];
+        for (int i = 0; i < RUN_FRAMES; i++) {
+            // NOTA: questo carica la stessa immagine 2 volte. 
+            // Se hai 2 frame (es. finalbossL_0.png, finalbossL_1.png), 
+            // dovrai cambiare la stringa del path.
+            final String framePath = String.format("/images/finalboss/finalbossL.png", i + 1);
+            
+            try (InputStream is = getClass().getResourceAsStream(framePath)) {
+                if (is != null) {
+                    runFrames[i] = ImageIO.read(is);
+                } else {
+                    LoggerUtils.error("Enemy run frame not found: " + framePath);
+                }
+            } catch (final IOException e) {
+                LoggerUtils.error("Error loading enemy run frame " + framePath + ": " + e.getMessage());
+            }
+        }
+    }
+
+    public void updateAnimation() {
+        frameCounter++;
+        if (frameCounter < frameDelay) {
+            return;
+        }
+        frameCounter = 0;
+
+        if (runFrames != null && runFrames.length > 0) {
+            currentFrame = (currentFrame + 1) % runFrames.length;
+        }
     }
 
     // ============================================================
     // Combatant IMPLEMENTATION
     // ============================================================
 
+    // ... (getAttackPower, takeDamage, getBounds, isAlive - NESSUNA MODIFICA) ...
     @Override
     public int getAttackPower() {
         switch (phase) {
@@ -123,36 +184,58 @@ public class FinalBoss extends Entity implements Combatant {
         final int dy = bald.getY() - getY();
         final double dist = Math.hypot(dx, dy);
 
-        // Se vicino: attacco melee e prova AOE
+        // --- Logica di attivazione (Aggro Range) ---
+        if (dist > AGGRO_RANGE_PX) {
+            return; // Giocatore troppo lontano, non fare nulla
+        }
+        
+        // --- Logica di Combattimento (Melee/AOE) ---
         if (dist <= MELEE_RANGE_PX) {
             performMelee(bald);
             tryAoe(bald);
-            return;
+            return; // In melee, non muoverti
         }
 
+        // --- Logica di Combattimento (Dash) ---
         final long now = System.currentTimeMillis();
-        // Dash se lontano
         if ( (dist >= DASH_MIN_DISTANCE_PX && (now - lastDashAt) >= DASH_COOLDOWN_MS ) && tryDash(dx, dy)) {
             lastDashAt = now;
-            return;
+            return; // Ha appena dashato, non fare movimento normale
         }
 
-        // Movimento normale
-        final int speed = getCurrentSpeed();
-        final int stepX = (int) Math.signum(dx) * speed;
-        final int stepY = (int) Math.signum(dy) * speed;
-        tryMove(stepX, stepY);
-        setFacingRight(stepX >= 0);
+        // --- Movimento Normale (Logica di DummyEnemy) ---
+        double moveDx = 0.0;
+        double moveDy = 0.0;
+        // Usa la velocità della fase corrente
+        final double speed = getCurrentSpeed(); 
+
+        if (bald.getX() > getX()) {
+            moveDx = speed;
+            setFacingRight(true);
+        } else if (bald.getX() < getX()) {
+            moveDx = -speed;
+            setFacingRight(false);
+        }
+
+        if (bald.getY() > getY()) {
+            moveDy = speed;
+        } else if (bald.getY() < getY()) {
+            moveDy = -speed;
+        }
+
+        // Usa il metodo di movimento di DummyEnemy
+        moveWithCollision(moveDx, moveDy);
     }
 
-    public int getHealth()     { return health; }
-    public int getMaxHealth()  { return maxHealth; }
-    public int getPhase()      { return phase; }
+    public int getHealth() { return health; }
+    public int getMaxHealth() { return maxHealth; }
+    public int getPhase() { return phase; }
 
     // ============================================================
     // METODI PRIVATI
     // ============================================================
 
+    // ... (getCurrentSpeed, updatePhase, performMelee, tryAoe - NESSUNA MODIFICA) ...
     private int getCurrentSpeed() {
         switch (phase) {
             case 3: return PHASE3_SPEED;
@@ -162,22 +245,14 @@ public class FinalBoss extends Entity implements Combatant {
     }
 
     private void updatePhase() {
-        final int ratio =  health / maxHealth;
-        if (ratio <= PHASE3_THRESHOLD) {
-            phase = 3;
-        }
-        else if (ratio <= PHASE2_THRESHOLD) {
-            phase = 2;
-        }
-        else {
-            phase = 1;
-        }
+        final double ratio = (double) health / maxHealth; 
+        if (ratio <= PHASE3_THRESHOLD) { phase = 3; }
+        else if (ratio <= PHASE2_THRESHOLD) { phase = 2; }
+        else { phase = 1; }
     }
-    //DA SISTEMARE
+    
     private void performMelee(final Bald bald) {
-        try {
-            bald.takeDamage(getAttackPower());
-        } catch (Exception ignored) { }
+        try { bald.takeDamage(getAttackPower()); } catch (Exception ignored) { }
     }
 
     private void tryAoe(final Bald bald) {
@@ -185,19 +260,17 @@ public class FinalBoss extends Entity implements Combatant {
         if ((now - lastAoeAt) < AOE_COOLDOWN_MS) {
             return;
         }
-
         final int dx = bald.getX() - getX();
         final int dy = bald.getY() - getY();
-
-        //DA SISTEMARE
         if (Math.hypot(dx, dy) <= AOE_RANGE_PX) {
-            try {
-                bald.takeDamage(getAttackPower() + AOE_EXTRA_DAMAGE);
-            } catch (Exception ignored) { }
+            try { bald.takeDamage(getAttackPower() + AOE_EXTRA_DAMAGE); } catch (Exception ignored) { }
             lastAoeAt = now;
         }
     }
-
+    
+    /**
+     * Logica Dash, modificata per usare il nuovo isColliding.
+     */
     private boolean tryDash(final int dx, final int dy) {
         if (map == null) {
             return false;
@@ -221,7 +294,12 @@ public class FinalBoss extends Entity implements Combatant {
         for (int i = 0; i < steps; i++) {
             final int nextX = curX + stepX;
             final int nextY = curY + stepY;
-            if (!canMoveTo(nextX, nextY)) {
+            
+            // --- MODIFICA ---
+            // Usa isColliding (che ritorna TRUE se c'è collisione)
+            // al posto di canMoveTo (che ritornava TRUE se era libero)
+            if (isColliding(nextX, nextY)) { 
+            // --- FINE MODIFICA ---
                 setX(curX);
                 setY(curY);
                 setFacingRight(stepX >= 0);
@@ -236,47 +314,115 @@ public class FinalBoss extends Entity implements Combatant {
         return true;
     }
 
-    private void tryMove(final int stepX, final int stepY) {
-        if (stepX != 0 && canMoveTo(getX() + stepX, getY())) {
-            setX(getX() + stepX);
+    // --- NUOVI METODI DI MOVIMENTO (da DummyEnemy) ---
+    // (tryMove e canMoveTo sono stati rimossi)
+
+    /**
+     * Moves the entity while checking collisions on the tile map.
+     * (Preso da DummyEnemy)
+     *
+     * @param dx delta X in pixels
+     * @param dy delta Y in pixels
+     */
+    private void moveWithCollision(final double dx, final double dy) {
+        final double nextX = getX() + dx;
+        final double nextY = getY() + dy;
+
+        if (!isColliding(nextX, getY())) {
+            setX((int) Math.round(nextX));
         }
-        if (stepY != 0 && canMoveTo(getX(), getY() + stepY)) {
-            setY(getY() + stepY);
+        if (!isColliding(getX(), nextY)) {
+            setY((int) Math.round(nextY));
         }
-    }
-
-    private boolean canMoveTo(final int nextX, final int nextY) {
-        if (map == null) {
-            return true;
-        }
-
-        final int left   = nextX / tileSize;
-        final int right  = (nextX + getWidth() - 1) / tileSize;
-        final int top    = nextY / tileSize;
-        final int bottom = (nextY + getHeight() - 1) / tileSize;
-
-        return isTileFree(left, top)
-            && isTileFree(right, top)
-            && isTileFree(left, bottom)
-            && isTileFree(right, bottom);
-    }
-
-    private boolean isTileFree(final int tx, final int ty) {
-        final Tile t = map.getTileAt(tx, ty);
-        return t == null || !t.isSolid();
     }
 
     /**
- * Render minimale del boss.
- * Sostituisci il rettangolo con la sprite quando la avrai.
- */
-public void render(final Graphics2D g2d) {
-    if (!alive || g2d == null) {
-        return;
-    }
-    // Placeholder: rettangolo rosso
-    g2d.setColor(Color.RED);
-    g2d.fillRect(getX(), getY(), getWidth(), getHeight());
-}
+     * Checks whether the rectangle at the next position hits a solid tile.
+     * (Preso da DummyEnemy e adattato)
+     *
+     * @param nextX next X position
+     * @param nextY next Y position
+     * @return true if colliding with a solid tile
+     */
+    private boolean isColliding(final double nextX, final double nextY) {
+        // Usa 'this.map' e 'this.tileSize' di FinalBoss
+        final int entityWidth = getWidth();
+        final int entityHeight = getHeight();
 
+        final int leftTile = (int) nextX / tileSize;
+        final int rightTile = (int) (nextX + entityWidth - 1) / tileSize;
+        final int topTile = (int) nextY / tileSize;
+        final int bottomTile = (int) (nextY + entityHeight - 1) / tileSize;
+
+        for (int row = topTile; row <= bottomTile; row++) {
+            for (int col = leftTile; col <= rightTile; col++) {
+                final Tile tile = map.getTileAt(col, row); // Usa 'map'
+                if (tile != null && tile.isSolid()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    // ============================================================
+    // RENDER
+    // ============================================================
+    
+    /**
+     * Renders the current frame.
+     * (Logica di specchiamento identica a DummyEnemy)
+     */
+    public void render(final Graphics g) {
+        
+        final BufferedImage frame =
+            (runFrames != null && runFrames.length > 0) ? runFrames[currentFrame % runFrames.length] : null;
+
+        if (frame != null) {
+            // Se l'asset "finalbossL.png" guarda a sinistra (come da nome):
+            if (!isFacingRight()) { 
+                // Guarda a SINISTRA -> Disegna immagine NORMALE
+                g.drawImage(frame, getX(), getY(), RENDER_SIZE, RENDER_SIZE, null);
+            } else {
+                // Guarda a DESTRA -> Disegna immagine SPECCHIATA
+                g.drawImage(frame, getX() + RENDER_SIZE, getY(),
+                            -RENDER_SIZE, RENDER_SIZE, null);
+            }
+        } else {
+            // Fallback
+            g.setColor(Color.RED);
+            g.fillRect(getX(), getY(), RENDER_SIZE, RENDER_SIZE);
+        }
+        
+        // Disegna HP Bar
+        final int hpBarWidth = RENDER_SIZE;
+        final int hpBarHeight = 5;
+        final int hpBarY = getY() - hpBarHeight - 2;
+        
+        g.setColor(Color.GRAY);
+        g.fillRect(getX(), hpBarY, hpBarWidth, hpBarHeight);
+        
+        final int currentHpWidth = (int) (hpBarWidth * ((double) health / maxHealth));
+        g.setColor(Color.GREEN.darker());
+        g.fillRect(getX(), hpBarY, currentHpWidth, hpBarHeight);
+        
+        g.setColor(Color.BLACK);
+        g.drawRect(getX(), hpBarY, hpBarWidth, hpBarHeight);
+    }
+
+
+    // ============================================================
+    // OVERRIDES (Dimensioni)
+    // ============================================================
+
+    @Override
+    public int getWidth() {
+        return FRAME_WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return FRAME_HEIGHT;
+    }
 }

@@ -2,6 +2,7 @@ package com.thelegendofbald.model.weapons;
 
 import java.util.List;
 
+import com.thelegendofbald.characters.FinalBoss;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.model.combat.CombatManager;
 import com.thelegendofbald.model.item.GameItem;
@@ -44,7 +45,7 @@ public abstract class Weapon extends GameItem {
      * @param attacker The combatant who is attacking.
      * @param targets  The list of combatants that are the targets of the attack.
      */
-    public abstract void performAttack(Combatant attacker, List<? extends Combatant> targets);
+    public abstract void performAttack(Combatant attacker, List<? extends Combatant> targets, FinalBoss boss);
 
     /**
      * Gets the damage dealt by this weapon.

@@ -70,7 +70,7 @@ import com.thelegendofbald.view.main.GridPanel;
 import com.thelegendofbald.view.main.ShopPanel;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
-
+import java.awt.FontMetrics;
 
 /**
  * Pannello principale del gioco: ciclo di gioco, input, rendering, UI.
@@ -189,6 +189,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private transient Thread gameThread;
     private volatile boolean running; // default false
+    private volatile boolean gameOver = false;
     private volatile boolean paused;
     private volatile int maxFPS = DEFAULT_MAX_FPS;
     private volatile boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
@@ -522,6 +523,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
      * @param deltatime tempo trascorso (in secondi) dal frame precedente
      */
     public void update(final double deltatime) {
+        if (gameOver) {
+            return;
+        }
         handleInput();
         bald.updateAnimation();
         bald.move(tileMap, deltatime);
@@ -547,18 +551,38 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
                 enemy.updateAnimation();
             }
         });
+
+        if (boss != null && boss.isAlive()) {
+            boss.followPlayer(bald);
+            boss.updateAnimation();
+            // Nota: followPlayer(bald) del boss contiene già la logica 
+            // per attivarsi solo quando Bald è vicino (AGGRO_RANGE_PX)
+        }
         combatManager.getProjectiles().forEach(p -> p.move(tileMap));
         combatManager.checkProjectiles();
 
         itemManager.updateAll();
         itemManager.handleItemCollection(bald);
         checkIfNearShopTile();
+        if (!bald.isAlive() && !gameOver) {
+            handleGameOver();
+        }
 
         this.revalidate();
         this.repaint();
     }
 
+    /**
+ * Gestisce la logica di Game Over: ferma il gioco e imposta il flag.
+ */
+private void handleGameOver() {
+    this.gameOver = true;
+    this.pauseGame(); // Ferma il timer e il loop di update
+    this.pressedKeys.clear(); // Impedisce al personaggio di muoversi
+}
+
     /* ===================== Logica mappa ===================== */
+
 
     /**
      * Verifica se Bald è sopra o adiacente a un tile con l'id indicato.
@@ -742,6 +766,8 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
             life,                    // componente vita
             tileMap                  // mappa corrente
         );
+
+        combatManager.setBoss(boss);
     }
 
 
@@ -749,6 +775,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     @Override
     protected void paintComponent(final Graphics g) {
+
         final Graphics2D g2d = (Graphics2D) g.create();
         super.paintComponent(g2d);
         scaleGraphics(g2d);
@@ -776,9 +803,39 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
         // ⬇️ BARRA HP DEL BOSS (HUD)
         drawBossHP(g2d);
-
+        if (gameOver) {
+        drawGameOverScreen(g2d);
+        }
         g2d.dispose();
     }
+
+/**
+ * Disegna la schermata di Game Over (overlay scuro e scritta).
+ * @param g2d il contesto grafico
+ */
+private void drawGameOverScreen(final Graphics2D g2d) {
+    // 1. Disegna un overlay scuro semi-trasparente
+    g2d.setColor(new Color(0, 0, 0, 150)); // 150 = ~60% trasparenza
+    g2d.fillRect(0, 0, getWidth(), getHeight());
+
+    // 2. Prepara il testo "GAME OVER"
+    final String msg = "GAME OVER";
+    final Font gameOverFont = new Font("Arial", Font.BOLD, 72); // Font grande
+    g2d.setFont(gameOverFont);
+    g2d.setColor(Color.RED);
+
+    // 3. Calcola come centrare il testo
+    final FontMetrics fm = g2d.getFontMetrics(gameOverFont);
+    final int msgWidth = fm.stringWidth(msg);
+    final int msgHeight = fm.getAscent(); // Altezza del font
+
+    // Calcola posizione X e Y per centrare
+    final int x = (getWidth() - msgWidth) / 2;
+    final int y = (getHeight() - msgHeight) / 2 + fm.getAscent();
+
+    // 4. Disegna il testo
+    g2d.drawString(msg, x, y);
+}
 
     private void drawAttackArea(final Graphics g) {
         final Graphics2D g2d = (Graphics2D) g;

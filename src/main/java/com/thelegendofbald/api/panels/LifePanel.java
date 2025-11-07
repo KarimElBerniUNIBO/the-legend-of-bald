@@ -3,88 +3,111 @@ package com.thelegendofbald.api.panels;
 import java.awt.Color;
 import java.awt.Graphics;
 
+// --- MODIFICA 1: Import necessari per "ascoltare" ---
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+// --- FINE MODIFICA ---
+
 import com.thelegendofbald.life.LifeComponent;
 
 /**
- * A panel that visually represents an entity's health as a dynamic health bar.
- * This panel acts as a view that observes a {@link LifeComponent} (the model)
- * and updates its display based on the component's state.
- */
-public class LifePanel extends AdapterPanel {
+ * Un pannello che rappresenta visivamente la salute di un'entità.
+ * Ora implementa PropertyChangeListener per "ascoltare"
+ * i cambiamenti dal LifeComponent.
+ */
+// --- MODIFICA 2: Implementa l'interfaccia "listener" ---
+public class LifePanel extends AdapterPanel implements PropertyChangeListener {
 
     private static final long serialVersionUID = 1L;
 
     private final LifeComponent lifeComponent;
 
     /**
-     * Constructs a new LifePanel.
-     * 
-     * @param lifeComponent The {@link LifeComponent} instance this panel will display.
-     */
+     * Costruisce un nuovo LifePanel.
+     *      * @param lifeComponent L'istanza di {@link LifeComponent} che questo pannello mostrerà.
+     */
     public LifePanel(final LifeComponent lifeComponent) {
-        super();
-        this.lifeComponent = lifeComponent;
+         super();
+         this.lifeComponent = lifeComponent;
+
+        // --- MODIFICA 3: Iscrivi questo pannello agli aggiornamenti! ---
+        // Dice al LifeComponent: "Ehi, quando la tua vita cambia,
+        // avvisa questo pannello chiamando il suo metodo propertyChange."
+        this.lifeComponent.addPropertyChangeListener(this);
     }
 
     /**
-     * Initializes the components of the panel.
-     * This method is called during the panel's setup.
-     */
+     * Inizializza i componenti del pannello.
+     */
     @Override
     protected void initializeComponents() {
-        super.initializeComponents(); // Sets up resize listener and calls updateView
-        addComponentsToPanel(); // Adds any sub-components if needed
+        super.initializeComponents(); 
+        addComponentsToPanel();
     }
 
     /**
-     * Placeholder method to add any sub-components to the panel.
-     * Currently not implemented, as the panel draws its own content.
-     */
+     * Aggiunge sotto-componenti al pannello.
+     */
     @Override
     public void addComponentsToPanel() {
-        // This method can be implemented if sub-components (like labels) are needed.
+        // Attualmente non necessario
     }
 
-    /**
-     * Triggers a redraw of the panel to reflect the current state of the health bar.
-     * This method is called to update the view when the health value changes.
-     */
+     /**
+     * Attiva un ridisegno del pannello.
+     */
     @Override
     public void updateView() {
         repaint();
     }
 
     /**
-     * Paints the visual representation of the health bar.
-     *
-     * @param g The Graphics object used for drawing.
-     */
-    @Override
+     * Disegna la barra della vita.
+     * (Nessuna modifica qui, era già corretto)
+     * @param g L'oggetto Graphics usato per disegnare.
+     */
+     @Override
     public void paintComponent(final Graphics g) {
         super.paintComponent(g);
 
         final double perc = lifeComponent.getPercentage(); 
         final int width = (int) (perc * getWidth());
 
-        // Draw the gray background
+        // Sfondo grigio
         g.setColor(Color.GRAY);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        // Draw the red foreground health bar
+        // Barra rossa della vita
         g.setColor(Color.RED);
         g.fillRect(0, 0, width, getHeight());
 
-        // Draw the black border
+        // Bordo nero
         g.setColor(Color.BLACK);
         g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
 
     /**
-     * This method is a placeholder for updating component sizes on a resize event.
-     * Currently not implemented as the health bar scales automatically with the panel.
-     */
+     * Placeholder per aggiornare le dimensioni.
+     */
     @Override
     public void updateComponentsSize() {
-        // Implement if needed, otherwise leave empty
+         // Non necessario
+    }
+
+    // --- MODIFICA 4: Metodo obbligatorio dell'interfaccia PropertyChangeListener ---
+    /**
+     * Questo metodo viene chiamato AUTOMATICAMENTE dal LifeComponent
+     * ogni volta che la sua vita cambia (perché ci siamo iscritti nel costruttore).
+     *
+     * @param evt L'evento che descrive il cambiamento.
+     */
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+        // Controlliamo che la proprietà cambiata sia "currentHealth"
+        // (La stringa l'abbiamo definita in LifeComponent)
+        if (LifeComponent.HEALTH_PROPERTY.equals(evt.getPropertyName())) {
+            // La vita è cambiata! Diciamo a Swing di ridisegnare questo pannello.
+        updateView(); // Chiama repaint()
+        }
     }
 }
