@@ -190,6 +190,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private transient Thread gameThread;
     private volatile boolean running; // default false
     private volatile boolean gameOver = false;
+    private volatile boolean gameWon = false;
     private volatile boolean paused;
     private volatile int maxFPS = DEFAULT_MAX_FPS;
     private volatile boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
@@ -523,7 +524,8 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
      * @param deltatime tempo trascorso (in secondi) dal frame precedente
      */
     public void update(final double deltatime) {
-        if (gameOver) {
+        if (gameOver || gameWon) {
+            // --- FINE MODIFICA ---
             return;
         }
         handleInput();
@@ -567,14 +569,26 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         if (!bald.isAlive() && !gameOver) {
             handleGameOver();
         }
+        if (boss != null && !boss.isAlive() && !gameWon && !gameOver) {
+            handleGameWon();
+        }
 
         this.revalidate();
         this.repaint();
     }
 
     /**
- * Gestisce la logica di Game Over: ferma il gioco e imposta il flag.
- */
+     * Gestisce la logica di Vittoria: ferma il gioco e imposta il flag.
+     */
+    private void handleGameWon() {
+        this.gameWon = true;
+        this.pauseGame(); // Ferma il timer e il loop di update
+        this.pressedKeys.clear(); // Impedisce al personaggio di muoversi
+    }       
+
+    /** 
+     * Gestisce la logica di Game Over: ferma il gioco e imposta il flag.
+     */
 private void handleGameOver() {
     this.gameOver = true;
     this.pauseGame(); // Ferma il timer e il loop di update
@@ -806,8 +820,39 @@ private void handleGameOver() {
         if (gameOver) {
         drawGameOverScreen(g2d);
         }
+        else if(gameWon){
+            // Chiama il nuovo metodo di disegno
+            drawGameWonScreen(g2d);
+        }
         g2d.dispose();
     }
+
+    /**
+ * Disegna la schermata di Vittoria (overlay e scritta).
+ * @param g2d il contesto grafico
+ */
+private void drawGameWonScreen(final Graphics2D g2d) {
+    // 1. Disegna un overlay scuro semi-trasparente
+    g2d.setColor(new Color(0, 0, 0, 150));
+    g2d.fillRect(0, 0, getWidth(), getHeight());
+
+    // 2. Prepara il testo "YOU WON"
+    final String msg = "YOU WON";
+    final Font winFont = new Font("Arial", Font.BOLD, 72); // Font grande
+    g2d.setFont(winFont);
+    g2d.setColor(Color.GREEN); // <-- Un bel colore verde per la vittoria
+
+    // 3. Calcola come centrare il testo
+    final FontMetrics fm = g2d.getFontMetrics(winFont);
+    final int msgWidth = fm.stringWidth(msg);
+    final int msgHeight = fm.getAscent();
+
+    final int x = (getWidth() - msgWidth) / 2;
+    final int y = (getHeight() - msgHeight) / 2 + fm.getAscent();
+
+    // 4. Disegna il testo
+    g2d.drawString(msg, x, y);
+}
 
 /**
  * Disegna la schermata di Game Over (overlay scuro e scritta).
