@@ -31,7 +31,7 @@ class InventoryManagerTest {
         final Weapon weapon = new Sword(0, 0, 0, 0, null);
         inventoryManager.add(weapon);
         final boolean found = inventoryManager.getSlots().stream()
-                .anyMatch(slot -> slot.getItem().isPresent() && slot.getItem().get() == weapon);
+                .anyMatch(slot -> slot.getItem().isPresent() && slot.getItem().get().equals(weapon));
         assertTrue(found, "Weapon should be present in inventory after adding");
     }
 

@@ -40,7 +40,7 @@ class GameWindowTest {
     }
 
     @Test
-    void getInternalSizeDefensiveCopy() {
+    void internalSizeDefensiveCopy() {
         final Dimension d1 = window.getInternalSize();
         assertEquals(new Dimension(DEFAULT_W, DEFAULT_H), d1);
 

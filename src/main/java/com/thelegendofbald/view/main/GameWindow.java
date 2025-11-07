@@ -81,7 +81,6 @@ public final class GameWindow extends JFrame implements View, MainView {
 
     @Override
     public synchronized Dimension getInternalSize() {
-        // restituisci una copia per non esporre lo stato interno mutabile
         return (Dimension) internalSize.clone();
     }
 

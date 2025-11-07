@@ -3,8 +3,6 @@ package com.thelegendofbald.model.weapons;
 import java.util.List;
 
 import com.thelegendofbald.characters.Entity;
-// Import aggiunti
-import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.characters.FinalBoss;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.combat.projectile.Projectile;

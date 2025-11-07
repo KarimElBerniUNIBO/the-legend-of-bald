@@ -4,8 +4,6 @@ import java.awt.geom.Arc2D;
 import java.util.List;
 
 import com.thelegendofbald.characters.Entity;
-// Import aggiunti
-import com.thelegendofbald.characters.DummyEnemy;
 import com.thelegendofbald.characters.FinalBoss;
 import com.thelegendofbald.combat.Combatant;
 import com.thelegendofbald.model.combat.CombatManager;
@@ -64,7 +62,6 @@ public abstract class MeleeWeapon extends Weapon {
         final int height = entityAttacker.getHeight();
         final int correction = 22;
 
-        // 1. Calcola l'area di attacco
         if (entityAttacker.isFacingRight()) {
             attackArea = new Arc2D.Double(attackX - correction, attackY, width, height, STARTING_ARC_DEGREE,
                     -DRAWING_ANGLE_ARC_DEGREE, Arc2D.PIE);
@@ -73,16 +70,12 @@ public abstract class MeleeWeapon extends Weapon {
                     DRAWING_ANGLE_ARC_DEGREE, Arc2D.PIE);
         }
 
-        // 2. Controlla i nemici normali
         targets.stream()
                 .filter(target -> target.isAlive() && attackArea.intersects(target.getBounds()))
                 .forEach(target -> target.takeDamage(this.getDamage()));
         
-        // 3. Controlla il boss
-        if (boss != null && boss.isAlive()) {
-            if (attackArea.intersects(boss.getBounds())) {
-                boss.takeDamage(this.getDamage());
-            }
+        if (boss != null && boss.isAlive() && attackArea.intersects(boss.getBounds())) {
+            boss.takeDamage(this.getDamage());
         }
     }
     /**
