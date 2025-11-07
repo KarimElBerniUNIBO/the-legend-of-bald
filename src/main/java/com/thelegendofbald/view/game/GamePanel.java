@@ -3,6 +3,7 @@ package com.thelegendofbald.view.game;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -70,7 +71,6 @@ import com.thelegendofbald.view.main.GridPanel;
 import com.thelegendofbald.view.main.ShopPanel;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
-import java.awt.FontMetrics;
 
 /**
  * Pannello principale del gioco: ciclo di gioco, input, rendering, UI.
@@ -199,6 +199,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private final Set<Integer> pressedKeys = new HashSet<>();
     private final JButton shopButton = new JButton("Shop");
+    private final JButton mainMenuButton = new JButton("Ritorna alla pagina principale");
 
     private FinalBoss boss;
 
@@ -223,7 +224,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
         this.tileMap = new TileMap(size.width, size.height, TILE_SIZE);
         this.combatManager = new CombatManager(bald, enemies);
-        this.bald.setWeapon(new FireBall(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager));
+        this.bald.setWeapon(new Sword(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager));
 
         this.lootGenerator = new LootGenerator(new ItemFactory(), List.of(LOOT_LVL_MIN, LOOT_LVL_MAX));
         this.itemManager = new ItemManager(tileMap, new ItemFactory(), new MapItemLoader(), lootGenerator);
@@ -449,6 +450,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     @Override
     public void startGame() {
         this.running = true;
+        mainMenuButton.setVisible(false);
         gameThread = new Thread(this);
         gameThread.start();
         timer.start();
@@ -456,14 +458,49 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     @Override
-    public void finishGame() {
+    public void saveGame() {
         gameRun = new GameRun(gameRun.name(), timer.getFormattedTime());
         try {
             saveDataManager.saveGameRun(gameRun);
         } catch (final IOException e) {
             LoggerUtils.error("Error saving game run: " + e.getMessage());
         }
-        this.stopGame();
+        //this.stopGame();
+    }
+
+    private void resetGame() {
+        // Resetta lo stato del gioco
+        this.gameOver = false;
+        this.gameWon = false;
+        this.paused = false;
+        this.pressedKeys.clear();
+
+        // Resetta il timer
+        this.timer.stop();
+
+        // Resetta la mappa
+        this.currentMapName = MAP_1;
+        this.tileMap.changeMap(MAP_1);
+        this.itemManager.loadItemsForMap(MAP_1);
+        this.spawnActorsFromMap();
+
+        // Resetta il giocatore
+        this.bald.setTileMap(tileMap);
+        this.bald.setSpawnPosition(ID_SPAWN, tileMap.getTileSize());
+        this.bald.getLifeComponent().setCurrentHealth(100);
+
+        // Resetta l'inventario
+        this.inventory.clear();
+        this.addWeaponsToInventory();
+
+        // Resetta la UI
+        this.optionsPanel.setVisible(false);
+        this.inventoryPanel.setVisible(false);
+        this.mainMenuButton.setVisible(false);
+        this.shopButton.setVisible(false);
+
+        this.revalidate();
+        this.repaint();
     }
 
     @Override
@@ -583,7 +620,10 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private void handleGameWon() {
         this.gameWon = true;
         this.pauseGame(); // Ferma il timer e il loop di update
+        this.saveGame();
         this.pressedKeys.clear(); // Impedisce al personaggio di muoversi
+        this.mainMenuButton.setVisible(true);
+
     }       
 
     /** 
@@ -593,6 +633,7 @@ private void handleGameOver() {
     this.gameOver = true;
     this.pauseGame(); // Ferma il timer e il loop di update
     this.pressedKeys.clear(); // Impedisce al personaggio di muoversi
+    this.mainMenuButton.setVisible(true);
 }
 
     /* ===================== Logica mappa ===================== */
@@ -989,6 +1030,16 @@ private void drawGameOverScreen(final Graphics2D g2d) {
         shopButton.setVisible(false);
         shopButton.addActionListener(this::onShopButtonClicked);
 
+        mainMenuButton.setVisible(false);
+        mainMenuButton.setFocusable(false);
+        mainMenuButton.addActionListener(e -> {
+            stopGame();
+            final GameWindow window = (GameWindow) SwingUtilities.getWindowAncestor(this);
+            if (window != null) {
+                new SwitchToOtherPanel(window, Panels.MAIN_MENU).actionPerformed(e);
+            }
+        });
+
         // filler per layout
         final GridBagConstraints fillerGBC = new GridBagConstraints();
         fillerGBC.gridx = 0;
@@ -1008,6 +1059,13 @@ private void drawGameOverScreen(final Graphics2D g2d) {
         shopButtonGBC.weightx = 0;
         shopButtonGBC.weighty = 0;
         this.add(shopButton, shopButtonGBC);
+
+        final GridBagConstraints mainMenuButtonGBC = new GridBagConstraints();
+        mainMenuButtonGBC.gridx = 0;
+        mainMenuButtonGBC.gridy = 0;
+        mainMenuButtonGBC.anchor = GridBagConstraints.CENTER;
+        mainMenuButtonGBC.insets = new Insets(150, 0, 0, 0);
+        this.add(mainMenuButton, mainMenuButtonGBC);
     }
 
     private void onShopButtonClicked(final java.awt.event.ActionEvent event) {
@@ -1050,6 +1108,7 @@ private void drawGameOverScreen(final Graphics2D g2d) {
     public void stopGame() {
         this.running = false;
         this.timer.stop();
+        this.resetGame();
     }
 
     @Override
@@ -1080,4 +1139,5 @@ private void drawGameOverScreen(final Graphics2D g2d) {
     public boolean isShowingTimer() {
         return showingTimer;
     }
+
 }

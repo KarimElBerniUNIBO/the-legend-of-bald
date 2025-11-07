@@ -14,7 +14,7 @@ public interface Game {
     /**
      * Finishes the game, saving the current game run.
      */
-    void finishGame();
+    void saveGame();
 
     /**
      * Checks if the game is currently running.
