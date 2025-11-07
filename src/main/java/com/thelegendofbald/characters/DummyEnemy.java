@@ -15,100 +15,140 @@ import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
 /**
- * Very simple enemy that follows the player and collides with solid tiles.
+ * Nemico semplice che segue il giocatore, reagisce ai colpi e ha un'animazione di morte.
  */
-public class DummyEnemy extends Entity implements Combatant {
+public final class DummyEnemy extends Entity implements Combatant {
 
-    // ---- Constants ----
+    // ---- Stati del Nemico (NUOVO) ----
+    private enum EnemyState {
+        RUNNING, // Insegue il giocatore
+        HURT,    // È stato colpito, animazione "hurt"
+        DYING,   // Sta morendo, animazione "dead"
+        DEAD     // Morto, pronto per essere rimosso
+    }
+    
+    // ---- Costanti ----
     private static final int FRAME_WIDTH = 50;
     private static final int FRAME_HEIGHT = 50;
     private static final int RENDER_SIZE = 50;
+
+    // Costanti animazione (MODIFICATE)
     private static final int RUN_FRAMES = 9;
+    private static final int HURT_FRAMES = 5; // <-- MODIFICA (da 8 png)
+    private static final int DEAD_FRAMES = 7; // <-- MODIFICA (da 8 png)
     private static final int DEFAULT_FRAME_DELAY = 5;
 
     private static final double DEFAULT_SPEED = 1.0;
     private static final double MIN_DISTANCE = 200;
 
-    // ---- State ----
+    // ---- Stato ----
     private final int attackPower;
     private final transient TileMap tileMap;
 
-    private final static double speedX = DEFAULT_SPEED;
-    private final static double speedY = DEFAULT_SPEED;
+    private final double speedX = DEFAULT_SPEED;
+    private final double speedY = DEFAULT_SPEED;
 
+    // Array delle animazioni (MODIFICATI)
     private BufferedImage[] runFrames;
+    private BufferedImage[] hurtFrames;
+    private BufferedImage[] deadFrames;
+    
     private int currentFrame;
-    private final static int frameDelay = DEFAULT_FRAME_DELAY;
+    private final int frameDelay = DEFAULT_FRAME_DELAY;
     private int frameCounter;
 
     private long lastAttackTime;
+    private EnemyState state = EnemyState.RUNNING; // <-- MODIFICA: Stato iniziale
 
     /**
-     * Creates a dummy enemy.
-     *
-     * @param x           spawn x
-     * @param y           spawn y
-     * @param health      starting health
-     * @param name        entity name
-     * @param attackPower base attack power
-     * @param tileMap     map for collisions
+     * Crea un nemico.
      */
     public DummyEnemy(final int x, final int y, final int health, final String name,
                       final int attackPower, final TileMap tileMap) {
         super(x, y, FRAME_WIDTH, FRAME_HEIGHT, name, new LifeComponent(health));
         this.attackPower = attackPower;
         this.tileMap = Objects.requireNonNull(tileMap, "tileMap must not be null");
-        loadRunFrames();
+        loadFrames(); // <-- MODIFICA: Nome metodo cambiato
     }
 
     // ------------------- Resources -------------------
 
     /**
-     * Loads running animation frames from resources.
+     * Carica TUTTI i frame di animazione (Run, Hurt, Dead).
      */
-    private void loadRunFrames() {
+    private void loadFrames() {
         runFrames = new BufferedImage[RUN_FRAMES];
+        hurtFrames = new BufferedImage[HURT_FRAMES];
+        deadFrames = new BufferedImage[DEAD_FRAMES];
+
+        // 1. Carica animazione RUN (Codice esistente)
         for (int i = 0; i < RUN_FRAMES; i++) {
             final String framePath = String.format("/images/dummyenemy_run/__TRAINEE_Run_00%d.png", i + 1);
-            try (InputStream is = getClass().getResourceAsStream(framePath)) {
-                if (is != null) {
-                    runFrames[i] = ImageIO.read(is);
-                } else {
-                    LoggerUtils.error("Enemy run frame not found: " + framePath);
-                }
-            } catch (final IOException e) {
-                LoggerUtils.error("Error loading enemy run frame " + framePath + ": " + e.getMessage());
+            runFrames[i] = loadImage(framePath);
+        }
+
+        // 2. Carica animazione HURT (NUOVO)
+        for (int i = 0; i < HURT_FRAMES; i++) {
+            // --- ATTENZIONE: Correggi questo percorso! ---
+            // Sostituisci "06-Hurt" e "Hurt_File_Name_00%d.png" con i tuoi percorsi e nomi file
+            final String framePath = String.format("/images/dummyenemy_run/06-Hurt/__TRAINEE_Hurt_00%d.png", i + 1);
+            hurtFrames[i] = loadImage(framePath);
+        }
+
+        // 3. Carica animazione DEAD (NUOVO)
+        for (int i = 0; i < DEAD_FRAMES; i++) {
+            // --- ATTENZIONE: Correggi questo percorso! ---
+            // Sostituisci "07-Dead" e "Dead_File_Name_00%d.png" con i tuoi percorsi e nomi file
+            final String framePath = String.format("/images/dummyenemy_run/07-Dead/__TRAINEE_Dead_00%d.png", i + 1);
+            deadFrames[i] = loadImage(framePath);
+        }
+    }
+
+    /**
+     * Metodo helper per caricare una singola immagine. (NUOVO)
+     */
+    private BufferedImage loadImage(String path) {
+        try (InputStream is = getClass().getResourceAsStream(path)) {
+            if (is != null) {
+                return ImageIO.read(is);
+            } else {
+                LoggerUtils.error("Frame non trovato: " + path);
+                return null;
             }
+        } catch (final IOException e) {
+            LoggerUtils.error("Errore caricamento frame " + path + ": " + e.getMessage());
+            return null;
         }
     }
 
     // ------------------- Combatant -------------------
 
-    /**
-     * Returns the base attack power of this enemy.
-     *
-     * @return base attack power
-     */
     @Override
     public int getAttackPower() {
         return attackPower;
     }
 
     /**
-     * Applies damage to this enemy, reducing its health.
-     *
-     * @param damage amount of damage to apply
+     * Applica danno e cambia stato in HURT o DYING. (MODIFICATO)
      */
     @Override
     public void takeDamage(final int damage) {
+        // Non può essere colpito se sta già morendo o è morto
+        if (state == EnemyState.DYING || state == EnemyState.DEAD) {
+            return;
+        }
+
         this.getLifeComponent().damageTaken(damage);
+        currentFrame = 0; // Resetta l'animazione
+        frameCounter = 0;
+
+        if (this.getLifeComponent().isDead()) {
+            state = EnemyState.DYING; // Inizia l'animazione di morte
+        } else {
+            state = EnemyState.HURT; // Inizia l'animazione di colpo
+        }
     }
 
-    /**
-     * Heals this enemy by the specified amount.
-     *
-     * @param amount health points to restore
-     */
     public void heal(final int amount) {
         this.getLifeComponent().heal(amount);
     }
@@ -116,7 +156,7 @@ public class DummyEnemy extends Entity implements Combatant {
     // ------------------- Animation & Render -------------------
 
     /**
-     * Advances the animation frame based on an internal frame counter.
+     * Avanza l'animazione in base allo stato. (MODIFICATO)
      */
     public void updateAnimation() {
         frameCounter++;
@@ -124,29 +164,72 @@ public class DummyEnemy extends Entity implements Combatant {
             return;
         }
         frameCounter = 0;
+        currentFrame++;
 
-        if (runFrames != null && runFrames.length > 0) {
-            currentFrame = (currentFrame + 1) % runFrames.length;
+        switch (state) {
+            case RUNNING:
+                if (runFrames != null && runFrames.length > 0) {
+                    currentFrame = currentFrame % runFrames.length;
+                }
+                break;
+
+            case HURT:
+                if (currentFrame >= HURT_FRAMES) {
+                    currentFrame = 0;
+                    state = EnemyState.RUNNING; // Torna a correre
+                }
+                break;
+
+            case DYING:
+                if (currentFrame >= DEAD_FRAMES) {
+                    currentFrame = DEAD_FRAMES - 1; // Rimane sull'ultimo frame
+                    state = EnemyState.DEAD; // Ora è completamente morto
+                }
+                break;
+
+            case DEAD:
+                // Rimane sull'ultimo frame di morte
+                currentFrame = DEAD_FRAMES - 1;
+                break;
         }
     }
 
     /**
-     * Renders the current frame or a fallback rectangle if frames are missing.
-     *
-     * @param g graphics context
+     * Rende il frame corretto in base allo stato. (MODIFICATO)
      */
     public void render(final Graphics g) {
-        final BufferedImage frame =
-                (runFrames != null && runFrames.length > 0) ? runFrames[currentFrame] : null;
+        BufferedImage frame = null;
 
+        // 1. Seleziona l'array di frame corretto
+        switch (state) {
+            case RUNNING:
+                if (runFrames != null && runFrames.length > 0) {
+                    frame = runFrames[currentFrame % runFrames.length];
+                }
+                break;
+            case HURT:
+                if (hurtFrames != null && hurtFrames.length > 0) {
+                    frame = hurtFrames[currentFrame % HURT_FRAMES];
+                }
+                break;
+            case DYING:
+            case DEAD:
+                if (deadFrames != null && deadFrames.length > 0) {
+                    frame = deadFrames[currentFrame % DEAD_FRAMES];
+                }
+                break;
+        }
+        
+        // 2. Disegna il frame
         if (frame != null) {
             if (!isFacingRight()) {
                 g.drawImage(frame, getX(), getY(), RENDER_SIZE, RENDER_SIZE, null);
             } else {
                 g.drawImage(frame, getX() + RENDER_SIZE, getY(),
-                        -RENDER_SIZE, RENDER_SIZE, null);
+                            -RENDER_SIZE, RENDER_SIZE, null);
             }
         } else {
+            // Fallback se le animazioni non sono caricate
             g.setColor(Color.RED);
             g.fillRect(getX(), getY(), RENDER_SIZE, RENDER_SIZE);
         }
@@ -155,12 +238,11 @@ public class DummyEnemy extends Entity implements Combatant {
     // ------------------- AI & Movement -------------------
 
     /**
-     * Simple chase logic: set per-axis deltas toward Bald, then move with tile collision.
-     *
-     * @param bald player to follow
+     * Segue il giocatore SOLO se è in stato RUNNING. (MODIFICATO)
      */
     public void followPlayer(final Bald bald) {
-        if (bald == null) {
+        // Non si muove se è colpito, sta morendo, è morto, o il player non c'è
+        if (state != EnemyState.RUNNING || bald == null) {
             return;
         }
 
@@ -183,13 +265,8 @@ public class DummyEnemy extends Entity implements Combatant {
 
         moveWithCollision(dx, dy);
     }
-
-    /**
-     * Moves the entity while checking collisions on the tile map.
-     *
-     * @param dx delta X in pixels
-     * @param dy delta Y in pixels
-     */
+    
+    // ... (moveWithCollision e isColliding rimangono invariati) ...
     private void moveWithCollision(final double dx, final double dy) {
         final double nextX = getX() + dx;
         final double nextY = getY() + dy;
@@ -202,15 +279,7 @@ public class DummyEnemy extends Entity implements Combatant {
         }
     }
 
-    /**
-     * Checks whether the rectangle at the next position hits a solid tile.
-     *
-     * @param nextX next X position
-     * @param nextY next Y position
-     * @return true if colliding with a solid tile
-     */
     private boolean isColliding(final double nextX, final double nextY) {
-        // tileMap è final e non null per contratto
         final int tileSize = tileMap.getTileSize();
         final int entityWidth = getWidth();
         final int entityHeight = getHeight();
@@ -234,35 +303,30 @@ public class DummyEnemy extends Entity implements Combatant {
     // ------------------- Misc -------------------
 
     /**
-     * @return true if this enemy is alive (health &gt; 0)
+     * @return true se il nemico non è ancora nello stato DYING o DEAD
      */
     @Override
     public boolean isAlive() {
-        return !this.getLifeComponent().isDead();
+        // È "vivo" (può essere attaccato) finché non sta morendo
+        return state == EnemyState.RUNNING || state == EnemyState.HURT;
     }
 
     /**
-     * @return timestamp of the last attack, implementation-defined unit
+     * (NUOVO) Usato da GamePanel per sapere quando rimuovere il corpo.
+     * @return true solo se il nemico è nello stato finale DEAD.
      */
+    public boolean isRemovable() {
+        return state == EnemyState.DEAD;
+    }
+
     public long getLastAttackTime() {
         return lastAttackTime;
     }
 
-    /**
-     * Sets the last attack timestamp.
-     *
-     * @param time timestamp to store
-     */
     public void setLastAttackTime(final long time) {
         this.lastAttackTime = time;
     }
 
-    /**
-     * Checks whether the enemy is closer than a threshold to the given player.
-     *
-     * @param bald player to compare distance with
-     * @return true if closer than the internal threshold
-     */
     public boolean isCloseTo(final Bald bald) {
         if (bald == null) {
             return false;
@@ -275,17 +339,11 @@ public class DummyEnemy extends Entity implements Combatant {
 
     // ------------------- Overrides -------------------
 
-    /**
-     * @return render width in pixels
-     */
     @Override
     public int getWidth() {
         return FRAME_WIDTH;
     }
 
-    /**
-     * @return render height in pixels
-     */
     @Override
     public int getHeight() {
         return FRAME_HEIGHT;

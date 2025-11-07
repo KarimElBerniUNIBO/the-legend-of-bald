@@ -544,7 +544,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         }
 
         combatManager.checkEnemyAttacks();
-        enemies.removeIf(enemy -> !enemy.isAlive());
+        enemies.removeIf(DummyEnemy::isRemovable);
         enemies.forEach(enemy -> {
             if (enemy.isCloseTo(bald)) {
                 enemy.followPlayer(bald);
