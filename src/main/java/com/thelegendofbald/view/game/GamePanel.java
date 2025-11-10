@@ -78,6 +78,8 @@ import com.thelegendofbald.view.main.TileMap;
  */
 public final class GamePanel extends MenuPanel implements Runnable, Game {
 
+    private static final int FINAL_GAME_SCREEN_TITLE_TRANSPARENCY = 150;
+
     private static final long serialVersionUID = 1L;
 
     /* ===================== Costanti di configurazione ===================== */
@@ -132,7 +134,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private static final long SLEEP_INTERVAL_WHEN_PAUSED = 100L;
     private static final long LATE_FRAME_BACKOFF_NANOS = 250_000L; // 0.25 ms
     private static final long PORTAL_COOLDOWN_MS = 2000; // 0.3s, regola a piacere
-    private long portalCooldownUntil = 0L;
 
     private static final int WEAPON_ICON = 50;
 
@@ -148,8 +149,10 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private static final int LOOT_LVL_MIN = 7;
     private static final int LOOT_LVL_MAX = 8;
 
-    private Integer pendingEntryTileId = null;   // es. ID_PREV_PORTAL o ID_PORTAL
-    private Integer pendingEntryIndex = null;    // indice del portale usato in uscita
+    private long portalCooldownUntil;
+
+    private Integer pendingEntryTileId;   // es. ID_PREV_PORTAL o ID_PORTAL
+    private Integer pendingEntryIndex;    // indice del portale usato in uscita
 
     /* ===================== Stato e componenti ===================== */
     // ordine JLS: access, static, final, transient, volatile
@@ -189,8 +192,8 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private transient Thread gameThread;
     private volatile boolean running; // default false
-    private volatile boolean gameOver = false;
-    private volatile boolean gameWon = false;
+    private volatile boolean gameOver;
+    private volatile boolean gameWon;
     private volatile boolean paused;
     private volatile int maxFPS = DEFAULT_MAX_FPS;
     private volatile boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
@@ -623,8 +626,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         this.saveGame();
         this.pressedKeys.clear(); // Impedisce al personaggio di muoversi
         this.mainMenuButton.setVisible(true);
-
-    }       
+    }
 
     /** 
      * Gestisce la logica di Game Over: ferma il gioco e imposta il flag.
@@ -802,7 +804,9 @@ private void handleGameOver() {
     }
 
     private void spawnBossAt(final Point topLeft) {
-        if (boss != null) return; // garantisci unicità
+        if (boss != null) {
+            return;
+        } // garantisci unicità
 
         final int ts = tileMap.getTileSize();
         final int x = topLeft.x + (ts - BOSS_W) / 2;
@@ -858,9 +862,8 @@ private void handleGameOver() {
         // ⬇️ BARRA HP DEL BOSS (HUD)
         drawBossHP(g2d);
         if (gameOver) {
-        drawGameOverScreen(g2d);
-        }
-        else if(gameWon){
+            drawGameOverScreen(g2d);
+        } else if (gameWon) {
             // Chiama il nuovo metodo di disegno
             drawGameWonScreen(g2d);
         }
@@ -873,7 +876,7 @@ private void handleGameOver() {
  */
 private void drawGameWonScreen(final Graphics2D g2d) {
     // 1. Disegna un overlay scuro semi-trasparente
-    g2d.setColor(new Color(0, 0, 0, 150));
+    g2d.setColor(new Color(0, 0, 0, FINAL_GAME_SCREEN_TITLE_TRANSPARENCY));
     g2d.fillRect(0, 0, getWidth(), getHeight());
 
     // 2. Prepara il testo "YOU WON"
@@ -900,7 +903,7 @@ private void drawGameWonScreen(final Graphics2D g2d) {
  */
 private void drawGameOverScreen(final Graphics2D g2d) {
     // 1. Disegna un overlay scuro semi-trasparente
-    g2d.setColor(new Color(0, 0, 0, 150)); // 150 = ~60% trasparenza
+    g2d.setColor(new Color(0, 0, 0, FINAL_GAME_SCREEN_TITLE_TRANSPARENCY)); // 150 = ~60% trasparenza
     g2d.fillRect(0, 0, getWidth(), getHeight());
 
     // 2. Prepara il testo "GAME OVER"
@@ -936,7 +939,9 @@ private void drawGameOverScreen(final Graphics2D g2d) {
     }
 
     private void drawBossHP(final Graphics2D g2d) {
-        if (boss == null || !boss.isAlive()) return;
+        if (boss == null || !boss.isAlive()) {
+            return;
+        }
 
         final int w = 420, h = 18;
         final int x = (getWidth() - w) / 2;
@@ -947,20 +952,33 @@ private void drawGameOverScreen(final Graphics2D g2d) {
         final double ratio = Math.max(0.0, Math.min(1.0, hp / (double) max));
         final int fill = (int) (w * ratio);
 
-        g2d.setColor(new Color(0, 0, 0, 140));
-        g2d.fillRoundRect(x - 6, y - 6, w + 12, h + 18, 12, 12);
+        final int transparency = 140;
+        final int xOffset = 6;
+        final int yOffset = 6;
+        final int widthOffset = 12;
+        final int heightOffset = 18;
+        final int arcWidth = 12;
+        final int arcHeight = 12;
+        final Color textColor = new Color(200, 40, 40);
+
+        g2d.setColor(new Color(0, 0, 0, transparency));
+        g2d.fillRoundRect(x - xOffset, y - yOffset, w + widthOffset, h + heightOffset, arcWidth, arcHeight);
 
         g2d.setColor(Color.DARK_GRAY);
         g2d.fillRect(x, y, w, h);
 
-        g2d.setColor(new Color(200, 40, 40));
+        g2d.setColor(textColor);
         g2d.fillRect(x, y, fill, h);
 
         g2d.setColor(Color.WHITE);
         g2d.drawRect(x, y, w, h);
 
-        g2d.setFont(DEFAULT_FONT.deriveFont(14f));
-        g2d.drawString("FINAL BOSS  " + hp + "/" + max, x + 6, y + h + 16);
+        final float fontSize = 14f;
+        g2d.setFont(DEFAULT_FONT.deriveFont(fontSize));
+
+        final int xTextOffset = 6;
+        final int yTextOffset = 14;
+        g2d.drawString("FINAL BOSS  " + hp + "/" + max, x + xTextOffset, y + h + yTextOffset);
     }
 
 
@@ -1060,10 +1078,11 @@ private void drawGameOverScreen(final Graphics2D g2d) {
         this.add(shopButton, shopButtonGBC);
 
         final GridBagConstraints mainMenuButtonGBC = new GridBagConstraints();
+        final Insets mainMenuInsets = new Insets(150, 0, 0, 0);
         mainMenuButtonGBC.gridx = 0;
         mainMenuButtonGBC.gridy = 0;
         mainMenuButtonGBC.anchor = GridBagConstraints.CENTER;
-        mainMenuButtonGBC.insets = new Insets(150, 0, 0, 0);
+        mainMenuButtonGBC.insets = mainMenuInsets;
         this.add(mainMenuButton, mainMenuButtonGBC);
     }
 

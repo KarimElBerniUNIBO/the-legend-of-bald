@@ -72,11 +72,11 @@ public class CombatManager {
             }
 
             bald.attack();
-            
+
             // MODIFICA: Passa anche il boss al metodo di attacco.
             // Questo richiederà di aggiornare le tue classi Weapon (es. Sword).
             w.performAttack(bald, enemies, boss); 
-            
+
             lastAttackTime = now;
         });
     }
@@ -94,7 +94,7 @@ public class CombatManager {
                     bald.takeDamage(enemy.getAttackPower());
                     enemy.setLastAttackTime(now);
                 });
-        
+
         // NOTA: Gli attacchi del Boss (Melee/AOE) sono gestiti
         // nel suo metodo followPlayer(), quindi non serve aggiungerli qui.
     }
