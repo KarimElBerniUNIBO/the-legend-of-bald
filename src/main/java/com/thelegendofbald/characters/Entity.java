@@ -2,6 +2,7 @@ package com.thelegendofbald.characters;
 
 import java.awt.Rectangle;
 import com.thelegendofbald.life.LifeComponent;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Base class for all entities in the game (player, enemies, NPCs).
@@ -131,8 +132,12 @@ public class Entity {
     }
 
     /**
-     * @return life component of this entity
-     */
+    * @return life component of this entity
+    */
+    @SuppressFBWarnings(
+        value = "EI_EXPOSE_REP",
+        justification = "Intentional: The UI (LifePanel) needs the original reference to attach a PropertyChangeListener."
+    )
     public LifeComponent getLifeComponent() {
         return this.lifeComponent;
     }

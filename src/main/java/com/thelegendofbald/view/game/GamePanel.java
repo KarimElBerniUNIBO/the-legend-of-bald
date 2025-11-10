@@ -814,7 +814,6 @@ private void handleGameOver() {
 
         boss = new FinalBoss(
             x, y,
-            BOSS_W, BOSS_H,          // larghezza e altezza del boss
             "Final Boss",            // nome
             bossHp,                  // salute massima
             bossAtk,                 // attacco base

@@ -13,6 +13,7 @@ plugins {
      */
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.danilopianini.gradle-java-qa") version "1.96.0"
+    id("com.github.spotbugs") version "6.0.7"
 }
 
 repositories { // Where to search for dependencies
@@ -22,7 +23,6 @@ repositories { // Where to search for dependencies
 dependencies {
     // Suppressions for SpotBugs
     compileOnly("com.github.spotbugs:spotbugs-annotations:4.9.3")
-
     // Maven dependencies are composed by a group name, a name and a version, separated by colons
     implementation("com.omertron:API-OMDB:1.5")
     implementation("org.jooq:jool:0.9.15")

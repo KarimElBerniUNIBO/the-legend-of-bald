@@ -177,8 +177,8 @@ public final class Bald extends Entity implements Combatant {
             this.posX = newPosX;
             this.posY = newPosY;
 
-            setX((int) Math.round(newPosX));
-            setY((int) Math.round(newPosY));
+            this.setX((int) (posX + 0.5));
+            this.setY((int) (posY + 0.5));
         } else {
             LoggerUtils.error("Spawn point not found for tile id: " + spawnTileId);
         }
@@ -451,8 +451,8 @@ public final class Bald extends Entity implements Combatant {
             posY = nextY;
         }
 
-        this.setX((int) Math.round(posX));
-        this.setY((int) Math.round(posY));
+        this.setX((int) (posX + 0.5));
+        this.setY((int) (posY + 0.5));
     }
 
     // ------------------- Accessors -------------------
@@ -554,8 +554,8 @@ public final class Bald extends Entity implements Combatant {
     @Override
     public Rectangle getBounds() {
         // Calcola l'offset per centrare la hitbox (come nel metodo move)
-        final int xOffset = (int) Math.round((ENTITY_SIZE - HITBOX_WIDTH) / 2.0);
-        final int yOffset = (int) Math.round((ENTITY_SIZE - HITBOX_HEIGHT) / 2.0);
+        final int xOffset = (int) ((ENTITY_SIZE - HITBOX_WIDTH) / 2.0);
+        final int yOffset = (int) ((ENTITY_SIZE - HITBOX_HEIGHT) / 2.0);
 
         // Ritorna la hitbox reale
         return new Rectangle(getX() + xOffset, getY() + yOffset, HITBOX_WIDTH, HITBOX_HEIGHT);

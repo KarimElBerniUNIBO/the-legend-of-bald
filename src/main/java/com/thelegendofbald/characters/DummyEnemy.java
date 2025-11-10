@@ -28,39 +28,37 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     // ---- Costanti ----
+    // MODIFICA: Riorganizzate per mettere tutte le costanti statiche prima dei campi istanza
     private static final int FRAME_WIDTH = 50;
     private static final int FRAME_HEIGHT = 50;
     private static final int RENDER_SIZE = 50;
-
-    // Costanti animazione (MODIFICATE)
     private static final int RUN_FRAMES = 9;
-    private static final int HURT_FRAMES = 5; // <-- MODIFICA (da 8 png)
-    private static final int DEAD_FRAMES = 7; // <-- MODIFICA (da 8 png)
+    private static final int HURT_FRAMES = 5;
+    private static final int DEAD_FRAMES = 7;
     private static final int DEFAULT_FRAME_DELAY = 5;
-
     private static final double DEFAULT_SPEED = 1.0;
     private static final double MIN_DISTANCE = 200;
 
-    // ---- Stato ----
+    // MODIFICA: Rinominati in MAIUSCOLO per rispettare le convenzioni Java
+    private static final double SPEED_X = DEFAULT_SPEED;
+    private static final double SPEED_Y = DEFAULT_SPEED;
+    private static final int FRAME_DELAY = DEFAULT_FRAME_DELAY;
+
+
+    // ---- Stato (Campi Istanza) ----
     private final int attackPower;
     private final transient TileMap tileMap;
 
-    private static final double speedX = DEFAULT_SPEED;
-    private static final double speedY = DEFAULT_SPEED;
-
-    // Array delle animazioni (MODIFICATI)
     private BufferedImage[] runFrames;
     private BufferedImage[] hurtFrames;
     private BufferedImage[] deadFrames;
 
     private int currentFrame;
-    private static final int frameDelay = DEFAULT_FRAME_DELAY;
     private int frameCounter;
-
     private long lastAttackTime;
-    private EnemyState state = EnemyState.RUNNING; // <-- MODIFICA: Stato iniziale
+    private EnemyState state = EnemyState.RUNNING;
 
-/**
+    /**
      * Crea un nemico.
      *
      * @param x           posizione X di spawn
@@ -75,7 +73,7 @@ public final class DummyEnemy extends Entity implements Combatant {
         super(x, y, FRAME_WIDTH, FRAME_HEIGHT, name, new LifeComponent(health));
         this.attackPower = attackPower;
         this.tileMap = Objects.requireNonNull(tileMap, "tileMap must not be null");
-        loadFrames(); // <-- MODIFICA: Nome metodo cambiato
+        loadFrames();
     }
 
     // ------------------- Resources -------------------
@@ -88,24 +86,20 @@ public final class DummyEnemy extends Entity implements Combatant {
         hurtFrames = new BufferedImage[HURT_FRAMES];
         deadFrames = new BufferedImage[DEAD_FRAMES];
 
-        // 1. Carica animazione RUN (Codice esistente)
+        // 1. Carica animazione RUN
         for (int i = 0; i < RUN_FRAMES; i++) {
             final String framePath = String.format("/images/dummyenemy_run/__TRAINEE_Run_00%d.png", i + 1);
             runFrames[i] = loadImage(framePath);
         }
 
-        // 2. Carica animazione HURT (NUOVO)
+        // 2. Carica animazione HURT
         for (int i = 0; i < HURT_FRAMES; i++) {
-            // --- ATTENZIONE: Correggi questo percorso! ---
-            // Sostituisci "06-Hurt" e "Hurt_File_Name_00%d.png" con i tuoi percorsi e nomi file
             final String framePath = String.format("/images/dummyenemy_run/06-Hurt/__TRAINEE_Hurt_00%d.png", i + 1);
             hurtFrames[i] = loadImage(framePath);
         }
 
-        // 3. Carica animazione DEAD (NUOVO)
+        // 3. Carica animazione DEAD
         for (int i = 0; i < DEAD_FRAMES; i++) {
-            // --- ATTENZIONE: Correggi questo percorso! ---
-            // Sostituisci "07-Dead" e "Dead_File_Name_00%d.png" con i tuoi percorsi e nomi file
             final String framePath = String.format("/images/dummyenemy_run/07-Dead/__TRAINEE_Dead_00%d.png", i + 1);
             deadFrames[i] = loadImage(framePath);
         }
@@ -143,19 +137,18 @@ public final class DummyEnemy extends Entity implements Combatant {
      */
     @Override
     public void takeDamage(final int damage) {
-        // Non può essere colpito se sta già morendo o è morto
         if (state == EnemyState.DYING || state == EnemyState.DEAD) {
             return;
         }
 
         this.getLifeComponent().damageTaken(damage);
-        currentFrame = 0; // Resetta l'animazione
+        currentFrame = 0;
         frameCounter = 0;
 
         if (this.getLifeComponent().isDead()) {
-            state = EnemyState.DYING; // Inizia l'animazione di morte
+            state = EnemyState.DYING;
         } else {
-            state = EnemyState.HURT; // Inizia l'animazione di colpo
+            state = EnemyState.HURT;
         }
     }
 
@@ -175,7 +168,8 @@ public final class DummyEnemy extends Entity implements Combatant {
      */
     public void updateAnimation() {
         frameCounter++;
-        if (frameCounter < frameDelay) {
+        // MODIFICA: Usa la costante maiuscola
+        if (frameCounter < FRAME_DELAY) {
             return;
         }
         frameCounter = 0;
@@ -191,25 +185,24 @@ public final class DummyEnemy extends Entity implements Combatant {
             case HURT:
                 if (currentFrame >= HURT_FRAMES) {
                     currentFrame = 0;
-                    state = EnemyState.RUNNING; // Torna a correre
+                    state = EnemyState.RUNNING;
                 }
                 break;
 
             case DYING:
                 if (currentFrame >= DEAD_FRAMES) {
-                    currentFrame = DEAD_FRAMES - 1; // Rimane sull'ultimo frame
-                    state = EnemyState.DEAD; // Ora è completamente morto
+                    currentFrame = DEAD_FRAMES - 1;
+                    state = EnemyState.DEAD;
                 }
                 break;
 
             case DEAD:
-                // Rimane sull'ultimo frame di morte
                 currentFrame = DEAD_FRAMES - 1;
                 break;
         }
     }
 
-/**
+    /**
      * Rende il frame corretto in base allo stato.
      *
      * @param g il contesto Graphics su cui disegnare
@@ -217,7 +210,6 @@ public final class DummyEnemy extends Entity implements Combatant {
     public void render(final Graphics g) {
         BufferedImage frame = null;
 
-        // 1. Seleziona l'array di frame corretto
         switch (state) {
             case RUNNING:
                 if (runFrames != null && runFrames.length > 0) {
@@ -237,7 +229,6 @@ public final class DummyEnemy extends Entity implements Combatant {
                 break;
         }
 
-        // 2. Disegna il frame
         if (frame != null) {
             if (!isFacingRight()) {
                 g.drawImage(frame, getX(), getY(), RENDER_SIZE, RENDER_SIZE, null);
@@ -246,7 +237,6 @@ public final class DummyEnemy extends Entity implements Combatant {
                             -RENDER_SIZE, RENDER_SIZE, null);
             }
         } else {
-            // Fallback se le animazioni non sono caricate
             g.setColor(Color.RED);
             g.fillRect(getX(), getY(), RENDER_SIZE, RENDER_SIZE);
         }
@@ -260,7 +250,6 @@ public final class DummyEnemy extends Entity implements Combatant {
      * @param bald il giocatore (Bald) da seguire
      */
     public void followPlayer(final Bald bald) {
-        // Non si muove se è colpito, sta morendo, è morto, o il player non c'è
         if (state != EnemyState.RUNNING || bald == null) {
             return;
         }
@@ -269,23 +258,26 @@ public final class DummyEnemy extends Entity implements Combatant {
         double dy = 0.0;
 
         if (bald.getX() > getX()) {
-            dx = speedX;
+            // MODIFICA: Usa la costante maiuscola
+            dx = SPEED_X;
             setFacingRight(true);
         } else if (bald.getX() < getX()) {
-            dx = -speedX;
+            // MODIFICA: Usa la costante maiuscola
+            dx = -SPEED_X;
             setFacingRight(false);
         }
 
         if (bald.getY() > getY()) {
-            dy = speedY;
+            // MODIFICA: Usa la costante maiuscola
+            dy = SPEED_Y;
         } else if (bald.getY() < getY()) {
-            dy = -speedY;
+            // MODIFICA: Usa la costante maiuscola
+            dy = -SPEED_Y;
         }
 
         moveWithCollision(dx, dy);
     }
 
-    // ... (moveWithCollision e isColliding rimangono invariati) ...
     private void moveWithCollision(final double dx, final double dy) {
         final double nextX = getX() + dx;
         final double nextY = getY() + dy;
@@ -326,12 +318,11 @@ public final class DummyEnemy extends Entity implements Combatant {
      */
     @Override
     public boolean isAlive() {
-        // È "vivo" (può essere attaccato) finché non sta morendo
         return state == EnemyState.RUNNING || state == EnemyState.HURT;
     }
 
     /**
-     * (NUOVO) Usato da GamePanel per sapere quando rimuovere il corpo.
+     * Usato da GamePanel per sapere quando rimuovere il corpo.
      * @return true solo se il nemico è nello stato finale DEAD.
      */
     public boolean isRemovable() {
@@ -373,11 +364,17 @@ public final class DummyEnemy extends Entity implements Combatant {
 
     // ------------------- Overrides -------------------
 
+    /**
+     * @return la larghezza di collisione/render del nemico
+     */
     @Override
     public int getWidth() {
         return FRAME_WIDTH;
     }
 
+    /**
+     * @return l'altezza di collisione/render del nemico
+     */
     @Override
     public int getHeight() {
         return FRAME_HEIGHT;
