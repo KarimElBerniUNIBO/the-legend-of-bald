@@ -1,11 +1,14 @@
 package com.thelegendofbald.characters;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
+import java.util.Optional;
+
 import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
@@ -91,7 +94,7 @@ public final class FinalBoss extends Entity implements Combatant {
         this.maxHealth = Math.max(1, maxHealth);
         this.health = this.maxHealth;
         this.baseAttackPower = baseAttackPower;
-        this.map = java.util.Objects.requireNonNull(map, "TileMap must not be null");
+        this.map = Objects.requireNonNull(map, "TileMap must not be null");
         this.tileSize = map.getTileSize();
         loadRunFrames(); 
         updatePhase();
@@ -297,12 +300,7 @@ public final class FinalBoss extends Entity implements Combatant {
      * @param bald il giocatore
      */
     private void performMelee(final Bald bald) {
-        try {
-            bald.takeDamage(getAttackPower());
-        } catch (final RuntimeException e) {
-            // MODIFICA: Aggiunto log per fixare [EmptyCatchBlock]
-            LoggerUtils.error("Errore durante performMelee: " + e.getMessage());
-        }
+        Optional.ofNullable(bald).ifPresent(b -> b.takeDamage(getAttackPower()));
     }
 
     /**
@@ -310,19 +308,15 @@ public final class FinalBoss extends Entity implements Combatant {
      * @param bald il giocatore
      */
     private void tryAoe(final Bald bald) {
+        final Bald player = Objects.requireNonNull(bald, "Bald must not be null");
         final long now = System.currentTimeMillis();
         if ((now - lastAoeAt) < AOE_COOLDOWN_MS) {
             return;
         }
-        final int dx = bald.getX() - getX();
-        final int dy = bald.getY() - getY();
+        final int dx = player.getX() - getX();
+        final int dy = player.getY() - getY();
         if (Math.hypot(dx, dy) <= AOE_RANGE_PX) {
-            try { 
-                bald.takeDamage(getAttackPower() + AOE_EXTRA_DAMAGE); 
-            } catch (final RuntimeException e) {
-                // MODIFICA: Aggiunto log per fixare [EmptyCatchBlock]
-                LoggerUtils.error("Errore durante tryAoe: " + e.getMessage());
-            }
+            player.takeDamage(getAttackPower() + AOE_EXTRA_DAMAGE);
             lastAoeAt = now;
         }
     }

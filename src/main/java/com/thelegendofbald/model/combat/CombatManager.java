@@ -49,6 +49,11 @@ public class CombatManager {
      * Registra il Boss nel CombatManager dopo che è stato creato.
      * @param boss Il FinalBoss da aggiungere
      */
+    @SuppressFBWarnings(
+        value = "EI2",
+        justification = "CombatManager needs to operate on the same instance of the boss"
+        + " created and managed by GamePanel. This is by design."
+    )
     public void setBoss(final FinalBoss boss) {
         this.boss = boss;
     }

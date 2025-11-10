@@ -44,6 +44,7 @@ public abstract class Weapon extends GameItem {
      *
      * @param attacker The combatant who is attacking.
      * @param targets  The list of combatants that are the targets of the attack.
+     * @param boss     The final boss entity.
      */
     public abstract void performAttack(Combatant attacker, List<? extends Combatant> targets, FinalBoss boss);
 

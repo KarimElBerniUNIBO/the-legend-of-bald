@@ -54,7 +54,6 @@ public abstract class MeleeWeapon extends Weapon {
      */
     @Override
     public void performAttack(final Combatant attacker, final List<? extends Combatant> targets, final FinalBoss boss) {
-        
         final Entity entityAttacker = (Entity) attacker;
         final int attackX = entityAttacker.getX() + entityAttacker.getWidth() / 2;
         final int attackY = entityAttacker.getY();
@@ -73,7 +72,7 @@ public abstract class MeleeWeapon extends Weapon {
         targets.stream()
                 .filter(target -> target.isAlive() && attackArea.intersects(target.getBounds()))
                 .forEach(target -> target.takeDamage(this.getDamage()));
-        
+
         if (boss != null && boss.isAlive() && attackArea.intersects(boss.getBounds())) {
             boss.takeDamage(this.getDamage());
         }

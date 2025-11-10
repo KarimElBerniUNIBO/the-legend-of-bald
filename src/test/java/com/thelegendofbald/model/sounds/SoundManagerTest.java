@@ -38,8 +38,9 @@ class SoundManagerTest {
 
     @Test
     void testAddSoundPlayerSetsVolume() {
-        SoundManager.setMasterVolume(0.7f);
-        assertEquals(0.7f, SoundManager.getMasterVolume(), DELTA);
+        final float testVolume = 0.7f;
+        SoundManager.setMasterVolume(testVolume);
+        assertEquals(testVolume, SoundManager.getMasterVolume(), DELTA);
     }
 
     @Test

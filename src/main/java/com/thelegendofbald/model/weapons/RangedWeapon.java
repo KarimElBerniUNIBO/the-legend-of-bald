@@ -55,7 +55,7 @@ public abstract class RangedWeapon extends Weapon {
     public void performAttack(final Combatant attacker,
                               final List<? extends Combatant> targets,
                               final FinalBoss boss) {
-        
+
         final Entity entityAttacker = (Entity) attacker;
         final int attackX = entityAttacker.getX() + entityAttacker.getWidth() / 2;
         final int attackY = entityAttacker.getY() + entityAttacker.getHeight() / 3;
