@@ -27,6 +27,9 @@ public class StatusEffectManager {
      * @param owner the Bald {@code Bald} character that owns this manager
      */
     public StatusEffectManager(final Bald owner) {
+        if (owner == null) {
+            throw new IllegalArgumentException("Owner Bald cannot be null");
+        }
         this.owner = owner;
     }
 

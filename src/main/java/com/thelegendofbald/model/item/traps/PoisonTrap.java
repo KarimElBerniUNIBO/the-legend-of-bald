@@ -58,7 +58,7 @@ public class PoisonTrap extends Trap implements Animatable {
      * @param numFrames the number of frames in the sprite sheet
      */
     private void loadAnimationFrames(final String path, final int numFrames) {
-        try (InputStream is = getClass().getResourceAsStream(path)) {
+        try (InputStream is = PoisonTrap.class.getResourceAsStream(path)) {
             if (is == null) {
                 LoggerUtils.error("Resource not found: " + path);
                 return;

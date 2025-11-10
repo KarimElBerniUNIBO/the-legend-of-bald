@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import com.thelegendofbald.utils.LoggerUtils;
@@ -25,9 +26,9 @@ public class MapItemLoader {
         final List<ItemSpawnData> data = new ArrayList<>();
 
         final String resourcePath = "/item_map/" + fileName;
-        final InputStream stream = getClass().getResourceAsStream(resourcePath);
+        final InputStream stream = MapItemLoader.class.getResourceAsStream(resourcePath);
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream,StandardCharsets.UTF_8))) {
             String line = reader.readLine();
             while (line != null) {
 

@@ -3,6 +3,7 @@ package com.thelegendofbald.model.item;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -135,10 +136,22 @@ public class GameItem {
     /**
      * Returns the sprite image of the item.
      *
-     * @return the item's sprite
+     * @return defensive copy of the item's sprite image
      */
     public Image getSprite() {
-        return sprite;
+        if (sprite == null) {
+            LoggerUtils.warning("Sprite for item " + name + " is not set!");
+        }
+
+        BufferedImage copy = new BufferedImage(
+            sprite.getWidth(null),
+            sprite.getHeight(null),
+            BufferedImage.TYPE_INT_ARGB
+        );
+        final Graphics g = copy.getGraphics();
+        g.drawImage(sprite, 0, 0, null);
+        g.dispose();
+        return copy;
     }
 
     /**
@@ -175,7 +188,19 @@ public class GameItem {
      * @param sprite the sprite image to set
      */
     public void setSprite(final Image sprite) {
-        this.sprite = sprite;
+        if (sprite == null) {
+            LoggerUtils.error("Attempted to set a null sprite for item: " + name);
+        }
+
+        BufferedImage copy = new BufferedImage(
+            sprite.getWidth(null),
+            sprite.getHeight(null),
+            BufferedImage.TYPE_INT_ARGB
+        );
+        final Graphics g = copy.getGraphics();
+        g.drawImage(sprite, 0, 0, null);
+        g.dispose();
+        this.sprite = copy;
     }
 
     /**
@@ -186,7 +211,7 @@ public class GameItem {
      */
     protected void loadImage(final String imagePath) {
         try {
-            this.sprite = ImageIO.read(getClass().getResourceAsStream(imagePath));
+            this.sprite = ImageIO.read(GameItem.class.getResourceAsStream(imagePath));
         } catch (final IOException e) {
             LoggerUtils.error("Error loading image: " + imagePath);
         } catch (final IllegalArgumentException e) {

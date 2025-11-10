@@ -16,7 +16,7 @@ public class LifeComponent {
     private final int maxHealth;
     private int currentHealth;
 
-    // --- MODIFICA (Aggiunto il gestore degli eventi) ---
+    // --- MODIFICA (Supporto per notifiche di cambiamento) ---
     private final PropertyChangeSupport support;
     public static final String HEALTH_PROPERTY = "currentHealth";
     // --- FINE MODIFICA ---
@@ -35,8 +35,12 @@ public class LifeComponent {
         // --- FINE MODIFICA ---
     }
 
-    
-    public LifeComponent(LifeComponent other) {
+    /**
+     * Copy constructor for LifeComponent.
+     *
+     * @param other The LifeComponent instance to copy from.
+     */
+    public LifeComponent(final LifeComponent other) {
         this.maxHealth = other.maxHealth;
         this.currentHealth = other.currentHealth;
         // --- MODIFICA (Inizializza il support) ---
@@ -45,18 +49,18 @@ public class LifeComponent {
     }
 
     // --- MODIFICA (Metodi per "iscriversi" agli aggiornamenti) ---
-    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+    public void addPropertyChangeListener(final PropertyChangeListener pcl) {
         support.addPropertyChangeListener(pcl);
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+    public void removePropertyChangeListener(final PropertyChangeListener pcl) {
         support.removePropertyChangeListener(pcl);
     }
     // --- FINE MODIFICA ---
 
 
     public static LifeComponent noLife() {
-        LifeComponent lc = new LifeComponent(1);
+        final LifeComponent lc = new LifeComponent(1);
         lc.setCurrentHealth(0);
         return lc; 
     }
@@ -73,7 +77,7 @@ public class LifeComponent {
      */
     public void setCurrentHealth(final int newHealth) {
         // --- MODIFICA (Logica per notificare l'aggiornamento) ---
-        int oldHealth = this.currentHealth;
+        final int oldHealth = this.currentHealth;
         this.currentHealth = Math.max(0, Math.min(newHealth, this.maxHealth));
         
         // "Spara" l'evento di notifica
@@ -89,7 +93,7 @@ public class LifeComponent {
      */
     public void damageTaken(final int damage) {
         // --- MODIFICA (Logica per notificare l'aggiornamento) ---
-        int oldHealth = this.currentHealth;
+        final int oldHealth = this.currentHealth;
         this.currentHealth = Math.max(0, this.currentHealth - damage);
 
         // "Spara" l'evento di notifica
@@ -105,7 +109,7 @@ public class LifeComponent {
      */
     public void heal(final int amount) {
         // --- MODIFICA (Logica per notificare l'aggiornamento) ---
-        int oldHealth = this.currentHealth;
+        final int oldHealth = this.currentHealth;
         
         if (getCurrentHealth() + amount > this.maxHealth) {
             this.currentHealth = this.maxHealth;

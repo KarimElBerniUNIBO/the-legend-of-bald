@@ -2,6 +2,7 @@ package com.thelegendofbald.model.item;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -119,7 +120,7 @@ public class ItemManager {
      * @return a list of all GameItem objects
      */
     public List<GameItem> getItems() {
-        return items;
+        return Collections.unmodifiableList(items);
     }
 
     /**

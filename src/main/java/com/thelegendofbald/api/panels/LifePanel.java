@@ -27,8 +27,11 @@ public class LifePanel extends AdapterPanel implements PropertyChangeListener {
      *      * @param lifeComponent L'istanza di {@link LifeComponent} che questo pannello mostrerà.
      */
     public LifePanel(final LifeComponent lifeComponent) {
-         super();
-         this.lifeComponent = lifeComponent;
+        super();
+        if (lifeComponent == null) {
+            throw new IllegalArgumentException("LifeComponent cannot be null");
+        }
+        this.lifeComponent = lifeComponent;
 
         // --- MODIFICA 3: Iscrivi questo pannello agli aggiornamenti! ---
         // Dice al LifeComponent: "Ehi, quando la tua vita cambia,

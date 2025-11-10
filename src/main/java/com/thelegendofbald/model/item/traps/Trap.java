@@ -92,7 +92,20 @@ public abstract class Trap extends GameItem {
      * @return the current sprite image
      */
     public BufferedImage getCurrentSprite() {
-        return currentSprite;
+        if (currentSprite == null) {
+            LoggerUtils.error("Attempted to get a null sprite for item: " + getName());
+            return null;
+        }
+
+        BufferedImage copy = new BufferedImage(
+            currentSprite.getWidth(null),
+            currentSprite.getHeight(null),
+            BufferedImage.TYPE_INT_ARGB
+        );
+        final Graphics g = copy.getGraphics();
+        g.drawImage(currentSprite, 0, 0, null);
+        g.dispose();
+        return copy;
     }
 
     /**
@@ -101,7 +114,19 @@ public abstract class Trap extends GameItem {
      * @param sprite the sprite image to set
      */
     public void setCurrentSprite(final BufferedImage sprite) {
-        this.currentSprite = sprite;
+        if (sprite == null) {
+            LoggerUtils.error("Attempted to set a null sprite for item: " + getName());
+        }
+
+        BufferedImage copy = new BufferedImage(
+            sprite.getWidth(null),
+            sprite.getHeight(null),
+            BufferedImage.TYPE_INT_ARGB
+        );
+        final Graphics g = copy.getGraphics();
+        g.drawImage(sprite, 0, 0, null);
+        g.dispose();
+        this.currentSprite = copy;
     }
 
     /**

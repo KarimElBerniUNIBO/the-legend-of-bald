@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.thelegendofbald.model.item.Chest;
-import com.thelegendofbald.model.item.GameItem;
-import com.thelegendofbald.model.item.ItemFactory;
 import com.thelegendofbald.model.item.potions.HealthPotion;
 import com.thelegendofbald.model.item.potions.StrengthPotion;
 
@@ -50,12 +47,6 @@ class ItemFactoryTest {
         GameItem item = itemFactory.createItemById(9, TEST_X, TEST_Y);
         assertNotNull(item, "Item should not be null for a valid ID.");
         assertTrue(item instanceof Chest, "Item created should be a Chest.");
-        
-        // Additional check: verify the chest has the correct keyId.
-        Chest chest = (Chest) item;
-        // This is a simplified test; in a real scenario, you'd have a getter for the keyId.
-        // Assuming a getter `getRequiredKeyId()` exists, you would use:
-        // assertEquals(8, chest.getRequiredKeyId(), "Chest should require key with ID 8.");
     }
 
     @Test

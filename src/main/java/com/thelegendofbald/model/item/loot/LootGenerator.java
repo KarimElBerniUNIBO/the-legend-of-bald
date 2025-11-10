@@ -1,5 +1,7 @@
 package com.thelegendofbald.model.item.loot;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -26,7 +28,7 @@ public class LootGenerator {
      */
     public LootGenerator(final ItemFactory itemFactory, final List<Integer> lootPool) {
         this.itemFactory = itemFactory;
-        this.lootPool = lootPool;
+        this.lootPool = Collections.unmodifiableList(lootPool);
     }
 
     /**
