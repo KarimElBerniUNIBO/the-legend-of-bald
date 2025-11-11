@@ -9,7 +9,7 @@ import java.beans.PropertyChangeSupport;
  * health without inheriting from a health-managing class.
  * * ORA implementa il PropertyChangeSupport per notificare le viste.
  */
-public final class LifeComponent {
+public class LifeComponent {
 
     /**
      * Name of the property.
