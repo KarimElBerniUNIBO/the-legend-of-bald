@@ -35,7 +35,7 @@ class BaldTest {
         bald.takeDamage(DAMAGE_30);
         assertTrue(bald.isAlive());
 
-        bald.takeDamage(DAMAGE_25); // total damage > health
+        bald.takeDamage(DAMAGE_25); 
         assertFalse(bald.isAlive());
     }
 

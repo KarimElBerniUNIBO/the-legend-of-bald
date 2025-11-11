@@ -23,7 +23,6 @@ import com.thelegendofbald.view.main.TileMap;
  */
 public final class FinalBoss extends Entity implements Combatant {
 
-    // --- Costanti di tuning ---
     private static final double PHASE2_THRESHOLD = 0.66;
     private static final double PHASE3_THRESHOLD = 0.33;
 
@@ -45,8 +44,6 @@ public final class FinalBoss extends Entity implements Combatant {
     private static final long AOE_COOLDOWN_MS = 2000;
 
     private static final int AGGRO_RANGE_PX = 200; 
-
-    // --- Costanti per Rendering & Animazione ---
     private static final int FRAME_WIDTH = 64;
     private static final int FRAME_HEIGHT = 64;
     private static final int RENDER_SIZE = 64;
@@ -54,7 +51,6 @@ public final class FinalBoss extends Entity implements Combatant {
     private static final int DEFAULT_FRAME_DELAY = 10;
     private static final int FRAME_DELAY = DEFAULT_FRAME_DELAY;
 
-    // --- Stato ---
     private final int baseAttackPower;
     private int phase = 1;
     private boolean alive = true;
@@ -68,7 +64,6 @@ public final class FinalBoss extends Entity implements Combatant {
     private long lastDashAt = -DASH_COOLDOWN_MS;
     private long lastAoeAt = -AOE_COOLDOWN_MS;
 
-    // --- Stato Animazione ---
     private BufferedImage[] runFrames;
     private int currentFrame;
     private int frameCounter;
@@ -100,10 +95,6 @@ public final class FinalBoss extends Entity implements Combatant {
         updatePhase();
     }
 
-    // ============================================================
-    // RISORSE E ANIMAZIONE
-    // ============================================================
-
     private void loadRunFrames() {
         runFrames = new BufferedImage[RUN_FRAMES];
         for (int i = 0; i < RUN_FRAMES; i++) {
@@ -134,10 +125,6 @@ public final class FinalBoss extends Entity implements Combatant {
             currentFrame = (currentFrame + 1) % runFrames.length;
         }
     }
-
-    // ============================================================
-    // COMBATANT
-    // ============================================================
 
     /**
      * Restituisce la potenza d'attacco del boss,
@@ -191,10 +178,6 @@ public final class FinalBoss extends Entity implements Combatant {
         return alive;
     }
 
-    // ============================================================
-    // LOGICA DEL BOSS
-    // ============================================================
-
     /**
      * Gestisce l'IA del boss: insegue, attacca in melee, usa dash e AOE
      * solo se il giocatore è entro il raggio di "aggro".
@@ -219,7 +202,6 @@ public final class FinalBoss extends Entity implements Combatant {
         }
 
         final long now = System.currentTimeMillis();
-        // MODIFICA: Rimosse parentesi inutili
         if (dist >= DASH_MIN_DISTANCE_PX && (now - lastDashAt) >= DASH_COOLDOWN_MS && tryDash(dx, dy)) {
             lastDashAt = now;
             return;
@@ -267,9 +249,6 @@ public final class FinalBoss extends Entity implements Combatant {
         return phase;
     }
 
-    // ============================================================
-    // METODI PRIVATI
-    // ============================================================
 
     /**
      * @return la velocità di movimento per la fase corrente.
@@ -407,9 +386,6 @@ public final class FinalBoss extends Entity implements Combatant {
         return false;
     }
 
-    // ============================================================
-    // RENDER
-    // ============================================================
 
     /**
      * Disegna il frame corrente del boss e la sua barra della vita.
@@ -441,10 +417,6 @@ public final class FinalBoss extends Entity implements Combatant {
         g.setColor(Color.BLACK);
         g.drawRect(getX(), hpBarY, hpBarWidth, hpBarHeight);
     }
-
-    // ============================================================
-    // OVERRIDES (Dimensioni)
-    // ============================================================
 
     /**
      * @return la larghezza del boss in pixel (costante).

@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ProjectileTest {
 
-    // ---- Costanti per eliminare magic numbers ----
     private static final int TILE_SIZE_32 = 32;
     private static final int TILE_WIDTH_32 = 32;
     private static final int TILE_HEIGHT_32 = 32;
@@ -46,7 +45,6 @@ class ProjectileTest {
 
         p.move(map);
 
-        // Leggiamo posizione dalle bounds
         assertEquals(EXPECT_X_15, p.getBounds().x);
         assertEquals(Y_20, p.getBounds().y);
         assertTrue(p.isAlive());
@@ -55,13 +53,9 @@ class ProjectileTest {
 
     @Test
     void deactivatesOnCollisionWithSolidTileCornerCheck() {
-        // Solido in (2,0): con startX=63 e speed=4 il corner destro entra nella colonna 2
         final TileMap map = new SolidAtMap(SOLID_COL_2, SOLID_ROW_0);
         final Projectile p = new Projectile(START_X_63, START_Y_0, DIR_RIGHT, SPEED_4, DMG_5);
-
         p.move(map);
-
-        // Collisione ⇒ posizione invariata e proiettile inattivo
         assertEquals(START_X_63, p.getBounds().x);
         assertEquals(START_Y_0, p.getBounds().y);
         assertFalse(p.isAlive());
@@ -76,8 +70,6 @@ class ProjectileTest {
         assertEquals(BOUNDS_6, p.getBounds().height);
     }
 
-    // ---- Inner types alla fine (InnerTypeLast) ----
-
     /** Mappa vuota: nessuna tile solida. */
     static class EmptyMap extends TileMap {
         EmptyMap() {
@@ -86,7 +78,7 @@ class ProjectileTest {
 
         @Override
         public Tile getTileAt(final int x, final int y) {
-            return null; // nessuna collisione
+            return null; 
         }
     }
 
@@ -112,20 +104,18 @@ class ProjectileTest {
         @Override
         public Tile getTileAt(final int x, final int y) {
             if (x == this.solidX && y == this.solidY) {
-                // Tile solida
                 return new Tile(
-                    null,            // image
-                    TILE_WIDTH_32,   // width
-                    TILE_HEIGHT_32,  // height
-                    TILE_ID_1,       // id
-                    true,            // solid
-                    false,           // resize
-                    false,           // isSpawn
-                    true,            // walkable (irrilevante qui)
-                    null             // overlayImage
+                    null,
+                    TILE_WIDTH_32,
+                    TILE_HEIGHT_32,
+                    TILE_ID_1,
+                    true,
+                    false,
+                    false,
+                    true,
+                    null
                 );
             }
-            // Tile non solida altrove
             return new Tile(
                 null,
                 TILE_WIDTH_32,

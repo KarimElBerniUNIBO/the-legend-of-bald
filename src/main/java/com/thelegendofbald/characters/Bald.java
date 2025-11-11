@@ -33,7 +33,6 @@ import com.thelegendofbald.view.main.TileMap;
  */
 public final class Bald extends Entity implements Combatant {
 
-    // ---- Constants (no magic numbers) ----
     private static final int FRAME_WIDTH = 50;
     private static final int FRAME_HEIGHT = 50;
 
@@ -63,7 +62,6 @@ public final class Bald extends Entity implements Combatant {
                 return t;
             });
 
-    // ---- State ----
     private final Wallet wallet = new Wallet(0);
     private final StatusEffectManager buffManager = new StatusEffectManager(this);
 
@@ -105,7 +103,6 @@ public final class Bald extends Entity implements Combatant {
         loadAllAttackFrames();
     }
 
-    // ------------------- Resources -------------------
 
     private void loadRunFrames() {
         runFrames = new BufferedImage[RUN_FRAMES];
@@ -150,7 +147,6 @@ public final class Bald extends Entity implements Combatant {
         LoggerUtils.info("Attack frames loaded: " + attackFrames.size());
     }
 
-    // ------------------- Spawn / Map -------------------
     /**
      * Sets the current tile map used for collisions and spawn computations.
      * @param map the tile map to use
@@ -184,7 +180,6 @@ public final class Bald extends Entity implements Combatant {
         }
     }
 
-    // ------------------- Combat / Effects -------------------
 
     /**
      * @return the current attack power after buffs are applied
@@ -250,8 +245,6 @@ public final class Bald extends Entity implements Combatant {
     public void shootProjectile() {
         throw new UnsupportedOperationException("Unimplemented method 'shootProjectile'");
     }
-
-    // ------------------- Animation -------------------
 
     /**
      * Starts the attack animation based on the current weapon.
@@ -319,8 +312,6 @@ public final class Bald extends Entity implements Combatant {
         this.attacking = true;
         this.startAttackAnimation();
     }
-
-    // ------------------- Movement & Collisions -------------------
 
     /**
      * Sets horizontal speed; also updates facing direction.
@@ -394,11 +385,8 @@ public final class Bald extends Entity implements Combatant {
             return;
         }
         final double dt = (deltaTime > 0 && !Double.isNaN(deltaTime)) ? deltaTime : (1.0 / 60.0);
-
         final double nextX = posX + speedX * dt * SPEED_MULTIPLIER;
         final double nextY = posY + speedY * dt * SPEED_MULTIPLIER;
-
-        // X axis sweep
         final Rectangle nextHitboxX = new Rectangle(
                 (int) (nextX + (ENTITY_SIZE - HITBOX_WIDTH) / 2.0),
                 (int) (posY + (ENTITY_SIZE - HITBOX_HEIGHT) / 2.0),
@@ -421,7 +409,6 @@ public final class Bald extends Entity implements Combatant {
             }
         }
 
-        // Y axis sweep
         final Rectangle nextHitboxY = new Rectangle(
                 (int) (posX + (ENTITY_SIZE - HITBOX_WIDTH) / 2.0),
                 (int) (nextY + (ENTITY_SIZE - HITBOX_HEIGHT) / 2.0),
@@ -454,8 +441,6 @@ public final class Bald extends Entity implements Combatant {
         this.setX((int) (posX + 0.5));
         this.setY((int) (posY + 0.5));
     }
-
-    // ------------------- Accessors -------------------
 
     /**
      * @return current horizontal speed in px/s
@@ -553,11 +538,8 @@ public final class Bald extends Entity implements Combatant {
      */
     @Override
     public Rectangle getBounds() {
-        // Calcola l'offset per centrare la hitbox (come nel metodo move)
         final int xOffset = (int) ((ENTITY_SIZE - HITBOX_WIDTH) / 2.0);
         final int yOffset = (int) ((ENTITY_SIZE - HITBOX_HEIGHT) / 2.0);
-
-        // Ritorna la hitbox reale
         return new Rectangle(getX() + xOffset, getY() + yOffset, HITBOX_WIDTH, HITBOX_HEIGHT);
     }
 }

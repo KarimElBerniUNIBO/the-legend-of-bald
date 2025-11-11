@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class EntityTest {
 
-    // ---- Costanti per evitare MagicNumber ----
     private static final int X0 = 0;
     private static final int Y0 = 0;
 
@@ -57,13 +56,13 @@ class EntityTest {
         enemy.takeDamage(DAMAGE_15);
         assertTrue(enemy.isAlive(), "Enemy should still be alive after partial damage");
 
-        enemy.takeDamage(DAMAGE_10); // total damage 25 > 20
+        enemy.takeDamage(DAMAGE_10); 
         assertFalse(enemy.isAlive(), "Enemy should be dead after lethal damage");
     }
 
     @Test
     void followPlayerMovesTowardBaldUnlessBlocked() {
-        // Free map: enemy moves closer
+
         final DummyEnemy enemyFree = new DummyEnemy(X0, Y0, HEALTH_30, ENEMY_NAME, ATTACK_5, new EmptyTileMap());
         final Bald bald = new Bald(BALD_X_100, BALD_Y_100, BALD_HEALTH_100, HERO_NAME, BALD_ATTACK_10);
 
@@ -71,7 +70,6 @@ class EntityTest {
         assertTrue(enemyFree.getX() > X0 && enemyFree.getY() > Y0,
                 "Enemy should have moved closer on free map");
 
-        // Solid map: enemy blocked
         final DummyEnemy enemyBlocked = new DummyEnemy(
             START_X_10,
             START_Y_10,
@@ -86,37 +84,35 @@ class EntityTest {
         assertEquals(START_Y_10, enemyBlocked.getY());
     }
 
-    // ---- Inner types alla fine (InnerTypeLast) ----
-
     /** Fake TileMap: no solid tiles, fixed tile size. */
     static class EmptyTileMap extends TileMap {
         EmptyTileMap() {
-            super(X0, Y0, TILE_SIZE_32); // niente spazio dopo '(' (ParenPad)
+            super(X0, Y0, TILE_SIZE_32);
         }
         @Override
-        public Tile getTileAt(final int x, final int y) { // parametri final
-            return null; // always empty
+        public Tile getTileAt(final int x, final int y) { 
+            return null;
         }
     }
 
     /** Fake TileMap: every tile is solid. */
     static class SolidTileMap extends TileMap {
         SolidTileMap() {
-            super(X0, Y0, TILE_SIZE_32); // niente spazio dopo '(' (ParenPad)
+            super(X0, Y0, TILE_SIZE_32); 
         }
 
         @Override
-        public Tile getTileAt(final int x, final int y) { // parametri final
+        public Tile getTileAt(final int x, final int y) { 
             return new Tile(
-                null,               // image
-                TILE_WIDTH_32,      // width
-                TILE_HEIGHT_32,     // height
-                TILE_ID_1,          // id
-                true,               // solid
-                false,              // resize
-                false,              // isSpawn
-                true,               // walkable
-                null                // overlayImage
+                null,
+                TILE_WIDTH_32,
+                TILE_HEIGHT_32,
+                TILE_ID_1,
+                true,
+                false,
+                false,
+                true,
+                null
             );
         }
     }

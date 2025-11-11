@@ -50,13 +50,12 @@ class DummyEnemyTest {
         enemy.takeDamage(DAMAGE_15);
         assertTrue(enemy.isAlive(), "Enemy should still be alive after partial damage");
 
-        enemy.takeDamage(DAMAGE_10); // total damage > health
+        enemy.takeDamage(DAMAGE_10); 
         assertFalse(enemy.isAlive(), "Enemy should be dead after lethal damage");
     }
 
     @Test
     void followPlayerMovesTowardBaldUnlessBlocked() {
-        // Free map: enemy moves closer
         final DummyEnemy enemyFree = new DummyEnemy(
                 START_X_0, START_Y_0, HEALTH_30, ENEMY_NAME, ATTACK_5, new EmptyTileMap()
         );
@@ -66,7 +65,6 @@ class DummyEnemyTest {
         assertTrue(enemyFree.getX() > 0 && enemyFree.getY() > 0,
                 "Enemy should have moved closer on free map");
 
-        // Solid map: enemy blocked
         final DummyEnemy enemyBlocked = new DummyEnemy(
                 START_X_10, START_Y_10, HEALTH_30, ENEMY_NAME, ATTACK_5, new SolidTileMap()
         );
@@ -78,11 +76,11 @@ class DummyEnemyTest {
         /** Fake TileMap: no solid tiles, fixed tile size. */
     static class EmptyTileMap extends TileMap {
         EmptyTileMap() {
-            super(0, 0, 32); // tileSize = 32
+            super(0, 0, 32); 
         }
         @Override
         public Tile getTileAt(final int x, final int y) {
-            return null; // always empty
+            return null; 
         }
     }
 

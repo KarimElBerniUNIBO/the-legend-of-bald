@@ -19,16 +19,14 @@ import com.thelegendofbald.view.main.TileMap;
  */
 public final class DummyEnemy extends Entity implements Combatant {
 
-    // ---- Stati del Nemico (NUOVO) ----
+
     private enum EnemyState {
-        RUNNING, // Insegue il giocatore
-        HURT,    // È stato colpito, animazione "hurt"
-        DYING,   // Sta morendo, animazione "dead"
-        DEAD     // Morto, pronto per essere rimosso
+        RUNNING, 
+        HURT,    
+        DYING,   
+        DEAD     
     }
 
-    // ---- Costanti ----
-    // MODIFICA: Riorganizzate per mettere tutte le costanti statiche prima dei campi istanza
     private static final int FRAME_WIDTH = 50;
     private static final int FRAME_HEIGHT = 50;
     private static final int RENDER_SIZE = 50;
@@ -38,14 +36,9 @@ public final class DummyEnemy extends Entity implements Combatant {
     private static final int DEFAULT_FRAME_DELAY = 5;
     private static final double DEFAULT_SPEED = 1.0;
     private static final double MIN_DISTANCE = 200;
-
-    // MODIFICA: Rinominati in MAIUSCOLO per rispettare le convenzioni Java
     private static final double SPEED_X = DEFAULT_SPEED;
     private static final double SPEED_Y = DEFAULT_SPEED;
     private static final int FRAME_DELAY = DEFAULT_FRAME_DELAY;
-
-
-    // ---- Stato (Campi Istanza) ----
     private final int attackPower;
     private final transient TileMap tileMap;
 
@@ -76,8 +69,6 @@ public final class DummyEnemy extends Entity implements Combatant {
         loadFrames();
     }
 
-    // ------------------- Resources -------------------
-
     /**
      * Carica TUTTI i frame di animazione (Run, Hurt, Dead).
      */
@@ -85,20 +76,16 @@ public final class DummyEnemy extends Entity implements Combatant {
         runFrames = new BufferedImage[RUN_FRAMES];
         hurtFrames = new BufferedImage[HURT_FRAMES];
         deadFrames = new BufferedImage[DEAD_FRAMES];
-
-        // 1. Carica animazione RUN
         for (int i = 0; i < RUN_FRAMES; i++) {
             final String framePath = String.format("/images/dummyenemy_run/__TRAINEE_Run_00%d.png", i + 1);
             runFrames[i] = loadImage(framePath);
         }
 
-        // 2. Carica animazione HURT
         for (int i = 0; i < HURT_FRAMES; i++) {
             final String framePath = String.format("/images/dummyenemy_run/06-Hurt/__TRAINEE_Hurt_00%d.png", i + 1);
             hurtFrames[i] = loadImage(framePath);
         }
 
-        // 3. Carica animazione DEAD
         for (int i = 0; i < DEAD_FRAMES; i++) {
             final String framePath = String.format("/images/dummyenemy_run/07-Dead/__TRAINEE_Dead_00%d.png", i + 1);
             deadFrames[i] = loadImage(framePath);
@@ -124,8 +111,6 @@ public final class DummyEnemy extends Entity implements Combatant {
             return null;
         }
     }
-
-    // ------------------- Combatant -------------------
 
     @Override
     public int getAttackPower() {
@@ -161,14 +146,11 @@ public final class DummyEnemy extends Entity implements Combatant {
         this.getLifeComponent().heal(amount);
     }
 
-    // ------------------- Animation & Render -------------------
-
     /**
      * Avanza l'animazione in base allo stato. (MODIFICATO)
      */
     public void updateAnimation() {
         frameCounter++;
-        // MODIFICA: Usa la costante maiuscola
         if (frameCounter < FRAME_DELAY) {
             return;
         }
@@ -242,8 +224,6 @@ public final class DummyEnemy extends Entity implements Combatant {
         }
     }
 
-    // ------------------- AI & Movement -------------------
-
     /**
      * Segue il giocatore SOLO se è in stato RUNNING.
      *
@@ -258,20 +238,16 @@ public final class DummyEnemy extends Entity implements Combatant {
         double dy = 0.0;
 
         if (bald.getX() > getX()) {
-            // MODIFICA: Usa la costante maiuscola
             dx = SPEED_X;
             setFacingRight(true);
         } else if (bald.getX() < getX()) {
-            // MODIFICA: Usa la costante maiuscola
             dx = -SPEED_X;
             setFacingRight(false);
         }
 
         if (bald.getY() > getY()) {
-            // MODIFICA: Usa la costante maiuscola
             dy = SPEED_Y;
         } else if (bald.getY() < getY()) {
-            // MODIFICA: Usa la costante maiuscola
             dy = -SPEED_Y;
         }
 
@@ -310,8 +286,6 @@ public final class DummyEnemy extends Entity implements Combatant {
         }
         return false;
     }
-
-    // ------------------- Misc -------------------
 
     /**
      * @return true se il nemico non è ancora nello stato DYING o DEAD
@@ -361,8 +335,6 @@ public final class DummyEnemy extends Entity implements Combatant {
         final double distance = Math.hypot(dx, dy);
         return distance < MIN_DISTANCE;
     }
-
-    // ------------------- Overrides -------------------
 
     /**
      * @return la larghezza di collisione/render del nemico

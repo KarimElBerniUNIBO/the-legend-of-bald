@@ -15,16 +15,14 @@ import com.thelegendofbald.view.main.TileMap;
  */
 public final class Projectile extends Entity implements Combatant {
 
-    // ---- Constants (no magic numbers) ----
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
     private static final int CORNER_OFFSET = 5;
     private static final int DIR_RIGHT = 0;
     private static final int DIR_LEFT = 1;
 
-    // ---- State ----
     private final int speed;
-    private final int direction; // 0 = right, 1 = left
+    private final int direction; 
     private boolean active = true;
     private final int damage;
 
@@ -38,7 +36,6 @@ public final class Projectile extends Entity implements Combatant {
      * @param damage    attack power of the projectile
      */
     public Projectile(final int x, final int y, final int direction, final int speed, final int damage) {
-        // LifeComponent is not used by a projectile; pass null
         super(x, y, WIDTH, HEIGHT, "bullet", LifeComponent.noLife());
         this.direction = direction;
         this.speed = speed;
@@ -62,7 +59,6 @@ public final class Projectile extends Entity implements Combatant {
             nextX = getX();
         }
 
-        // Check collision on the four corners of the projectile
         final int[][] points = {
             { nextX, nextY },
             { nextX + CORNER_OFFSET, nextY },
@@ -109,7 +105,6 @@ public final class Projectile extends Entity implements Combatant {
     /** {@inheritDoc} */
     @Override
     public void takeDamage(final int damage) {
-        // no-op: projectiles don't have health
     }
 
     /**
