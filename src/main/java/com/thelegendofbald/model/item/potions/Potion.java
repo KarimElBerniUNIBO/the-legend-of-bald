@@ -1,7 +1,6 @@
 package com.thelegendofbald.model.item.potions;
 
 import com.thelegendofbald.api.item.UsableItem;
-import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.model.item.GameItem;
 
 /**
@@ -20,16 +19,7 @@ public abstract class Potion extends GameItem implements UsableItem {
      * @param height The height of the potion's bounding box.
      * @param name The name of the potion.
      */
-    public Potion(final int x, final int y, final int width, final int height, final String name) {
+    protected Potion(final int x, final int y, final int width, final int height, final String name) {
         super(x, y, width, height, name);
     }
-
-    /**
-     * Applies the unique effect of this potion to the specified player.
-     * This method must be implemented by all concrete potion subclasses.
-     *
-     * @param player The player instance to whom the effect will be applied.
-     */
-    @Override
-    public abstract void applyEffect(Bald player);
 }

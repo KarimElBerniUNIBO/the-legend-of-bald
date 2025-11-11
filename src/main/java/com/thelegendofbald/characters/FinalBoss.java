@@ -18,8 +18,8 @@ import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
 /**
- * FinalBoss — nemico finale che estende Entity e implementa Combatant.
- * Utilizza il sistema di collisione di DummyEnemy.
+ * FinalBoss — final enemy extending Entity and implementing Combatant.
+ * Uses the collision system of DummyEnemy.
  */
 public final class FinalBoss extends Entity implements Combatant {
 
@@ -69,15 +69,15 @@ public final class FinalBoss extends Entity implements Combatant {
     private int frameCounter;
 
     /**
-     * Crea il boss finale.
+     * Creates the final boss.
      *
-     * @param x               posizione X di spawn
-     * @param y               posizione Y di spawn
-     * @param name            nome del boss
-     * @param maxHealth       punti vita massimi
-     * @param baseAttackPower potenza d'attacco base (fase 1)
-     * @param lifeComponent   il componente vita
-     * @param map             mappa per la gestione delle collisioni
+     * @param x               spawn X position
+     * @param y               spawn Y position
+     * @param name            the boss's name
+     * @param maxHealth       maximum health points
+     * @param baseAttackPower base attack power (phase 1)
+     * @param lifeComponent   the life component
+     * @param map             map for collision handling
      */
     public FinalBoss(final int x, final int y,
                      final String name,
@@ -112,7 +112,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * Avanza il frame di animazione in base al contatore.
+     * Advances the animation frame based on the counter.
      */
     public void updateAnimation() {
         frameCounter++;
@@ -127,10 +127,10 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * Restituisce la potenza d'attacco del boss,
-     * moltiplicata in base alla fase corrente.
+     * Returns the boss's attack power,
+     * multiplied based on the current phase.
      *
-     * @return la potenza d'attacco attuale
+     * @return the current attack power
      */
     @Override
     public int getAttackPower() {
@@ -142,10 +142,10 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * Applica danno al boss, riducendo la sua salute
-     * e aggiornando la sua fase se necessario.
+     * Applies damage to the boss, reducing its health
+     * and updating its phase if necessary.
      *
-     * @param damage la quantità di danno da infliggere
+     * @param damage the amount of damage to inflict
      */
     @Override
     public void takeDamage(final int damage) {
@@ -163,7 +163,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * @return il rettangolo di collisione (hitbox) del boss.
+     * @return boss hitboxes.
      */
     @Override
     public Rectangle getBounds() {
@@ -171,7 +171,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * @return true se il boss ha salute > 0, altrimenti false.
+     * @return true if boss has life > 0.
      */
     @Override
     public boolean isAlive() {
@@ -179,10 +179,10 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * Gestisce l'IA del boss: insegue, attacca in melee, usa dash e AOE
-     * solo se il giocatore è entro il raggio di "aggro".
+     * Manages the boss's AI: follows, attacks in melee, uses dash and AOE
+     * only if the player is within "aggro" range.
      *
-     * @param bald il giocatore (Bald) da seguire e attaccare
+     * @param bald the player (Bald) to follow and attack
      */
     public void followPlayer(final Bald bald) {
         if (!alive || bald == null) {
@@ -229,21 +229,21 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * @return la salute corrente del boss.
+     * @return current boss life.
      */
     public int getHealth() {
         return health;
     }
 
     /**
-     * @return la salute massima del boss.
+     * @return boss maximum health.
      */
     public int getMaxHealth() {
         return maxHealth;
     }
 
     /**
-     * @return la fase di combattimento corrente (1, 2, o 3).
+     * @return current combat phase.
      */
     public int getPhase() {
         return phase;
@@ -251,7 +251,7 @@ public final class FinalBoss extends Entity implements Combatant {
 
 
     /**
-     * @return la velocità di movimento per la fase corrente.
+     * @return boss pace, for every phase
      */
     private int getCurrentSpeed() {
         switch (phase) {
@@ -262,7 +262,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * Aggiorna la fase del boss in base alla salute.
+     * Refreshes the boss phases by checking his life
      */
     private void updatePhase() {
         final double ratio = (double) health / maxHealth;
@@ -275,16 +275,16 @@ public final class FinalBoss extends Entity implements Combatant {
         }
     }
     /**
-     * Esegue un attacco melee su Bald.
-     * @param bald il giocatore
+     * Performs an attacks towards Bald
+     * @param bald main character 
      */
     private void performMelee(final Bald bald) {
         Optional.ofNullable(bald).ifPresent(b -> b.takeDamage(getAttackPower()));
     }
 
     /**
-     * Tenta di eseguire un attacco AOE su Bald.
-     * @param bald il giocatore
+     * Attempts to perform an AOE attack on Bald.
+     * @param bald the player
      */
     private void tryAoe(final Bald bald) {
         final Bald player = Objects.requireNonNull(bald, "Bald must not be null");
@@ -301,12 +301,12 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * Tenta di eseguire un "dash" in direzione del giocatore, 
-     * controllando le collisioni.
+     * Attempts to perform a "dash" towards the player, 
+     * checking for collisions.
      *
-     * @param dx componente X della direzione verso il giocatore
-     * @param dy componente Y della direzione verso il giocatore
-     * @return true se il dash è stato eseguito (anche parzialmente), false altrimenti
+     * @param dx X component of the direction towards the player
+     * @param dy Y component of the direction towards the player
+     * @return true if the dash was performed (even partially), false otherwise
      */
     private boolean tryDash(final int dx, final int dy) {
         if (map == null) {
@@ -344,7 +344,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * Muove l'entità controllando le collisioni.
+     * Moves entity by checking collisions.
      * @param dx delta X
      * @param dy delta Y
      */
@@ -361,10 +361,10 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * Controlla se l'entità colliderebbe in una data posizione.
-     * @param nextX prossima posizione X
-     * @param nextY prossima posizione Y
-     * @return true se c'è collisione
+     * Checks if the entity would collide at a given position.
+     * @param nextX next X position
+     * @param nextY next Y position
+     * @return true if there is a collision
      */
     private boolean isColliding(final double nextX, final double nextY) {
         final int entityWidth = getWidth();
@@ -388,9 +388,9 @@ public final class FinalBoss extends Entity implements Combatant {
 
 
     /**
-     * Disegna il frame corrente del boss e la sua barra della vita.
+     * Renders the boss's current frame and its health bar.
      *
-     * @param g il contesto Graphics su cui disegnare
+     * @param g the Graphics context to draw on
      */
     public void render(final Graphics g) {
         final BufferedImage frame =
@@ -419,7 +419,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * @return la larghezza del boss in pixel (costante).
+     * @return Final Boss width value.
      */
     @Override
     public int getWidth() {
@@ -427,7 +427,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * @return l'altezza del boss in pixel (costante).
+     * @return Final Boss height value.
      */
     @Override
     public int getHeight() {

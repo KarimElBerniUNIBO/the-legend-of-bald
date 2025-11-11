@@ -20,7 +20,7 @@ public abstract class StatusEffect {
      * @param name the name of the status effect
      * @param durationMs the duration of the status effect in milliseconds
      */
-    public StatusEffect(final String name, final long durationMs) {
+    protected StatusEffect(final String name, final long durationMs) {
         this.name = name;
         this.durationMs = durationMs;
         this.isActive = false;
