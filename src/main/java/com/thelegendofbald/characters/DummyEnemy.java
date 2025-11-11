@@ -15,16 +15,16 @@ import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
 /**
- * Nemico semplice che segue il giocatore, reagisce ai colpi e ha un'animazione di morte.
+ * Simple enemy that follows the player, reacts to hits, and has a death animation.
  */
 public final class DummyEnemy extends Entity implements Combatant {
 
 
     private enum EnemyState {
-        RUNNING, 
-        HURT,    
-        DYING,   
-        DEAD     
+        RUNNING,
+        HURT,
+        DYING,
+        DEAD 
     }
 
     private static final int FRAME_WIDTH = 50;
@@ -52,14 +52,14 @@ public final class DummyEnemy extends Entity implements Combatant {
     private EnemyState state = EnemyState.RUNNING;
 
     /**
-     * Crea un nemico.
+     * Creates an enemy.
      *
-     * @param x           posizione X di spawn
-     * @param y           posizione Y di spawn
-     * @param health      punti vita iniziali
-     * @param name        nome dell'entità
-     * @param attackPower potenza d'attacco base
-     * @param tileMap     mappa per la gestione delle collisioni
+     * @param x           spawn X position
+     * @param y           spawn Y position
+     * @param health      initial health points
+     * @param name        entity name
+     * @param attackPower base attack power
+     * @param tileMap     map for collision handling
      */
     public DummyEnemy(final int x, final int y, final int health, final String name,
                       final int attackPower, final TileMap tileMap) {
@@ -70,7 +70,7 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     /**
-     * Carica TUTTI i frame di animazione (Run, Hurt, Dead).
+     * Loads ALL animation frames (Run, Hurt, Dead).
      */
     private void loadFrames() {
         runFrames = new BufferedImage[RUN_FRAMES];
@@ -93,21 +93,21 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     /**
-     * Metodo helper per caricare una singola immagine.
+     * Helper method to load a single image.
      *
-     * @param path il percorso della risorsa (immagine) da caricare
-     * @return L'immagine caricata come BufferedImage, o null se non trovata
+     * @param path the resource (image) path to load
+     * @return The loaded image as BufferedImage, or null if not found
      */
     private BufferedImage loadImage(final String path) {
         try (InputStream is = getClass().getResourceAsStream(path)) {
             if (is != null) {
                 return ImageIO.read(is);
             } else {
-                LoggerUtils.error("Frame non trovato: " + path);
+                LoggerUtils.error("Frame not found: " + path);
                 return null;
             }
         } catch (final IOException e) {
-            LoggerUtils.error("Errore caricamento frame " + path + ": " + e.getMessage());
+            LoggerUtils.error("Error loading frame " + path + ": " + e.getMessage());
             return null;
         }
     }
@@ -118,7 +118,7 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     /**
-     * Applica danno e cambia stato in HURT o DYING. (MODIFICATO)
+     * Applies damage and changes state to HURT or DYING. (MODIFIED)
      */
     @Override
     public void takeDamage(final int damage) {
@@ -138,16 +138,16 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     /**
-     * Cura il nemico ripristinando la salute.
+     * Heals the enemy by restoring health.
      *
-     * @param amount la quantità di salute da ripristinare
+     * @param amount the amount of health to restore
      */
     public void heal(final int amount) {
         this.getLifeComponent().heal(amount);
     }
 
     /**
-     * Avanza l'animazione in base allo stato. (MODIFICATO)
+     * Advances the animation based on the current state. (MODIFIED)
      */
     public void updateAnimation() {
         frameCounter++;
@@ -185,9 +185,9 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     /**
-     * Rende il frame corretto in base allo stato.
+     * Renders the correct frame based on the state.
      *
-     * @param g il contesto Graphics su cui disegnare
+     * @param g the Graphics context to draw on
      */
     public void render(final Graphics g) {
         BufferedImage frame = null;
@@ -225,9 +225,9 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     /**
-     * Segue il giocatore SOLO se è in stato RUNNING.
+     * Follows the player ONLY if in the RUNNING state.
      *
-     * @param bald il giocatore (Bald) da seguire
+     * @param bald the player (Bald) to follow
      */
     public void followPlayer(final Bald bald) {
         if (state != EnemyState.RUNNING || bald == null) {
@@ -288,7 +288,7 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     /**
-     * @return true se il nemico non è ancora nello stato DYING o DEAD
+     * @return true if the enemy is not yet in the DYING or DEAD state
      */
     @Override
     public boolean isAlive() {
@@ -296,35 +296,35 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     /**
-     * Usato da GamePanel per sapere quando rimuovere il corpo.
-     * @return true solo se il nemico è nello stato finale DEAD.
+     * Used by GamePanel to know when to remove the body.
+     * @return true only if the enemy is in the final DEAD state.
      */
     public boolean isRemovable() {
         return state == EnemyState.DEAD;
     }
 
     /**
-     * @return il timestamp (in millisecondi) dell'ultimo attacco
+     * @return the timestamp (in milliseconds) of the last attack
      */
     public long getLastAttackTime() {
         return lastAttackTime;
     }
 
     /**
-     * Imposta il timestamp dell'ultimo attacco.
+     * Sets the timestamp of the last attack.
      *
-     * @param time il timestamp (in millisecondi) da memorizzare
+     * @param time the timestamp (in milliseconds) to store
      */
     public void setLastAttackTime(final long time) {
         this.lastAttackTime = time;
     }
 
     /**
-     * Controlla se il nemico è sufficientemente vicino al giocatore
-     * (entro la distanza MIN_DISTANCE).
+     * Checks if the enemy is sufficiently close to the player
+     * (within MIN_DISTANCE).
      *
-     * @param bald il giocatore (Bald) da controllare
-     * @return true se il giocatore è vicino, altrimenti false
+     * @param bald the player (Bald) to check
+     * @return true if the player is close, false otherwise
      */
     public boolean isCloseTo(final Bald bald) {
         if (bald == null) {
@@ -337,7 +337,7 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     /**
-     * @return la larghezza di collisione/render del nemico
+     * @return the enemy's collision/render width
      */
     @Override
     public int getWidth() {
@@ -345,7 +345,7 @@ public final class DummyEnemy extends Entity implements Combatant {
     }
 
     /**
-     * @return l'altezza di collisione/render del nemico
+     * @return the enemy's collision/render height
      */
     @Override
     public int getHeight() {

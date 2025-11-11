@@ -533,8 +533,8 @@ public final class Bald extends Entity implements Combatant {
     }
 
     /**
-     * Ritorna la hitbox di combattimento (piccola e centrata), 
-     * non quella di rendering (grande).
+     * Returns the combat hitbox (small and centered),
+     * not the rendering hitbox (large).
      */
     @Override
     public Rectangle getBounds() {
