@@ -97,7 +97,7 @@ public abstract class Trap extends GameItem {
             return null;
         }
 
-        BufferedImage copy = new BufferedImage(
+        final BufferedImage copy = new BufferedImage(
             currentSprite.getWidth(null),
             currentSprite.getHeight(null),
             BufferedImage.TYPE_INT_ARGB
@@ -118,7 +118,7 @@ public abstract class Trap extends GameItem {
             LoggerUtils.error("Attempted to set a null sprite for item: " + getName());
         }
 
-        BufferedImage copy = new BufferedImage(
+        final BufferedImage copy = new BufferedImage(
             sprite.getWidth(null),
             sprite.getHeight(null),
             BufferedImage.TYPE_INT_ARGB
