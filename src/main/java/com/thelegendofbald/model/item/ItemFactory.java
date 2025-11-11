@@ -18,7 +18,8 @@ public class ItemFactory {
 
     private static final int ID_HEALTH_POTION = 7;
     private static final int ID_STRENGTH_POTION = 8;
-    private static final int ID_CHEST = 9;
+    private static final int ID_COIN = 9;
+    private static final int ID_CHEST = 10;
     private static final int ID_POISON_TRAP = 11;
     private static final int ID_IMMOBILIZING_TRAP = 12;
 
@@ -34,6 +35,7 @@ public class ItemFactory {
         registry.put(ID_CHEST, (x, y) -> new Chest(x, y));
         registry.put(ID_POISON_TRAP, (x, y) -> new PoisonTrap(x, y));
         registry.put(ID_IMMOBILIZING_TRAP, (x, y) -> new ImmobilizingTrap(x, y));
+        registry.put(ID_COIN, Coin::new);
     }
 
     /**

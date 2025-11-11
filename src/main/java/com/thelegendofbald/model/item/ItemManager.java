@@ -108,6 +108,9 @@ public class ItemManager {
                     if (trap.shouldRemoveOnTrigger()) {
                         it.remove();
                     }
+                } else if (item instanceof Coin coin) {
+                    coin.addToWallet(bald);
+                    it.remove();
                 }
             }
         }

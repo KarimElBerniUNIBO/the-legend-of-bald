@@ -144,7 +144,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private static final int INVENTORY_ROWS = 3;
 
     private static final int LOOT_LVL_MIN = 7;
-    private static final int LOOT_LVL_MAX = 8;
+    private static final int LOOT_LVL_MAX = 9;
 
     private long portalCooldownUntil;
 
