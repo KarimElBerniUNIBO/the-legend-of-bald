@@ -143,7 +143,7 @@ public class GameItem {
             LoggerUtils.warning("Sprite for item " + name + " is not set!");
         }
 
-        BufferedImage copy = new BufferedImage(
+        final BufferedImage copy = new BufferedImage(
             sprite.getWidth(null),
             sprite.getHeight(null),
             BufferedImage.TYPE_INT_ARGB
@@ -192,7 +192,7 @@ public class GameItem {
             LoggerUtils.error("Attempted to set a null sprite for item: " + name);
         }
 
-        BufferedImage copy = new BufferedImage(
+        final BufferedImage copy = new BufferedImage(
             sprite.getWidth(null),
             sprite.getHeight(null),
             BufferedImage.TYPE_INT_ARGB
