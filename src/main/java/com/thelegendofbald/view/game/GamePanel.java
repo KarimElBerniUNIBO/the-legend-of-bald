@@ -813,7 +813,7 @@ private void handleGameOver() {
         final int y = topLeft.y + (ts - BOSS_H) / 2;
 
         final int bossHp  = 500;     // punti vita
-        final int bossAtk = 25;      // attacco base
+        final int bossAtk = 1;      // attacco base
         final LifeComponent life = new LifeComponent(bossHp); // componente vita
 
         boss = new FinalBoss(

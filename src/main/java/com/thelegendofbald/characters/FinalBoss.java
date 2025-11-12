@@ -1,8 +1,8 @@
 package com.thelegendofbald.characters;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +20,7 @@ import com.thelegendofbald.view.main.TileMap;
 /**
  * FinalBoss — final enemy extending Entity and implementing Combatant.
  * Uses the collision system of DummyEnemy.
+ * Has attacks with cooldowns and phase-changing sprites.
  */
 public final class FinalBoss extends Entity implements Combatant {
 
@@ -34,7 +35,7 @@ public final class FinalBoss extends Entity implements Combatant {
     private static final int PHASE2_SPEED = 3;
     private static final int PHASE3_SPEED = 4;
 
-    private static final int MELEE_RANGE_PX = 48;
+    private static final int MELEE_RANGE_PX = 38;
     private static final int DASH_MIN_DISTANCE_PX = 160;
     private static final int DASH_DISTANCE_PX = 96;
     private static final long DASH_COOLDOWN_MS = 2500;
@@ -43,11 +44,14 @@ public final class FinalBoss extends Entity implements Combatant {
     private static final int AOE_EXTRA_DAMAGE = 6;
     private static final long AOE_COOLDOWN_MS = 2000;
 
+    private static final long MELEE_COOLDOWN_MS = 1000;
+
     private static final int AGGRO_RANGE_PX = 200; 
+
     private static final int FRAME_WIDTH = 64;
     private static final int FRAME_HEIGHT = 64;
     private static final int RENDER_SIZE = 64;
-    private static final int RUN_FRAMES = 2;
+    private static final int ANIM_FRAMES_PER_PHASE = 3; 
     private static final int DEFAULT_FRAME_DELAY = 10;
     private static final int FRAME_DELAY = DEFAULT_FRAME_DELAY;
 
@@ -63,21 +67,24 @@ public final class FinalBoss extends Entity implements Combatant {
 
     private long lastDashAt = -DASH_COOLDOWN_MS;
     private long lastAoeAt = -AOE_COOLDOWN_MS;
+    private long lastMeleeAt = -MELEE_COOLDOWN_MS;
 
-    private BufferedImage[] runFrames;
+    private BufferedImage[] phase1Frames;
+    private BufferedImage[] phase2Frames;
+    private BufferedImage[] phase3Frames;
     private int currentFrame;
     private int frameCounter;
 
     /**
      * Creates the final boss.
      *
-     * @param x               spawn X position
-     * @param y               spawn Y position
-     * @param name            the boss's name
-     * @param maxHealth       maximum health points
+     * @param x               spawn X position
+     * @param y               spawn Y position
+     * @param name            the boss's name
+     * @param maxHealth       maximum health points
      * @param baseAttackPower base attack power (phase 1)
-     * @param lifeComponent   the life component
-     * @param map             map for collision handling
+     * @param lifeComponent   the life component
+     * @param map             map for collision handling
      */
     public FinalBoss(final int x, final int y,
                      final String name,
@@ -91,23 +98,66 @@ public final class FinalBoss extends Entity implements Combatant {
         this.baseAttackPower = baseAttackPower;
         this.map = Objects.requireNonNull(map, "TileMap must not be null");
         this.tileSize = map.getTileSize();
-        loadRunFrames(); 
+        loadPhaseFrames(); 
         updatePhase();
     }
 
-    private void loadRunFrames() {
-        runFrames = new BufferedImage[RUN_FRAMES];
-        for (int i = 0; i < RUN_FRAMES; i++) {
-            final String framePath = String.format("/images/finalboss/finalbossL.png", i + 1);
-            try (InputStream is = getClass().getResourceAsStream(framePath)) {
-                if (is != null) {
-                    runFrames[i] = ImageIO.read(is);
-                } else {
-                    LoggerUtils.error("Enemy run frame not found: " + framePath);
-                }
-            } catch (final IOException e) {
-                LoggerUtils.error("Error loading enemy run frame " + framePath + ": " + e.getMessage());
+    /**
+     * Loads the frame sets for all 3 phases.
+     */
+    private void loadPhaseFrames() {
+        phase1Frames = loadFramesForPhase("phase1", ANIM_FRAMES_PER_PHASE);
+        phase2Frames = loadFramesForPhase("phase2", ANIM_FRAMES_PER_PHASE);
+        phase3Frames = loadFramesForPhase("phase3", ANIM_FRAMES_PER_PHASE);
+    }
+
+    /**
+     * Helper to load a set of frames from a specific subfolder.
+     * @param phaseName Folder name (e.g., "phase1")
+     * @param frameCount Number of frames to load (e.g., 2)
+     * @return A BufferedImage array
+     */
+    private BufferedImage[] loadFramesForPhase(final String phaseName, final int frameCount) {
+        final BufferedImage[] frames = new BufferedImage[frameCount];
+        for (int i = 0; i < frameCount; i++) {
+            final String framePath = String.format("/images/finalboss/%s/demon_walk_%d.png", phaseName, i + 1);
+            frames[i] = loadImage(framePath);
+        }
+        return frames;
+    }
+
+    /**
+     * Helper method to load a single image.
+     * @param path The full resource path
+     * @return The loaded image or null
+     */
+    private BufferedImage loadImage(final String path) {
+        try (InputStream is = getClass().getResourceAsStream(path)) {
+            if (is != null) {
+                return ImageIO.read(is);
+            } else {
+                LoggerUtils.error("Frame not found: " + path);
+                return null;
             }
+        } catch (final IOException e) {
+            LoggerUtils.error("Error loading frame " + path + ": " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Returns the correct frame array based on the current phase.
+     * @return The active frame array (phase1Frames, 2, or 3)
+     */
+    private BufferedImage[] getActiveFrames() {
+        switch (phase) {
+            case 2:
+                return phase2Frames;
+            case 3:
+                return phase3Frames;
+            case 1:
+            default:
+                return phase1Frames;
         }
     }
 
@@ -121,8 +171,9 @@ public final class FinalBoss extends Entity implements Combatant {
         }
         frameCounter = 0;
 
-        if (runFrames != null && runFrames.length > 0) {
-            currentFrame = (currentFrame + 1) % runFrames.length;
+        final BufferedImage[] activeFrames = getActiveFrames();
+        if (activeFrames != null && activeFrames.length > 0) {
+            currentFrame = (currentFrame + 1) % activeFrames.length;
         }
     }
 
@@ -163,7 +214,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * @return boss hitboxes.
+     * @return the boss's collision hitbox.
      */
     @Override
     public Rectangle getBounds() {
@@ -171,7 +222,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * @return true if boss has life > 0.
+     * @return true if the boss has health > 0, otherwise false.
      */
     @Override
     public boolean isAlive() {
@@ -193,10 +244,11 @@ public final class FinalBoss extends Entity implements Combatant {
         final double dist = Math.hypot(dx, dy);
 
         if (dist > AGGRO_RANGE_PX) {
-            return;
+            return; 
         }
+        
         if (dist <= MELEE_RANGE_PX) {
-            performMelee(bald);
+            tryMelee(bald);
             tryAoe(bald);
             return;
         }
@@ -229,29 +281,28 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * @return current boss life.
+     * @return the boss's current health.
      */
     public int getHealth() {
         return health;
     }
 
     /**
-     * @return boss maximum health.
+     * @return the boss's maximum health.
      */
     public int getMaxHealth() {
         return maxHealth;
     }
 
     /**
-     * @return current combat phase.
+     * @return the current combat phase (1, 2, or 3).
      */
     public int getPhase() {
         return phase;
     }
 
-
     /**
-     * @return boss pace, for every phase
+     * @return the movement speed for the current phase.
      */
     private int getCurrentSpeed() {
         switch (phase) {
@@ -262,7 +313,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * Refreshes the boss phases by checking his life
+     * Updates the boss's phase based on its health.
      */
     private void updatePhase() {
         final double ratio = (double) health / maxHealth;
@@ -274,12 +325,19 @@ public final class FinalBoss extends Entity implements Combatant {
             phase = 1;
         }
     }
+    
     /**
-     * Performs an attacks towards Bald
-     * @param bald main character 
+     * Attempts a melee attack on Bald, respecting the cooldown.
+     * @param bald the player
      */
-    private void performMelee(final Bald bald) {
+    private void tryMelee(final Bald bald) {
+        final long now = System.currentTimeMillis();
+        if ((now - lastMeleeAt) < MELEE_COOLDOWN_MS) {
+            return;
+        }
+
         Optional.ofNullable(bald).ifPresent(b -> b.takeDamage(getAttackPower()));
+        lastMeleeAt = now;
     }
 
     /**
@@ -344,7 +402,7 @@ public final class FinalBoss extends Entity implements Combatant {
     }
 
     /**
-     * Moves entity by checking collisions.
+     * Moves the entity while checking collisions.
      * @param dx delta X
      * @param dy delta Y
      */
@@ -386,26 +444,33 @@ public final class FinalBoss extends Entity implements Combatant {
         return false;
     }
 
-
     /**
      * Renders the boss's current frame and its health bar.
      *
      * @param g the Graphics context to draw on
      */
     public void render(final Graphics g) {
+        final BufferedImage[] activeFrames = getActiveFrames();
         final BufferedImage frame =
-            (runFrames != null && runFrames.length > 0) ? runFrames[currentFrame % runFrames.length] : null;
+            (activeFrames != null && activeFrames.length > 0) ? activeFrames[currentFrame % activeFrames.length] : null;
+        
         if (frame != null) {
-            if (!isFacingRight()) {
+            if (!isFacingRight()) { 
                 g.drawImage(frame, getX(), getY(), RENDER_SIZE, RENDER_SIZE, null);
             } else {
                 g.drawImage(frame, getX() + RENDER_SIZE, getY(),
                             -RENDER_SIZE, RENDER_SIZE, null);
             }
         } else {
-            g.setColor(Color.RED);
+            switch (phase) {
+                case 1: g.setColor(Color.RED); break;
+                case 2: g.setColor(Color.ORANGE); break;
+                case 3: g.setColor(Color.MAGENTA); break;
+                default: g.setColor(Color.RED);
+            }
             g.fillRect(getX(), getY(), RENDER_SIZE, RENDER_SIZE);
         }
+        
         final int hpBarWidth = RENDER_SIZE;
         final int hpBarHeight = 5;
         final int hpBarY = getY() - hpBarHeight - 2;
