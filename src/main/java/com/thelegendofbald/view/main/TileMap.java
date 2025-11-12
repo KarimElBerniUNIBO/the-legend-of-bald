@@ -33,6 +33,7 @@ public class TileMap {
     private static final int ID_SPECIAL = 7; 
     private static final int ID_PREV_PORTAL = 8;
     private static final int ID_BOSS = 9;
+    private static final int ID_NEXT_MAP_TRIGGER = 10;
 
     private static final int DEFAULT_ROWS = 22; 
     private static final int DEFAULT_COLS = 40; 
@@ -81,6 +82,7 @@ public class TileMap {
             tileTypes.put(ID_SPECIAL, new Tile(floor, tileSize, tileSize, ID_SPECIAL, false, true,  true,  true,  null));
             tileTypes.put(ID_PREV_PORTAL,   new Tile(null,  tileSize, tileSize, ID_EMPTY,   false, false, false, false, null));
             tileTypes.put(ID_BOSS, new Tile(floor,tileSize,tileSize,ID_BOSS,false,true,true,true,null));
+            tileTypes.put(ID_NEXT_MAP_TRIGGER, new Tile(floor, tileSize, tileSize, ID_NEXT_MAP_TRIGGER, false, true,  false, true,  null));
         } catch (final IOException e) {
             LoggerUtils.error("Errore nel caricamento delle immagini dei tile.", e);
             throw new IllegalStateException("Errore nel caricamento delle immagini dei tile.", e);

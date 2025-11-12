@@ -82,7 +82,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private static final long serialVersionUID = 1L;
 
-    /* ===================== Costanti di configurazione ===================== */
     private static final String MAP_1 = "map_1";
     private static final String MAP_2 = "map_2";
     private static final String MAP_3 = "map_3";
@@ -115,6 +114,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private static final int ID_ENEMY = 7;
     private static final int ID_PREV_PORTAL = 8;
     private static final int ID_BOSS = 9;
+    private static final int ID_NEXT_MAP_TRIGGER = 10;
 
     private static final double OPTIONS_WIDTH_INSETS = 0.25;
     private static final double OPTIONS_HEIGHT_INSETS = 0.1;
@@ -137,22 +137,21 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private static final int WEAPON_ICON = 50;
 
-    // passi input (prima erano campi in mezzo ai metodi)
     private static final double DX_STEP = 1.0;
     private static final double DY_STEP = 1.0;
 
-    // dimensioni griglia inventario (prima 5 e 3 erano magic numbers)
     private static final int INVENTORY_COLS = 5;
     private static final int INVENTORY_ROWS = 3;
 
-    // livelli/parametri di loot (prima 7 e 8 erano magic numbers)
     private static final int LOOT_LVL_MIN = 7;
-    private static final int LOOT_LVL_MAX = 8;
+    private static final int LOOT_LVL_MAX = 9;
 
     private long portalCooldownUntil;
 
     private Integer pendingEntryTileId;   // es. ID_PREV_PORTAL o ID_PORTAL
-    private Integer pendingEntryIndex;    // indice del portale usato in uscita
+    private Integer pendingEntryIndex;
+
+    private Boolean pendingFacingRight;
 
     /* ===================== Stato e componenti ===================== */
     // ordine JLS: access, static, final, transient, volatile
@@ -206,9 +205,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private FinalBoss boss;
 
-    /* ===================== Costruttore ===================== */
-
-    /** Crea il pannello di gioco con le componenti necessarie. */
     public GamePanel() {
         super();
         final Dimension size = new Dimension(DEFAULT_W, DEFAULT_H);
@@ -249,9 +245,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         initialize();
     }
 
-    /* ===================== Setup UI & input ===================== */
-
-    /** Inizializza proprietà Swing del pannello. */
     private void initialize() {
         SwingUtilities.invokeLater(() -> {
             this.setBackground(Color.BLACK);
@@ -424,6 +417,19 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
                 .ifPresent(interactableItem -> interactableItem.interact(bald));
     }
 
+    private void setFacingForTransition(final String from, final String to) {
+        if (MAP_2.equals(from) && MAP_3.equals(to)) {
+            pendingFacingRight = false; // 2 -> 3: sinistra
+        } else if (MAP_3.equals(from) && MAP_2.equals(to)) {
+            pendingFacingRight = false; // 3 -> 2: sinistra
+        } else if (MAP_3.equals(from) && MAP_4.equals(to)) {
+            pendingFacingRight = true;  // 3 -> 4: destra
+        } else {
+            pendingFacingRight = null;  // altre: nessun forcing
+        }
+    }
+
+
     /** @return l’ultima run di gioco creata. */
     public GameRun getGameRun() {
         return gameRun;
@@ -468,35 +474,26 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         } catch (final IOException e) {
             LoggerUtils.error("Error saving game run: " + e.getMessage());
         }
-        //this.stopGame();
     }
 
     private void resetGame() {
-        // Resetta lo stato del gioco
         this.gameOver = false;
         this.gameWon = false;
         this.paused = false;
         this.pressedKeys.clear();
 
-        // Resetta il timer
         this.timer.stop();
 
-        // Resetta la mappa
         this.currentMapName = MAP_1;
         this.tileMap.changeMap(MAP_1);
         this.itemManager.loadItemsForMap(MAP_1);
         this.spawnActorsFromMap();
 
-        // Resetta il giocatore
         this.bald.setTileMap(tileMap);
         this.bald.setSpawnPosition(ID_SPAWN, tileMap.getTileSize());
         this.bald.getLifeComponent().setCurrentHealth(100);
-
-        // Resetta l'inventario
         this.inventory.clear();
         this.addWeaponsToInventory();
-
-        // Resetta la UI
         this.optionsPanel.setVisible(false);
         this.inventoryPanel.setVisible(false);
         this.mainMenuButton.setVisible(false);
@@ -565,7 +562,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
      */
     public void update(final double deltatime) {
         if (gameOver || gameWon) {
-            // --- FINE MODIFICA ---
             return;
         }
         handleInput();
@@ -573,9 +569,8 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         bald.move(tileMap, deltatime);
         bald.updateBuffs();
 
-        // ---- controllo portali, rispettando il cooldown ----
         if (System.currentTimeMillis() >= portalCooldownUntil) {
-            if (isTouchingOrAdjacentToTileId(ID_PORTAL)) {
+            if (isTouchingOrAdjacentToTileId(ID_NEXT_MAP_TRIGGER)) {
                 switchToNextMap();
                 return;
             }
@@ -622,9 +617,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
      */
     private void handleGameWon() {
         this.gameWon = true;
-        this.pauseGame(); // Ferma il timer e il loop di update
+        this.pauseGame();
         this.saveGame();
-        this.pressedKeys.clear(); // Impedisce al personaggio di muoversi
+        this.pressedKeys.clear();
         this.mainMenuButton.setVisible(true);
     }
 
@@ -633,13 +628,10 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
      */
 private void handleGameOver() {
     this.gameOver = true;
-    this.pauseGame(); // Ferma il timer e il loop di update
-    this.pressedKeys.clear(); // Impedisce al personaggio di muoversi
+    this.pauseGame();
+    this.pressedKeys.clear();
     this.mainMenuButton.setVisible(true);
 }
-
-    /* ===================== Logica mappa ===================== */
-
 
     /**
      * Verifica se Bald è sopra o adiacente a un tile con l'id indicato.
@@ -655,7 +647,6 @@ private void handleGameOver() {
         final int x2 = x1 + bald.getWidth() - 1;
         final int y2 = y1 + bald.getHeight() - 1;
 
-        // tiles coperti internamente dalla bbox
         final int leftIn = Math.max(0, x1 / ts);
         final int rightIn = Math.max(0, x2 / ts);
         final int topIn = Math.max(0, y1 / ts);
@@ -703,26 +694,27 @@ private void handleGameOver() {
     private void switchToNextMap() {
         final String nextMapName = mapTransitions.get(currentMapName);
         if (nextMapName != null) {
-            // forza l’ingresso sul tile ID 5 della mappa successiva
-            pendingEntryTileId = ID_SPAWN;  // 5
-            pendingEntryIndex = 0;           // prendi il primo ID 4 trovato
+            pendingEntryTileId = ID_SPAWN;
+            pendingEntryIndex = 0;
+            setFacingForTransition(currentMapName, nextMapName);
             changeAndLoadMap(nextMapName);
         } else {
             LoggerUtils.error("Nessuna mappa successiva definita.");
         }
     }
 
-
     private void switchToPreviousMap() {
         final String prevMapName = reverseTransitions.get(currentMapName);
         if (prevMapName != null) {
-            pendingEntryTileId = ID_PORTAL; // 4 anche quando torni indietro
+            pendingEntryTileId = ID_PORTAL;
             pendingEntryIndex = 0;
+            setFacingForTransition(currentMapName, prevMapName);
             changeAndLoadMap(prevMapName);
         } else {
             LoggerUtils.error("Nessuna mappa precedente definita.");
         }
     }
+
 
     private void changeAndLoadMap(final String mapName) {
         boss = null;
@@ -770,10 +762,15 @@ private void handleGameOver() {
         // Cooldown anti-rimbalzo tra portali
         portalCooldownUntil = System.currentTimeMillis() + PORTAL_COOLDOWN_MS;
 
-        // Reset movimento / input
         bald.setSpeedX(0);
         bald.setSpeedY(0);
         pressedKeys.clear();
+
+        if (pendingFacingRight != null) {
+            bald.setFacingRight(pendingFacingRight);
+            pendingFacingRight = null; // consumato
+        }
+
 
         // Ricarica contenuti mappa
         spawnActorsFromMap();
