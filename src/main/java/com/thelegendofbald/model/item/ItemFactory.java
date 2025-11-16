@@ -30,12 +30,12 @@ public class ItemFactory {
      * The registry maps an integer ID to a constructor for the corresponding item class.
      */
     public ItemFactory() {
-        registry.put(ID_HEALTH_POTION, HealthPotion::new);
-        registry.put(ID_STRENGTH_POTION, StrengthPotion::new);
+        registry.put(ID_HEALTH_POTION, (x, y) -> new HealthPotion(x, y));
+        registry.put(ID_STRENGTH_POTION, (x, y) -> new StrengthPotion(x, y));
         registry.put(ID_CHEST, (x, y) -> new Chest(x, y));
         registry.put(ID_POISON_TRAP, (x, y) -> new PoisonTrap(x, y));
         registry.put(ID_IMMOBILIZING_TRAP, (x, y) -> new ImmobilizingTrap(x, y));
-        registry.put(ID_COIN, Coin::new);
+        registry.put(ID_COIN, (x, y) -> new Coin(x, y));
     }
 
     /**

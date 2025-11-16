@@ -116,6 +116,7 @@ public abstract class Trap extends GameItem {
     public void setCurrentSprite(final BufferedImage sprite) {
         if (sprite == null) {
             LoggerUtils.error("Attempted to set a null sprite for item: " + getName());
+            return;
         }
 
         final BufferedImage copy = new BufferedImage(

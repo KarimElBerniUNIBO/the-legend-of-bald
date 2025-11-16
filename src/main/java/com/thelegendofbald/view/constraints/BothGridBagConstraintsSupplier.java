@@ -9,8 +9,6 @@ import java.util.function.Supplier;
  */
 public final class BothGridBagConstraintsSupplier implements Supplier<GridBagConstraints> {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     public GridBagConstraints get() {
         return new BothGridBagConstraints();
