@@ -5,27 +5,27 @@ import java.util.List;
 import java.util.Random;
 
 import com.thelegendofbald.model.item.GameItem;
-import com.thelegendofbald.model.item.ItemFactory;
+import com.thelegendofbald.model.item.ItemGenerator;
 
 /**
  * The LootGenerator class is responsible for generating random loot items
- * based on a predefined loot pool. It uses an {@link ItemFactory} to create
+ * based on a predefined loot pool. It uses an {@link ItemGenerator} to create
  * items and a {@link Random} instance to determine randomness.
  */
 public class LootGenerator {
 
-    private final ItemFactory itemFactory;
+    private final ItemGenerator itemFactory;
     private final Random random = new Random();
 
     private final List<Integer> lootPool;
 
     /**
-     * Constructs a LootGenerator with the specified {@link ItemFactory} and loot pool.
+     * Constructs a LootGenerator with the specified {@link ItemGenerator} and loot pool.
      *
      * @param itemFactory the factory used to create items
      * @param lootPool    the list of item IDs that can be generated as loot
      */
-    public LootGenerator(final ItemFactory itemFactory, final List<Integer> lootPool) {
+    public LootGenerator(final ItemGenerator itemFactory, final List<Integer> lootPool) {
         this.itemFactory = itemFactory;
         this.lootPool = Collections.unmodifiableList(lootPool);
     }

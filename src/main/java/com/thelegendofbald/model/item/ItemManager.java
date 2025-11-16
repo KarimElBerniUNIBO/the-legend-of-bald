@@ -22,7 +22,7 @@ import com.thelegendofbald.view.main.TileMap;
 public class ItemManager {
 
     private List<GameItem> items;
-    private final ItemFactory itemFactory;
+    private final ItemGenerator itemFactory;
     private final MapItemLoader mapItemLoader;
     private final TileMap tileMap;
     private final LootGenerator lootGenerator;
@@ -36,7 +36,7 @@ public class ItemManager {
      * @param lootGenerator  the generator used to create loot from chests
      */
     public ItemManager(final TileMap tileMap,
-                       final ItemFactory itemFactory,
+                       final ItemGenerator itemFactory,
                        final MapItemLoader mapItemLoader,
                        final LootGenerator lootGenerator) {
         this.items = new ArrayList<>();

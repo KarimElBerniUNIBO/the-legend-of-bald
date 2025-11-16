@@ -6,20 +6,20 @@ import java.util.Collections;
 import java.util.List;
 
 import com.thelegendofbald.model.item.GameItem;
-import com.thelegendofbald.model.item.ItemFactory;
+import com.thelegendofbald.model.item.ItemGenerator;
 import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.main.TileMap;
 
 /**
  * The MapItemSpawner class is responsible for spawning items on the game map
  * based on predefined spawn data loaded from a file. It utilizes an
- * {@link ItemFactory} to create items and a {@link MapItemLoader} to load the
+ * {@link ItemGenerator} to create items and a {@link MapItemLoader} to load the
  * spawn data.
  */
 public class MapItemSpawner {
 
     private final TileMap tileMap;
-    private final ItemFactory itemFactory;
+    private final ItemGenerator itemFactory;
     private final MapItemLoader loader;
     private final String itemFile;
 
@@ -27,14 +27,14 @@ public class MapItemSpawner {
 
     /**
      * Constructs a MapItemSpawner with the specified {@link TileMap},
-     * {@link ItemFactory}, {@link MapItemLoader}, and item file path.
+     * {@link ItemGenerator}, {@link MapItemLoader}, and item file path.
      *
      * @param tileMap     the tile map where items will be spawned
      * @param itemFactory the factory used to create items
      * @param loader      the loader used to load item spawn data
      * @param itemFile    the path to the file containing item spawn data
      */
-    public MapItemSpawner(final TileMap tileMap, final ItemFactory itemFactory,
+    public MapItemSpawner(final TileMap tileMap, final ItemGenerator itemFactory,
                           final MapItemLoader loader, final String itemFile) {
         this.tileMap = tileMap;
         this.itemFactory = itemFactory;

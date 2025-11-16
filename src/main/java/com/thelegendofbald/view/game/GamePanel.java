@@ -54,7 +54,7 @@ import com.thelegendofbald.model.common.DataManager;
 import com.thelegendofbald.model.common.GameRun;
 import com.thelegendofbald.model.common.Timer;
 import com.thelegendofbald.model.common.Timer.TimeData;
-import com.thelegendofbald.model.item.ItemFactory;
+import com.thelegendofbald.model.item.ItemGenerator;
 import com.thelegendofbald.model.item.ItemManager;
 import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
@@ -225,8 +225,8 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         this.combatManager = new CombatManager(bald, enemies);
         this.bald.setWeapon(new Sword(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager));
 
-        this.lootGenerator = new LootGenerator(new ItemFactory(), List.of(LOOT_LVL_MIN, LOOT_LVL_MAX));
-        this.itemManager = new ItemManager(tileMap, new ItemFactory(), new MapItemLoader(), lootGenerator);
+        this.lootGenerator = new LootGenerator(new ItemGenerator(), List.of(LOOT_LVL_MIN, LOOT_LVL_MAX));
+        this.itemManager = new ItemManager(tileMap, new ItemGenerator(), new MapItemLoader(), lootGenerator);
         this.itemManager.loadItemsForMap(MAP_1);
 
         tileMap.changeMap(MAP_1);

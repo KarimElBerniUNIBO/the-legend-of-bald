@@ -25,7 +25,7 @@ class ItemManagerTest {
 
     @BeforeEach
     void setUp() {
-        itemManager = new ItemManager(new TileMap(20, 20, 1), new ItemFactory(), new MapItemLoader(), new LootGenerator(new ItemFactory(), List.of(7)));
+        itemManager = new ItemManager(new TileMap(20, 20, 1), new ItemGenerator(), new MapItemLoader(), new LootGenerator(new ItemGenerator(), List.of(7)));
     }
 
     @Test
