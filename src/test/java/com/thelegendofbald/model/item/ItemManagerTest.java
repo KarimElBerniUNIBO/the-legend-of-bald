@@ -22,10 +22,16 @@ import com.thelegendofbald.view.main.TileMap;
 class ItemManagerTest {
 
     private ItemManager itemManager;
+    private static final int TEST_TILE_SIZE = 32;
+    private static final List<Integer> TEST_LOOT_POOL = List.of(7);
+    private static final int TEST_ITEM_SIZE = 5;
 
     @BeforeEach
     void setUp() {
-        itemManager = new ItemManager(new TileMap(20, 20, 1), new ItemGenerator(), new MapItemLoader(), new LootGenerator(new ItemGenerator(), List.of(7)));
+        itemManager = new ItemManager(new TileMap(TEST_TILE_SIZE, TEST_TILE_SIZE, 1), 
+        new ItemGenerator(), 
+        new MapItemLoader(), 
+        new LootGenerator(new ItemGenerator(), TEST_LOOT_POOL));
     }
 
     @Test
@@ -33,7 +39,7 @@ class ItemManagerTest {
         final GameItem g = new GameItem(0, 0, 10, 10, "it");
         itemManager.addItem(g);
 
-        final java.util.List<GameItem> items = itemManager.getItems();
+        final List<GameItem> items = itemManager.getItems();
         final GameItem toAdd = new GameItem(1, 1, 2, 2, "x");
         assertThrows(UnsupportedOperationException.class, () -> items.add(toAdd));
     }
@@ -41,7 +47,7 @@ class ItemManagerTest {
     @Test
     void testUpdateAllMultipleAnimatables() {
         class MultiAnim extends GameItem implements Animatable {
-            boolean updated = false;
+            private boolean updated;
 
             MultiAnim(final int x, final int y) {
                 super(x, y, 10, 10, "multi");
@@ -65,7 +71,7 @@ class ItemManagerTest {
     }
 
     @Test
-    void testHandleItemCollection_nonIntersectingItemNotRemoved() {
+    void testHandleItemCollectionNonIntersectingItemNotRemoved() {
         // Bald far away so no intersection with item at 0,0
         final Bald bald = new Bald(1000, 1000, 100, "Bald", 10);
         final GameItem distant = new GameItem(0, 0, 10, 10, "distant");
@@ -77,12 +83,12 @@ class ItemManagerTest {
     }
 
     @Test
-    void testRenderAllAllowsAddingItemsDuringRender_dueToSnapshot() {
+    void testRenderAllAllowsAddingItemsDuringRenderDueToSnapshot() {
         final BufferedImage buf = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
         final Graphics g = buf.getGraphics();
 
         class TestRenderableDuringRender extends GameItem {
-            boolean rendered = false;
+            private boolean rendered;
             private final ItemManager manager;
 
             TestRenderableDuringRender(final int x, final int y, final ItemManager manager) {
@@ -94,7 +100,7 @@ class ItemManagerTest {
             public void render(final Graphics g) {
                 rendered = true;
                 // mutate manager during render to ensure snapshot protection
-                manager.addItem(new GameItem(getX() + 1, getY() + 1, 5, 5, "added"));
+                manager.addItem(new GameItem(getX() + 1, getY() + 1, TEST_ITEM_SIZE, TEST_ITEM_SIZE, "added"));
             }
         }
 
