@@ -1,7 +1,5 @@
 package com.thelegendofbald.api.interactable;
 
-import com.thelegendofbald.characters.Bald;
-
 /**
  * Interface for objects that the player can actively interact with.
  *
@@ -13,8 +11,6 @@ public interface Interactable {
     /**
      * Executes the interaction between the player and the object.
      * The specific action performed depends on the implementing class.
-     *
-     * @param bald The player instance.
      */
-    void interact(Bald bald);
+    void interact();
 }

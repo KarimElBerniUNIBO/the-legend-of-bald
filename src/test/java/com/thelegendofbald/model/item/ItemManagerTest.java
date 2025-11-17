@@ -22,10 +22,13 @@ import com.thelegendofbald.view.main.TileMap;
  */
 class ItemManagerTest {
 
+    // Test constants
+    private static final int TEST_ITEM_SIZE = 5;
+    private static final List<Integer> TEST_LOOT_POOL = List.of(7);
+    private static final int TEST_TILE_SIZE = 32;
+
+    // ItemManager instance for testing
     private ItemManager itemManager;
-    private final static int TEST_TILE_SIZE = 32;
-    private final static List<Integer> TEST_LOOT_POOL = List.of(7);
-    private final static int TEST_ITEM_SIZE = 5;
 
     @BeforeEach
     void setUp() {

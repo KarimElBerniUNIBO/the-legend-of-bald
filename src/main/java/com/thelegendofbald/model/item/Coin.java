@@ -32,8 +32,8 @@ public class Coin extends GameItem {
      * @param bald the Bald character whose wallet will be credited
      */
     public void addToWallet(final Bald bald) {
-        bald.getWallet().addCoins(COIN_VALUE);
-        LoggerUtils.info(bald.getWallet().getCoins() + " coins in wallet after collecting a coin.");
+        bald.addCoins(COIN_VALUE);
+        LoggerUtils.info(bald.getCoins() + " coins in wallet after collecting a coin.");
     }
 
 }

@@ -485,7 +485,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
                 .filter(item -> item instanceof Interactable)
                 .map(item -> (Interactable) item)
                 .findFirst()
-                .ifPresent(interactableItem -> interactableItem.interact(bald));
+                .ifPresent(interactableItem -> interactableItem.interact());
     }
 
     private void setFacingForTransition(final String from, final String to) {
