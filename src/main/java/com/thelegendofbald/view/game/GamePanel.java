@@ -73,8 +73,62 @@ import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
 
 /**
- * Pannello principale del gioco: ciclo di gioco, input, rendering, UI.
- * <p>Non pensato per estensione.</p>
+ * Main game panel that manages the core game lifecycle, rendering and input.
+ *
+ * <p>
+ * Responsibilities:
+ * <ul>
+ * <li>Initialize and lay out game UI components (tile map, player, enemies,
+ * HUD, shop, inventory, options).</li>
+ * <li>Drive the game loop on a dedicated thread (implements {@link Runnable}),
+ * updating game state
+ * and triggering repaints at a configurable maximum frame rate.</li>
+ * <li>Handle player input via key bindings, translate input into movement,
+ * attacks and interactions.</li>
+ * <li>Manage map transitions, actor spawning, item loading, combat coordination
+ * and saving/loading game runs.</li>
+ * <li>Render game visuals (tiles, actors, projectiles, HUD overlays) and debug
+ * overlays (FPS, timer).</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * Usage notes:
+ * <ul>
+ * <li>Call {@link #startGame()} to start the game loop and timer; this method
+ * will also prompt for a player name.</li>
+ * <li>Call {@link #pauseGame()} / {@link #resumeGame()} to pause or resume the
+ * game; when paused the loop sleeps instead of updating.</li>
+ * <li>Call {@link #stopGame()} to stop the loop and reset game state.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * Threading and Swing:
+ * <ul>
+ * <li>The game loop runs off the Event Dispatch Thread (EDT) on a separate
+ * {@link Thread}; UI-mutating operations
+ * must be performed on the EDT (this class uses
+ * {@link javax.swing.SwingUtilities#invokeLater} where appropriate).</li>
+ * <li>Several fields that are accessed by both the game thread and the EDT are
+ * declared {@code volatile} or {@code transient}
+ * to reduce data-race risk, but callers should not assume full thread-safety
+ * for complex interactions.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * Serialization:
+ * <ul>
+ * <li>The class defines a custom {@code readObject} to restore transient
+ * collections after deserialization.</li>
+ * </ul>
+ * </p>
+ *
+ * @see #startGame()
+ * @see #stopGame()
+ * @see #pauseGame()
+ * @see #resumeGame()
  */
 public final class GamePanel extends MenuPanel implements Runnable, Game {
 
@@ -92,12 +146,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private static final int LIFE_W = 200;
     private static final int LIFE_H = 20;
-    private static final int LIFE_Y = 800; // posizione Y attuale (UI esterna allo scaling)
+    private static final int LIFE_Y = 800;
 
     private static final int TILE_SIZE = 32;
     private static final int DEFAULT_MAX_FPS = 60;
 
-    // dimensioni Bald (prima erano magic number 60)
     private static final int BALD_W = 60;
     private static final int BALD_H = 60;
 
@@ -107,7 +160,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private static final int BOSS_W = 96;
     private static final int BOSS_H = 96;
 
-    // ID mappa (coerenti con TileMap)
     private static final int ID_PORTAL = 4;
     private static final int ID_SPAWN = 5;
     private static final int ID_SHOP = 6;
@@ -130,10 +182,10 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private static final long NANOS_IN_SECOND = 1_000_000_000L;
     private static final long MILLIS_IN_SECOND = 1000L;
-    private static final long NANOS_IN_MILLI = 1_000_000L; // per evitare magic number 1_000_000L
+    private static final long NANOS_IN_MILLI = 1_000_000L;
     private static final long SLEEP_INTERVAL_WHEN_PAUSED = 100L;
-    private static final long LATE_FRAME_BACKOFF_NANOS = 250_000L; // 0.25 ms
-    private static final long PORTAL_COOLDOWN_MS = 2000; // 0.3s, regola a piacere
+    private static final long LATE_FRAME_BACKOFF_NANOS = 250_000L;
+    private static final long PORTAL_COOLDOWN_MS = 2000;
 
     private static final int WEAPON_ICON = 50;
 
@@ -148,13 +200,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private long portalCooldownUntil;
 
-    private Integer pendingEntryTileId;   // es. ID_PREV_PORTAL o ID_PORTAL
+    private Integer pendingEntryTileId;
     private Integer pendingEntryIndex;
 
     private Boolean pendingFacingRight;
 
-    /* ===================== Stato e componenti ===================== */
-    // ordine JLS: access, static, final, transient, volatile
     private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
     private final GridBagConstraints optionsGBC = gbcFactory.createBothGridBagConstraints();
     private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
@@ -165,13 +215,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private final Map<String, String> mapTransitions = Map.of(
             MAP_1, MAP_2,
             MAP_2, MAP_3,
-            MAP_3, MAP_4
-    );
+            MAP_3, MAP_4);
 
     private final Map<String, String> reverseTransitions = Map.of(
             MAP_2, MAP_1,
-            MAP_3, MAP_2
-    );
+            MAP_3, MAP_2);
 
     private final GridPanel gridPanel;
     private final transient TileMap tileMap;
@@ -190,13 +238,13 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private final transient Inventory inventory;
 
     private transient Thread gameThread;
-    private volatile boolean running; // default false
+    private volatile boolean running;
     private volatile boolean gameOver;
     private volatile boolean gameWon;
     private volatile boolean paused;
     private volatile int maxFPS = DEFAULT_MAX_FPS;
     private volatile boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
-    private volatile int currentFPS; // default 0
+    private volatile int currentFPS;
     private volatile boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
 
     private final Set<Integer> pressedKeys = new HashSet<>();
@@ -205,6 +253,32 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private FinalBoss boss;
 
+    /**
+     * Constructs the main game panel and initializes core game systems and UI.
+     *
+     * <p>
+     * This constructor performs the following initializations:
+     * <ul>
+     * <li>Creates and configures the main grid and tile map used for rendering and
+     * collision.</li>
+     * <li>Initializes the player character ({@code Bald}) with default size, health
+     * and a starting weapon.</li>
+     * <li>Creates the item, loot and inventory managers and preloads items for the
+     * first map.</li>
+     * <li>Positions the player at the configured spawn point (if available) and
+     * populates the inventory
+     * with a set of starter weapons.</li>
+     * <li>Sets up key bindings for input and schedules Swing-specific
+     * initialization via
+     * {@link SwingUtilities#invokeLater}.</li>
+     * </ul>
+     *
+     * <p>
+     * The constructor prepares the panel for use but does not start the game loop
+     * or timer;
+     * {@link #startGame()} must be invoked to begin gameplay.
+     * </p>
+     */
     public GamePanel() {
         super();
         final Dimension size = new Dimension(DEFAULT_W, DEFAULT_H);
@@ -253,21 +327,17 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         });
     }
 
-    private void readObject(final ObjectInputStream in) 
-        throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         this.enemies = new ArrayList<>();
     }
 
-
-
-    /** Aggiunge alcune armi di base all'inventario. */
     private void addWeaponsToInventory() {
         final List<Weapon> weapons = List.of(
                 new FireBall(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager),
                 new Sword(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager),
-                new Axe(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager)
-        );
+                new Axe(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager));
         weapons.forEach(inventory::add);
     }
 
@@ -306,13 +376,15 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         this.repaint();
     }
 
-    /** Reimposta completamente i key binding (utile dopo modifiche a runtime). */
+    /**
+     * Refreshes the key bindings based on the current control settings.
+     * This method should be called when control settings are changed.
+     */
     public void refreshKeyBindings() {
         pressedKeys.clear();
         setupKeyBindings();
     }
 
-    /** Configura i key binding in modalità WHEN_IN_FOCUSED_WINDOW. */
     private void setupKeyBindings() {
         final InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
         final ActionMap am = this.getActionMap();
@@ -353,8 +425,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
             final String name,
             final int key,
             final boolean pressed,
-            final Runnable action
-    ) {
+            final Runnable action) {
         im.put(KeyStroke.getKeyStroke(key, 0, !pressed), name);
         am.put(name, new AbstractAction() {
             @Override
@@ -364,9 +435,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         });
     }
 
-    /* ===================== Ciclo di gioco & input ===================== */
-
-    /** Gestisce l’input e aggiorna velocità/direzione del player. */
+    /**
+     * Handles player input by updating the player's speed and direction based on
+     * currently pressed keys.
+     * If the player is immobilized, all movement is stopped.
+     */
     private void handleInput() {
         if (bald.isImmobilized()) {
             bald.setSpeedX(0);
@@ -401,13 +474,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
         }
 
-        // VERSIONE OK
         bald.setFacingRight(dx > 0 || dx == 0 && bald.isFacingRight());
         bald.setSpeedX(dx);
         bald.setSpeedY(dy);
     }
 
-    /** Interagisce con il primo oggetto toccato che implementa {@link Interactable}. */
     private void interactWithItems() {
         itemManager.getItems().stream()
                 .filter(item -> bald.getBounds().intersects(item.getBounds()))
@@ -419,23 +490,25 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private void setFacingForTransition(final String from, final String to) {
         if (MAP_2.equals(from) && MAP_3.equals(to)) {
-            pendingFacingRight = false; // 2 -> 3: sinistra
+            pendingFacingRight = false;
         } else if (MAP_3.equals(from) && MAP_2.equals(to)) {
-            pendingFacingRight = false; // 3 -> 2: sinistra
+            pendingFacingRight = false;
         } else if (MAP_3.equals(from) && MAP_4.equals(to)) {
-            pendingFacingRight = true;  // 3 -> 4: destra
+            pendingFacingRight = true;
         } else {
-            pendingFacingRight = null;  // altre: nessun forcing
+            pendingFacingRight = null;
         }
     }
 
-
-    /** @return l’ultima run di gioco creata. */
+    /**
+     * Returns the current game run data, which includes the player's name and time.
+     *
+     * @return the current {@link GameRun} instance.
+     */
     public GameRun getGameRun() {
         return gameRun;
     }
 
-    /** Richiede il nickname e inizializza la run. */
     private void setPlayerName() {
         String nickname = "";
 
@@ -453,8 +526,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         gameRun = new GameRun(nickname, timer.getFormattedTime());
         this.resumeGame();
     }
-
-    /* ===================== Game lifecycle ===================== */
 
     @Override
     public void startGame() {
@@ -542,23 +613,22 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
                 fpsTimer += MILLIS_IN_SECOND;
             }
 
-            final long frameTime = (System.nanoTime() - now) / NANOS_IN_MILLI; // ms
+            final long frameTime = (System.nanoTime() - now) / NANOS_IN_MILLI;
             final long targetFrameTime = MILLIS_IN_SECOND / Math.max(1, maxFPS);
             final long sleepTime = targetFrameTime - frameTime;
 
             if (sleepTime > 0) {
                 LockSupport.parkNanos(sleepTime * NANOS_IN_MILLI);
             } else {
-                // micro-backoff per non saturare la CPU
                 LockSupport.parkNanos(LATE_FRAME_BACKOFF_NANOS);
             }
         }
     }
 
     /**
-     * Aggiorna lo stato del gioco per il frame corrente.
+     * Updates the game state for the current frame.
      *
-     * @param deltatime tempo trascorso (in secondi) dal frame precedente
+     * @param deltatime the time elapsed (in seconds) since the previous frame.
      */
     public void update(final double deltatime) {
         if (gameOver || gameWon) {
@@ -592,8 +662,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         if (boss != null && boss.isAlive()) {
             boss.followPlayer(bald);
             boss.updateAnimation();
-            // Nota: followPlayer(bald) del boss contiene già la logica 
-            // per attivarsi solo quando Bald è vicino (AGGRO_RANGE_PX)
         }
         combatManager.getProjectiles().forEach(p -> p.move(tileMap));
         combatManager.checkProjectiles();
@@ -613,7 +681,8 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     /**
-     * Gestisce la logica di Vittoria: ferma il gioco e imposta il flag.
+     * Handles the game won logic: stops the game, saves the run, and sets the win
+     * flag.
      */
     private void handleGameWon() {
         this.gameWon = true;
@@ -623,21 +692,22 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         this.mainMenuButton.setVisible(true);
     }
 
-    /** 
-     * Gestisce la logica di Game Over: ferma il gioco e imposta il flag.
+    /**
+     * Handles the game over logic: stops the game and sets the game over flag.
      */
-private void handleGameOver() {
-    this.gameOver = true;
-    this.pauseGame();
-    this.pressedKeys.clear();
-    this.mainMenuButton.setVisible(true);
-}
+    private void handleGameOver() {
+        this.gameOver = true;
+        this.pauseGame();
+        this.pressedKeys.clear();
+        this.mainMenuButton.setVisible(true);
+    }
 
     /**
-     * Verifica se Bald è sopra o adiacente a un tile con l'id indicato.
+     * Checks if the player character is touching or adjacent to a tile with the
+     * specified ID.
      *
-     * @param tileId id del tile da verificare
-     * @return {@code true} se tocca o è adiacente, altrimenti {@code false}.
+     * @param tileId the ID of the tile to check for.
+     * @return {@code true} if touching or adjacent, otherwise {@code false}.
      */
     private boolean isTouchingOrAdjacentToTileId(final int tileId) {
         final int ts = tileMap.getTileSize();
@@ -660,7 +730,6 @@ private void handleGameOver() {
             }
         }
 
-        // tiles adiacenti ai bordi
         final int leftEdgeCol = Math.max(0, (x1 - 1) / ts);
         final int rightEdgeCol = Math.max(0, (x2 + 1) / ts);
         final int topEdgeRow = Math.max(0, (y1 - 1) / ts);
@@ -699,7 +768,7 @@ private void handleGameOver() {
             setFacingForTransition(currentMapName, nextMapName);
             changeAndLoadMap(nextMapName);
         } else {
-            LoggerUtils.error("Nessuna mappa successiva definita.");
+            LoggerUtils.error("No next map defined.");
         }
     }
 
@@ -711,10 +780,9 @@ private void handleGameOver() {
             setFacingForTransition(currentMapName, prevMapName);
             changeAndLoadMap(prevMapName);
         } else {
-            LoggerUtils.error("Nessuna mappa precedente definita.");
+            LoggerUtils.error("No previous map defined.");
         }
     }
-
 
     private void changeAndLoadMap(final String mapName) {
         boss = null;
@@ -725,7 +793,6 @@ private void handleGameOver() {
 
         boolean placed = false;
 
-        // 1) Se il chiamante ha indicato un entry specifico (es. ID_PORTAL con index 0), usa quello
         if (pendingEntryTileId != null && pendingEntryIndex != null) {
             final List<Point> entries = tileMap.findAllWithId(pendingEntryTileId);
             if (!entries.isEmpty()) {
@@ -738,11 +805,10 @@ private void handleGameOver() {
             }
         }
 
-        // 2) Se non posizionato e vuoi forzare "sempre ID 4", prova il primo ID_PORTAL (ID 4)
         if (!placed) {
-            final List<Point> portals = tileMap.findAllWithId(ID_PORTAL); // ID 4
+            final List<Point> portals = tileMap.findAllWithId(ID_PORTAL);
             if (!portals.isEmpty()) {
-                final Point topLeft = portals.get(0); // primo ID 4 trovato
+                final Point topLeft = portals.get(0);
                 final int ts = tileMap.getTileSize();
                 bald.setPosX(topLeft.x + (ts - bald.getWidth()) / 2);
                 bald.setPosY(topLeft.y - bald.getHeight());
@@ -750,16 +816,13 @@ private void handleGameOver() {
             }
         }
 
-        // pulizia stato pending
         pendingEntryTileId = null;
         pendingEntryIndex = null;
 
-        // 3) Fallback finale: spawn classico
         if (!placed) {
             bald.setSpawnPosition(ID_SPAWN, tileMap.getTileSize());
         }
 
-        // Cooldown anti-rimbalzo tra portali
         portalCooldownUntil = System.currentTimeMillis() + PORTAL_COOLDOWN_MS;
 
         bald.setSpeedX(0);
@@ -768,11 +831,9 @@ private void handleGameOver() {
 
         if (pendingFacingRight != null) {
             bald.setFacingRight(pendingFacingRight);
-            pendingFacingRight = null; // consumato
+            pendingFacingRight = null;
         }
 
-
-        // Ricarica contenuti mappa
         spawnActorsFromMap();
 
         itemManager.loadItemsForMap(mapName);
@@ -780,14 +841,12 @@ private void handleGameOver() {
         shopButton.setVisible(false);
     }
 
-
-
     private void spawnActorsFromMap() {
         enemies.clear();
         boss = null;
 
         final List<Point> enemyTiles = tileMap.findAllWithId(ID_ENEMY);
-        final List<Point> bossTiles  = tileMap.findAllWithId(ID_BOSS);
+        final List<Point> bossTiles = tileMap.findAllWithId(ID_BOSS);
 
         enemyTiles.forEach(this::spawnEnemyAt);
         bossTiles.stream().findFirst().ifPresent(this::spawnBossAt);
@@ -803,30 +862,26 @@ private void handleGameOver() {
     private void spawnBossAt(final Point topLeft) {
         if (boss != null) {
             return;
-        } // garantisci unicità
+        }
 
         final int ts = tileMap.getTileSize();
         final int x = topLeft.x + (ts - BOSS_W) / 2;
         final int y = topLeft.y + (ts - BOSS_H) / 2;
 
-        final int bossHp  = 500;     // punti vita
-        final int bossAtk = 1;      // attacco base
-        final LifeComponent life = new LifeComponent(bossHp); // componente vita
+        final int bossHp = 500;
+        final int bossAtk = 1;
+        final LifeComponent life = new LifeComponent(bossHp);
 
         boss = new FinalBoss(
-            x, y,
-            "Final Boss",            // nome
-            bossHp,                  // salute massima
-            bossAtk,                 // attacco base
-            life,                    // componente vita
-            tileMap                  // mappa corrente
-        );
+                x, y,
+                "Final Boss",
+                bossHp,
+                bossAtk,
+                life,
+                tileMap);
 
         combatManager.setBoss(boss);
     }
-
-
-    /* ===================== Rendering ===================== */
 
     @Override
     protected void paintComponent(final Graphics g) {
@@ -842,85 +897,63 @@ private void handleGameOver() {
         bald.render(g2d);
         enemies.forEach(enemy -> enemy.render(g2d));
 
-        // DISEGNA IL BOSS (sopra bald/nemici, sotto i proiettili)
         if (boss != null && boss.isAlive()) {
             boss.render(g2d);
         }
 
-        // proiettili sopra tutto il “mondo”
         combatManager.getProjectiles().forEach(p -> p.render(g2d));
 
-        // HUD
         lifePanel.paintComponent(g2d);
         drawFPS(g2d);
         drawTimer(g2d);
         drawAttackArea(g2d);
 
-        // ⬇️ BARRA HP DEL BOSS (HUD)
         drawBossHP(g2d);
         if (gameOver) {
             drawGameOverScreen(g2d);
         } else if (gameWon) {
-            // Chiama il nuovo metodo di disegno
             drawGameWonScreen(g2d);
         }
         g2d.dispose();
     }
 
-    /**
- * Disegna la schermata di Vittoria (overlay e scritta).
- * @param g2d il contesto grafico
- */
-private void drawGameWonScreen(final Graphics2D g2d) {
-    // 1. Disegna un overlay scuro semi-trasparente
-    g2d.setColor(new Color(0, 0, 0, FINAL_GAME_SCREEN_TITLE_TRANSPARENCY));
-    g2d.fillRect(0, 0, getWidth(), getHeight());
+    private void drawGameWonScreen(final Graphics2D g2d) {
+        g2d.setColor(new Color(0, 0, 0, FINAL_GAME_SCREEN_TITLE_TRANSPARENCY));
+        g2d.fillRect(0, 0, getWidth(), getHeight());
 
-    // 2. Prepara il testo "YOU WON"
-    final String msg = "YOU WON";
-    final Font winFont = new Font("Arial", Font.BOLD, 72); // Font grande
-    g2d.setFont(winFont);
-    g2d.setColor(Color.GREEN); // <-- Un bel colore verde per la vittoria
+        final String msg = "YOU WON";
+        final Font winFont = new Font("Arial", Font.BOLD, 72);
+        g2d.setFont(winFont);
+        g2d.setColor(Color.GREEN);
 
-    // 3. Calcola come centrare il testo
-    final FontMetrics fm = g2d.getFontMetrics(winFont);
-    final int msgWidth = fm.stringWidth(msg);
-    final int msgHeight = fm.getAscent();
+        final FontMetrics fm = g2d.getFontMetrics(winFont);
+        final int msgWidth = fm.stringWidth(msg);
+        final int msgHeight = fm.getAscent();
 
-    final int x = (getWidth() - msgWidth) / 2;
-    final int y = (getHeight() - msgHeight) / 2 + fm.getAscent();
+        final int x = (getWidth() - msgWidth) / 2;
+        final int y = (getHeight() - msgHeight) / 2 + fm.getAscent();
 
-    // 4. Disegna il testo
-    g2d.drawString(msg, x, y);
-}
+        g2d.drawString(msg, x, y);
+    }
 
-/**
- * Disegna la schermata di Game Over (overlay scuro e scritta).
- * @param g2d il contesto grafico
- */
-private void drawGameOverScreen(final Graphics2D g2d) {
-    // 1. Disegna un overlay scuro semi-trasparente
-    g2d.setColor(new Color(0, 0, 0, FINAL_GAME_SCREEN_TITLE_TRANSPARENCY)); // 150 = ~60% trasparenza
-    g2d.fillRect(0, 0, getWidth(), getHeight());
+    private void drawGameOverScreen(final Graphics2D g2d) {
+        g2d.setColor(new Color(0, 0, 0, FINAL_GAME_SCREEN_TITLE_TRANSPARENCY));
+        g2d.fillRect(0, 0, getWidth(), getHeight());
 
-    // 2. Prepara il testo "GAME OVER"
-    final String msg = "GAME OVER";
-    final Font gameOverFont = new Font("Arial", Font.BOLD, 72); // Font grande
-    g2d.setFont(gameOverFont);
-    g2d.setColor(Color.RED);
+        final String msg = "GAME OVER";
+        final Font gameOverFont = new Font("Arial", Font.BOLD, 72);
+        g2d.setFont(gameOverFont);
+        g2d.setColor(Color.RED);
 
-    // 3. Calcola come centrare il testo
-    final FontMetrics fm = g2d.getFontMetrics(gameOverFont);
-    final int msgWidth = fm.stringWidth(msg);
-    final int msgHeight = fm.getAscent(); // Altezza del font
+        final FontMetrics fm = g2d.getFontMetrics(gameOverFont);
+        final int msgWidth = fm.stringWidth(msg);
+        final int msgHeight = fm.getAscent();
 
-    // Calcola posizione X e Y per centrare
-    final int x = (getWidth() - msgWidth) / 2;
-    final int y = (getHeight() - msgHeight) / 2 + fm.getAscent();
+        final int x = (getWidth() - msgWidth) / 2;
+        final int y = (getHeight() - msgHeight) / 2 + fm.getAscent();
 
-    // 4. Disegna il testo
-    g2d.drawString(msg, x, y);
-}
+        g2d.drawString(msg, x, y);
+    }
 
     private void drawAttackArea(final Graphics g) {
         final Graphics2D g2d = (Graphics2D) g;
@@ -944,7 +977,7 @@ private void drawGameOverScreen(final Graphics2D g2d) {
         final int x = (getWidth() - w) / 2;
         final int y = 12;
 
-        final int hp  = boss.getHealth();
+        final int hp = boss.getHealth();
         final int max = boss.getMaxHealth();
         final double ratio = Math.max(0.0, Math.min(1.0, hp / (double) max));
         final int fill = (int) (w * ratio);
@@ -978,7 +1011,6 @@ private void drawGameOverScreen(final Graphics2D g2d) {
         g2d.drawString("FINAL BOSS  " + hp + "/" + max, x + xTextOffset, y + h + yTextOffset);
     }
 
-
     private void drawFPS(final Graphics g) {
         if (showingFPS) {
             g.setColor(Color.YELLOW);
@@ -1005,10 +1037,8 @@ private void drawGameOverScreen(final Graphics2D g2d) {
                 .filter(window -> window instanceof GameWindow)
                 .map(window -> (GameWindow) window)
                 .ifPresent(window -> {
-                    final double scaleX =
-                            this.getWidth() / window.getInternalSize().getWidth();
-                    final double scaleY =
-                            this.getHeight() / window.getInternalSize().getHeight();
+                    final double scaleX = this.getWidth() / window.getInternalSize().getWidth();
+                    final double scaleY = this.getHeight() / window.getInternalSize().getHeight();
                     ((Graphics2D) g).scale(scaleX, scaleY);
                 });
     }
@@ -1021,14 +1051,12 @@ private void drawGameOverScreen(final Graphics2D g2d) {
                 (int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
                 (int) (this.getWidth() * OPTIONS_WIDTH_INSETS),
                 (int) (this.getHeight() * OPTIONS_HEIGHT_INSETS),
-                (int) (this.getWidth() * OPTIONS_WIDTH_INSETS)
-        );
+                (int) (this.getWidth() * OPTIONS_WIDTH_INSETS));
         inventoryGBC.insets.set(
                 (int) (this.getHeight() * INVENTORY_HEIGHT_INSETS),
                 (int) (this.getWidth() * INVENTORY_WIDTH_INSETS),
                 (int) (this.getHeight() * INVENTORY_HEIGHT_INSETS),
-                (int) (this.getWidth() * INVENTORY_WIDTH_INSETS)
-        );
+                (int) (this.getWidth() * INVENTORY_WIDTH_INSETS));
     }
 
     @Override
@@ -1054,7 +1082,6 @@ private void drawGameOverScreen(final Graphics2D g2d) {
             }
         });
 
-        // filler per layout
         final GridBagConstraints fillerGBC = new GridBagConstraints();
         fillerGBC.gridx = 0;
         fillerGBC.gridy = 0;
@@ -1063,7 +1090,6 @@ private void drawGameOverScreen(final Graphics2D g2d) {
         fillerGBC.fill = GridBagConstraints.BOTH;
         this.add(Box.createGlue(), fillerGBC);
 
-        // posizionamento bottone
         final GridBagConstraints shopButtonGBC = new GridBagConstraints();
         shopButtonGBC.gridx = 0;
         shopButtonGBC.gridy = 0;
@@ -1089,7 +1115,7 @@ private void drawGameOverScreen(final Graphics2D g2d) {
         JOptionPane.showMessageDialog(this, shopPanel, "SHOP", JOptionPane.PLAIN_MESSAGE);
     }
 
-    /** Mostra il pulsante shop quando Bald è sopra un tile {@link #ID_SHOP}. */
+    /** Shows the shop button when Bald is over a {@link #ID_SHOP} tile. */
     private void checkIfNearShopTile() {
         final int tileSize = tileMap.getTileSize();
 
@@ -1112,7 +1138,10 @@ private void drawGameOverScreen(final Graphics2D g2d) {
         }
     }
 
-    /* ===================== Getters/Setters richiesti dall'interfaccia ===================== */
+    /*
+     * ===================== Getters/Setters richiesti dall'interfaccia
+     * =====================
+     */
 
     @Override
     public boolean isRunning() {
@@ -1136,21 +1165,25 @@ private void drawGameOverScreen(final Graphics2D g2d) {
         this.showingFPS = value;
     }
 
-    /** @return {@code true} se la UI mostra gli FPS. */
+    /**
+     * @return {@code true} if the FPS counter is being shown in the UI.
+     */
     public boolean isShowingFPS() {
         return showingFPS;
     }
 
     /**
-     * Abilita/Disabilita la visualizzazione del timer di gioco.
+     * Enables or disables the display of the game timer.
      *
-     * @param showingTimer se {@code true} il timer viene mostrato in overlay.
+     * @param showingTimer if {@code true}, the timer is shown as an overlay.
      */
     public void setShowingTimer(final boolean showingTimer) {
         this.showingTimer = showingTimer;
     }
 
-    /** @return {@code true} se la UI mostra il timer. */
+    /**
+     * @return {@code true} if the timer is being shown in the UI.
+     */
     public boolean isShowingTimer() {
         return showingTimer;
     }

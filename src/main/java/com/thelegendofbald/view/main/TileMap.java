@@ -20,23 +20,25 @@ import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * Gestisce il caricamento e il rendering della mappa a tile.
- * <p>La classe è final per evitare il warning "designed for extension".</p>
+ * <p>
+ * La classe è final per evitare il warning "designed for extension".
+ * </p>
  */
 public class TileMap {
 
-    private static final int ID_EMPTY   = 0;
+    private static final int ID_EMPTY = 0;
     private static final int ID_FLOOR_A = 1;
-    private static final int ID_WALL    = 2;
+    private static final int ID_WALL = 2;
     private static final int ID_FLOOR_B = 4;
-    private static final int ID_SPAWN   = 5; 
-    private static final int ID_SHOP    = 6; 
-    private static final int ID_SPECIAL = 7; 
+    private static final int ID_SPAWN = 5;
+    private static final int ID_SHOP = 6;
+    private static final int ID_SPECIAL = 7;
     private static final int ID_PREV_PORTAL = 8;
     private static final int ID_BOSS = 9;
     private static final int ID_NEXT_MAP_TRIGGER = 10;
 
-    private static final int DEFAULT_ROWS = 22; 
-    private static final int DEFAULT_COLS = 40; 
+    private static final int DEFAULT_ROWS = 22;
+    private static final int DEFAULT_COLS = 40;
 
     /** Larghezza in pixel dell'area di disegno. */
     private final int width;
@@ -73,16 +75,18 @@ public class TileMap {
             final BufferedImage wall = loadBufferedImage("/images/map_png/BrickGrey.png");
             final BufferedImage shop = loadBufferedImage("/images/map_png/shop.png");
 
-            tileTypes.put(ID_EMPTY,   new Tile(null,  tileSize, tileSize, ID_EMPTY,   false, false, false, false, null));
-            tileTypes.put(ID_FLOOR_A, new Tile(floor, tileSize, tileSize, ID_FLOOR_A, false, true,  false, true,  null));
-            tileTypes.put(ID_WALL,    new Tile(wall,  tileSize, tileSize, ID_WALL,    true,  true,  false, false, null));
-            tileTypes.put(ID_FLOOR_B, new Tile(floor, tileSize, tileSize, ID_FLOOR_B, false, true,  false, true,  null));
-            tileTypes.put(ID_SPAWN,   new Tile(floor, tileSize, tileSize, ID_SPAWN,   false, true,  true,  true,  null));
-            tileTypes.put(ID_SHOP,    new Tile(floor, tileSize, tileSize, ID_SHOP,    false, true,  true,  true,  shop));
-            tileTypes.put(ID_SPECIAL, new Tile(floor, tileSize, tileSize, ID_SPECIAL, false, true,  true,  true,  null));
-            tileTypes.put(ID_PREV_PORTAL,   new Tile(null,  tileSize, tileSize, ID_EMPTY,   false, false, false, false, null));
-            tileTypes.put(ID_BOSS, new Tile(floor,tileSize,tileSize,ID_BOSS,false,true,true,true,null));
-            tileTypes.put(ID_NEXT_MAP_TRIGGER, new Tile(floor, tileSize, tileSize, ID_NEXT_MAP_TRIGGER, false, true,  false, true,  null));
+            tileTypes.put(ID_EMPTY, new Tile(null, tileSize, tileSize, ID_EMPTY, false, false, false, false, null));
+            tileTypes.put(ID_FLOOR_A, new Tile(floor, tileSize, tileSize, ID_FLOOR_A, false, true, false, true, null));
+            tileTypes.put(ID_WALL, new Tile(wall, tileSize, tileSize, ID_WALL, true, true, false, false, null));
+            tileTypes.put(ID_FLOOR_B, new Tile(floor, tileSize, tileSize, ID_FLOOR_B, false, true, false, true, null));
+            tileTypes.put(ID_SPAWN, new Tile(floor, tileSize, tileSize, ID_SPAWN, false, true, true, true, null));
+            tileTypes.put(ID_SHOP, new Tile(floor, tileSize, tileSize, ID_SHOP, false, true, true, true, shop));
+            tileTypes.put(ID_SPECIAL, new Tile(floor, tileSize, tileSize, ID_SPECIAL, false, true, true, true, null));
+            tileTypes.put(ID_PREV_PORTAL,
+                    new Tile(null, tileSize, tileSize, ID_EMPTY, false, false, false, false, null));
+            tileTypes.put(ID_BOSS, new Tile(floor, tileSize, tileSize, ID_BOSS, false, true, true, true, null));
+            tileTypes.put(ID_NEXT_MAP_TRIGGER,
+                    new Tile(floor, tileSize, tileSize, ID_NEXT_MAP_TRIGGER, false, true, false, true, null));
         } catch (final IOException e) {
             LoggerUtils.error("Errore nel caricamento delle immagini dei tile.", e);
             throw new IllegalStateException("Errore nel caricamento delle immagini dei tile.", e);
@@ -121,7 +125,8 @@ public class TileMap {
                 case "map_2" -> mapData = loadMapFromFile("map_2.txt");
                 case "map_3" -> mapData = loadMapFromFile("map_3.txt");
                 case "map_4" -> mapData = loadMapFromFile("map_4.txt");
-                default -> { }
+                default -> {
+                }
             }
         }
 
@@ -141,8 +146,7 @@ public class TileMap {
                             false,
                             baseTile.isWalkable(),
                             baseTile.isSpawn(),
-                            baseTile.getOverlayImage()
-                    );
+                            baseTile.getOverlayImage());
                 } else {
                     tiles[y][x] = null;
                 }
@@ -162,8 +166,8 @@ public class TileMap {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
                 getClass().getResourceAsStream("/map/" + fileName), StandardCharsets.UTF_8))) {
 
-            String line = reader.readLine();           // ← prima lettura fuori dalla condizione
-            while (line != null) {                     // ← niente assegnazioni nell’operando
+            String line = reader.readLine(); // ← prima lettura fuori dalla condizione
+            while (line != null) { // ← niente assegnazioni nell’operando
                 final String trimmed = line.trim();
                 if (!trimmed.isEmpty()) {
                     final String[] tokens = trimmed.split("\\s+|,");
@@ -173,7 +177,7 @@ public class TileMap {
                     }
                     rows.add(row);
                 }
-                line = reader.readLine();              // ← avanzamento esplicito
+                line = reader.readLine(); // ← avanzamento esplicito
             }
         } catch (final IOException e) {
             LoggerUtils.error("Errore nel caricamento della mappa: " + fileName, e);
@@ -184,8 +188,7 @@ public class TileMap {
             map[i] = rows.get(i);
         }
         return map;
-        }
-
+    }
 
     /**
      * Carica una semplice immagine da classpath.

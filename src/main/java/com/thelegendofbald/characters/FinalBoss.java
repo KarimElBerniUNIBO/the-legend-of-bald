@@ -246,7 +246,7 @@ public final class FinalBoss extends Entity implements Combatant {
         if (dist > AGGRO_RANGE_PX) {
             return; 
         }
-        
+
         if (dist <= MELEE_RANGE_PX) {
             tryMelee(bald);
             tryAoe(bald);
@@ -325,7 +325,7 @@ public final class FinalBoss extends Entity implements Combatant {
             phase = 1;
         }
     }
-    
+
     /**
      * Attempts a melee attack on Bald, respecting the cooldown.
      * @param bald the player
@@ -453,7 +453,7 @@ public final class FinalBoss extends Entity implements Combatant {
         final BufferedImage[] activeFrames = getActiveFrames();
         final BufferedImage frame =
             (activeFrames != null && activeFrames.length > 0) ? activeFrames[currentFrame % activeFrames.length] : null;
-        
+
         if (frame != null) {
             if (!isFacingRight()) { 
                 g.drawImage(frame, getX(), getY(), RENDER_SIZE, RENDER_SIZE, null);
@@ -470,7 +470,7 @@ public final class FinalBoss extends Entity implements Combatant {
             }
             g.fillRect(getX(), getY(), RENDER_SIZE, RENDER_SIZE);
         }
-        
+
         final int hpBarWidth = RENDER_SIZE;
         final int hpBarHeight = 5;
         final int hpBarY = getY() - hpBarHeight - 2;

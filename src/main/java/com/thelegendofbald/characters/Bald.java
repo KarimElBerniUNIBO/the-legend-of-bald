@@ -389,7 +389,7 @@ public final class Bald extends Entity implements Combatant {
         final double nextY = posY + speedY * dt * SPEED_MULTIPLIER;
         final Rectangle nextHitboxX = new Rectangle(
                 (int) (nextX + (ENTITY_SIZE - HITBOX_WIDTH) / 2.0),
-                (int) (posY + (ENTITY_SIZE - HITBOX_HEIGHT) ),
+                (int) (posY + (ENTITY_SIZE - HITBOX_HEIGHT)),
                 HITBOX_WIDTH, HITBOX_HEIGHT);
 
         boolean collisionX = false;
@@ -411,7 +411,7 @@ public final class Bald extends Entity implements Combatant {
 
         final Rectangle nextHitboxY = new Rectangle(
                 (int) (posX + (ENTITY_SIZE - HITBOX_WIDTH) / 2.0),
-                (int) (nextY + (ENTITY_SIZE - HITBOX_HEIGHT) ),
+                (int) (nextY + (ENTITY_SIZE - HITBOX_HEIGHT)),
                 HITBOX_WIDTH, HITBOX_HEIGHT);
 
         boolean collisionY = false;
