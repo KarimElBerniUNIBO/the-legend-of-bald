@@ -30,7 +30,8 @@ public class StatusEffectManager {
      */
     @SuppressFBWarnings(
         value = "EI_EXPOSE_REP2",
-        justification = "Intentional architecture: This component requires a direct mutable reference to its owner (Bald) to apply status effects and health modifications."
+        justification = "Intentional architecture: This component requires a "
+        + "direct mutable reference to its owner (Bald) to apply status effects and health modifications."
     )
     public StatusEffectManager(final Bald owner) {
         if (owner == null) {

@@ -2,20 +2,16 @@ package com.thelegendofbald.api.panels;
 
 import java.awt.Color;
 import java.awt.Graphics;
-
-// --- MODIFICA 1: Import necessari per "ascoltare" ---
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-// --- FINE MODIFICA ---
 
 import com.thelegendofbald.life.LifeComponent;
 
 /**
- * Un pannello che rappresenta visivamente la salute di un'entità.
- * Ora implementa PropertyChangeListener per "ascoltare"
- * i cambiamenti dal LifeComponent.
- */
-// --- MODIFICA 2: Implementa l'interfaccia "listener" ---
+ * A panel that visually represents an entity's health.
+ * It now implements PropertyChangeListener to "listen" for
+ * changes from the LifeComponent.
+ */
 public class LifePanel extends AdapterPanel implements PropertyChangeListener {
 
     private static final long serialVersionUID = 1L;
@@ -23,25 +19,21 @@ public class LifePanel extends AdapterPanel implements PropertyChangeListener {
     private final LifeComponent lifeComponent;
 
     /**
-     * Costruisce un nuovo LifePanel associato a un LifeComponent.
-     * @param lifeComponent il LifeComponent da monitorare
-     */
+     * Constructs a new LifePanel associated with a LifeComponent.
+     * @param lifeComponent the LifeComponent to monitor
+     */
     public LifePanel(final LifeComponent lifeComponent) {
         super();
         if (lifeComponent == null) {
             throw new IllegalArgumentException("LifeComponent cannot be null");
         }
         this.lifeComponent = lifeComponent;
-
-        // --- MODIFICA 3: Iscrivi questo pannello agli aggiornamenti! ---
-        // Dice al LifeComponent: "Ehi, quando la tua vita cambia,
-        // avvisa questo pannello chiamando il suo metodo propertyChange."
         this.lifeComponent.addPropertyChangeListener(this);
     }
 
     /**
-     * Inizializza i componenti del pannello.
-     */
+     * Initializes the panel's components.
+     */
     @Override
     protected void initializeComponents() {
         super.initializeComponents(); 
@@ -49,26 +41,24 @@ public class LifePanel extends AdapterPanel implements PropertyChangeListener {
     }
 
     /**
-     * Aggiunge sotto-componenti al pannello.
-     */
+     * Adds sub-components to the panel.
+     */
     @Override
     public void addComponentsToPanel() {
-        // Attualmente non necessario
     }
 
      /**
-     * Attiva un ridisegno del pannello.
-     */
+     * Triggers a redraw of the panel.
+     */
     @Override
     public void updateView() {
         repaint();
     }
 
     /**
-     * Disegna la barra della vita.
-     * (Nessuna modifica qui, era già corretto)
-     * @param g L'oggetto Graphics usato per disegnare.
-     */
+     * Draws the health bar.
+     * @param g The Graphics object used for drawing.
+     */
      @Override
     public void paintComponent(final Graphics g) {
         super.paintComponent(g);
@@ -76,41 +66,33 @@ public class LifePanel extends AdapterPanel implements PropertyChangeListener {
         final double perc = lifeComponent.getPercentage(); 
         final int width = (int) (perc * getWidth());
 
-        // Sfondo grigio
         g.setColor(Color.GRAY);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        // Barra rossa della vita
         g.setColor(Color.RED);
         g.fillRect(0, 0, width, getHeight());
 
-        // Bordo nero
         g.setColor(Color.BLACK);
         g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
 
     /**
-     * Placeholder per aggiornare le dimensioni.
-     */
+     * Placeholder for updating component sizes.
+     */
     @Override
     public void updateComponentsSize() {
-         // Non necessario
     }
 
-    // --- MODIFICA 4: Metodo obbligatorio dell'interfaccia PropertyChangeListener ---
     /**
-     * Questo metodo viene chiamato AUTOMATICAMENTE dal LifeComponent
-     * ogni volta che la sua vita cambia (perché ci siamo iscritti nel costruttore).
-     *
-     * @param evt L'evento che descrive il cambiamento.
-     */
+     * This method is called automatically by the LifeComponent
+     * whenever its health changes (because we subscribed in the constructor).
+     *
+     * @param evt The event that describes the change.
+     */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        // Controlliamo che la proprietà cambiata sia "currentHealth"
-        // (La stringa l'abbiamo definita in LifeComponent)
         if (LifeComponent.HEALTH_PROPERTY.equals(evt.getPropertyName())) {
-            // La vita è cambiata! Diciamo a Swing di ridisegnare questo pannello.
-        updateView(); // Chiama repaint()
+            updateView();
         }
     }
 }

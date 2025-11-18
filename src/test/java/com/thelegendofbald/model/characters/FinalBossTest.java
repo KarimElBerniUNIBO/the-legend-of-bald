@@ -1,16 +1,16 @@
 package com.thelegendofbald.model.characters;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.characters.FinalBoss;
 import com.thelegendofbald.life.LifeComponent;
 import com.thelegendofbald.view.main.Tile;
 import com.thelegendofbald.view.main.TileMap;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Test class for the {@link FinalBoss} entity.

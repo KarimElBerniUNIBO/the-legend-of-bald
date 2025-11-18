@@ -29,6 +29,9 @@ import com.thelegendofbald.model.item.weapons.FireBall;
 import com.thelegendofbald.model.item.weapons.Sword;
 import com.thelegendofbald.utils.LoggerUtils;
 
+/**
+ * Panel that displays a shop interface where players can buy items.
+ */
 public final class ShopPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -82,11 +85,11 @@ public final class ShopPanel extends JPanel {
     private JLabel goldLabel;
 
     /**
-     * Crea un nuovo pannello shop.
+     * Creates a new shop panel.
      *
-     * @param combatManager gestore dei combattimenti
-     * @param wallet portafoglio del giocatore
-     * @param inventory inventario del giocatore
+     * @param combatManager the combat manager
+     * @param wallet the player's wallet
+     * @param inventory the player's inventory
      */
     public ShopPanel(final CombatManager combatManager, final Wallet wallet, final Inventory inventory) {
         this.inventory = inventory;
@@ -96,7 +99,7 @@ public final class ShopPanel extends JPanel {
         setBackground(BG_COLOR);
         setLayout(null);
 
-        this.goldLabel = new JLabel("Oro: " + coinsSupplier.getAsInt());
+        this.goldLabel = new JLabel("Gold: " + coinsSupplier.getAsInt());
         goldLabel.setFont(GOLD_FONT);
         goldLabel.setForeground(Color.YELLOW);
         final Dimension size = goldLabel.getPreferredSize();
@@ -127,10 +130,10 @@ public final class ShopPanel extends JPanel {
     }
 
     /**
-     * Inizializza gli oggetti acquistabili e lo stato runtime.
+     * Initializes the purchasable items and runtime state.
      *
-     * @param combatManager gestore del combattimento
-     * @param wallet portafoglio del giocatore
+     * @param combatManager the combat manager
+     * @param wallet the player's wallet
      */
     private void initRuntimeState(final CombatManager combatManager, final Wallet wallet) {
         this.items = new ArrayList<>();
@@ -144,13 +147,11 @@ public final class ShopPanel extends JPanel {
     }
 
     /**
-     * Genera i pulsanti "Compra" per ogni item.
+     * Creates the "Buy" buttons for each item.
      */
     private void createBuyButtons() {
         int y = LIST_START_Y - ITEM_RECT_OFFSET_Y;
-        for (int i = 0; i < items.size(); i++) {
-            final ShopItem shopItem = items.get(i);
-
+        for (final ShopItem shopItem : items) {
             final JButton buyButton = new JButton("Buy Item");
             buyButton.setBackground(Color.RED);
             buyButton.setOpaque(true);
@@ -171,21 +172,21 @@ public final class ShopPanel extends JPanel {
     }
 
     /**
-     * Aggiorna la label dell'oro.
+     * Updates the gold display label.
      */
     public void updateGoldDisplay() {
-        goldLabel.setText("Oro: " + coinsSupplier.getAsInt());
+        goldLabel.setText("Gold: " + coinsSupplier.getAsInt());
         goldLabel.repaint();
     }
 
     /**
-     * Effettua il tentativo di acquisto di un oggetto.
+     * Attempts to purchase an item.
      *
-     * @param item oggetto acquistabile
+     * @param item the purchasable item
      */
     private void attemptPurchase(final ShopItem item) {
         if (wallet == null || inventory == null) {
-            LoggerUtils.error("Impossibile acquistare: wallet o inventory null.");
+            LoggerUtils.error("Cannot purchase: wallet or inventory is null.");
             return;
         }
 
@@ -193,7 +194,7 @@ public final class ShopPanel extends JPanel {
         final int currentCoins = wallet.getCoins();
 
         if (currentCoins < price) {
-            LoggerUtils.info("Oro insufficiente per acquistare: " + item.getDisplayName());
+            LoggerUtils.info("Not enough gold to buy: " + item.getDisplayName());
             return;
         }
 
@@ -201,15 +202,15 @@ public final class ShopPanel extends JPanel {
         final GameItem gameItem = (GameItem) item;
         inventory.add(gameItem);
 
-        LoggerUtils.info("Acquistato: " + item.getDisplayName() + " per " + price + " oro.");
+        LoggerUtils.info("Purchased: " + item.getDisplayName() + " for " + price + " gold.");
 
         updateGoldDisplay();
     }
 
     /**
-     * Disegna gli elementi del pannello.
+     * Draws the panel's components.
      *
-     * @param g contesto grafico
+     * @param g the graphics context
      */
     @Override
     protected void paintComponent(final Graphics g) {
@@ -219,7 +220,7 @@ public final class ShopPanel extends JPanel {
 
         g2.setColor(FG_COLOR);
         g2.setFont(TITLE_FONT);
-        g2.drawString("Negozio", PADDING, TITLE_Y);
+        g2.drawString("Shop", PADDING, TITLE_Y);
 
         int y = LIST_START_Y;
         for (int i = 0; i < items.size(); i++) {
@@ -255,11 +256,11 @@ public final class ShopPanel extends JPanel {
     }
 
     /**
-     * Ricostruisce i campi transient dopo deserializzazione.
+     * Reconstructs transient fields after deserialization.
      *
-     * @param in stream di input
-     * @throws IOException errore IO
-     * @throws ClassNotFoundException classe non trovata
+     * @param in the input stream
+     * @throws IOException if an I/O error occurs
+     * @throws ClassNotFoundException if the class of a serialized object cannot be found
      */
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -269,7 +270,7 @@ public final class ShopPanel extends JPanel {
         this.wallet = null;
 
         if (this.goldLabel == null) {
-            this.goldLabel = new JLabel("Oro: 0");
+            this.goldLabel = new JLabel("Gold: 0");
             goldLabel.setFont(GOLD_FONT);
             goldLabel.setForeground(Color.RED);
             final Dimension size = goldLabel.getPreferredSize();

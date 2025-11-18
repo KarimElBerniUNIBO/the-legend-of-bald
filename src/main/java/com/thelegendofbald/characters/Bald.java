@@ -12,10 +12,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
+
 import javax.imageio.ImageIO;
 
 import com.thelegendofbald.combat.Combatant;
@@ -389,7 +390,7 @@ public final class Bald extends Entity implements Combatant {
         final double nextY = posY + speedY * dt * SPEED_MULTIPLIER;
         final Rectangle nextHitboxX = new Rectangle(
                 (int) (nextX + (ENTITY_SIZE - HITBOX_WIDTH) / 2.0),
-                (int) (posY + (ENTITY_SIZE - HITBOX_HEIGHT)),
+                (int) (posY + ENTITY_SIZE - HITBOX_HEIGHT),
                 HITBOX_WIDTH, HITBOX_HEIGHT);
 
         boolean collisionX = false;
@@ -411,7 +412,7 @@ public final class Bald extends Entity implements Combatant {
 
         final Rectangle nextHitboxY = new Rectangle(
                 (int) (posX + (ENTITY_SIZE - HITBOX_WIDTH) / 2.0),
-                (int) (nextY + (ENTITY_SIZE - HITBOX_HEIGHT)),
+                (int) (nextY + ENTITY_SIZE - HITBOX_HEIGHT),
                 HITBOX_WIDTH, HITBOX_HEIGHT);
 
         boolean collisionY = false;
@@ -476,7 +477,7 @@ public final class Bald extends Entity implements Combatant {
      */
     public int getCoins() {
         return this.wallet.getCoins();
-    }   
+    }
 
     /**
      * @return the currently equipped weapon, if any
@@ -554,7 +555,7 @@ public final class Bald extends Entity implements Combatant {
     @Override
     public Rectangle getBounds() {
         final int xOffset = (int) ((ENTITY_SIZE - HITBOX_WIDTH) / 2.0);
-        final int yOffset = (int) ((ENTITY_SIZE - HITBOX_HEIGHT));
+        final int yOffset = ENTITY_SIZE - HITBOX_HEIGHT;
         return new Rectangle(getX() + xOffset, getY() + yOffset, HITBOX_WIDTH, HITBOX_HEIGHT);
     }
 }
