@@ -1,7 +1,6 @@
 package com.thelegendofbald.model.item;
 
 import com.thelegendofbald.api.interactable.Interactable;
-import com.thelegendofbald.characters.Bald;
 
 /**
  * Represents a treasure chest in the game that can be opened by the player (Bald).
@@ -14,7 +13,6 @@ public class Chest extends GameItem implements Interactable {
     private static final int HEIGHT = 35;
     private static final String ITEM_NAME = "Chest";
     private static final String IMAGE_PATH = "/images/items/chestClosed.png";
-    private static final int REWARD_AMOUNT = 10;
 
     private boolean isOpen;
 
@@ -42,26 +40,21 @@ public class Chest extends GameItem implements Interactable {
     /**
      * Defines the interaction behavior when the chest is interacted with by Bald.
      * If the chest is not already open, it will be opened and Bald will receive coins.
-     *
-     * @param bald The Bald character interacting with the chest.
      */
     @Override
-    public void interact(final Bald bald) {
-        open(bald);
+    public void interact() {
+        open();
     }
 
     /**
      * Opens the chest, changing its state and rewarding Bald with coins.
      * If the chest is already open, this method has no effect.
-     *
-     * @param bald The Bald character opening the chest.
      */
-    public void open(final Bald bald) {
+    public void open() {
         if (isOpen) {
             return;
         }
         this.isOpen = true;
         super.loadImage("/images/items/chestOpen.png");
-        bald.getWallet().addCoins(REWARD_AMOUNT);
     }
 }

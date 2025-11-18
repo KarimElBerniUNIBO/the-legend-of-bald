@@ -193,8 +193,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private static final int INVENTORY_COLS = 5;
     private static final int INVENTORY_ROWS = 3;
 
-    private static final int LOOT_LVL_MIN = 7;
-    private static final int LOOT_LVL_MAX = 9;
+    private static final int HEALTH_POTION = 7;
+    private static final int STRENGTH_POTION = 8; 
+    private static final int COIN = 9;
 
     private long portalCooldownUntil;
 
@@ -297,7 +298,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         this.combatManager = new CombatManager(bald, enemies);
         this.bald.setWeapon(new Sword(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager));
 
-        this.lootGenerator = new LootGenerator(new ItemGenerator(), List.of(LOOT_LVL_MIN, LOOT_LVL_MAX));
+        this.lootGenerator = new LootGenerator(new ItemGenerator(), List.of(HEALTH_POTION, STRENGTH_POTION, COIN));
         this.itemManager = new ItemManager(tileMap, new ItemGenerator(), new MapItemLoader(), lootGenerator);
         this.itemManager.loadItemsForMap(MAP_1);
 
@@ -487,7 +488,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
                 .filter(item -> item instanceof Interactable)
                 .map(item -> (Interactable) item)
                 .findFirst()
-                .ifPresent(interactableItem -> interactableItem.interact(bald));
+                .ifPresent(interactableItem -> interactableItem.interact());
     }
 
     private void setFacingForTransition(final String from, final String to) {

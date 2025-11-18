@@ -1,6 +1,7 @@
 package com.thelegendofbald.model.item;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Graphics;
 import java.util.List;
@@ -21,10 +22,13 @@ import com.thelegendofbald.view.main.TileMap;
  */
 class ItemManagerTest {
 
-    private ItemManager itemManager;
-    private static final int TEST_TILE_SIZE = 32;
-    private static final List<Integer> TEST_LOOT_POOL = List.of(7);
+    // Test constants
     private static final int TEST_ITEM_SIZE = 5;
+    private static final List<Integer> TEST_LOOT_POOL = List.of(7);
+    private static final int TEST_TILE_SIZE = 32;
+
+    // ItemManager instance for testing
+    private ItemManager itemManager;
 
     @BeforeEach
     void setUp() {

@@ -92,7 +92,7 @@ public class ItemManager {
             if (bald.getBounds().intersects(item.getBounds())) {
 
                 if (item instanceof Chest chest && !chest.isOpen()) {
-                        chest.open(bald);
+                        chest.open();
                         final GameItem loot = lootGenerator.generateRandomItem(
                             chest.getX(),
                             chest.getY() + (chest.getWidth() / 2)

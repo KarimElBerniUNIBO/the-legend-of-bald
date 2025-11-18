@@ -6,6 +6,8 @@ import java.util.List;
 import com.thelegendofbald.characters.Bald;
 import com.thelegendofbald.utils.LoggerUtils;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 
 /**
  * Class {@code StatusEffectManager} manages the application and removal of status effects (effects/deeffects)
@@ -26,6 +28,10 @@ public class StatusEffectManager {
      *
      * @param owner the Bald {@code Bald} character that owns this manager
      */
+    @SuppressFBWarnings(
+        value = "EI_EXPOSE_REP2",
+        justification = "Intentional architecture: This component requires a direct mutable reference to its owner (Bald) to apply status effects and health modifications."
+    )
     public StatusEffectManager(final Bald owner) {
         if (owner == null) {
             throw new IllegalArgumentException("Owner Bald cannot be null");
