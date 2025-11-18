@@ -125,4 +125,5 @@ public final class InventoryManager implements Inventory {
     public List<Slot> getSlots() {
         return this.inventory;
     }
+
 }

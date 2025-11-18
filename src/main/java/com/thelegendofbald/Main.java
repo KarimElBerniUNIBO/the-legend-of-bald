@@ -1,6 +1,7 @@
 package com.thelegendofbald;
 
 import javax.swing.SwingUtilities;
+
 import com.thelegendofbald.model.sounds.SoundManager;
 import com.thelegendofbald.utils.LoggerUtils;
 import com.thelegendofbald.view.main.GameWindow;

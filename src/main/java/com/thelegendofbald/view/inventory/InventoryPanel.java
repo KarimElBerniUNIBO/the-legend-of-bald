@@ -124,4 +124,20 @@ public final class InventoryPanel extends AdapterPanel {
         return inventoryManager;
     }
 
+    private void refreshComponents() {
+        this.removeAll();
+        this.initializeComponents();
+        this.addComponentsToPanel();
+        this.revalidate();
+        this.repaint();
+    }
+
+    @Override
+    public void setVisible(final boolean aFlag) {
+        super.setVisible(aFlag);
+        if (aFlag) {
+            this.refreshComponents();
+        }
+    }
+
 }
