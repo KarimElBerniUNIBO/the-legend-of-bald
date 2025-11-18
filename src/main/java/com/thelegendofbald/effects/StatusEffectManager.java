@@ -20,23 +20,23 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * while maintaining a clean separation of concerns.
  */
 public class StatusEffectManager {
-    private final Bald owner;
+    private final Bald player;
     private final List<StatusEffect> activeEffects = new ArrayList<>();
 
     /**
      * Constructs a StatusEffectManager for the specified Bald character.
      *
-     * @param owner the Bald {@code Bald} character that owns this manager
+     * @param player the Bald {@code Bald} character that owns this manager
      */
     @SuppressFBWarnings(
         value = "EI_EXPOSE_REP2",
-        justification = "Intentional architecture: This component requires a direct mutable reference to its owner (Bald) to apply status effects and health modifications."
+        justification = "Intentional architecture: StatusEffectManager tightly coupled to work on Bald"
     )
-    public StatusEffectManager(final Bald owner) {
-        if (owner == null) {
-            throw new IllegalArgumentException("Owner Bald cannot be null");
+    public StatusEffectManager(final Bald player) {
+        if (player == null) {
+            throw new IllegalArgumentException("player Bald cannot be null");
         }
-        this.owner = owner;
+        this.player = player;
     }
 
     /**
@@ -52,7 +52,7 @@ public class StatusEffectManager {
         activeEffects.removeIf(b -> b.getName().equals(effect.getName()));
         effect.activate();
         activeEffects.add(effect);
-        effect.apply(owner); 
+        effect.apply(player); 
         LoggerUtils.info("effect di " + effect.getName() + " attivato!");
     }
 
@@ -66,9 +66,9 @@ public class StatusEffectManager {
     public void update() {
         final List<StatusEffect> expired = new ArrayList<>();
         for (final StatusEffect effect : activeEffects) {
-            effect.update(owner);
+            effect.update(player);
             if (effect.isExpired()) {
-                effect.remove(owner);
+                effect.remove(player);
                 expired.add(effect);
             }
         }
@@ -88,7 +88,7 @@ public class StatusEffectManager {
     public int modifyAttackPower(final int basePower) {
         int power = basePower;
         for (final StatusEffect effect : activeEffects) {
-            power = effect.modifyAttackPower(owner, power);
+            power = effect.modifyAttackPower(player, power);
         }
         return power;
     }
