@@ -58,8 +58,6 @@ import com.thelegendofbald.model.item.ItemGenerator;
 import com.thelegendofbald.model.item.ItemManager;
 import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
-import com.thelegendofbald.model.item.weapons.Axe;
-import com.thelegendofbald.model.item.weapons.FireBall;
 import com.thelegendofbald.model.item.weapons.Sword;
 import com.thelegendofbald.model.weapons.MeleeWeapon;
 import com.thelegendofbald.model.weapons.Weapon;
@@ -307,6 +305,13 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         bald.setTileMap(tileMap);
         bald.setSpawnPosition(ID_SPAWN, tileMap.getTileSize());
 
+        shopButton.setText("Shop");
+        shopButton.setBackground(Color.YELLOW);
+        shopButton.setOpaque(true);
+        shopButton.setFocusable(false);
+        shopButton.setVisible(false);
+        shopButton.addActionListener(this::onShopButtonClicked);
+
         final Point spawnPoint = tileMap.findSpawnPoint(ID_SPAWN);
         if (spawnPoint != null) {
             final int tileSize = tileMap.getTileSize();
@@ -334,11 +339,8 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     private void addWeaponsToInventory() {
-        final List<Weapon> weapons = List.of(
-                new FireBall(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager),
-                new Sword(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager),
-                new Axe(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager));
-        weapons.forEach(inventory::add);
+        final Weapon sword = new Sword(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager);
+        inventory.add(sword);
     }
 
     private void toggleOptionsPanel() {
@@ -1065,13 +1067,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         this.add(optionsPanel, optionsGBC);
         this.add(inventoryPanel, inventoryGBC);
 
-        shopButton.setText("Shop");
-        shopButton.setBackground(Color.YELLOW);
-        shopButton.setOpaque(true);
-        shopButton.setFocusable(false);
-        shopButton.setVisible(false);
-        shopButton.addActionListener(this::onShopButtonClicked);
-
         mainMenuButton.setVisible(false);
         mainMenuButton.setFocusable(false);
         mainMenuButton.addActionListener(e -> {
@@ -1111,7 +1106,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private void onShopButtonClicked(final java.awt.event.ActionEvent event) {
         Objects.requireNonNull(event, "event");
-        final ShopPanel shopPanel = new ShopPanel(this.combatManager, bald.getWallet());
+        final ShopPanel shopPanel = new ShopPanel(this.combatManager, bald.getWallet(), this.inventory);
         JOptionPane.showMessageDialog(this, shopPanel, "SHOP", JOptionPane.PLAIN_MESSAGE);
     }
 

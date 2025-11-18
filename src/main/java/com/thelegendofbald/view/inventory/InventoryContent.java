@@ -45,6 +45,7 @@ class InventoryContent extends AdapterPanel {
                 .toList();
     }
 
+
     @Override
     public void updateComponentsSize() {
         final int slotWidth = this.getWidth() / maxSlotsPerRow;

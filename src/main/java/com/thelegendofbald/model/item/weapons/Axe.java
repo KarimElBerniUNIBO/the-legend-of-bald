@@ -18,7 +18,7 @@ public final class Axe extends HeavyMeleeWeapon implements ShopItem {
     private static final String NAME = "Axe";
     private static final int DAMAGE = 50;
     private static final int ATTACK_RANGE = 60;
-    private static final int PRICE = 40;
+    private static final int PRICE = 60;
 
     /**
      * Constructs a new FireBall object.

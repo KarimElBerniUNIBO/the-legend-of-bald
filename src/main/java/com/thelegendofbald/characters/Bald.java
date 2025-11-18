@@ -62,7 +62,7 @@ public final class Bald extends Entity implements Combatant {
                 return t;
             });
 
-    private final Wallet wallet = new Wallet(0);
+    private final Wallet wallet = new Wallet(100);
     private final StatusEffectManager buffManager = new StatusEffectManager(this);
 
     private Optional<Weapon> weapon = Optional.empty();

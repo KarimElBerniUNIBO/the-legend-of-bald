@@ -19,7 +19,7 @@ public final class Sword extends LightMeleeWeapon implements ShopItem {
     private static final String DESCRIPTION = "A simple iron sword, suitable for beginners.";
     private static final int DAMAGE = 30;
     private static final int ATTACK_RANGE = 75;
-    private static final int PRICE = 10;
+    private static final int PRICE = 30;
 
     /**
      * Constructs a new Sword object.
