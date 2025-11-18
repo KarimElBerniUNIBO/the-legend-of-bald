@@ -249,6 +249,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private final Set<Integer> pressedKeys = new HashSet<>();
     private final JButton shopButton = new JButton("Shop");
     private final JButton mainMenuButton = new JButton("Ritorna alla pagina principale");
+    private final ShopPanel shopPanel;
 
     private FinalBoss boss;
 
@@ -312,6 +313,8 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         shopButton.setFocusable(false);
         shopButton.setVisible(false);
         shopButton.addActionListener(this::onShopButtonClicked);
+
+        shopPanel = new ShopPanel(this.combatManager, bald.getWallet(), this.inventory);
 
         final Point spawnPoint = tileMap.findSpawnPoint(ID_SPAWN);
         if (spawnPoint != null) {
@@ -1107,7 +1110,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
 
     private void onShopButtonClicked(final java.awt.event.ActionEvent event) {
         Objects.requireNonNull(event, "event");
-        final ShopPanel shopPanel = new ShopPanel(this.combatManager, bald.getWallet(), this.inventory);
         JOptionPane.showMessageDialog(this, shopPanel, "SHOP", JOptionPane.PLAIN_MESSAGE);
     }
 
