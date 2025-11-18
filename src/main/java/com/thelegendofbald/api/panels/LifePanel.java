@@ -23,8 +23,8 @@ public class LifePanel extends AdapterPanel implements PropertyChangeListener {
     private final LifeComponent lifeComponent;
 
     /**
-     * Costruisce un nuovo LifePanel.
-     *      * @param lifeComponent L'istanza di {@link LifeComponent} che questo pannello mostrerà.
+     * Costruisce un nuovo LifePanel associato a un LifeComponent.
+     * @param lifeComponent il LifeComponent da monitorare
      */
     public LifePanel(final LifeComponent lifeComponent) {
         super();

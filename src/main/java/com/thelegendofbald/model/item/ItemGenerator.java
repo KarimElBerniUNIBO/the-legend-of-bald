@@ -14,7 +14,7 @@ import com.thelegendofbald.model.item.traps.PoisonTrap;
  * based on an ID. This class follows the Factory design pattern,
  * centralizing item creation and promoting loose coupling.
  */
-public class ItemFactory {
+public class ItemGenerator {
 
     private static final int ID_HEALTH_POTION = 7;
     private static final int ID_STRENGTH_POTION = 8;
@@ -29,13 +29,13 @@ public class ItemFactory {
      * Constructs a new ItemFactory and registers all available item types.
      * The registry maps an integer ID to a constructor for the corresponding item class.
      */
-    public ItemFactory() {
-        registry.put(ID_HEALTH_POTION, HealthPotion::new);
-        registry.put(ID_STRENGTH_POTION, StrengthPotion::new);
+    public ItemGenerator() {
+        registry.put(ID_HEALTH_POTION, (x, y) -> new HealthPotion(x, y));
+        registry.put(ID_STRENGTH_POTION, (x, y) -> new StrengthPotion(x, y));
         registry.put(ID_CHEST, (x, y) -> new Chest(x, y));
         registry.put(ID_POISON_TRAP, (x, y) -> new PoisonTrap(x, y));
         registry.put(ID_IMMOBILIZING_TRAP, (x, y) -> new ImmobilizingTrap(x, y));
-        registry.put(ID_COIN, Coin::new);
+        registry.put(ID_COIN, (x, y) -> new Coin(x, y));
     }
 
     /**

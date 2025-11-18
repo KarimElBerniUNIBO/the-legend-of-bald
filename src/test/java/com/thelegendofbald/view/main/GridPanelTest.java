@@ -21,7 +21,6 @@ class GridPanelTest {
     // Costanti usate anche nella classe da testare
     private static final int DEFAULT_W = 1280;
     private static final int DEFAULT_H = 704;
-    private static final int TILE = 32;
 
     @Test
     @DisplayName("getPreferredSize() senza parent -> dimensione di default")

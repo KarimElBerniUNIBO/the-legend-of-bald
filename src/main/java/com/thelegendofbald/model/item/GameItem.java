@@ -141,6 +141,7 @@ public class GameItem {
     public Image getSprite() {
         if (sprite == null) {
             LoggerUtils.warning("Sprite for item " + name + " is not set!");
+            return null;
         }
 
         final BufferedImage copy = new BufferedImage(
@@ -190,6 +191,7 @@ public class GameItem {
     public void setSprite(final Image sprite) {
         if (sprite == null) {
             LoggerUtils.error("Attempted to set a null sprite for item: " + name);
+            return;
         }
 
         final BufferedImage copy = new BufferedImage(
