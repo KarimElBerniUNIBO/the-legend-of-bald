@@ -1,6 +1,11 @@
 package com.thelegendofbald.model.effects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import com.thelegendofbald.characters.Bald;
@@ -18,6 +23,11 @@ import com.thelegendofbald.effects.StatusEffectManager;
  */
 class StatusEffectManagerTest {
 
+    private static final int EXPECTED = 13;
+    private static final long EFFECT_DURATION = 60_000L;
+    private static final long EFFECT_INTERVAL = 1_000L;
+    private static final int POISON_DAMAGE = 1;
+
     // Helper: a simple Bald instance using the real constructor
     private static Bald makeBald() {
         return new Bald(0, 0, 100, "test-bald", 10);
@@ -25,35 +35,35 @@ class StatusEffectManagerTest {
 
     // Tests use real effect classes: PoisonDebuff and StrengthBuff
     @Test
-    void constructor_nullOwner_throws() {
+    void constructorNullOwnerThrows() {
         assertThrows(IllegalArgumentException.class, () -> new StatusEffectManager(null));
     }
 
     @Test
     void applyEffectActivatesAndAddsToActiveEffectsAndAppliesToOwner() {
-        Bald owner = makeBald();
-        StatusEffectManager mgr = new StatusEffectManager(owner);
-        PoisonDebuff eff = new PoisonDebuff(60000L, 1, 1000L);
+        final Bald owner = makeBald();
+        final StatusEffectManager mgr = new StatusEffectManager(owner);
+        final PoisonDebuff eff = new PoisonDebuff(EFFECT_DURATION, POISON_DAMAGE, EFFECT_INTERVAL);
 
         mgr.applyEffect(eff);
 
-        List<StatusEffect> active = mgr.getactiveEffects();
+        final List<StatusEffect> active = mgr.getactiveEffects();
         assertEquals(1, active.size());
         assertSame(eff, active.get(0));
         assertTrue(eff.isActive());
     }
 
     @Test
-    void applyEffect_replacesExistingEffectWithSameName() {
-        Bald owner = makeBald();
-        StatusEffectManager mgr = new StatusEffectManager(owner);
-        StrengthBuff first = new StrengthBuff(60000L, 5);
-        StrengthBuff second = new StrengthBuff(60000L, 10);
+    void applyEffectReplacesExistingEffectWithSameName() {
+        final Bald owner = makeBald();
+        final StatusEffectManager mgr = new StatusEffectManager(owner);
+        final StrengthBuff first = new StrengthBuff(EFFECT_DURATION, 5);
+        final StrengthBuff second = new StrengthBuff(EFFECT_DURATION, 10);
 
         mgr.applyEffect(first);
         mgr.applyEffect(second); // should remove first by name and add second
 
-        List<StatusEffect> active = mgr.getactiveEffects();
+        final List<StatusEffect> active = mgr.getactiveEffects();
         assertEquals(1, active.size());
         assertSame(second, active.get(0));
         assertTrue(second.isActive());
@@ -63,41 +73,40 @@ class StatusEffectManagerTest {
 
     @Test
     void updateRemovesExpiredEffectsAndCallsRemove() {
-        Bald owner = makeBald();
-        StatusEffectManager mgr = new StatusEffectManager(owner);
+        final Bald owner = makeBald();
+        final StatusEffectManager mgr = new StatusEffectManager(owner);
         // Create a poison effect with zero duration so it is immediately expired
-        PoisonDebuff expires = new PoisonDebuff(0L, 1, 1L);
+        final PoisonDebuff expires = new PoisonDebuff(0L, POISON_DAMAGE, 1L);
 
         mgr.applyEffect(expires);
         // After update, it should be considered expired and removed
         mgr.update();
 
-        List<StatusEffect> active = mgr.getactiveEffects();
+        final List<StatusEffect> active = mgr.getactiveEffects();
         assertTrue(active.isEmpty());
     }
 
     @Test
     void modifyAttackPowerAppliesAllEffectModifiersInOrder() {
-        Bald owner = makeBald();
-        StatusEffectManager mgr = new StatusEffectManager(owner);
-        StrengthBuff eff = new StrengthBuff(60000L, 3);
+        final Bald owner = makeBald();
+        final StatusEffectManager mgr = new StatusEffectManager(owner);
+        final StrengthBuff eff = new StrengthBuff(EFFECT_DURATION, 3);
 
         mgr.applyEffect(eff);
 
-        int base = 10;
-        int modified = mgr.modifyAttackPower(base);
-        // strength buff adds its bonus: 10 + 3 = 13
-        assertEquals(13, modified);
+        final int base = 10;
+        final int modified = mgr.modifyAttackPower(base);
+        assertEquals(EXPECTED, modified);
     }
 
     @Test
     void getactiveEffectsReturnsUnmodifiableCopy() {
-        Bald owner = makeBald();
-        StatusEffectManager mgr = new StatusEffectManager(owner);
-        PoisonDebuff eff = new PoisonDebuff(60000L, 1, 1000L);
+        final Bald owner = makeBald();
+        final StatusEffectManager mgr = new StatusEffectManager(owner);
+        final PoisonDebuff eff = new PoisonDebuff(EFFECT_DURATION, POISON_DAMAGE, EFFECT_INTERVAL);
         mgr.applyEffect(eff);
 
-        List<StatusEffect> active = mgr.getactiveEffects();
+        final List<StatusEffect> active = mgr.getactiveEffects();
         assertThrows(UnsupportedOperationException.class, () -> active.add(eff));
     }
 }

@@ -24,7 +24,7 @@ class ItemManagerTest {
 
     // Test constants
     private static final int TEST_ITEM_SIZE = 5;
-    private static final List<Integer> TEST_LOOT_POOL = List.of(7,8,9);
+    private static final List<Integer> TEST_LOOT_POOL = List.of(7, 8, 9);
     private static final int TEST_TILE_SIZE = 32;
 
     // ItemManager instance for testing
