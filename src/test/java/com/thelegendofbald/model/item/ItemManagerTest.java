@@ -10,11 +10,11 @@ import java.awt.image.BufferedImage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.thelegendofbald.api.common.animation.Animatable;
-import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.model.entity.Animatable;
+import com.thelegendofbald.model.entity.Bald;
 import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
-import com.thelegendofbald.view.main.TileMap;
+import com.thelegendofbald.view.render.TileMap;
 
 /**
  * Additional unit tests for ItemManager covering unmodifiable lists,

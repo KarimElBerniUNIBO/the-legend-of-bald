@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.model.entity.Bald;
 import com.thelegendofbald.utils.LoggerUtils;
 
 /**

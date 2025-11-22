@@ -2,6 +2,8 @@ package com.thelegendofbald.model.sounds;
 
 import java.util.List;
 
+import com.thelegendofbald.model.system.SoundManager;
+import com.thelegendofbald.model.system.SoundPlayer;
 import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;

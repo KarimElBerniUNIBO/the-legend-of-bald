@@ -1,7 +1,7 @@
 package com.thelegendofbald.model.characters;
 
-import com.thelegendofbald.model.common.Wallet;
-import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.model.system.Wallet;
+import com.thelegendofbald.model.entity.Bald;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

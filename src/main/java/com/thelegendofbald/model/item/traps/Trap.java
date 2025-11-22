@@ -1,7 +1,7 @@
 package com.thelegendofbald.model.item.traps;
 
 import com.thelegendofbald.model.item.GameItem;
-import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.model.entity.Bald;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import com.thelegendofbald.utils.LoggerUtils;

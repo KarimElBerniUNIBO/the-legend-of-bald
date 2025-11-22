@@ -1,7 +1,7 @@
 package com.thelegendofbald.model.item.potions;
 
-import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.effects.buffs.StrengthBuff;
+import com.thelegendofbald.model.entity.Bald;
+import com.thelegendofbald.combat.effect.StrengthBuff;
 import com.thelegendofbald.utils.LoggerUtils;
 
 /**

@@ -1,6 +1,6 @@
 package com.thelegendofbald.model.item.potions;
 
-import com.thelegendofbald.api.item.UsableItem;
+import com.thelegendofbald.model.item.UsableItem;
 import com.thelegendofbald.model.item.GameItem;
 
 /**

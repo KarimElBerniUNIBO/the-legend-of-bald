@@ -6,14 +6,15 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.thelegendofbald.api.common.animation.Animatable;
-import com.thelegendofbald.api.item.UsableItem;
-import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.model.entity.Animatable;
+import com.thelegendofbald.model.entity.Bald;
 import com.thelegendofbald.model.item.loot.LootGenerator;
 import com.thelegendofbald.model.item.map.MapItemLoader;
 import com.thelegendofbald.model.item.map.MapItemSpawner;
+import com.thelegendofbald.model.item.pickup.Chest;
+import com.thelegendofbald.model.item.pickup.Coin;
 import com.thelegendofbald.model.item.traps.Trap;
-import com.thelegendofbald.view.main.TileMap;
+import com.thelegendofbald.view.render.TileMap;
 
 /**
  * Manages all game items, including loading, updating, rendering,

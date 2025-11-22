@@ -2,10 +2,10 @@ package com.thelegendofbald.controller.listeners.inventory;
 
 import java.awt.event.MouseEvent;
 
-import com.thelegendofbald.api.inventory.Inventory;
-import com.thelegendofbald.controller.listeners.common.TemplateInteractiveComponentMouseListener;
+import com.thelegendofbald.model.inventory.Inventory;
+import com.thelegendofbald.controller.listeners.TemplateInteractiveComponentMouseListener;
 import com.thelegendofbald.utils.ColorUtils;
-import com.thelegendofbald.view.inventory.SlotPanel;
+import com.thelegendofbald.view.panel.inventory.SlotPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

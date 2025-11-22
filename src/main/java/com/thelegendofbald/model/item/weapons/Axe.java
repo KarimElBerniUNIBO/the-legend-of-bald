@@ -4,9 +4,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.thelegendofbald.model.combat.CombatManager;
+import com.thelegendofbald.model.system.CombatManager;
 import com.thelegendofbald.model.item.ShopItem;
-import com.thelegendofbald.model.weapons.HeavyMeleeWeapon;
 import com.thelegendofbald.utils.LoggerUtils;
 
 /**

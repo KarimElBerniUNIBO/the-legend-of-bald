@@ -1,8 +1,8 @@
 package com.thelegendofbald.model.item.traps;
 
-import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.effects.debuffs.PoisonDebuff;
-import com.thelegendofbald.api.common.animation.Animatable;
+import com.thelegendofbald.model.entity.Bald;
+import com.thelegendofbald.combat.effect.PoisonDebuff;
+import com.thelegendofbald.model.entity.Animatable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;

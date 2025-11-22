@@ -10,6 +10,9 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+
+import com.thelegendofbald.view.render.Tile;
+import com.thelegendofbald.view.render.TileMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.characters.FinalBoss;
-import com.thelegendofbald.life.LifeComponent;
-import com.thelegendofbald.view.main.Tile;
-import com.thelegendofbald.view.main.TileMap;
+import com.thelegendofbald.model.entity.Bald;
+import com.thelegendofbald.model.entity.FinalBoss;
+import com.thelegendofbald.model.entity.LifeComponent;
+import com.thelegendofbald.view.render.Tile;
+import com.thelegendofbald.view.render.TileMap;
 import org.junit.jupiter.api.Test;
 
 /**

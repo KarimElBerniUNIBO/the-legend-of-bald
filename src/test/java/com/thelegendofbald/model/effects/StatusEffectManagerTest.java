@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.effects.StatusEffect;
-import com.thelegendofbald.effects.debuffs.PoisonDebuff;
-import com.thelegendofbald.effects.buffs.StrengthBuff;
-import com.thelegendofbald.effects.StatusEffectManager;
+import com.thelegendofbald.model.entity.Bald;
+import com.thelegendofbald.combat.effect.StatusEffect;
+import com.thelegendofbald.combat.effect.PoisonDebuff;
+import com.thelegendofbald.combat.effect.StrengthBuff;
+import com.thelegendofbald.combat.effect.StatusEffectManager;
 
 
 /**

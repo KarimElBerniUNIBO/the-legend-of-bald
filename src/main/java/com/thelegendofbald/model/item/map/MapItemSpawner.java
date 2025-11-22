@@ -8,7 +8,7 @@ import java.util.List;
 import com.thelegendofbald.model.item.GameItem;
 import com.thelegendofbald.model.item.ItemGenerator;
 import com.thelegendofbald.utils.LoggerUtils;
-import com.thelegendofbald.view.main.TileMap;
+import com.thelegendofbald.view.render.TileMap;
 
 /**
  * The MapItemSpawner class is responsible for spawning items on the game map

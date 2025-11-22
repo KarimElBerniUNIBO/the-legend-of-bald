@@ -5,10 +5,10 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.SwingUtilities;
 
-import com.thelegendofbald.api.panels.Panels;
-import com.thelegendofbald.api.settingsmenu.ControlsSettings;
-import com.thelegendofbald.view.buttons.KeybindingButton;
-import com.thelegendofbald.view.game.GamePanel;
+import com.thelegendofbald.view.panel.base.Panels;
+import com.thelegendofbald.model.config.ControlsSettings;
+import com.thelegendofbald.view.component.KeybindingButton;
+import com.thelegendofbald.view.panel.game.GamePanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

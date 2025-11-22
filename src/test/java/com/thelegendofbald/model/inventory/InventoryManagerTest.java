@@ -12,7 +12,7 @@ import com.thelegendofbald.model.item.GameItem;
 import com.thelegendofbald.model.item.weapons.Axe;
 import com.thelegendofbald.model.item.weapons.FireBall;
 import com.thelegendofbald.model.item.weapons.Sword;
-import com.thelegendofbald.model.weapons.Weapon;
+import com.thelegendofbald.model.item.weapons.Weapon;
 
 class InventoryManagerTest {
 

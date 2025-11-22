@@ -1,9 +1,9 @@
 package com.thelegendofbald.model.characters;
 
-import com.thelegendofbald.characters.Bald;
-import com.thelegendofbald.characters.DummyEnemy;
-import com.thelegendofbald.view.main.Tile;
-import com.thelegendofbald.view.main.TileMap;
+import com.thelegendofbald.model.entity.Bald;
+import com.thelegendofbald.model.entity.DummyEnemy;
+import com.thelegendofbald.view.render.Tile;
+import com.thelegendofbald.view.render.TileMap;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

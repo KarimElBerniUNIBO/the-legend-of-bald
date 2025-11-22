@@ -2,9 +2,9 @@ package com.thelegendofbald;
 
 import javax.swing.SwingUtilities;
 
-import com.thelegendofbald.model.sounds.SoundManager;
+import com.thelegendofbald.model.system.SoundManager;
 import com.thelegendofbald.utils.LoggerUtils;
-import com.thelegendofbald.view.main.GameWindow;
+import com.thelegendofbald.view.window.GameWindow;
 
 /**
  * The Main class is the primary entry point for the "The Legend of Bald" application.

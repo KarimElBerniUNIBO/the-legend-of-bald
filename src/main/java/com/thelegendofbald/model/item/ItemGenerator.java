@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import com.thelegendofbald.model.item.pickup.Chest;
+import com.thelegendofbald.model.item.pickup.Coin;
 import com.thelegendofbald.model.item.potions.HealthPotion;
 import com.thelegendofbald.model.item.potions.StrengthPotion;
 import com.thelegendofbald.model.item.traps.ImmobilizingTrap;

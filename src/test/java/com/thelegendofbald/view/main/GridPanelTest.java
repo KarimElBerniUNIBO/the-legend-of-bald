@@ -9,6 +9,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.function.BiFunction;
 import javax.swing.JPanel;
+
+import com.thelegendofbald.view.render.GridPanel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -3,8 +3,8 @@ package com.thelegendofbald.controller.listeners.buttons;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import com.thelegendofbald.api.settingsmenu.ControlsSettings;
-import com.thelegendofbald.view.buttons.KeybindingButton;
+import com.thelegendofbald.model.config.ControlsSettings;
+import com.thelegendofbald.view.component.KeybindingButton;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

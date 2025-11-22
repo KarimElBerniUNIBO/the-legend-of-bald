@@ -5,10 +5,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.thelegendofbald.api.inventory.Inventory;
-import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.model.entity.Bald;
 import com.thelegendofbald.model.item.GameItem;
-import com.thelegendofbald.model.weapons.Weapon;
+import com.thelegendofbald.model.item.weapons.Weapon;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

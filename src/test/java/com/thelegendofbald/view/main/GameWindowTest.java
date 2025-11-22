@@ -5,6 +5,7 @@ import java.awt.GraphicsEnvironment;
 
 import javax.swing.JComponent;
 
+import com.thelegendofbald.view.window.GameWindow;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.thelegendofbald.api.panels.Panels;
+import com.thelegendofbald.view.panel.base.Panels;
 
 /**
  * Test per GameWindow senza dipendere da MenuPanel/MenuView.

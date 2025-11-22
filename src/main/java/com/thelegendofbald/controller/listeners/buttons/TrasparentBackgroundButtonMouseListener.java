@@ -3,10 +3,10 @@ package com.thelegendofbald.controller.listeners.buttons;
 import java.awt.event.MouseEvent;
 import java.util.Optional;
 
-import com.thelegendofbald.api.panels.InteractivePanel;
-import com.thelegendofbald.controller.listeners.common.TemplateInteractiveComponentMouseListener;
+import com.thelegendofbald.view.panel.base.InteractivePanel;
+import com.thelegendofbald.controller.listeners.TemplateInteractiveComponentMouseListener;
 import com.thelegendofbald.utils.ColorUtils;
-import com.thelegendofbald.view.buttons.TrasparentBackgroundButton;
+import com.thelegendofbald.view.component.TrasparentBackgroundButton;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

@@ -1,6 +1,6 @@
 package com.thelegendofbald.model.item.potions;
 
-import com.thelegendofbald.characters.Bald;
+import com.thelegendofbald.model.entity.Bald;
 import com.thelegendofbald.utils.LoggerUtils;
 
 /**

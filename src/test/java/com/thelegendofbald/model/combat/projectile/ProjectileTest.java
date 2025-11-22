@@ -1,8 +1,8 @@
 package com.thelegendofbald.model.combat.projectile;
 
-import com.thelegendofbald.combat.projectile.Projectile;
-import com.thelegendofbald.view.main.Tile;
-import com.thelegendofbald.view.main.TileMap;
+import com.thelegendofbald.combat.Projectile;
+import com.thelegendofbald.view.render.Tile;
+import com.thelegendofbald.view.render.TileMap;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

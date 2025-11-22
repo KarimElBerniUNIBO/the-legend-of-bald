@@ -3,9 +3,9 @@ package com.thelegendofbald.controller.listeners.buttons;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 
-import com.thelegendofbald.controller.listeners.common.TemplateInteractiveComponentMouseListener;
+import com.thelegendofbald.controller.listeners.TemplateInteractiveComponentMouseListener;
 import com.thelegendofbald.utils.ColorUtils;
-import com.thelegendofbald.view.buttons.RoundedButton;
+import com.thelegendofbald.view.component.RoundedButton;
 
 /**
  * A mouse listener for {@link RoundedButton} components that changes the button's
