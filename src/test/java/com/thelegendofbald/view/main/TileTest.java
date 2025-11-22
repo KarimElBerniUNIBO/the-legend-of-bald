@@ -1,9 +1,5 @@
 package com.thelegendofbald.view.main;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,134 +7,218 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Unit tests for the {@link Tile} class.
+ * Verifies constructor logic, defensive copying of images, resizing behavior,
+ * rendering safety, and equality contracts.
+ */
 class TileTest {
 
-    private static BufferedImage makeImg(int w, int h, Color color) {
-        BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = img.createGraphics();
+    // Dimensions for basic tests
+    private static final int WIDTH_10 = 10;
+    private static final int HEIGHT_12 = 12;
+
+    // Dimensions for resize tests
+    private static final int SMALL_SIZE = 8;
+    private static final int TARGET_WIDTH_32 = 32;
+    private static final int TARGET_HEIGHT_24 = 24;
+    private static final int OVERLAY_SIZE = 16;
+
+    // IDs
+    private static final int ID_DEFAULT = 0;
+    private static final int ID_TEST = 7;
+    private static final int ID_NO_ID = -1;
+    private static final int ID_EQUALITY = 42;
+
+    // Test coordinates/rects
+    private static final int RECT_SIZE = 5;
+    private static final int PIXEL_CHECK_X = 2;
+    private static final int PIXEL_CHECK_Y = 2;
+    private static final int RENDER_X = 10;
+    private static final int RENDER_Y = 10;
+
+    /**
+     * Helper method to create a solid color BufferedImage for testing.
+     *
+     * @param width  the width of the image
+     * @param height the height of the image
+     * @param color  the fill color
+     * @return a new BufferedImage instance
+     */
+    private static BufferedImage makeImg(final int width, final int height, final Color color) {
+        final BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g = img.createGraphics();
         g.setColor(color);
-        g.fillRect(0, 0, w, h);
+        g.fillRect(0, 0, width, height);
         g.dispose();
         return img;
     }
 
+    /**
+     * Verifies that the simplified constructor correctly initializes dimensions,
+     * defaults flags to false, and performs defensive copying of the source image.
+     */
     @Test
-    @DisplayName("Costruttore semplificato: dimensioni e copie difensive")
-    void simpleCtor_buildsAndCopies() {
-        BufferedImage src = makeImg(10, 12, Color.RED);
-        Tile t = new Tile(src, 10, 12);
+    @DisplayName("Simplified Constructor: validates dimensions and defensive copying")
+    void simpleConstructorBuildsAndCopiesCorrectly() {
+        final BufferedImage src = makeImg(WIDTH_10, HEIGHT_12, Color.RED);
+        final Tile tile = new Tile(src, WIDTH_10, HEIGHT_12);
 
-        assertEquals(10, t.getWidth());
-        assertEquals(12, t.getHeight());
-        assertEquals(0, t.getId());
-        assertFalse(t.isSolid());
-        assertFalse(t.isSpawn());
-        assertFalse(t.isWalkable());
+        assertEquals(WIDTH_10, tile.getWidth());
+        assertEquals(HEIGHT_12, tile.getHeight());
+        assertEquals(ID_DEFAULT, tile.getId());
+        assertFalse(tile.isSolid());
+        assertFalse(tile.isSpawn());
+        assertFalse(tile.isWalkable());
 
-        // getImage() deve restituire una copia (riferimento diverso)
-        BufferedImage got1 = t.getImage();
-        BufferedImage got2 = t.getImage();
+        // verify defensive copy on getter
+        final BufferedImage got1 = tile.getImage();
+        final BufferedImage got2 = tile.getImage();
+
         assertNotNull(got1);
-        assertNotSame(src, got1);
-        assertNotSame(got1, got2); // ogni chiamata restituisce una nuova copia
+        assertNotSame(src, got1, "Getter should return a copy, not the original reference");
+        assertNotSame(got1, got2, "Subsequent calls should return new copies");
 
-        // Modificare la copia non deve toccare lo stato interno
-        Graphics2D g = got1.createGraphics();
+        // Modify the copy
+        final Graphics2D g = got1.createGraphics();
         g.setColor(Color.GREEN);
-        g.fillRect(0, 0, 5, 5);
+        g.fillRect(0, 0, RECT_SIZE, RECT_SIZE);
         g.dispose();
 
-        // Chiedendo di nuovo l'immagine, non deve essere "sporcata" dalla modifica precedente
-        BufferedImage fresh = t.getImage();
-        // Verifica qualche pixel che avevamo sovrascritto in got1: l'immagine "fresh" deve rimanere rossa
-        int rgbFresh = fresh.getRGB(2, 2);
-        assertEquals(Color.RED.getRGB(), rgbFresh);
+        // Verify internal state is unchanged
+        final BufferedImage fresh = tile.getImage();
+        final int rgbFresh = fresh.getRGB(PIXEL_CHECK_X, PIXEL_CHECK_Y);
+        assertEquals(Color.RED.getRGB(), rgbFresh, "Internal image should remain modified");
     }
 
+    /**
+     * Verifies the behavior of the main constructor regarding the 'resize' flag.
+     * If true, the internal image matches the target dimensions.
+     * If false, the internal image retains original size.
+     */
     @Test
-    @DisplayName("Costruttore principale: resize=true ridimensiona; resize=false conserva dimensioni sorgente")
-    void mainCtor_resizeBehavior() {
-        BufferedImage src = makeImg(8, 8, Color.BLUE);
+    @DisplayName("Main Constructor: validates resize behavior")
+    void mainConstructorHandlesResizeFlag() {
+        final BufferedImage src = makeImg(SMALL_SIZE, SMALL_SIZE, Color.BLUE);
 
-        // resize = true -> l'immagine interna diventa (32x24)
-        Tile resized = new Tile(src, 32, 24, 7, true, true, false, true, null);
-        assertFalse(resized.isResizeable()); // ora coincide con (width,height)
-        assertEquals(32, resized.getImage().getWidth());
-        assertEquals(24, resized.getImage().getHeight());
-        assertEquals(7, resized.getId());
+        // Case 1: Resize = true
+        final Tile resized = new Tile(src, TARGET_WIDTH_32, TARGET_HEIGHT_24, ID_TEST,
+                true, true, false, true, null);
+
+        assertFalse(resized.isResizeable(), "Should not be resizeable if already resized");
+        assertEquals(TARGET_WIDTH_32, resized.getImage().getWidth());
+        assertEquals(TARGET_HEIGHT_24, resized.getImage().getHeight());
+        assertEquals(ID_TEST, resized.getId());
         assertTrue(resized.isSolid());
         assertFalse(resized.isSpawn());
         assertTrue(resized.isWalkable());
         assertTrue(resized.hasId());
 
-        // resize = false -> l’immagine interna resta 8x8, dunque risulta "resizeable" rispetto a (32x24)
-        Tile notResized = new Tile(src, 32, 24, -1, false, false, false, false, null);
-        assertTrue(notResized.isResizeable());
-        assertEquals(8, notResized.getImage().getWidth());
-        assertEquals(8, notResized.getImage().getHeight());
-        assertFalse(notResized.hasId()); // id = -1
+        // Case 2: Resize = false
+        final Tile notResized = new Tile(src, TARGET_WIDTH_32, TARGET_HEIGHT_24, ID_NO_ID,
+                false, false, false, false, null);
+
+        assertTrue(notResized.isResizeable(), "Should be resizeable if size differs");
+        assertEquals(SMALL_SIZE, notResized.getImage().getWidth());
+        assertEquals(SMALL_SIZE, notResized.getImage().getHeight());
+        assertFalse(notResized.hasId());
     }
 
+    /**
+     * Verifies that the overlay image is also defensively copied and protected
+     * from external modification via getters.
+     */
     @Test
-    @DisplayName("Overlay: copia difensiva e getter non espone lo stato interno")
-    void overlay_defensiveCopy() {
-        BufferedImage base = makeImg(16, 16, Color.GRAY);
-        BufferedImage overlay = makeImg(16, 16, Color.YELLOW);
+    @DisplayName("Overlay: verifies defensive copying of overlay image")
+    void overlayIsDefensivelyCopied() {
+        final BufferedImage base = makeImg(OVERLAY_SIZE, OVERLAY_SIZE, Color.GRAY);
+        final BufferedImage overlay = makeImg(OVERLAY_SIZE, OVERLAY_SIZE, Color.YELLOW);
 
-        Tile t = new Tile(base, 16, 16, 5, false, false, true, true, overlay);
+        final Tile tile = new Tile(base, OVERLAY_SIZE, OVERLAY_SIZE, ID_TEST,
+                false, false, true, true, overlay);
 
-        BufferedImage gotOverlay1 = t.getOverlayImage();
-        BufferedImage gotOverlay2 = t.getOverlayImage();
+        final BufferedImage gotOverlay1 = tile.getOverlayImage();
+        final BufferedImage gotOverlay2 = tile.getOverlayImage();
 
         assertNotNull(gotOverlay1);
-        assertNotSame(overlay, gotOverlay1);     // copia difensiva nel costruttore
-        assertNotSame(gotOverlay1, gotOverlay2); // ogni getter ritorna una nuova copia
+        assertNotSame(overlay, gotOverlay1);
+        assertNotSame(gotOverlay1, gotOverlay2);
 
-        // Sporco gotOverlay1 e controllo che una nuova copia non sia sporcata
-        Graphics2D g = gotOverlay1.createGraphics();
+        // Modify the retrieved overlay
+        final Graphics2D g = gotOverlay1.createGraphics();
         g.setColor(Color.BLACK);
-        g.fillRect(0, 0, 4, 4);
+        g.fillRect(0, 0, RECT_SIZE - 1, RECT_SIZE - 1);
         g.dispose();
 
-        BufferedImage fresh = t.getOverlayImage();
-        // il pixel (2,2) della nuova copia deve essere ancora giallo
-        assertEquals(Color.YELLOW.getRGB(), fresh.getRGB(2, 2));
+        final BufferedImage fresh = tile.getOverlayImage();
+        assertEquals(Color.YELLOW.getRGB(), fresh.getRGB(PIXEL_CHECK_X, PIXEL_CHECK_Y),
+                "Internal overlay should not be affected by external modifications");
     }
 
+    /**
+     * Ensures that the {@code render} method executes without throwing exceptions,
+     * both when images are present and when they are null.
+     */
     @Test
-    @DisplayName("Render: non lancia eccezioni con o senza immagini")
-    void render_noThrow() {
-        // Caso 1: con immagini
-        Tile withImages = new Tile(makeImg(8, 8, Color.RED), 8, 8, 1, false, false, false, true, makeImg(8, 8, Color.GREEN));
-        BufferedImage canvas1 = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+    @DisplayName("Render: executes safely with or without images")
+    void renderExecutesWithoutThrowing() {
+        // Case 1: With images
+        final Tile withImages = new Tile(makeImg(SMALL_SIZE, SMALL_SIZE, Color.RED),
+                SMALL_SIZE, SMALL_SIZE, 1, false, false, false, true,
+                makeImg(SMALL_SIZE, SMALL_SIZE, Color.GREEN));
+
+        final BufferedImage canvas1 = new BufferedImage(TARGET_WIDTH_32, TARGET_WIDTH_32,
+                BufferedImage.TYPE_INT_ARGB);
+
         assertDoesNotThrow(() -> {
-            withImages.render(canvas1.createGraphics(), 10, 10);
+            withImages.render(canvas1.createGraphics(), RENDER_X, RENDER_Y);
         });
 
-        // Caso 2: immagini nulle
-        Tile noImages = new Tile(null, 8, 8, 2, false, false, false, false, null);
-        BufferedImage canvas2 = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+        // Case 2: With null images
+        final Tile noImages = new Tile(null, SMALL_SIZE, SMALL_SIZE, 2,
+                false, false, false, false, null);
+
+        final BufferedImage canvas2 = new BufferedImage(TARGET_WIDTH_32, TARGET_WIDTH_32,
+                BufferedImage.TYPE_INT_ARGB);
+
         assertDoesNotThrow(() -> {
             noImages.render(canvas2.createGraphics(), 0, 0);
         });
     }
 
+    /**
+     * Verifies that {@code equals} and {@code hashCode} are implemented based solely
+     * on the Tile ID.
+     */
     @Test
-    @DisplayName("equals/hashCode basati su id")
-    void equalsAndHashCode_onIdOnly() {
-        Tile a = new Tile(makeImg(4, 4, Color.RED), 4, 4, 42, false, false, false, false, null);
-        Tile b = new Tile(makeImg(8, 8, Color.BLUE), 8, 8, 42, true, true, true, true, makeImg(8, 8, Color.CYAN));
-        Tile c = new Tile(makeImg(4, 4, Color.RED), 4, 4, 7, false, false, false, false, null);
+    @DisplayName("equals() and hashCode() are based on ID only")
+    void equalsAndHashCodeAreBasedOnId() {
+        final Tile a = new Tile(makeImg(RECT_SIZE, RECT_SIZE, Color.RED),
+                RECT_SIZE, RECT_SIZE, ID_EQUALITY, false, false, false, false, null);
 
+        final Tile b = new Tile(makeImg(SMALL_SIZE, SMALL_SIZE, Color.BLUE),
+                SMALL_SIZE, SMALL_SIZE, ID_EQUALITY, true, true, true, true,
+                makeImg(SMALL_SIZE, SMALL_SIZE, Color.CYAN));
+
+        final Tile c = new Tile(makeImg(RECT_SIZE, RECT_SIZE, Color.RED),
+                RECT_SIZE, RECT_SIZE, ID_TEST, false, false, false, false, null);
+
+        // Same ID -> Equal
         assertEquals(a, b);
         assertEquals(a.hashCode(), b.hashCode());
 
+        // Different ID -> Not Equal
         assertNotEquals(a, c);
         assertNotEquals(a.hashCode(), c.hashCode());
 
+        // Null and Type checks
         assertNotEquals(a, null);
         assertNotEquals(a, "not a tile");
     }

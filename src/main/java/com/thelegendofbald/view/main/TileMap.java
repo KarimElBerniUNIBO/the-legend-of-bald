@@ -21,7 +21,8 @@ import com.thelegendofbald.utils.LoggerUtils;
 /**
  * Gestisce il caricamento e il rendering della mappa a tile.
  * <p>
- * La classe è final per evitare il warning "designed for extension".
+ * La classe non è final per permettere il mocking nei test (EmptyTileMap, SolidTileMap).
+ * L'avviso UI_INHERITANCE_UNSAFE_GETRESOURCE è risolto usando TileMap.class invece di getClass().
  * </p>
  */
 public class TileMap {
@@ -57,9 +58,9 @@ public class TileMap {
     /**
      * Crea una nuova mappa.
      *
-     * @param width    larghezza in pixel dell'area di disegno (final)
-     * @param height   altezza in pixel dell'area di disegno (final)
-     * @param tileSize dimensione del tile in pixel (final)
+     * @param width    larghezza in pixel dell'area di disegno
+     * @param height   altezza in pixel dell'area di disegno
+     * @param tileSize dimensione del tile in pixel
      */
     public TileMap(final int width, final int height, final int tileSize) {
         this.width = width;
@@ -101,7 +102,8 @@ public class TileMap {
      * @throws IOException se la lettura fallisce
      */
     private BufferedImage loadBufferedImage(final String path) throws IOException {
-        final InputStream stream = getClass().getResourceAsStream(path);
+        // MANTENIAMO TileMap.class invece di getClass() per evitare problemi di sicurezza
+        final InputStream stream = TileMap.class.getResourceAsStream(path);
         if (stream == null) {
             throw new IllegalArgumentException("Risorsa non trovata: " + path);
         }
@@ -114,7 +116,7 @@ public class TileMap {
      * @param mapName nome della mappa, es. "map_1"
      */
     private void loadMap(final String mapName) {
-        int[][] mapData = generateFlatMap(DEFAULT_ROWS, DEFAULT_COLS, ID_EMPTY); // <- 22,40,0 sostituiti
+        int[][] mapData = generateFlatMap(DEFAULT_ROWS, DEFAULT_COLS, ID_EMPTY);
 
         if (mapName != null) {
             switch (mapName) {
@@ -163,11 +165,12 @@ public class TileMap {
     private int[][] loadMapFromFile(final String fileName) {
         final List<int[]> rows = new ArrayList<>();
 
+        // MANTENIAMO TileMap.class invece di getClass()
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                getClass().getResourceAsStream("/map/" + fileName), StandardCharsets.UTF_8))) {
+                TileMap.class.getResourceAsStream("/map/" + fileName), StandardCharsets.UTF_8))) {
 
-            String line = reader.readLine(); // ← prima lettura fuori dalla condizione
-            while (line != null) { // ← niente assegnazioni nell’operando
+            String line = reader.readLine();
+            while (line != null) {
                 final String trimmed = line.trim();
                 if (!trimmed.isEmpty()) {
                     final String[] tokens = trimmed.split("\\s+|,");
@@ -177,7 +180,7 @@ public class TileMap {
                     }
                     rows.add(row);
                 }
-                line = reader.readLine(); // ← avanzamento esplicito
+                line = reader.readLine();
             }
         } catch (final IOException e) {
             LoggerUtils.error("Errore nel caricamento della mappa: " + fileName, e);
@@ -197,7 +200,8 @@ public class TileMap {
      * @return immagine o {@code null} se fallisce
      */
     private BufferedImage loadImage(final String path) {
-        try (InputStream is = getClass().getResourceAsStream(path)) {
+        // MANTENIAMO TileMap.class invece di getClass()
+        try (InputStream is = TileMap.class.getResourceAsStream(path)) {
             if (is == null) {
                 LoggerUtils.error("Immagine non trovata: " + path);
                 return null;

@@ -30,12 +30,7 @@ public class StatusEffectManager {
      */
     @SuppressFBWarnings(
         value = "EI_EXPOSE_REP2",
-<<<<<<< HEAD
-        justification = "Intentional architecture: This component requires a "
-        + "direct mutable reference to its owner (Bald) to apply status effects and health modifications."
-=======
         justification = "Intentional architecture: StatusEffectManager tightly coupled to work on Bald"
->>>>>>> 00cdb212e641e68a205880f54d5138a144487e13
     )
     public StatusEffectManager(final Bald player) {
         if (player == null) {

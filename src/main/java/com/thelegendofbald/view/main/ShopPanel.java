@@ -28,6 +28,7 @@ import com.thelegendofbald.model.item.weapons.Axe;
 import com.thelegendofbald.model.item.weapons.FireBall;
 import com.thelegendofbald.model.item.weapons.Sword;
 import com.thelegendofbald.utils.LoggerUtils;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Panel that displays a shop interface where players can buy items.
@@ -80,7 +81,7 @@ public final class ShopPanel extends JPanel {
     private transient List<JButton> buyButtons;
     private transient IntSupplier coinsSupplier;
     private transient Wallet wallet;
-    private final Inventory inventory;
+    private final transient Inventory inventory;
     private int selectedIndex = -1;
     private JLabel goldLabel;
 
@@ -91,6 +92,10 @@ public final class ShopPanel extends JPanel {
      * @param wallet the player's wallet
      * @param inventory the player's inventory
      */
+    @SuppressFBWarnings(
+            value = "EI_EXPOSE_REP2",
+            justification = "ShopPanel must modify the actual player inventory when items are purchased."
+    )
     public ShopPanel(final CombatManager combatManager, final Wallet wallet, final Inventory inventory) {
         this.inventory = inventory;
         initRuntimeState(combatManager, wallet);

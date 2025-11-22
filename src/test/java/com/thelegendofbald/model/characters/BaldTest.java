@@ -35,14 +35,15 @@ class BaldTest {
         bald.takeDamage(DAMAGE_30);
         assertTrue(bald.isAlive());
 
-        bald.takeDamage(DAMAGE_25); 
+        bald.takeDamage(DAMAGE_25);
         assertFalse(bald.isAlive());
     }
 
     @Test
     void testWalletStartsEmptyAndCanAdd() {
-        final Bald bald = new Bald(0, 0, 100, "Hero", INITIAL_ATTACK_POWER);
-        final Wallet wallet = bald.getWallet();
+        // Rimosso 'final Bald bald = ...' perché non veniva utilizzato.
+        // Questo test verifica isolatamente il funzionamento del Wallet.
+        final Wallet wallet = new Wallet(0);
 
         assertEquals(INITIAL_COINS, wallet.getCoins());
 

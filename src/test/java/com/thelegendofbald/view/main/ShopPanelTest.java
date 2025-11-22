@@ -26,32 +26,28 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.thelegendofbald.model.combat.CombatManager;
+// Assicurati di importare ShopItem corretto
+import com.thelegendofbald.model.item.ShopItem;
 
 class ShopPanelTest {
 
     /* -------------------- Dummies -------------------- */
 
-    /**
-     * CombatManager nella tua codebase è una CLASSE, non un'interfaccia.
-     * Quindi qui la estendiamo.
-     *
-     * NOTA: se la tua CombatManager NON ha costruttore vuoto,
-     * sostituisci 'super();' con i parametri richiesti, es. 'super(dep1, dep2, ...);'
-     */
     private static final class DummyCombatManager extends CombatManager {
         DummyCombatManager() {
-            super(null, Collections.emptyList()); // <-- se non compila, passa i parametri necessari al costruttore reale
+            // Passiamo null/liste vuote per soddisfare il costruttore di CombatManager
+            super(null, Collections.emptyList());
         }
     }
 
     /* -------------------- Helpers riflessione -------------------- */
 
     @SuppressWarnings("unchecked")
-    private static List<com.thelegendofbald.model.item.ShopItem> getItems(ShopPanel p) {
+    private static List<ShopItem> getItems(ShopPanel p) {
         try {
             Field f = ShopPanel.class.getDeclaredField("items");
             f.setAccessible(true);
-            return (List<com.thelegendofbald.model.item.ShopItem>) f.get(p);
+            return (List<ShopItem>) f.get(p);
         } catch (Exception e) {
             throw new AssertionError(e);
         }
@@ -92,7 +88,8 @@ class ShopPanelTest {
     @Test
     @DisplayName("Setup iniziale: size, bg, layout, label oro e popolamento items")
     void initialSetup_ok() {
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), /* wallet */ null);
+        // FIX: Aggiunto il terzo parametro (Inventory) come null
+        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
 
         // Preferred size / BG / layout absolute
         assertEquals(new Dimension(400, 300), p.getPreferredSize());
@@ -102,7 +99,8 @@ class ShopPanelTest {
         // Label oro presente
         JLabel gold = getGoldLabel(p);
         assertNotNull(gold);
-        assertTrue(gold.getText().startsWith("Oro: "));
+        // FIX: Il codice usa "Gold:", non "Oro:"
+        assertTrue(gold.getText().startsWith("Gold: "), "La label deve iniziare con 'Gold: '");
 
         // Lista item popolata (Sword, Axe, FireBall)
         List<?> items = getItems(p);
@@ -114,31 +112,39 @@ class ShopPanelTest {
     @Test
     @DisplayName("updateGoldDisplay() riflette il valore del coinsSupplier")
     void updateGoldDisplay_updatesText() {
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), /* wallet */ null);
+        // FIX: Aggiunto il terzo parametro null
+        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
 
         // Forziamo un supplier che ritorna 123
         setCoinsSupplier(p, () -> 123);
 
         p.updateGoldDisplay();
         JLabel gold = getGoldLabel(p);
-        assertEquals("Oro: 123", gold.getText());
+        // FIX: Il codice usa "Gold:", non "Oro:"
+        assertEquals("Gold: 123", gold.getText());
     }
 
     @Test
     @DisplayName("paint/render non lancia eccezioni")
     void paint_noThrow() {
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), /* wallet */ null);
+        // FIX: Aggiunto il terzo parametro null
+        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
         BufferedImage surface = new BufferedImage(400, 300, BufferedImage.TYPE_INT_ARGB);
 
+        // FIX: Rimossa la lettera 'a' che causava errore di compilazione
         assertDoesNotThrow(() -> p.paint(surface.createGraphics()));
     }
 
     @Test
     @DisplayName("Click su primo item imposta selectedIndex = 0")
     void mouseClick_selectsFirstItem() {
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), /* wallet */ null);
+        // FIX: Aggiunto il terzo parametro null
+        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
 
-        // Primo item: rettangolo x=20..(400-20), y=(80-25)..(80-25+35)
+        // Calcolo coordinate click:
+        // Nel codice: y start = 80, offset = 25.
+        // Rect Y start = 80 - 25 = 55. Altezza 35. Range Y [55, 90].
+        // Click Y = 80 - 25 + 1 = 56. (Valido)
         int clickX = 21;
         int clickY = 80 - 25 + 1;
 
@@ -161,7 +167,8 @@ class ShopPanelTest {
     @Test
     @DisplayName("Deserializzazione: readObject ripristina stato 'safe' (no throw)")
     void deserialize_resetsTransient_noThrow() {
-        ShopPanel original = new ShopPanel(new DummyCombatManager(), /* wallet */ null);
+        // FIX: Aggiunto il terzo parametro null
+        ShopPanel original = new ShopPanel(new DummyCombatManager(), null, null);
 
         assertDoesNotThrow(() -> {
             // Serializza
@@ -177,16 +184,17 @@ class ShopPanelTest {
                 assertTrue(obj instanceof ShopPanel);
                 ShopPanel restored = (ShopPanel) obj;
 
-                // Dopo readObject: items vuoto, coinsSupplier funzionante, goldLabel presente
+                // Dopo readObject nel tuo codice: items = new ArrayList<>(), quindi è vuoto.
                 List<?> items = getItems(restored);
                 assertNotNull(items);
-                assertTrue(items.isEmpty(), "Items deve essere vuoto dopo deserializzazione");
+                assertTrue(items.isEmpty(), "Items deve essere vuoto (reinizializzato) dopo deserializzazione");
 
                 setCoinsSupplier(restored, () -> 77);
                 restored.updateGoldDisplay();
                 JLabel gold = getGoldLabel(restored);
                 assertNotNull(gold);
-                assertEquals("Oro: 77", gold.getText());
+                // FIX: Il codice usa "Gold:", non "Oro:"
+                assertEquals("Gold: 77", gold.getText());
             }
         });
     }

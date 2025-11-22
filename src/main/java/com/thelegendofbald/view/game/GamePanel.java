@@ -197,7 +197,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private static final int STRENGTH_POTION = 8; 
     private static final int COIN = 9;
 
-    private long portalCooldownUntil;
+    private volatile long portalCooldownUntil;
 
     private Integer pendingEntryTileId;
     private Integer pendingEntryIndex;
@@ -251,7 +251,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     private final JButton mainMenuButton = new JButton("Ritorna alla pagina principale");
     private final ShopPanel shopPanel;
 
-    private FinalBoss boss;
+    private transient FinalBoss boss;
 
     /**
      * Constructs the main game panel and initializes core game systems and UI.

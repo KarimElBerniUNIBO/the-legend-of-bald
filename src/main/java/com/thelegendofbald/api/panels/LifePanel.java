@@ -6,6 +6,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import com.thelegendofbald.life.LifeComponent;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * A panel that visually represents an entity's health.
@@ -16,19 +17,40 @@ public class LifePanel extends AdapterPanel implements PropertyChangeListener {
 
     private static final long serialVersionUID = 1L;
 
-    private final LifeComponent lifeComponent;
+    private final transient LifeComponent lifeComponent;
 
     /**
      * Constructs a new LifePanel associated with a LifeComponent.
      * @param lifeComponent the LifeComponent to monitor
      */
+    @SuppressFBWarnings(
+            value = "EI_EXPOSE_REP2",
+            justification = "Intentionally storing the mutable object to observe its changes (Observer Pattern)."
+    )
     public LifePanel(final LifeComponent lifeComponent) {
         super();
         if (lifeComponent == null) {
             throw new IllegalArgumentException("LifeComponent cannot be null");
         }
         this.lifeComponent = lifeComponent;
+    }
+
+    /**
+     * connect the listener when the panel is added to a parent.
+     */
+    @Override
+    public void addNotify() {
+        super.addNotify();
         this.lifeComponent.addPropertyChangeListener(this);
+    }
+
+    /**
+     * disconnect the listener when the panel is removed to prevent memory leaks.
+     */
+    @Override
+    public void removeNotify() {
+        this.lifeComponent.removePropertyChangeListener(this);
+        super.removeNotify();
     }
 
     /**
@@ -36,7 +58,7 @@ public class LifePanel extends AdapterPanel implements PropertyChangeListener {
      */
     @Override
     protected void initializeComponents() {
-        super.initializeComponents(); 
+        super.initializeComponents();
         addComponentsToPanel();
     }
 
@@ -47,7 +69,7 @@ public class LifePanel extends AdapterPanel implements PropertyChangeListener {
     public void addComponentsToPanel() {
     }
 
-     /**
+    /**
      * Triggers a redraw of the panel.
      */
     @Override
@@ -59,11 +81,11 @@ public class LifePanel extends AdapterPanel implements PropertyChangeListener {
      * Draws the health bar.
      * @param g The Graphics object used for drawing.
      */
-     @Override
+    @Override
     public void paintComponent(final Graphics g) {
         super.paintComponent(g);
 
-        final double perc = lifeComponent.getPercentage(); 
+        final double perc = lifeComponent.getPercentage();
         final int width = (int) (perc * getWidth());
 
         g.setColor(Color.GRAY);

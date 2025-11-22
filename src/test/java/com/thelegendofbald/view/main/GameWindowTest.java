@@ -55,15 +55,22 @@ class GameWindowTest {
         final int width = 800;
         final int height = 600;
         final Dimension input = new Dimension(width, height);
+
         window.setInternalSize(input);
 
-        // Modifico l'oggetto passato: la size interna non deve cambiare
+        // Modifico l'oggetto passato
         input.setSize(10, 10);
-        assertEquals(input, window.getInternalSize());
+
+        // CORREZIONE 1: Verifico che la window sia rimasta 800x600
+        // Non uso 'input' qui perché 'input' è diventato 10x10
+        assertEquals(new Dimension(width, height), window.getInternalSize(),
+                "La dimensione interna non dovrebbe cambiare se modifico l'input esterno");
 
         assertNotNull(window.getContentPane(), "Content pane non deve essere null");
-        assertEquals(input, window.getContentPane().getPreferredSize(),
-                "La preferredSize del content deve essere aggiornata");
+
+        // CORREZIONE 2: Anche il contentPane deve essere rimasto 800x600
+        assertEquals(new Dimension(width, height), window.getContentPane().getPreferredSize(),
+                "La preferredSize del content deve essere quella originale (800x600)");
     }
 
     @Test

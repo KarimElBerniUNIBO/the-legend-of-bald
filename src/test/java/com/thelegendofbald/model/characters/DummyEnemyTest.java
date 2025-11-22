@@ -30,10 +30,10 @@ class DummyEnemyTest {
 
     private static final String ENEMY_NAME = "Goblin";
 
-
-
+    // FIX: Rinominato da 'getAttackPower...' a 'attackPowerReturns...'
+    // Rimuovendo 'get' iniziale, il linter non si aspetta più un valore di ritorno.
     @Test
-    void getAttackPowerReturnsValuePassedInConstructor() {
+    void attackPowerReturnsValuePassedInConstructor() {
         final DummyEnemy enemy = new DummyEnemy(
                 START_X_0, START_Y_0, HEALTH_50, ENEMY_NAME, ATTACK_7, new EmptyTileMap()
         );
@@ -50,7 +50,7 @@ class DummyEnemyTest {
         enemy.takeDamage(DAMAGE_15);
         assertTrue(enemy.isAlive(), "Enemy should still be alive after partial damage");
 
-        enemy.takeDamage(DAMAGE_10); 
+        enemy.takeDamage(DAMAGE_10);
         assertFalse(enemy.isAlive(), "Enemy should be dead after lethal damage");
     }
 
@@ -73,14 +73,14 @@ class DummyEnemyTest {
         assertEquals(START_Y_10, enemyBlocked.getY());
     }
 
-        /** Fake TileMap: no solid tiles, fixed tile size. */
+    /** Fake TileMap: no solid tiles, fixed tile size. */
     static class EmptyTileMap extends TileMap {
         EmptyTileMap() {
-            super(0, 0, 32); 
+            super(0, 0, 32);
         }
         @Override
         public Tile getTileAt(final int x, final int y) {
-            return null; 
+            return null;
         }
     }
 
