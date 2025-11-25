@@ -24,27 +24,27 @@ Il gioco è studiato per essere una **run** cronometrata nello stesso stile dei 
 
 All'avvio del gioco si presenta il menu principale dove è possibile: iniziare la partita, modificare le impostazioni (visive, audio e gestione dei tasti), visualizzare la leaderboard delle migliori run **locali** o infine uscire dal gioco.
 
-# Caso Avvio
+## Caso Avvio
 All'avvio è **obbligatorio** scegliere un nickname per l'eventuale vittoria e salvataggio della run. Dopo la scelta del nickname il gioco parte al di fuori di un castello, dove il player può muoversi **solo orizzontalmente** in attesa che esso entri. All'entrata il player si ritrova una serie di dinamiche pericolose dove può scegliere se combattere o ignorare i nemici passando direttamente al prossimo piano indicato dalla parete laterale bucata. Il giocatore inoltre può scegliere se aprire le casse passandoci sopra o comprare nuove armi all'interno dello shop. La vittoria consiste nello sconfiggere il boss situato nell'ultimo piano (il terzo).
 
-# Shop
+## Shop
 Se si vuole comprare un nuovo oggetto è necessario collezionare le monete dalle casse.
 
-# Apertura Cassa
+## Apertura Cassa
 Le casse possono rilasciare: pozioni di vita, pozioni di forza e monete.
 
-# Vittoria / Sconfitta
+## Vittoria / Sconfitta
 Solo in caso di vittoria la run viene salvata localmente e visualizzata nella leaderboard, in caso di sconfitta l'utente verrà riportato al menu principale.
 
-# Impostazioni
+## Impostazioni
 - Video: L'utente può scegliere il formato di finestra del gioco, mostrare fps e timer.
 - Audio: L'utente può scegliere il volume dell'audio principale, *l'audio musicale è ancora sviluppo*
 - Controlli: L'utente può scegliere la configurazione dei tasti (**NB: Per modificare un tasto è necessario cliccare il bottone e premere il nuovo tasto da assegnare. Se si vuole annullare la procedura di modifica iniziata, basterà solamente uscire con il mouse dal bottone.**).
 
-# Leaderboard
+## Leaderboard
 In questa schermata verranno visualizzate le migliori 10 run **locali**.
 
-# Caso Quit
+## Caso Quit
 L'utente può scegliere se usare il bottone di chiusura delle finestra in alto a destra o in caso di fullscreen usare il bottone del menu principale.
 
 
