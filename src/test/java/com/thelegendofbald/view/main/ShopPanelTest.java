@@ -1,202 +1,240 @@
 package com.thelegendofbald.view.main;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.IntSupplier;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
 import javax.swing.JLabel;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import com.thelegendofbald.model.entity.Bald;
+import com.thelegendofbald.model.inventory.Slot;
 import com.thelegendofbald.view.panel.shop.ShopPanel;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.thelegendofbald.model.inventory.Inventory;
+import com.thelegendofbald.model.item.GameItem;
 import com.thelegendofbald.model.system.CombatManager;
-// Assicurati di importare ShopItem corretto
-import com.thelegendofbald.model.item.ShopItem;
+import com.thelegendofbald.model.system.Wallet;
 
+/**
+ * Unit tests for the {@link ShopPanel} class without using Mockito.
+ * <p>
+ * Uses manual stubs (inner classes) to simulate Wallet and Inventory behavior.
+ */
 class ShopPanelTest {
 
-    /* -------------------- Dummies -------------------- */
+    private StubWallet wallet;
+    private StubInventory inventory;
+    private ShopPanel shopPanel;
 
-    private static final class DummyCombatManager extends CombatManager {
-        DummyCombatManager() {
-            // Passiamo null/liste vuote per soddisfare il costruttore di CombatManager
-            super(null, Collections.emptyList());
-        }
+    /**
+     * Sets up the test environment before each test execution.
+     */
+    @BeforeEach
+    void setUp() {
+        wallet = new StubWallet(100);
+        inventory = new StubInventory();
+        CombatManager dummyCombatManager = null;
+
+        shopPanel = new ShopPanel(dummyCombatManager, wallet, inventory);
     }
 
-    /* -------------------- Helpers riflessione -------------------- */
-
-    @SuppressWarnings("unchecked")
-    private static List<ShopItem> getItems(ShopPanel p) {
-        try {
-            Field f = ShopPanel.class.getDeclaredField("items");
-            f.setAccessible(true);
-            return (List<ShopItem>) f.get(p);
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    private static int getSelectedIndex(ShopPanel p) {
-        try {
-            Field f = ShopPanel.class.getDeclaredField("selectedIndex");
-            f.setAccessible(true);
-            return (int) f.get(p);
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    private static JLabel getGoldLabel(ShopPanel p) {
-        try {
-            Field f = ShopPanel.class.getDeclaredField("goldLabel");
-            f.setAccessible(true);
-            return (JLabel) f.get(p);
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    private static void setCoinsSupplier(ShopPanel p, IntSupplier sup) {
-        try {
-            Field f = ShopPanel.class.getDeclaredField("coinsSupplier");
-            f.setAccessible(true);
-            f.set(p, sup);
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    /* -------------------- Test -------------------- */
-
+    /**
+     * Verifies that the shop initializes with the correct gold display label.
+     */
     @Test
-    @DisplayName("Setup iniziale: size, bg, layout, label oro e popolamento items")
-    void initialSetup_ok() {
-        // FIX: Aggiunto il terzo parametro (Inventory) come null
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
-
-        // Preferred size / BG / layout absolute
-        assertEquals(new Dimension(400, 300), p.getPreferredSize());
-        assertEquals(Color.DARK_GRAY, p.getBackground());
-        assertNull(p.getLayout());
-
-        // Label oro presente
-        JLabel gold = getGoldLabel(p);
-        assertNotNull(gold);
-        // FIX: Il codice usa "Gold:", non "Oro:"
-        assertTrue(gold.getText().startsWith("Gold: "), "La label deve iniziare con 'Gold: '");
-
-        // Lista item popolata (Sword, Axe, FireBall)
-        List<?> items = getItems(p);
-        assertNotNull(items);
-        assertFalse(items.isEmpty());
-        assertTrue(items.size() >= 3, "Attesi almeno 3 item (Sword, Axe, FireBall)");
+    void testInitialGoldDisplay() {
+        JLabel goldLabel = findGoldLabel();
+        assertNotNull(goldLabel);
+        assertEquals("Gold: 100", goldLabel.getText());
     }
 
+    /**
+     * Verifies that purchase buttons are correctly created.
+     */
     @Test
-    @DisplayName("updateGoldDisplay() riflette il valore del coinsSupplier")
-    void updateGoldDisplay_updatesText() {
-        // FIX: Aggiunto il terzo parametro null
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
-
-        // Forziamo un supplier che ritorna 123
-        setCoinsSupplier(p, () -> 123);
-
-        p.updateGoldDisplay();
-        JLabel gold = getGoldLabel(p);
-        // FIX: Il codice usa "Gold:", non "Oro:"
-        assertEquals("Gold: 123", gold.getText());
+    void testButtonsCreation() {
+        List<JButton> buttons = findBuyButtons();
+        assertEquals(3, buttons.size());
     }
 
+    /**
+     * Verifies that purchasing logic works when the player has sufficient gold.
+     */
     @Test
-    @DisplayName("paint/render non lancia eccezioni")
-    void paint_noThrow() {
-        // FIX: Aggiunto il terzo parametro null
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
-        BufferedImage surface = new BufferedImage(400, 300, BufferedImage.TYPE_INT_ARGB);
+    void testPurchaseSuccess() {
+        wallet.setCoins(1000);
 
-        // FIX: Rimossa la lettera 'a' che causava errore di compilazione
-        assertDoesNotThrow(() -> p.paint(surface.createGraphics()));
+        List<JButton> buttons = findBuyButtons();
+        assertFalse(buttons.isEmpty());
+        JButton buyButton = buttons.get(0);
+
+        buyButton.doClick();
+
+        assertTrue(wallet.getCoins() < 1000);
+        assertEquals(1, inventory.getStoredItems().size());
     }
 
+    /**
+     * Verifies that purchasing logic prevents buying when the player has insufficient gold.
+     */
     @Test
-    @DisplayName("Click su primo item imposta selectedIndex = 0")
-    void mouseClick_selectsFirstItem() {
-        // FIX: Aggiunto il terzo parametro null
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
+    void testPurchaseFailNotEnoughGold() {
+        wallet.setCoins(0);
 
-        // Calcolo coordinate click:
-        // Nel codice: y start = 80, offset = 25.
-        // Rect Y start = 80 - 25 = 55. Altezza 35. Range Y [55, 90].
-        // Click Y = 80 - 25 + 1 = 56. (Valido)
-        int clickX = 21;
-        int clickY = 80 - 25 + 1;
+        List<JButton> buttons = findBuyButtons();
+        JButton buyButton = buttons.get(0);
 
-        MouseEvent evt = new MouseEvent(
-                p,
-                MouseEvent.MOUSE_CLICKED,
-                System.currentTimeMillis(),
-                0,
-                clickX,
-                clickY,
-                1,
-                false
-        );
+        buyButton.doClick();
 
-        p.dispatchEvent(evt);
-
-        assertEquals(0, getSelectedIndex(p), "Dopo il click il primo item deve risultare selezionato");
+        assertEquals(0, wallet.getCoins());
+        assertEquals(0, inventory.getStoredItems().size());
     }
 
+    /**
+     * Verifies that the gold display label updates automatically after a purchase.
+     */
     @Test
-    @DisplayName("Deserializzazione: readObject ripristina stato 'safe' (no throw)")
-    void deserialize_resetsTransient_noThrow() {
-        // FIX: Aggiunto il terzo parametro null
-        ShopPanel original = new ShopPanel(new DummyCombatManager(), null, null);
+    void testGoldLabelUpdate() {
+        wallet.setCoins(500);
 
-        assertDoesNotThrow(() -> {
-            // Serializza
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
-                oos.writeObject(original);
+        List<JButton> buttons = findBuyButtons();
+        JButton buyButton = buttons.get(0);
+
+        buyButton.doClick();
+
+        JLabel goldLabel = findGoldLabel();
+        String expectedText = "Gold: " + wallet.getCoins();
+        assertEquals(expectedText, goldLabel.getText());
+    }
+
+    /**
+     * Helper method to find all "Buy Item" buttons within the panel.
+     *
+     * @return a list of JButtons used for purchasing items.
+     */
+    private List<JButton> findBuyButtons() {
+        List<JButton> buttons = new ArrayList<>();
+        for (Component comp : shopPanel.getComponents()) {
+            if (comp instanceof JButton) {
+                JButton btn = (JButton) comp;
+                if ("Buy Item".equals(btn.getText())) {
+                    buttons.add(btn);
+                }
             }
-            byte[] bytes = bos.toByteArray();
+        }
+        return buttons;
+    }
 
-            // Deserializza
-            try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-                Object obj = ois.readObject();
-                assertTrue(obj instanceof ShopPanel);
-                ShopPanel restored = (ShopPanel) obj;
-
-                // Dopo readObject nel tuo codice: items = new ArrayList<>(), quindi è vuoto.
-                List<?> items = getItems(restored);
-                assertNotNull(items);
-                assertTrue(items.isEmpty(), "Items deve essere vuoto (reinizializzato) dopo deserializzazione");
-
-                setCoinsSupplier(restored, () -> 77);
-                restored.updateGoldDisplay();
-                JLabel gold = getGoldLabel(restored);
-                assertNotNull(gold);
-                // FIX: Il codice usa "Gold:", non "Oro:"
-                assertEquals("Gold: 77", gold.getText());
+    /**
+     * Helper method to find the label displaying the gold amount.
+     *
+     * @return the JLabel component for gold display.
+     */
+    private JLabel findGoldLabel() {
+        for (Component comp : shopPanel.getComponents()) {
+            if (comp instanceof JLabel) {
+                JLabel label = (JLabel) comp;
+                if (label.getText().startsWith("Gold:")) {
+                    return label;
+                }
             }
-        });
+        }
+        return null;
+    }
+
+    /**
+     * Manual Stub for Wallet to simulate logic without Mockito.
+     */
+    private static class StubWallet extends Wallet {
+        private int coins;
+
+        public StubWallet(int initialCoins) {
+            super();
+            this.coins = initialCoins;
+        }
+
+        @Override
+        public int getCoins() {
+            return coins;
+        }
+
+        @Override
+        public void removeCoins(int amount) {
+            this.coins -= amount;
+        }
+
+        public void setCoins(int coins) {
+            this.coins = coins;
+        }
+    }
+
+    /**
+     * Manual Stub for Inventory to simulate logic without Mockito.
+     */
+    private static class StubInventory implements Inventory {
+        private final List<GameItem> storedItems = new ArrayList<>();
+
+        public StubInventory() {
+            super();
+        }
+
+        @Override
+        public void setBald(Bald bald) {
+
+        }
+
+        @Override
+        public void add(GameItem item) {
+            storedItems.add(item);
+        }
+
+        @Override
+        public void set(GameItem item, int row, int column) {
+
+        }
+
+        @Override
+        public void remove(int row, int column) {
+
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public Slot get(int row, int column) {
+            return null;
+        }
+
+        @Override
+        public void select(int row, int column) {
+
+        }
+
+        @Override
+        public void select(int index) {
+
+        }
+
+        @Override
+        public void select(Slot slot) {
+
+        }
+
+        @Override
+        public List<Slot> getSlots() {
+            return List.of();
+        }
+
+        public List<GameItem> getStoredItems() {
+            return storedItems;
+        }
     }
 }

@@ -7,8 +7,11 @@ import java.awt.image.BufferedImage;
 import java.util.Objects;
 
 /**
- * Rappresenta una tessera (tile) della mappa con immagine base e opzionale overlay.
- * <p>La classe è <b>final</b> e non è pensata per essere estesa.</p>
+ * Rappresenta una tessera (tile) della mappa, composta da un'immagine di base e un'eventuale immagine di overlay.
+ * <p>
+ * La classe è immutabile e <b>final</b>. Gestisce automaticamente la copia difensiva delle immagini
+ * per prevenire modifiche esterne accidentali e supporta il ridimensionamento in fase di inizializzazione.
+ * </p>
  */
 public final class Tile {
 
@@ -22,17 +25,17 @@ public final class Tile {
     private final boolean walkable;
 
     /**
-     * Costruttore principale.
+     * Costruttore principale per creare un nuovo Tile con tutte le proprietà configurabili.
      *
-     * @param image         immagine di base (può essere {@code null})
-     * @param width         larghezza target del tile
-     * @param height        altezza target del tile
-     * @param id            identificatore del tile (usa -1 se assente)
-     * @param solid         {@code true} se bloccante
-     * @param resize        {@code true} per ridimensionare {@code image} a (width x height)
-     * @param isSpawn       {@code true} se tile di spawn
-     * @param walkable      {@code true} se attraversabile
-     * @param overlayImage  immagine overlay (può essere {@code null})
+     * @param image         immagine di base del tile (può essere {@code null})
+     * @param width         larghezza desiderata del tile in pixel
+     * @param height        altezza desiderata del tile in pixel
+     * @param id            identificatore univoco del tipo di tile (usare -1 se non applicabile)
+     * @param solid         {@code true} se il tile deve bloccare il movimento (collisione)
+     * @param resize        {@code true} per forzare il ridimensionamento dell'immagine alle dimensioni specificate
+     * @param isSpawn       {@code true} se questo tile rappresenta un punto di spawn
+     * @param walkable      {@code true} se il tile è attraversabile dalle entità
+     * @param overlayImage  immagine opzionale da disegnare sopra quella di base (può essere {@code null})
      */
     public Tile(
             final BufferedImage image,
@@ -60,79 +63,115 @@ public final class Tile {
                 g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                 g2.drawImage(image, 0, 0, width, height, null);
                 g2.dispose();
-                this.image = resized; // già copia
+                this.image = resized;
             } else {
-                this.image = deepCopy(image); // copia difensiva
+                this.image = deepCopy(image);
             }
         } else {
             this.image = null;
         }
 
-        this.overlayImage = overlayImage != null ? deepCopy(overlayImage) : null; // copia difensiva
+        this.overlayImage = overlayImage != null ? deepCopy(overlayImage) : null;
     }
 
     /**
-     * Costruttore secondario semplificato.
+     * Costruttore semplificato per creare un tile di base non solido e senza proprietà speciali.
      *
-     * @param image  immagine di base
-     * @param width  larghezza
-     * @param height altezza
+     * @param image  immagine di base del tile
+     * @param width  larghezza del tile
+     * @param height altezza del tile
      */
     public Tile(final BufferedImage image, final int width, final int height) {
         this(image, width, height, 0, false, false, false, false, null);
     }
 
-    /** @return una copia dell'immagine base del tile (può essere {@code null}) */
+    /**
+     * Restituisce una copia dell'immagine di base del tile.
+     *
+     * @return una nuova istanza {@link BufferedImage} o {@code null} se non presente
+     */
     public BufferedImage getImage() {
         return image == null ? null : deepCopy(image);
     }
 
-    /** @return larghezza del tile */
+    /**
+     * Restituisce la larghezza del tile.
+     *
+     * @return larghezza in pixel
+     */
     public int getWidth() {
         return width;
     }
 
-    /** @return altezza del tile */
+    /**
+     * Restituisce l'altezza del tile.
+     *
+     * @return altezza in pixel
+     */
     public int getHeight() {
         return height;
     }
 
-    /** @return identificatore del tile */
+    /**
+     * Restituisce l'identificatore numerico del tipo di tile.
+     *
+     * @return l'ID del tile
+     */
     public int getId() {
         return id;
     }
 
-    /** @return {@code true} se il tile è solido/bloccante */
+    /**
+     * Indica se il tile è solido (bloccante per le collisioni).
+     *
+     * @return {@code true} se solido, altrimenti {@code false}
+     */
     public boolean isSolid() {
         return solid;
     }
 
-    /** @return {@code true} se il tile è di spawn */
+    /**
+     * Indica se il tile è un punto di spawn.
+     *
+     * @return {@code true} se è uno spawn point, altrimenti {@code false}
+     */
     public boolean isSpawn() {
         return isSpawn;
     }
 
-    /** @return {@code true} se il tile è attraversabile */
+    /**
+     * Indica se il tile è calpestabile/attraversabile.
+     *
+     * @return {@code true} se attraversabile, altrimenti {@code false}
+     */
     public boolean isWalkable() {
         return walkable;
     }
 
-    /** @return {@code true} se l'id è valorizzato (diverso da -1) */
+    /**
+     * Verifica se il tile possiede un ID valido.
+     *
+     * @return {@code true} se l'ID è diverso da -1
+     */
     public boolean hasId() {
         return id != -1;
     }
 
-    /** @return una copia dell'immagine overlay (può essere {@code null}) */
+    /**
+     * Restituisce una copia dell'immagine di overlay.
+     *
+     * @return una nuova istanza {@link BufferedImage} o {@code null} se non presente
+     */
     public BufferedImage getOverlayImage() {
         return overlayImage == null ? null : deepCopy(overlayImage);
     }
 
     /**
-     * Disegna il tile (immagine base + overlay) alle coordinate specificate.
+     * Esegue il rendering del tile (immagine base e overlay) alle coordinate specificate.
      *
-     * @param g contesto grafico
-     * @param x coordinata x
-     * @param y coordinata y
+     * @param g contesto grafico su cui disegnare
+     * @param x coordinata x di destinazione
+     * @param y coordinata y di destinazione
      */
     public void render(final Graphics g, final int x, final int y) {
         if (image != null) {
@@ -143,6 +182,12 @@ public final class Tile {
         }
     }
 
+    /**
+     * Verifica l'uguaglianza tra due tile basandosi esclusivamente sul loro ID.
+     *
+     * @param obj l'oggetto da confrontare
+     * @return {@code true} se gli oggetti hanno lo stesso ID
+     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -155,18 +200,30 @@ public final class Tile {
         return this.id == other.id;
     }
 
+    /**
+     * Calcola l'hash code basato sull'ID del tile.
+     *
+     * @return il valore di hash
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
 
     /**
-     * @return {@code true} se l'immagine corrente non è della dimensione target.
+     * Verifica se le dimensioni dell'immagine corrente differiscono dalle dimensioni target del tile.
+     *
+     * @return {@code true} se l'immagine necessita di ridimensionamento
      */
     public boolean isResizeable() {
         return image != null && (image.getWidth() != width || image.getHeight() != height);
     }
 
+    /**
+     * Restituisce una rappresentazione in stringa dello stato del tile.
+     *
+     * @return stringa descrittiva
+     */
     @Override
     public String toString() {
         return new StringBuilder("Tile{")
@@ -178,10 +235,13 @@ public final class Tile {
                 .toString();
     }
 
-    /* ===================== Util: copia difensiva BufferedImage ===================== */
-
+    /**
+     * Crea una copia profonda (deep copy) di una BufferedImage per garantire l'immutabilità.
+     *
+     * @param src immagine sorgente
+     * @return una nuova BufferedImage contenente gli stessi dati della sorgente
+     */
     private static BufferedImage deepCopy(final BufferedImage src) {
-        // Evita TYPE_CUSTOM = 0
         final int type = src.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : src.getType();
         final BufferedImage copy = new BufferedImage(src.getWidth(), src.getHeight(), type);
         final Graphics2D g = copy.createGraphics();

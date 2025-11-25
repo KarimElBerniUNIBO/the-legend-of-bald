@@ -71,212 +71,235 @@ import com.thelegendofbald.view.render.Tile;
 import com.thelegendofbald.view.render.TileMap;
 
 /**
- * Main game panel that manages the core game lifecycle, rendering and input.
- *
+ * Pannello principale di gioco che gestisce il ciclo di vita, il rendering e l'input.
  * <p>
- * Responsibilities:
+ * Questa classe funge da controller centrale per la partita attiva. Le sue responsabilità includono:
  * <ul>
- * <li>Initialize and lay out game UI components (tile map, player, enemies,
- * HUD, shop, inventory, options).</li>
- * <li>Drive the game loop on a dedicated thread (implements {@link Runnable}),
- * updating game state
- * and triggering repaints at a configurable maximum frame rate.</li>
- * <li>Handle player input via key bindings, translate input into movement,
- * attacks and interactions.</li>
- * <li>Manage map transitions, actor spawning, item loading, combat coordination
- * and saving/loading game runs.</li>
- * <li>Render game visuals (tiles, actors, projectiles, HUD overlays) and debug
- * overlays (FPS, timer).</li>
+ * <li>Inizializzazione e layout dei componenti UI (mappa, giocatore, nemici, HUD, inventario, shop).</li>
+ * <li>Esecuzione del game loop su un thread dedicato, aggiornando la logica e richiedendo il repaint.</li>
+ * <li>Gestione dell'input del giocatore tramite KeyBindings.</li>
+ * <li>Gestione delle transizioni tra mappe, spawn dei nemici e caricamento oggetti.</li>
+ * <li>Rendering degli elementi grafici e overlay (FPS, Timer, HUD).</li>
  * </ul>
  * </p>
- *
- * <p>
- * Usage notes:
- * <ul>
- * <li>Call {@link #startGame()} to start the game loop and timer; this method
- * will also prompt for a player name.</li>
- * <li>Call {@link #pauseGame()} / {@link #resumeGame()} to pause or resume the
- * game; when paused the loop sleeps instead of updating.</li>
- * <li>Call {@link #stopGame()} to stop the loop and reset game state.</li>
- * </ul>
- * </p>
- *
- * <p>
- * Threading and Swing:
- * <ul>
- * <li>The game loop runs off the Event Dispatch Thread (EDT) on a separate
- * {@link Thread}; UI-mutating operations
- * must be performed on the EDT (this class uses
- * {@link javax.swing.SwingUtilities#invokeLater} where appropriate).</li>
- * <li>Several fields that are accessed by both the game thread and the EDT are
- * declared {@code volatile} or {@code transient}
- * to reduce data-race risk, but callers should not assume full thread-safety
- * for complex interactions.</li>
- * </ul>
- * </p>
- *
- * <p>
- * Serialization:
- * <ul>
- * <li>The class defines a custom {@code readObject} to restore transient
- * collections after deserialization.</li>
- * </ul>
- * </p>
- *
- * @see #startGame()
- * @see #stopGame()
- * @see #pauseGame()
- * @see #resumeGame()
  */
 public final class GamePanel extends MenuPanel implements Runnable, Game {
 
+    /** Trasparenza dello sfondo per le schermate di vittoria/sconfitta (0-255). */
     private static final int FINAL_GAME_SCREEN_TITLE_TRANSPARENCY = 150;
 
+    /** UID per la serializzazione. */
     private static final long serialVersionUID = 1L;
 
+    /** Identificativo della mappa 1. */
     private static final String MAP_1 = "map_1";
+    /** Identificativo della mappa 2. */
     private static final String MAP_2 = "map_2";
+    /** Identificativo della mappa 3. */
     private static final String MAP_3 = "map_3";
+    /** Identificativo della mappa 4. */
     private static final String MAP_4 = "map_4";
 
+    /** Larghezza predefinita del pannello di gioco. */
     private static final int DEFAULT_W = 1280;
+    /** Altezza predefinita del pannello di gioco. */
     private static final int DEFAULT_H = 704;
 
+    /** Larghezza del pannello della vita. */
     private static final int LIFE_W = 200;
+    /** Altezza del pannello della vita. */
     private static final int LIFE_H = 20;
+    /** Posizione Y del pannello della vita. */
     private static final int LIFE_Y = 800;
 
+    /** Dimensione del lato di un tile in pixel. */
     private static final int TILE_SIZE = 32;
+    /** Frame rate massimo predefinito. */
     private static final int DEFAULT_MAX_FPS = 60;
 
+    /** Larghezza del personaggio Bald. */
     private static final int BALD_W = 60;
+    /** Altezza del personaggio Bald. */
     private static final int BALD_H = 60;
 
+    /** Larghezza standard di un nemico. */
     private static final int ENEMY_W = 60;
+    /** Altezza standard di un nemico. */
     private static final int ENEMY_H = 60;
 
+    /** Larghezza del boss finale. */
     private static final int BOSS_W = 96;
+    /** Altezza del boss finale. */
     private static final int BOSS_H = 96;
 
+    /** ID del tile portale. */
     private static final int ID_PORTAL = 4;
+    /** ID del tile di spawn. */
     private static final int ID_SPAWN = 5;
+    /** ID del tile negozio. */
     private static final int ID_SHOP = 6;
+    /** ID del tile generatore di nemici. */
     private static final int ID_ENEMY = 7;
+    /** ID del tile portale precedente. */
     private static final int ID_PREV_PORTAL = 8;
+    /** ID del tile boss. */
     private static final int ID_BOSS = 9;
+    /** ID del tile trigger mappa successiva. */
     private static final int ID_NEXT_MAP_TRIGGER = 10;
 
+    /** Percentuale di insets per la larghezza del pannello opzioni. */
     private static final double OPTIONS_WIDTH_INSETS = 0.25;
+    /** Percentuale di insets per l'altezza del pannello opzioni. */
     private static final double OPTIONS_HEIGHT_INSETS = 0.1;
+    /** Percentuale di insets per la larghezza del pannello inventario. */
     private static final double INVENTORY_WIDTH_INSETS = 0.25;
+    /** Percentuale di insets per l'altezza del pannello inventario. */
     private static final double INVENTORY_HEIGHT_INSETS = 0.25;
 
+    /** Font predefinito per HUD e overlay. */
     private static final Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 20);
+    /** Posizione a schermo del contatore FPS. */
     private static final Pair<Integer, Integer> FPS_POSITION = Pair.of(15, 25);
+    /** Posizione a schermo del timer di gioco. */
     private static final Pair<Integer, Integer> TIMER_POSITION = Pair.of(1085, 25);
+    /** Colore dell'area di attacco visualizzata per debug/feedback. */
     private static final Color ATTACK_AREA_COLOR = new Color(200, 200, 200, 100);
 
+    /** Velocità di movimento del giocatore. */
     private static final double MOVE_SPEED = 2.0;
 
+    /** Nanosecondi in un secondo. */
     private static final long NANOS_IN_SECOND = 1_000_000_000L;
+    /** Millisecondi in un secondo. */
     private static final long MILLIS_IN_SECOND = 1000L;
+    /** Nanosecondi in un millisecondo. */
     private static final long NANOS_IN_MILLI = 1_000_000L;
+    /** Intervallo di sleep del thread quando il gioco è in pausa. */
     private static final long SLEEP_INTERVAL_WHEN_PAUSED = 100L;
+    /** Tempo di attesa minimo per loop in caso di frame in ritardo. */
     private static final long LATE_FRAME_BACKOFF_NANOS = 250_000L;
+    /** Tempo di cooldown per l'utilizzo dei portali in millisecondi. */
     private static final long PORTAL_COOLDOWN_MS = 2000;
 
+    /** Dimensione icona arma. */
     private static final int WEAPON_ICON = 50;
 
+    /** Passo incremento movimento X. */
     private static final double DX_STEP = 1.0;
+    /** Passo incremento movimento Y. */
     private static final double DY_STEP = 1.0;
 
+    /** Colonne inventario. */
     private static final int INVENTORY_COLS = 5;
+    /** Righe inventario. */
     private static final int INVENTORY_ROWS = 3;
 
+    /** ID Pozione salute. */
     private static final int HEALTH_POTION = 7;
-    private static final int STRENGTH_POTION = 8; 
+    /** ID Pozione forza. */
+    private static final int STRENGTH_POTION = 8;
+    /** ID Moneta. */
     private static final int COIN = 9;
 
+    /** Timestamp fino al quale i portali sono disabilitati. */
     private volatile long portalCooldownUntil;
 
+    /** ID del tile di destinazione pendente per il cambio mappa. */
     private Integer pendingEntryTileId;
+    /** Indice dell'entry point pendente. */
     private Integer pendingEntryIndex;
 
+    /** Direzione pendente del giocatore dopo il cambio mappa. */
     private Boolean pendingFacingRight;
 
+    /** Factory per la creazione dei vincoli di layout. */
     private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
+    /** Vincoli layout per il pannello opzioni. */
     private final GridBagConstraints optionsGBC = gbcFactory.createBothGridBagConstraints();
+    /** Vincoli layout per il pannello inventario. */
     private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
 
+    /** Istanza del giocatore. */
     private final transient Bald bald = new Bald(BALD_W, BALD_H, 100, "Bald", 50);
+    /** Nome della mappa corrente. */
     private String currentMapName = MAP_1;
 
+    /** Mappa delle transizioni in avanti tra livelli. */
     private final Map<String, String> mapTransitions = Map.of(
             MAP_1, MAP_2,
             MAP_2, MAP_3,
             MAP_3, MAP_4);
 
+    /** Mappa delle transizioni all'indietro tra livelli. */
     private final Map<String, String> reverseTransitions = Map.of(
             MAP_2, MAP_1,
             MAP_3, MAP_2);
 
+    /** Pannello per la griglia di sfondo. */
     private final GridPanel gridPanel;
+    /** Gestore della mappa a tile. */
     private final transient TileMap tileMap;
+    /** Gestore degli oggetti sulla mappa. */
     private final transient ItemManager itemManager;
+    /** Generatore di loot. */
     private final transient LootGenerator lootGenerator;
 
+    /** Pannello HUD per la vita del giocatore. */
     private final LifePanel lifePanel;
+    /** Lista dei nemici attivi nella mappa corrente. */
     private transient List<DummyEnemy> enemies = new ArrayList<>();
+    /** Pannello delle opzioni di gioco (pausa). */
     private final JPanel optionsPanel;
+    /** Timer di gioco. */
     private final transient Timer timer = new Timer();
+    /** Dati della partita corrente (nome, tempo). */
     private transient GameRun gameRun;
+    /** Gestore del combattimento. */
     private final transient CombatManager combatManager;
+    /** Gestore del salvataggio dati. */
     private final transient DataManager saveDataManager = new DataManager();
 
+    /** Pannello visuale dell'inventario. */
     private final JPanel inventoryPanel;
+    /** Modello logico dell'inventario. */
     private final transient Inventory inventory;
 
+    /** Thread principale del game loop. */
     private transient Thread gameThread;
+    /** Flag di esecuzione del gioco. */
     private volatile boolean running;
+    /** Flag di stato game over. */
     private volatile boolean gameOver;
+    /** Flag di stato vittoria. */
     private volatile boolean gameWon;
+    /** Flag di pausa. */
     private volatile boolean paused;
+    /** Limite FPS desiderato. */
     private volatile int maxFPS = DEFAULT_MAX_FPS;
+    /** Flag per mostrare/nascondere FPS. */
     private volatile boolean showingFPS = (boolean) VideoSettings.SHOW_FPS.getValue();
+    /** Valore FPS corrente. */
     private volatile int currentFPS;
+    /** Flag per mostrare/nascondere il timer. */
     private volatile boolean showingTimer = (boolean) VideoSettings.SHOW_TIMER.getValue();
 
+    /** Insieme dei tasti attualmente premuti. */
     private final Set<Integer> pressedKeys = new HashSet<>();
+    /** Pulsante per aprire lo shop. */
     private final JButton shopButton = new JButton("Shop");
+    /** Pulsante per tornare al menu principale. */
     private final JButton mainMenuButton = new JButton("Ritorna alla pagina principale");
+    /** Pannello dello shop. */
     private final ShopPanel shopPanel;
 
+    /** Riferimento al boss finale (se presente nella mappa). */
     private transient FinalBoss boss;
 
     /**
-     * Constructs the main game panel and initializes core game systems and UI.
-     *
+     * Costruisce il pannello di gioco principale e inizializza i sistemi core e l'UI.
      * <p>
-     * This constructor performs the following initializations:
-     * <ul>
-     * <li>Creates and configures the main grid and tile map used for rendering and
-     * collision.</li>
-     * <li>Initializes the player character ({@code Bald}) with default size, health
-     * and a starting weapon.</li>
-     * <li>Creates the item, loot and inventory managers and preloads items for the
-     * first map.</li>
-     * <li>Positions the player at the configured spawn point (if available) and
-     * populates the inventory
-     * with a set of starter weapons.</li>
-     * <li>Sets up key bindings for input and schedules Swing-specific
-     * initialization via
-     * {@link SwingUtilities#invokeLater}.</li>
-     * </ul>
-     *
-     * <p>
-     * The constructor prepares the panel for use but does not start the game loop
-     * or timer;
-     * {@link #startGame()} must be invoked to begin gameplay.
+     * Configura la tile map, il giocatore, l'inventario, i gestori di item e loot,
+     * e prepara la mappa iniziale. Imposta anche i key bindings e la posizione di spawn.
      * </p>
      */
     public GamePanel() {
@@ -328,6 +351,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         initialize();
     }
 
+    /**
+     * Inizializzazione post-costruzione eseguita nell'EDT.
+     */
     private void initialize() {
         SwingUtilities.invokeLater(() -> {
             this.setBackground(Color.BLACK);
@@ -336,17 +362,30 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         });
     }
 
+    /**
+     * Gestisce la deserializzazione per reinizializzare i campi transienti.
+     *
+     * @param in stream di input
+     * @throws IOException errore I/O
+     * @throws ClassNotFoundException classe non trovata
+     */
     private void readObject(final ObjectInputStream in)
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         this.enemies = new ArrayList<>();
     }
 
+    /**
+     * Aggiunge le armi di base all'inventario del giocatore.
+     */
     private void addWeaponsToInventory() {
         final Weapon sword = new Sword(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager);
         inventory.add(sword);
     }
 
+    /**
+     * Mostra o nasconde il pannello delle opzioni (menu di pausa).
+     */
     private void toggleOptionsPanel() {
         if (paused && !inventoryPanel.isVisible()) {
             closeOptionsPanel();
@@ -358,6 +397,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         }
     }
 
+    /**
+     * Mostra o nasconde il pannello dell'inventario.
+     */
     private void toggleOpenInventory() {
         if (!paused && !optionsPanel.isVisible() && !inventoryPanel.isVisible()) {
             inventoryPanel.setVisible(true);
@@ -366,6 +408,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         }
     }
 
+    /**
+     * Apre il pannello opzioni e mette in pausa il gioco.
+     */
     private void openOptionsPanel() {
         pauseGame();
         pressedKeys.clear();
@@ -374,6 +419,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         this.repaint();
     }
 
+    /**
+     * Chiude il pannello opzioni e riprende il gioco.
+     */
     private void closeOptionsPanel() {
         this.optionsPanel.setVisible(false);
         pressedKeys.clear();
@@ -383,21 +431,22 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     /**
-     * Refreshes the key bindings based on the current control settings.
-     * This method should be called when control settings are changed.
+     * Aggiorna i binding dei tasti in base alle impostazioni correnti.
      */
     public void refreshKeyBindings() {
         pressedKeys.clear();
         setupKeyBindings();
     }
 
+    /**
+     * Configura la mappa degli input e delle azioni per la gestione della tastiera.
+     */
     private void setupKeyBindings() {
         final InputMap im = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
         final ActionMap am = this.getActionMap();
         im.clear();
         am.clear();
 
-        // Pressed
         bindKey(im, am, "pressed UP", ControlsSettings.UP.getKey(), true,
                 () -> pressedKeys.add(ControlsSettings.UP.getKey()));
         bindKey(im, am, "pressed DOWN", ControlsSettings.DOWN.getKey(), true,
@@ -414,7 +463,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         bindKey(im, am, "interact", ControlsSettings.INTERACT.getKey(), true,
                 this::interactWithItems);
 
-        // Released
         bindKey(im, am, "released UP", ControlsSettings.UP.getKey(), false,
                 () -> pressedKeys.remove(ControlsSettings.UP.getKey()));
         bindKey(im, am, "released DOWN", ControlsSettings.DOWN.getKey(), false,
@@ -425,6 +473,16 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
                 () -> pressedKeys.remove(ControlsSettings.RIGHT.getKey()));
     }
 
+    /**
+     * Helper per associare un tasto ad un'azione Runnable.
+     *
+     * @param im InputMap
+     * @param am ActionMap
+     * @param name nome dell'azione
+     * @param key codice tasto
+     * @param pressed true per evento pressione, false per rilascio
+     * @param action l'azione da eseguire
+     */
     private void bindKey(
             final InputMap im,
             final ActionMap am,
@@ -442,9 +500,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     /**
-     * Handles player input by updating the player's speed and direction based on
-     * currently pressed keys.
-     * If the player is immobilized, all movement is stopped.
+     * Gestisce l'input di movimento calcolando il vettore di velocità del giocatore.
      */
     private void handleInput() {
         if (bald.isImmobilized()) {
@@ -485,6 +541,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         bald.setSpeedY(dy);
     }
 
+    /**
+     * Gestisce l'interazione con oggetti interagibili vicini al giocatore.
+     */
     private void interactWithItems() {
         itemManager.getItems().stream()
                 .filter(item -> bald.getBounds().intersects(item.getBounds()))
@@ -494,6 +553,12 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
                 .ifPresent(Interactable::interact);
     }
 
+    /**
+     * Imposta la direzione del giocatore durante le transizioni tra mappe specifiche.
+     *
+     * @param from mappa di origine
+     * @param to mappa di destinazione
+     */
     private void setFacingForTransition(final String from, final String to) {
         if (MAP_2.equals(from) && MAP_3.equals(to)) {
             pendingFacingRight = false;
@@ -507,14 +572,17 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     /**
-     * Returns the current game run data, which includes the player's name and time.
+     * Restituisce i dati della partita corrente.
      *
-     * @return the current {@link GameRun} instance.
+     * @return istanza di {@link GameRun}
      */
     public GameRun getGameRun() {
         return gameRun;
     }
 
+    /**
+     * Richiede al giocatore di inserire un nickname prima di iniziare la partita.
+     */
     private void setPlayerName() {
         String nickname = "";
 
@@ -553,6 +621,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         }
     }
 
+    /**
+     * Resetta lo stato del gioco ai valori iniziali (mappa 1, inventario base, ecc.).
+     */
     private void resetGame() {
         this.gameOver = false;
         this.gameWon = false;
@@ -632,9 +703,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     /**
-     * Updates the game state for the current frame.
+     * Aggiorna la logica di gioco (movimento, collisioni, combat).
      *
-     * @param deltatime the time elapsed (in seconds) since the previous frame.
+     * @param deltatime tempo trascorso dall'ultimo frame in secondi.
      */
     public void update(final double deltatime) {
         if (gameOver || gameWon) {
@@ -687,8 +758,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     /**
-     * Handles the game won logic: stops the game, saves the run, and sets the win
-     * flag.
+     * Gestisce la logica di vittoria: pausa, salvataggio e mostra schermata finale.
      */
     private void handleGameWon() {
         this.gameWon = true;
@@ -699,7 +769,7 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     /**
-     * Handles the game over logic: stops the game and sets the game over flag.
+     * Gestisce la logica di sconfitta: pausa e mostra schermata game over.
      */
     private void handleGameOver() {
         this.gameOver = true;
@@ -709,11 +779,10 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     /**
-     * Checks if the player character is touching or adjacent to a tile with the
-     * specified ID.
+     * Verifica se il giocatore sta toccando o è adiacente ad un tile specifico.
      *
-     * @param tileId the ID of the tile to check for.
-     * @return {@code true} if touching or adjacent, otherwise {@code false}.
+     * @param tileId ID del tile da cercare
+     * @return true se c'è contatto/adiacenza
      */
     private boolean isTouchingOrAdjacentToTileId(final int tileId) {
         final int ts = tileMap.getTileSize();
@@ -761,11 +830,22 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         return false;
     }
 
+    /**
+     * Verifica se un tile alle coordinate specificate ha un certo ID.
+     *
+     * @param tx coordinata x (colonna)
+     * @param ty coordinata y (riga)
+     * @param id identificativo del tile da controllare
+     * @return true se il tile corrisponde all'ID, false altrimenti
+     */
     private boolean tileHasId(final int tx, final int ty, final int id) {
         final Tile t = tileMap.getTileAt(tx, ty);
         return t != null && t.getId() == id;
     }
 
+    /**
+     * Passa alla mappa successiva definita nelle transizioni.
+     */
     private void switchToNextMap() {
         final String nextMapName = mapTransitions.get(currentMapName);
         if (nextMapName != null) {
@@ -778,6 +858,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         }
     }
 
+    /**
+     * Passa alla mappa precedente definita nelle transizioni.
+     */
     private void switchToPreviousMap() {
         final String prevMapName = reverseTransitions.get(currentMapName);
         if (prevMapName != null) {
@@ -790,6 +873,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         }
     }
 
+    /**
+     * Carica la nuova mappa e riposiziona il giocatore.
+     *
+     * @param mapName nome della mappa da caricare
+     */
     private void changeAndLoadMap(final String mapName) {
         boss = null;
         currentMapName = mapName;
@@ -847,6 +935,9 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         shopButton.setVisible(false);
     }
 
+    /**
+     * Spawna i nemici e il boss in base ai tile della mappa corrente.
+     */
     private void spawnActorsFromMap() {
         enemies.clear();
         boss = null;
@@ -858,6 +949,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         bossTiles.stream().findFirst().ifPresent(this::spawnBossAt);
     }
 
+    /**
+     * Crea un nemico standard alle coordinate specificate.
+     *
+     * @param topLeft punto in alto a sinistra del tile di spawn
+     */
     private void spawnEnemyAt(final Point topLeft) {
         final int ts = tileMap.getTileSize();
         final int x = topLeft.x + (ts - ENEMY_W) / 2;
@@ -865,6 +961,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         enemies.add(new DummyEnemy(x, y, ENEMY_W, "ZioBilly", 10, tileMap));
     }
 
+    /**
+     * Crea il boss finale alle coordinate specificate.
+     *
+     * @param topLeft punto in alto a sinistra del tile di spawn
+     */
     private void spawnBossAt(final Point topLeft) {
         if (boss != null) {
             return;
@@ -923,6 +1024,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         g2d.dispose();
     }
 
+    /**
+     * Disegna la schermata di vittoria in sovraimpressione.
+     *
+     * @param g2d contesto grafico
+     */
     private void drawGameWonScreen(final Graphics2D g2d) {
         g2d.setColor(new Color(0, 0, 0, FINAL_GAME_SCREEN_TITLE_TRANSPARENCY));
         g2d.fillRect(0, 0, getWidth(), getHeight());
@@ -942,6 +1048,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         g2d.drawString(msg, x, y);
     }
 
+    /**
+     * Disegna la schermata di game over in sovraimpressione.
+     *
+     * @param g2d contesto grafico
+     */
     private void drawGameOverScreen(final Graphics2D g2d) {
         g2d.setColor(new Color(0, 0, 0, FINAL_GAME_SCREEN_TITLE_TRANSPARENCY));
         g2d.fillRect(0, 0, getWidth(), getHeight());
@@ -961,6 +1072,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         g2d.drawString(msg, x, y);
     }
 
+    /**
+     * Disegna l'area di attacco dell'arma corrente (debug/feedback).
+     *
+     * @param g contesto grafico
+     */
     private void drawAttackArea(final Graphics g) {
         final Graphics2D g2d = (Graphics2D) g;
         bald.getWeapon().ifPresent(weapon -> {
@@ -974,6 +1090,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         });
     }
 
+    /**
+     * Disegna la barra HP del boss in cima allo schermo.
+     *
+     * @param g2d contesto grafico
+     */
     private void drawBossHP(final Graphics2D g2d) {
         if (boss == null || !boss.isAlive()) {
             return;
@@ -1017,6 +1138,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         g2d.drawString("FINAL BOSS  " + hp + "/" + max, x + xTextOffset, y + h + yTextOffset);
     }
 
+    /**
+     * Disegna il contatore FPS.
+     *
+     * @param g contesto grafico
+     */
     private void drawFPS(final Graphics g) {
         if (showingFPS) {
             g.setColor(Color.YELLOW);
@@ -1026,6 +1152,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         }
     }
 
+    /**
+     * Disegna il timer di gioco.
+     *
+     * @param g contesto grafico
+     */
     private void drawTimer(final Graphics g) {
         if (showingTimer) {
             final TimeData timeData = timer.getFormattedTime();
@@ -1038,6 +1169,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         }
     }
 
+    /**
+     * Scala il contesto grafico in base alla dimensione della finestra corrente.
+     *
+     * @param g contesto grafico
+     */
     private void scaleGraphics(final Graphics g) {
         Optional.ofNullable(SwingUtilities.getWindowAncestor(this))
                 .filter(window -> window instanceof GameWindow)
@@ -1048,8 +1184,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
                     ((Graphics2D) g).scale(scaleX, scaleY);
                 });
     }
-
-    /* ===================== Layout secondario/UI ===================== */
 
     @Override
     public void updateComponentsSize() {
@@ -1108,12 +1242,19 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
         this.add(mainMenuButton, mainMenuButtonGBC);
     }
 
+    /**
+     * Callback per il click sul pulsante shop.
+     *
+     * @param event l'evento di azione scatenato dal click
+     */
     private void onShopButtonClicked(final java.awt.event.ActionEvent event) {
         Objects.requireNonNull(event, "event");
         JOptionPane.showMessageDialog(this, shopPanel, "SHOP", JOptionPane.PLAIN_MESSAGE);
     }
 
-    /** Shows the shop button when Bald is over a {@link #ID_SHOP} tile. */
+    /**
+     * Mostra o nasconde il pulsante shop se il giocatore è sopra un tile negozio.
+     */
     private void checkIfNearShopTile() {
         final int tileSize = tileMap.getTileSize();
 
@@ -1135,11 +1276,6 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
             shopButton.setVisible(onShopTile);
         }
     }
-
-    /*
-     * ===================== Getters/Setters richiesti dall'interfaccia
-     * =====================
-     */
 
     @Override
     public boolean isRunning() {
@@ -1164,26 +1300,11 @@ public final class GamePanel extends MenuPanel implements Runnable, Game {
     }
 
     /**
-     * @return {@code true} if the FPS counter is being shown in the UI.
-     */
-    public boolean isShowingFPS() {
-        return showingFPS;
-    }
-
-    /**
-     * Enables or disables the display of the game timer.
+     * Imposta la visibilità del timer.
      *
-     * @param showingTimer if {@code true}, the timer is shown as an overlay.
+     * @param showingTimer true per mostrare il timer
      */
     public void setShowingTimer(final boolean showingTimer) {
         this.showingTimer = showingTimer;
     }
-
-    /**
-     * @return {@code true} if the timer is being shown in the UI.
-     */
-    public boolean isShowingTimer() {
-        return showingTimer;
-    }
-
 }
