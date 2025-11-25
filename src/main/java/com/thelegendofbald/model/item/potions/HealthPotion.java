@@ -5,8 +5,7 @@ import com.thelegendofbald.utils.LoggerUtils;
 
 /**
  * A potion that restores a certain amount of the player's health.
- * This class extends the abstract {@link Potion} and implements the
- * {@link UsableItem} interface, allowing it to be used from the inventory.
+ * This class extends the abstract {@link Potion} 
  */
 public class HealthPotion extends Potion {
 
