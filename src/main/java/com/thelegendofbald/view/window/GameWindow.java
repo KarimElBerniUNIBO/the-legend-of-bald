@@ -14,38 +14,39 @@ import com.thelegendofbald.model.config.WindowMode;
 import com.thelegendofbald.view.panel.game.GamePanel;
 
 /**
- * La classe {@code GameWindow} rappresenta la finestra principale del gioco.
+ * The {@code GameWindow} class represents the main window of the game.
  * <p>
- * Estende {@link JFrame} e gestisce il contenitore principale per i vari pannelli di gioco
- * (menu, partita, impostazioni), occupandosi della navigazione tra di essi e della configurazione
- * delle proprietà della finestra (dimensioni, modalità schermo, icona).
+ * Extends {@link JFrame} and manages the main container for various game panels
+ * (menu, game, settings), handling navigation between them and window property
+ * configuration
+ * (dimensions, screen mode, icon).
  * </p>
  */
 public final class GameWindow extends JFrame implements View, MainView {
 
     private static final long serialVersionUID = 1L;
 
-    /** Titolo della finestra dell'applicazione. */
+    /** Title of the application window. */
     private static final String TITLE = "The Legend of Bald";
-    /** Larghezza predefinita della finestra in pixel. */
+    /** Default window width in pixels. */
     private static final int DEFAULT_WINDOW_WIDTH = 1280;
-    /** Altezza predefinita della finestra in pixel. */
+    /** Default window height in pixels. */
     private static final int DEFAULT_WINDOW_HEIGHT = 704;
 
     private volatile Dimension internalSize = new Dimension(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
-    /** Il pannello attualmente visualizzato nella finestra. */
+    /** The panel currently displayed in the window. */
     private Panels currentPanel = Panels.MAIN_MENU;
 
     /**
-     * Riferimento opzionale al pannello visualizzato precedentemente.
-     * Utile per logiche di navigazione "indietro".
+     * Optional reference to the previously displayed panel.
+     * Useful for "back" navigation logic.
      */
     private transient Optional<Panels> lastPanel = Optional.empty();
 
     /**
-     * Costruttore predefinito.
-     * Inizializza la finestra e imposta le dimensioni predefinite per tutti i pannelli gestiti.
+     * Default constructor.
+     * Initializes the window and sets default dimensions for all managed panels.
      */
     public GameWindow() {
         super();
@@ -61,8 +62,9 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Configura le proprietà iniziali della finestra (titolo, icona, resize) e la rende visibile.
-     * Imposta il pannello corrente come content pane.
+     * Configures initial window properties (title, icon, resize) and makes it
+     * visible.
+     * Sets the current panel as the content pane.
      */
     @Override
     public void display() {
@@ -77,10 +79,10 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Cambia il pannello principale visualizzato nella finestra.
-     * Memorizza il pannello corrente in {@code lastPanel} prima di effettuare lo scambio.
+     * Changes the main panel displayed in the window.
+     * Stores the current panel in {@code lastPanel} before swapping.
      *
-     * @param panelEnum l'identificativo del nuovo pannello da visualizzare
+     * @param panelEnum the identifier of the new panel to display
      */
     @Override
     public void changeMainPanel(final Panels panelEnum) {
@@ -90,9 +92,10 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Aggiorna la vista corrente, impostando il contenuto del frame e richiedendo il focus.
+     * Updates the current view, setting the frame content and requesting focus.
      * <p>
-     * Se il pannello attivato è un {@link GamePanel} e non è in esecuzione, avvia il loop di gioco.
+     * If the activated panel is a {@link GamePanel} and is not running, starts the
+     * game loop.
      * </p>
      */
     @Override
@@ -109,9 +112,9 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Restituisce una copia delle dimensioni interne correnti della finestra.
+     * Returns a copy of the current internal window dimensions.
      *
-     * @return un nuovo oggetto {@link Dimension} che rappresenta la larghezza e l'altezza
+     * @return a new {@link Dimension} object representing width and height
      */
     @Override
     public synchronized Dimension getInternalSize() {
@@ -119,9 +122,9 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Imposta le nuove dimensioni interne della finestra e aggiorna tutti i pannelli di conseguenza.
+     * Sets new internal window dimensions and updates all panels accordingly.
      *
-     * @param size la nuova dimensione da applicare
+     * @param size the new dimension to apply
      */
     @Override
     public synchronized void setInternalSize(final Dimension size) {
@@ -130,9 +133,10 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Restituisce, se presente, il pannello visualizzato prima di quello corrente.
+     * Returns, if present, the panel displayed before the current one.
      *
-     * @return un {@link Optional} contenente l'ultimo pannello visitato, o vuoto se non esiste
+     * @return an {@link Optional} containing the last visited panel, or empty if
+     *         none exists
      */
     @Override
     public Optional<Panels> getLastPanel() {
@@ -140,9 +144,9 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Restituisce l'identificativo del pannello attualmente visualizzato.
+     * Returns the identifier of the currently displayed panel.
      *
-     * @return l'enum {@link Panels} corrente
+     * @return the current {@link Panels} enum
      */
     @Override
     public Panels getCurrentPanel() {
@@ -150,10 +154,10 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Imposta la modalità della finestra (schermo intero, finestra, finestra senza bordi).
-     * La modifica richiede la chiusura e riapertura (dispose/setVisible) del frame.
+     * Sets the window mode (fullscreen, windowed, borderless).
+     * Modification requires closing and reopening (dispose/setVisible) the frame.
      *
-     * @param windowMode la modalità di visualizzazione desiderata
+     * @param windowMode the desired display mode
      */
     @Override
     public void setWindowMode(final WindowMode windowMode) {
@@ -180,9 +184,9 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Imposta il target FPS (Frames Per Second) per il pannello di gioco.
+     * Sets the target FPS (Frames Per Second) for the game panel.
      *
-     * @param fps il numero di frame al secondo desiderati
+     * @param fps the desired number of frames per second
      */
     @Override
     public void setFPS(final int fps) {
@@ -191,9 +195,9 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Abilita o disabilita la visualizzazione del contatore FPS a schermo.
+     * Enables or disables the on-screen FPS counter.
      *
-     * @param showFPS {@code true} per mostrare gli FPS, {@code false} per nasconderli
+     * @param showFPS {@code true} to show FPS, {@code false} to hide them
      */
     @Override
     public void toggleViewFps(final boolean showFPS) {
@@ -202,9 +206,9 @@ public final class GameWindow extends JFrame implements View, MainView {
     }
 
     /**
-     * Abilita o disabilita la visualizzazione del timer di gioco a schermo.
+     * Enables or disables the on-screen game timer.
      *
-     * @param showTimer {@code true} per mostrare il timer, {@code false} per nasconderlo
+     * @param showTimer {@code true} to show the timer, {@code false} to hide it
      */
     @Override
     public void toggleViewTimer(final boolean showTimer) {

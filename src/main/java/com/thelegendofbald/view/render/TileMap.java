@@ -19,60 +19,62 @@ import javax.imageio.ImageIO;
 import com.thelegendofbald.utils.LoggerUtils;
 
 /**
- * Gestisce il caricamento, la logica e il rendering della mappa a tile.
+ * Manages loading, logic, and rendering of the tile map.
  * <p>
- * La classe non è final per permettere il mocking nei test (es. EmptyTileMap, SolidTileMap).
- * L'avviso UI_INHERITANCE_UNSAFE_GETRESOURCE è risolto usando TileMap.class invece di getClass().
+ * The class is not final to allow mocking in tests (e.g., EmptyTileMap,
+ * SolidTileMap).
+ * The UI_INHERITANCE_UNSAFE_GETRESOURCE warning is resolved using TileMap.class
+ * instead of getClass().
  * </p>
  */
 public class TileMap {
 
-    /** Identificativo per un tile vuoto (nessun render, nessuna collisione). */
+    /** Identifier for an empty tile (no render, no collision). */
     private static final int ID_EMPTY = 0;
-    /** Identificativo per il pavimento standard (tipo A). */
+    /** Identifier for standard floor (type A). */
     private static final int ID_FLOOR_A = 1;
-    /** Identificativo per un muro solido. */
+    /** Identifier for a solid wall. */
     private static final int ID_WALL = 2;
-    /** Identificativo per il pavimento alternativo (tipo B). */
+    /** Identifier for alternative floor (type B). */
     private static final int ID_FLOOR_B = 4;
-    /** Identificativo per il punto di spawn del giocatore. */
+    /** Identifier for player spawn point. */
     private static final int ID_SPAWN = 5;
-    /** Identificativo per l'area del negozio. */
+    /** Identifier for shop area. */
     private static final int ID_SHOP = 6;
-    /** Identificativo per tile speciali o eventi. */
+    /** Identifier for special tiles or events. */
     private static final int ID_SPECIAL = 7;
-    /** Identificativo per il portale che riporta alla mappa precedente. */
+    /** Identifier for the portal leading to the previous map. */
     private static final int ID_PREV_PORTAL = 8;
-    /** Identificativo per l'area del boss. */
+    /** Identifier for boss area. */
     private static final int ID_BOSS = 9;
-    /** Identificativo per il trigger che porta alla mappa successiva. */
+    /** Identifier for the trigger leading to the next map. */
     private static final int ID_NEXT_MAP_TRIGGER = 10;
 
-    /** Numero di righe predefinito per una mappa generata. */
+    /** Default number of rows for a generated map. */
     private static final int DEFAULT_ROWS = 22;
-    /** Numero di colonne predefinito per una mappa generata. */
+    /** Default number of columns for a generated map. */
     private static final int DEFAULT_COLS = 40;
 
-    /** Larghezza totale dell'area di disegno in pixel. */
+    /** Total width of the drawing area in pixels. */
     private final int width;
-    /** Altezza totale dell'area di disegno in pixel. */
+    /** Total height of the drawing area in pixels. */
     private final int height;
-    /** Dimensione del lato di un singolo tile in pixel. */
+    /** Side length of a single tile in pixels. */
     private final int tileSize;
 
-    /** Griglia bidimensionale contenente i riferimenti ai tile attivi nella mappa. */
+    /** 2D grid containing references to active tiles in the map. */
     private Tile[][] tiles;
-    /** Immagine di sfondo disegnata prima dei tile. */
+    /** Background image drawn before tiles. */
     private Image backgroundImage;
-    /** Mappa che associa gli ID numerici ai prototipi dei Tile configurati. */
+    /** Map associating numeric IDs to configured Tile prototypes. */
     private final Map<Integer, Tile> tileTypes = new HashMap<>();
 
     /**
-     * Crea una nuova istanza di TileMap.
+     * Creates a new instance of TileMap.
      *
-     * @param width    larghezza in pixel dell'area di disegno
-     * @param height   altezza in pixel dell'area di disegno
-     * @param tileSize dimensione del tile in pixel
+     * @param width    width in pixels of the drawing area
+     * @param height   height in pixels of the drawing area
+     * @param tileSize tile size in pixels
      */
     public TileMap(final int width, final int height, final int tileSize) {
         this.width = width;
@@ -82,8 +84,9 @@ public class TileMap {
     }
 
     /**
-     * Inizializza i tipi di tile disponibili caricando le risorse grafiche e definendo le proprietà.
-     * Popola la mappa {@code tileTypes}.
+     * Initializes available tile types by loading graphic resources and defining
+     * properties.
+     * Populates the {@code tileTypes} map.
      */
     private void loadTileTypes() {
         try {
@@ -110,11 +113,11 @@ public class TileMap {
     }
 
     /**
-     * Carica un'immagine come {@link BufferedImage} dal classpath.
+     * Loads an image as {@link BufferedImage} from the classpath.
      *
-     * @param path percorso del file immagine nella cartella resources
-     * @return l'immagine caricata
-     * @throws IOException se la lettura del file fallisce
+     * @param path path of the image file in the resources folder
+     * @return the loaded image
+     * @throws IOException if file reading fails
      */
     private BufferedImage loadBufferedImage(final String path) throws IOException {
         final InputStream stream = TileMap.class.getResourceAsStream(path);
@@ -125,10 +128,10 @@ public class TileMap {
     }
 
     /**
-     * Carica i dati e le risorse specifiche per una mappa in base al nome fornito.
-     * Imposta la matrice {@code tiles} e l'immagine di background.
+     * Loads data and specific resources for a map based on the provided name.
+     * Sets the {@code tiles} matrix and background image.
      *
-     * @param mapName nome identificativo della mappa (es. "map_1")
+     * @param mapName identifier name of the map (e.g. "map_1")
      */
     private void loadMap(final String mapName) {
         int[][] mapData = generateFlatMap(DEFAULT_ROWS, DEFAULT_COLS, ID_EMPTY);
@@ -173,10 +176,10 @@ public class TileMap {
     }
 
     /**
-     * Carica la struttura della mappa da un file di testo situato in {@code resources/map}.
+     * Loads the map structure from a text file located in {@code resources/map}.
      *
-     * @param fileName nome del file (es. {@code map_1.txt})
-     * @return una matrice di interi rappresentanti gli ID dei tile
+     * @param fileName name of the file (e.g. {@code map_1.txt})
+     * @return a matrix of integers representing tile IDs
      */
     private int[][] loadMapFromFile(final String fileName) {
         final List<int[]> rows = new ArrayList<>();
@@ -209,10 +212,10 @@ public class TileMap {
     }
 
     /**
-     * Carica una semplice immagine dal classpath senza lanciare eccezioni bloccanti.
+     * Loads a simple image from the classpath without throwing blocking exceptions.
      *
-     * @param path percorso della risorsa immagine
-     * @return l'immagine caricata o {@code null} se non trovata o in caso di errore
+     * @param path path of the image resource
+     * @return the loaded image or {@code null} if not found or in case of error
      */
     private BufferedImage loadImage(final String path) {
         try (InputStream is = TileMap.class.getResourceAsStream(path)) {
@@ -228,12 +231,12 @@ public class TileMap {
     }
 
     /**
-     * Genera una mappa "piatta" (vuota o uniforme) di dimensioni specificate.
+     * Generates a "flat" map (empty or uniform) of specified dimensions.
      *
-     * @param rows     numero di righe
-     * @param cols     numero di colonne
-     * @param tileType ID del tile con cui riempire la mappa
-     * @return matrice di ID inizializzata
+     * @param rows     number of rows
+     * @param cols     number of columns
+     * @param tileType ID of the tile to fill the map with
+     * @return initialized ID matrix
      */
     private int[][] generateFlatMap(final int rows, final int cols, final int tileType) {
         final int[][] map = new int[rows][cols];
@@ -246,11 +249,11 @@ public class TileMap {
     }
 
     /**
-     * Restituisce l'ID del tile che si trova alle coordinate pixel specificate.
+     * Returns the ID of the tile located at the specified pixel coordinates.
      *
-     * @param x coordinata x in pixel
-     * @param y coordinata y in pixel
-     * @return l'ID del tile, oppure -1 se le coordinate sono fuori dai limiti della mappa
+     * @param x x coordinate in pixels
+     * @param y y coordinate in pixels
+     * @return the tile ID, or -1 if coordinates are out of map bounds
      */
     public int getTileIdAt(final int x, final int y) {
         final int tileX = x / tileSize;
@@ -264,11 +267,11 @@ public class TileMap {
     }
 
     /**
-     * Restituisce l'oggetto {@link Tile} alle coordinate di griglia specificate.
+     * Returns the {@link Tile} object at the specified grid coordinates.
      *
-     * @param tileX indice della colonna (coordinata griglia)
-     * @param tileY indice della riga (coordinata griglia)
-     * @return l'oggetto Tile o {@code null} se le coordinate sono fuori mappa
+     * @param tileX column index (grid coordinate)
+     * @param tileY row index (grid coordinate)
+     * @return the Tile object or {@code null} if coordinates are out of map
      */
     public Tile getTileAt(final int tileX, final int tileY) {
         if (tileY >= 0 && tileY < tiles.length && tileX >= 0 && tileX < tiles[0].length) {
@@ -278,9 +281,9 @@ public class TileMap {
     }
 
     /**
-     * Restituisce la larghezza della mappa espressa in numero di tile (colonne).
+     * Returns the map width expressed in number of tiles (columns).
      *
-     * @return il numero di colonne della mappa
+     * @return the number of columns in the map
      */
     public int getMapWidthInTiles() {
         if (tiles != null && tiles.length > 0) {
@@ -290,9 +293,9 @@ public class TileMap {
     }
 
     /**
-     * Restituisce l'altezza della mappa espressa in numero di tile (righe).
+     * Returns the map height expressed in number of tiles (rows).
      *
-     * @return il numero di righe della mappa
+     * @return the number of rows in the map
      */
     public int getMapHeightInTiles() {
         if (tiles != null) {
@@ -302,19 +305,22 @@ public class TileMap {
     }
 
     /**
-     * Cambia la mappa corrente caricando i dati e le risorse della nuova mappa specificata.
+     * Changes the current map by loading data and resources of the new specified
+     * map.
      *
-     * @param mapName nome della mappa da caricare (es. {@code map_1})
+     * @param mapName name of the map to load (e.g. {@code map_1})
      */
     public void changeMap(final String mapName) {
         loadMap(mapName);
     }
 
     /**
-     * Cerca la prima occorrenza (in coordinate pixel) di un tile con l'ID di spawn specificato.
+     * Searches for the first occurrence (in pixel coordinates) of a tile with the
+     * specified spawn ID.
      *
-     * @param spawnTileId l'ID del tile di spawn da cercare
-     * @return un {@link Point} contenente le coordinate pixel (x, y) o {@code null} se non trovato
+     * @param spawnTileId the spawn tile ID to search for
+     * @return a {@link Point} containing pixel coordinates (x, y) or {@code null}
+     *         if not found
      */
     public Point findSpawnPoint(final int spawnTileId) {
         for (int y = 0; y < tiles.length; y++) {
@@ -329,9 +335,9 @@ public class TileMap {
     }
 
     /**
-     * Esegue il rendering della mappa (sfondo e tile) sul contesto grafico fornito.
+     * Renders the map (background and tiles) on the provided graphics context.
      *
-     * @param g il contesto grafico {@link Graphics} su cui disegnare
+     * @param g the {@link Graphics} context to draw on
      */
     public void paint(final Graphics g) {
         if (backgroundImage != null) {
@@ -352,19 +358,20 @@ public class TileMap {
     }
 
     /**
-     * Restituisce la dimensione del lato di un tile.
+     * Returns the side length of a tile.
      *
-     * @return dimensione del tile in pixel.
+     * @return tile size in pixels.
      */
     public int getTileSize() {
         return tileSize;
     }
 
     /**
-     * Trova tutte le posizioni (in pixel) dei tile che corrispondono all'ID specificato.
+     * Finds all positions (in pixels) of tiles matching the specified ID.
      *
-     * @param wantedId l'ID del tile da cercare
-     * @return una lista di {@link Point} rappresentanti le coordinate pixel (top-left) dei tile trovati
+     * @param wantedId the tile ID to search for
+     * @return a list of {@link Point} representing pixel coordinates (top-left) of
+     *         found tiles
      */
     public List<Point> findAllWithId(final int wantedId) {
         final List<Point> points = new ArrayList<>();

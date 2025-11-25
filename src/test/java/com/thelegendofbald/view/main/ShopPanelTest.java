@@ -18,16 +18,14 @@ import org.junit.jupiter.api.Test;
 import com.thelegendofbald.model.inventory.Inventory;
 import com.thelegendofbald.model.item.GameItem;
 import com.thelegendofbald.model.system.CombatManager;
-<<<<<<< HEAD
-import com.thelegendofbald.model.item.ShopItem;
-=======
 import com.thelegendofbald.model.system.Wallet;
->>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
 
 /**
  * Unit tests for the {@link ShopPanel} class without using Mockito.
  * <p>
- * Uses manual stubs (inner classes) to simulate Wallet and Inventory behavior.
+ * Uses manual stubs (inner classes) to simulate Wallet and Inventory behavior
+ * and verifies core shop logic like purchases and gold display updates.
+ * </p>
  */
 class ShopPanelTest {
 
@@ -35,14 +33,9 @@ class ShopPanelTest {
     private StubInventory inventory;
     private ShopPanel shopPanel;
 
-<<<<<<< HEAD
-    private static final class DummyCombatManager extends CombatManager {
-        DummyCombatManager() {
-            super(null, Collections.emptyList());
-        }
-=======
     /**
      * Sets up the test environment before each test execution.
+     * Initializes the manual stubs and creates the {@link ShopPanel} instance.
      */
     @BeforeEach
     void setUp() {
@@ -51,71 +44,34 @@ class ShopPanelTest {
         CombatManager dummyCombatManager = null;
 
         shopPanel = new ShopPanel(dummyCombatManager, wallet, inventory);
->>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
     }
 
     /**
-     * Verifies that the shop initializes with the correct gold display label.
+     * Verifies that the shop initializes with the correct gold display label
+     * based on the wallet's initial content.
      */
     @Test
-<<<<<<< HEAD
-    @DisplayName("Setup iniziale: size, bg, layout, label oro e popolamento items")
-    void initialSetup_ok() {
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
-
-        assertEquals(new Dimension(400, 300), p.getPreferredSize());
-        assertEquals(Color.DARK_GRAY, p.getBackground());
-        assertNull(p.getLayout());
-
-        JLabel gold = getGoldLabel(p);
-        assertNotNull(gold);
-        assertTrue(gold.getText().startsWith("Gold: "), "La label deve iniziare con 'Gold: '");
-
-        List<?> items = getItems(p);
-        assertNotNull(items);
-        assertFalse(items.isEmpty());
-        assertTrue(items.size() >= 3, "Attesi almeno 3 item (Sword, Axe, FireBall)");
-=======
     void testInitialGoldDisplay() {
         JLabel goldLabel = findGoldLabel();
         assertNotNull(goldLabel);
         assertEquals("Gold: 100", goldLabel.getText());
->>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
     }
 
     /**
-     * Verifies that purchase buttons are correctly created.
+     * Verifies that purchase buttons are correctly created for the default items.
+     * Assumes 3 items (Sword, Axe, FireBall) are loaded by default.
      */
     @Test
-<<<<<<< HEAD
-    @DisplayName("updateGoldDisplay() riflette il valore del coinsSupplier")
-    void updateGoldDisplay_updatesText() {
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
-
-        setCoinsSupplier(p, () -> 123);
-
-        p.updateGoldDisplay();
-        JLabel gold = getGoldLabel(p);
-        assertEquals("Gold: 123", gold.getText());
-=======
     void testButtonsCreation() {
         List<JButton> buttons = findBuyButtons();
         assertEquals(3, buttons.size());
->>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
     }
 
     /**
-     * Verifies that purchasing logic works when the player has sufficient gold.
+     * Verifies that the purchasing logic works correctly when the player has sufficient gold.
+     * Checks if gold is deducted and the item is successfully added to the inventory.
      */
     @Test
-<<<<<<< HEAD
-    @DisplayName("paint/render non lancia eccezioni")
-    void paint_noThrow() {
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
-        BufferedImage surface = new BufferedImage(400, 300, BufferedImage.TYPE_INT_ARGB);
-
-        assertDoesNotThrow(() -> p.paint(surface.createGraphics()));
-=======
     void testPurchaseSuccess() {
         wallet.setCoins(1000);
 
@@ -127,27 +83,18 @@ class ShopPanelTest {
 
         assertTrue(wallet.getCoins() < 1000);
         assertEquals(1, inventory.getStoredItems().size());
->>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
     }
 
     /**
-     * Verifies that purchasing logic prevents buying when the player has insufficient gold.
+     * Verifies that the purchasing logic prevents buying when the player has insufficient gold.
+     * Checks that the gold balance remains unchanged and no item is added to the inventory.
      */
     @Test
-<<<<<<< HEAD
-    @DisplayName("Click su primo item imposta selectedIndex = 0")
-    void mouseClick_selectsFirstItem() {
-        ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
-
-        int clickX = 21;
-        int clickY = 80 - 25 + 1;
-=======
     void testPurchaseFailNotEnoughGold() {
         wallet.setCoins(0);
 
         List<JButton> buttons = findBuyButtons();
         JButton buyButton = buttons.get(0);
->>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
 
         buyButton.doClick();
 
@@ -156,38 +103,9 @@ class ShopPanelTest {
     }
 
     /**
-     * Verifies that the gold display label updates automatically after a purchase.
+     * Verifies that the gold display label updates automatically after a successful purchase.
      */
     @Test
-<<<<<<< HEAD
-    @DisplayName("Deserializzazione: readObject ripristina stato 'safe' (no throw)")
-    void deserialize_resetsTransient_noThrow() {
-        ShopPanel original = new ShopPanel(new DummyCombatManager(), null, null);
-
-        assertDoesNotThrow(() -> {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
-                oos.writeObject(original);
-            }
-            byte[] bytes = bos.toByteArray();
-
-            try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-                Object obj = ois.readObject();
-                assertTrue(obj instanceof ShopPanel);
-                ShopPanel restored = (ShopPanel) obj;
-
-                List<?> items = getItems(restored);
-                assertNotNull(items);
-                assertTrue(items.isEmpty(), "Items deve essere vuoto (reinizializzato) dopo deserializzazione");
-
-                setCoinsSupplier(restored, () -> 77);
-                restored.updateGoldDisplay();
-                JLabel gold = getGoldLabel(restored);
-                assertNotNull(gold);
-                assertEquals("Gold: 77", gold.getText());
-            }
-        });
-=======
     void testGoldLabelUpdate() {
         wallet.setCoins(500);
 
@@ -202,9 +120,9 @@ class ShopPanelTest {
     }
 
     /**
-     * Helper method to find all "Buy Item" buttons within the panel.
+     * Helper method to find all "Buy Item" buttons within the panel by inspecting component properties.
      *
-     * @return a list of JButtons used for purchasing items.
+     * @return a list of JButtons used for purchasing items
      */
     private List<JButton> findBuyButtons() {
         List<JButton> buttons = new ArrayList<>();
@@ -217,13 +135,12 @@ class ShopPanelTest {
             }
         }
         return buttons;
->>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
     }
 
     /**
-     * Helper method to find the label displaying the gold amount.
+     * Helper method to find the JLabel displaying the gold amount by checking its text prefix.
      *
-     * @return the JLabel component for gold display.
+     * @return the JLabel component for gold display, or null if not found
      */
     private JLabel findGoldLabel() {
         for (Component comp : shopPanel.getComponents()) {
@@ -238,7 +155,7 @@ class ShopPanelTest {
     }
 
     /**
-     * Manual Stub for Wallet to simulate logic without Mockito.
+     * Manual Stub for the {@link Wallet} class to simulate logic without Mockito.
      */
     private static class StubWallet extends Wallet {
         private int coins;
@@ -258,13 +175,18 @@ class ShopPanelTest {
             this.coins -= amount;
         }
 
+        /**
+         * Sets the current coin amount for testing purposes.
+         *
+         * @param coins the new coin amount
+         */
         public void setCoins(int coins) {
             this.coins = coins;
         }
     }
 
     /**
-     * Manual Stub for Inventory to simulate logic without Mockito.
+     * Manual Stub for the {@link Inventory} class to simulate logic without Mockito.
      */
     private static class StubInventory implements Inventory {
         private final List<GameItem> storedItems = new ArrayList<>();
@@ -275,7 +197,7 @@ class ShopPanelTest {
 
         @Override
         public void setBald(Bald bald) {
-
+            
         }
 
         @Override
@@ -305,7 +227,7 @@ class ShopPanelTest {
 
         @Override
         public void select(int row, int column) {
-
+            
         }
 
         @Override
@@ -323,6 +245,11 @@ class ShopPanelTest {
             return List.of();
         }
 
+        /**
+         * Returns the list of items currently stored in the inventory.
+         *
+         * @return the list of stored items
+         */
         public List<GameItem> getStoredItems() {
             return storedItems;
         }

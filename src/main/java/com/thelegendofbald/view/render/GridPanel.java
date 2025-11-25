@@ -7,9 +7,9 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 /**
- * Pannello che disegna una griglia di overlay sopra al contenuto.
+ * Panel that draws an overlay grid on top of the content.
  * <p>
- * La classe è <b>final</b> e non è pensata per essere estesa.
+ * The class is <b>final</b> and is not intended to be extended.
  */
 public final class GridPanel extends JPanel {
 
@@ -24,9 +24,9 @@ public final class GridPanel extends JPanel {
     private static final Color GRID_COLOR = new Color(GRID_R, GRID_G, GRID_B, GRID_ALPHA);
 
     /**
-     * Esegue il painting del componente e disegna la griglia di overlay.
+     * Performs component painting and draws the overlay grid.
      *
-     * @param g il contesto grafico, non modificato (non viene riassegnato)
+     * @param g the graphics context, unmodified (not reassigned)
      */
     @Override
     public void paintComponent(final Graphics g) {
@@ -35,9 +35,9 @@ public final class GridPanel extends JPanel {
     }
 
     /**
-     * Disegna la griglia sul pannello.
+     * Draws the grid on the panel.
      *
-     * @param g il contesto grafico, non modificato (non viene riassegnato)
+     * @param g the graphics context, unmodified (not reassigned)
      */
     private void drawGrid(final Graphics g) {
         final int width = getWidth();
@@ -54,10 +54,10 @@ public final class GridPanel extends JPanel {
     }
 
     /**
-     * Restituisce la dimensione preferita: se esiste un parent, usa la sua
-     * dimensione corrente; altrimenti ritorna una dimensione di default.
+     * Returns the preferred size: if a parent exists, uses its current size;
+     * otherwise returns a default dimension.
      *
-     * @return la dimensione preferita del pannello
+     * @return the preferred size of the panel
      */
     @Override
     public Dimension getPreferredSize() {

@@ -64,54 +64,55 @@ public final class GamePanel extends MenuPanel implements Game {
     private static final long serialVersionUID = 1L;
 
     private static final int DEFAULT_W = 1280;
-    /** Altezza predefinita del pannello di gioco. */
+    /** Default height of the game panel. */
     private static final int DEFAULT_H = 704;
 
-    /** Larghezza del pannello della vita. */
+    /** Width of the life panel. */
     private static final int LIFE_W = 200;
-    /** Altezza del pannello della vita. */
+    /** Height of the life panel. */
     private static final int LIFE_H = 20;
-    /** Posizione Y del pannello della vita. */
+    /** Y position of the life panel. */
     private static final int LIFE_Y = 800;
 
-    /** Dimensione del lato di un tile in pixel. */
+    /** Side length of a tile in pixels. */
     private static final int TILE_SIZE = 32;
 
-    /** Larghezza del personaggio Bald. */
+    /** Width of the Bald character. */
     private static final int BALD_W = 60;
-    /** Altezza del personaggio Bald. */
+    /** Height of the Bald character. */
     private static final int BALD_H = 60;
 
     private static final int ID_SHOP = 6;
 
-    /** Percentuale di insets per la larghezza del pannello opzioni. */
+    /** Percentage of insets for the options panel width. */
     private static final double OPTIONS_WIDTH_INSETS = 0.25;
-    /** Percentuale di insets per l'altezza del pannello opzioni. */
+    /** Percentage of insets for the options panel height. */
     private static final double OPTIONS_HEIGHT_INSETS = 0.1;
-    /** Percentuale di insets per la larghezza del pannello inventario. */
+    /** Percentage of insets for the inventory panel width. */
     private static final double INVENTORY_WIDTH_INSETS = 0.25;
-    /** Percentuale di insets per l'altezza del pannello inventario. */
+    /** Percentage of insets for the inventory panel height. */
     private static final double INVENTORY_HEIGHT_INSETS = 0.25;
 
-    private static final java.awt.Font DEFAULT_FONT = new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.BOLD, 20);
+    private static final java.awt.Font DEFAULT_FONT = new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.BOLD,
+            20);
     private static final Pair<Integer, Integer> FPS_POSITION = Pair.of(15, 25);
-    /** Posizione a schermo del timer di gioco. */
+    /** On-screen position of the game timer. */
     private static final Pair<Integer, Integer> TIMER_POSITION = Pair.of(1085, 25);
-    /** Colore dell'area di attacco visualizzata per debug/feedback. */
+    /** Color of the attack area displayed for debug/feedback. */
     private static final Color ATTACK_AREA_COLOR = new Color(200, 200, 200, 100);
 
     private static final int WEAPON_ICON = 50;
     private static final int INVENTORY_COLS = 5;
-    /** Righe inventario. */
+    /** Inventory rows. */
     private static final int INVENTORY_ROWS = 3;
 
     private final transient GridBagConstraintsFactory gbcFactory = new GridBagConstraintsFactoryImpl();
-    /** Vincoli layout per il pannello opzioni. */
+    /** Layout constraints for the options panel. */
     private final GridBagConstraints optionsGBC = gbcFactory.createBothGridBagConstraints();
-    /** Vincoli layout per il pannello inventario. */
+    /** Layout constraints for the inventory panel. */
     private final GridBagConstraints inventoryGBC = gbcFactory.createBothGridBagConstraints();
 
-    /** Istanza del giocatore. */
+    /** Player instance. */
     private final transient Bald bald = new Bald(BALD_W, BALD_H, 100, "Bald", 50);
 
     private final GridPanel gridPanel;
@@ -124,11 +125,11 @@ public final class GamePanel extends MenuPanel implements Game {
     private final ShopPanel shopPanel;
 
     private final transient Timer timer = new Timer();
-    /** Dati della partita corrente (nome, tempo). */
+    /** Current game run data (name, time). */
     private transient GameRun gameRun;
-    /** Gestore del combattimento. */
+    /** Combat manager. */
     private final transient CombatManager combatManager;
-    /** Gestore del salvataggio dati. */
+    /** Data save manager. */
     private final transient DataManager saveDataManager = new DataManager();
 
     private final transient GameEngine gameEngine;
@@ -184,7 +185,7 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Inizializzazione post-costruzione eseguita nell'EDT.
+     * Post-construction initialization executed in the EDT.
      */
     private void initialize() {
         SwingUtilities.invokeLater(() -> {
@@ -195,11 +196,11 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Gestisce la deserializzazione per reinizializzare i campi transienti.
+     * Handles deserialization to reinitialize transient fields.
      *
-     * @param in stream di input
-     * @throws IOException errore I/O
-     * @throws ClassNotFoundException classe non trovata
+     * @param in input stream
+     * @throws IOException            I/O error
+     * @throws ClassNotFoundException class not found
      */
     private void readObject(final ObjectInputStream in)
             throws IOException, ClassNotFoundException {
@@ -207,7 +208,7 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Aggiunge le armi di base all'inventario del giocatore.
+     * Adds basic weapons to the player's inventory.
      */
     private void addWeaponsToInventory() {
         final Weapon sword = new Sword(0, 0, WEAPON_ICON, WEAPON_ICON, combatManager);
@@ -215,7 +216,7 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Mostra o nasconde il pannello delle opzioni (menu di pausa).
+     * Shows or hides the options panel (pause menu).
      */
     private void toggleOptionsPanel() {
         if (gameEngine.isPaused() && !inventoryPanel.isVisible()) {
@@ -229,7 +230,7 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Mostra o nasconde il pannello dell'inventario.
+     * Shows or hides the inventory panel.
      */
     private void toggleOpenInventory() {
         if (!gameEngine.isPaused() && !optionsPanel.isVisible() && !inventoryPanel.isVisible()) {
@@ -240,7 +241,7 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Apre il pannello opzioni e mette in pausa il gioco.
+     * Opens the options panel and pauses the game.
      */
     private void openOptionsPanel() {
         pauseGame();
@@ -251,7 +252,7 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Chiude il pannello opzioni e riprende il gioco.
+     * Closes the options panel and resumes the game.
      */
     private void closeOptionsPanel() {
         this.optionsPanel.setVisible(false);
@@ -278,7 +279,7 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Richiede al giocatore di inserire un nickname prima di iniziare la partita.
+     * Asks the player to enter a nickname before starting the game.
      */
     private void setPlayerName() {
         String nickname = "";
@@ -316,7 +317,7 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Resetta lo stato del gioco ai valori iniziali (mappa 1, inventario base, ecc.).
+     * Resets the game state to initial values (map 1, basic inventory, etc.).
      */
     private void resetGame() {
         gameEngine.reset();
@@ -378,9 +379,9 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Disegna la schermata di vittoria in sovraimpressione.
+     * Draws the victory screen overlay.
      *
-     * @param g2d contesto grafico
+     * @param g2d graphics context
      */
     private void drawGameWonScreen(final Graphics2D g2d) {
         g2d.setColor(new Color(0, 0, 0, FINAL_GAME_SCREEN_TITLE_TRANSPARENCY));
@@ -402,9 +403,9 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Disegna la schermata di game over in sovraimpressione.
+     * Draws the game over screen overlay.
      *
-     * @param g2d contesto grafico
+     * @param g2d graphics context
      */
     private void drawGameOverScreen(final Graphics2D g2d) {
         g2d.setColor(new Color(0, 0, 0, FINAL_GAME_SCREEN_TITLE_TRANSPARENCY));
@@ -426,9 +427,9 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Disegna l'area di attacco dell'arma corrente (debug/feedback).
+     * Draws the attack area of the current weapon (debug/feedback).
      *
-     * @param g contesto grafico
+     * @param g graphics context
      */
     private void drawAttackArea(final Graphics g) {
         final Graphics2D g2d = (Graphics2D) g;
@@ -444,9 +445,9 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Disegna la barra HP del boss in cima allo schermo.
+     * Draws the boss HP bar at the top of the screen.
      *
-     * @param g2d contesto grafico
+     * @param g2d graphics context
      */
     private void drawBossHP(final Graphics2D g2d) {
         if (levelManager.getBoss() == null || !levelManager.getBoss().isAlive()) {
@@ -492,9 +493,9 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Disegna il contatore FPS.
+     * Draws the FPS counter.
      *
-     * @param g contesto grafico
+     * @param g graphics context
      */
     private void drawFPS(final Graphics g) {
         if (showingFPS) {
@@ -506,9 +507,9 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Disegna il timer di gioco.
+     * Draws the game timer.
      *
-     * @param g contesto grafico
+     * @param g graphics context
      */
     private void drawTimer(final Graphics g) {
         if (showingTimer) {
@@ -523,9 +524,9 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Scala il contesto grafico in base alla dimensione della finestra corrente.
+     * Scales the graphics context based on the current window size.
      *
-     * @param g contesto grafico
+     * @param g graphics context
      */
     private void scaleGraphics(final Graphics g) {
         Optional.ofNullable(SwingUtilities.getWindowAncestor(this))
@@ -596,9 +597,9 @@ public final class GamePanel extends MenuPanel implements Game {
     }
 
     /**
-     * Callback per il click sul pulsante shop.
+     * Callback for the shop button click.
      *
-     * @param event l'evento di azione scatenato dal click
+     * @param event the action event triggered by the click
      */
     private void onShopButtonClicked(final java.awt.event.ActionEvent event) {
         Objects.requireNonNull(event, "event");

@@ -31,115 +31,114 @@ import com.thelegendofbald.utils.LoggerUtils;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * Pannello che visualizza l'interfaccia del negozio (Shop).
+ * Panel that displays the shop interface.
  * <p>
- * Permette al giocatore di visualizzare una lista di oggetti acquistabili,
- * selezionarli per vedere la descrizione e acquistarli se si dispone di abbastanza oro.
- * Gestisce l'aggiornamento grafico del portafoglio e l'interazione con l'inventario.
+ * Allows the player to view a list of purchasable items,
+ * select them to see the description, and purchase them if they have enough
+ * gold.
+ * Manages the graphical update of the wallet and interaction with the
+ * inventory.
  * </p>
  */
 public final class ShopPanel extends JPanel {
 
-    /** UID per la serializzazione. */
+    /** UID for serialization. */
     private static final long serialVersionUID = 1L;
 
-    /** Larghezza preferita del pannello in pixel. */
+    /** Preferred panel width in pixels. */
     private static final int PANEL_W = 400;
-    /** Altezza preferita del pannello in pixel. */
+    /** Preferred panel height in pixels. */
     private static final int PANEL_H = 300;
 
-    /** Padding generico per il posizionamento degli elementi. */
+    /** Generic padding for element positioning. */
     private static final int PADDING = 20;
-    /** Posizione Y del titolo del negozio. */
+    /** Y position of the shop title. */
     private static final int TITLE_Y = 40;
-    /** Posizione Y di partenza per la lista degli oggetti. */
+    /** Starting Y position for the item list. */
     private static final int LIST_START_Y = 80;
-    /** Spaziatura verticale tra un oggetto e l'altro nella lista. */
+    /** Vertical spacing between items in the list. */
     private static final int LIST_SPACING = 50;
 
-    /** Coordinata X del rettangolo di selezione dell'oggetto. */
+    /** X coordinate of the item selection rectangle. */
     private static final int ITEM_RECT_X = 20;
-    /** Altezza del rettangolo di selezione dell'oggetto. */
+    /** Height of the item selection rectangle. */
     private static final int ITEM_RECT_H = 35;
-    /** Arrotondamento degli angoli del rettangolo di selezione. */
+    /** Corner radius of the selection rectangle. */
     private static final int ITEM_RECT_ARC = 10;
-    /** Offset verticale per centrare il rettangolo rispetto al testo. */
+    /** Vertical offset to center the rectangle relative to the text. */
     private static final int ITEM_RECT_OFFSET_Y = 25;
-    /** Coordinata X per l'icona dell'oggetto. */
+    /** X coordinate for the item icon. */
     private static final int ITEM_IMAGE_X = 30;
-    /** Larghezza dell'icona dell'oggetto. */
+    /** Width of the item icon. */
     private static final int ITEM_IMAGE_W = 24;
-    /** Altezza dell'icona dell'oggetto. */
+    /** Height of the item icon. */
     private static final int ITEM_IMAGE_H = 24;
-    /** Coordinata X per il testo (nome e prezzo) dell'oggetto. */
+    /** X coordinate for the item text (name and price). */
     private static final int ITEM_TEXT_X = 60;
 
-    /** Offset verticale dal fondo per la descrizione dell'oggetto selezionato. */
+    /** Vertical offset from the bottom for the selected item description. */
     private static final int DESC_Y_OFFSET = 30;
 
-    /** Dimensione del font per l'etichetta dell'oro. */
+    /** Font size for the gold label. */
     private static final int GOLD_LABEL_FONT_SIZE = 14;
-    /** Dimensione del font per il titolo del pannello. */
+    /** Font size for the panel title. */
     private static final int TITLE_FONT_SIZE = 22;
-    /** Dimensione del font per il nome degli oggetti. */
-    private static final int ITEM_FONT_SIZE  = 16;
-    /** Dimensione del font per la descrizione degli oggetti. */
-    private static final int DESC_FONT_SIZE  = 14;
+    /** Font size for item names. */
+    private static final int ITEM_FONT_SIZE = 16;
+    /** Font size for item descriptions. */
+    private static final int DESC_FONT_SIZE = 14;
 
-    /** Posizione Y dal fondo per l'etichetta dell'oro. */
+    /** Y position from the bottom for the gold label. */
     private static final int GOLD_LABEL_BOTTOM_Y = 270;
-    /** Offset destro per l'etichetta dell'oro. */
+    /** Right offset for the gold label. */
     private static final int GOLD_LABEL_RIGHT_OFFSET = 20;
 
-    /** Larghezza dei pulsanti di acquisto. */
+    /** Width of buy buttons. */
     private static final int BUY_BUTTON_WIDTH = 90;
-    /** Altezza dei pulsanti di acquisto. */
+    /** Height of buy buttons. */
     private static final int BUY_BUTTON_HEIGHT = 28;
 
-    /** Colore di sfondo del pannello. */
+    /** Background color of the panel. */
     private static final Color BG_COLOR = Color.DARK_GRAY;
-    /** Colore del testo principale. */
+    /** Main text color. */
     private static final Color FG_COLOR = Color.WHITE;
-    /** Colore di evidenziazione per l'oggetto selezionato. */
+    /** Highlight color for the selected item. */
     private static final Color SELECT_COLOR = new Color(70, 130, 180);
-    /** Colore del testo della descrizione. */
+    /** Description text color. */
     private static final Color DESC_COLOR = Color.LIGHT_GRAY;
 
-    /** Font utilizzato per il titolo "Shop". */
+    /** Font used for the "Shop" title. */
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, TITLE_FONT_SIZE);
-    /** Font utilizzato per i nomi degli oggetti nella lista. */
-    private static final Font ITEM_FONT  = new Font("Arial", Font.PLAIN, ITEM_FONT_SIZE);
-    /** Font utilizzato per la descrizione in basso. */
-    private static final Font DESC_FONT  = new Font("Arial", Font.ITALIC, DESC_FONT_SIZE);
-    /** Font monospaziato utilizzato per visualizzare l'oro. */
-    private static final Font GOLD_FONT  = new Font("Monospaced", Font.BOLD, GOLD_LABEL_FONT_SIZE);
+    /** Font used for item names in the list. */
+    private static final Font ITEM_FONT = new Font("Arial", Font.PLAIN, ITEM_FONT_SIZE);
+    /** Font used for the description at the bottom. */
+    private static final Font DESC_FONT = new Font("Arial", Font.ITALIC, DESC_FONT_SIZE);
+    /** Monospaced font used to display gold. */
+    private static final Font GOLD_FONT = new Font("Monospaced", Font.BOLD, GOLD_LABEL_FONT_SIZE);
 
-    /** Lista degli oggetti disponibili per l'acquisto nel negozio. */
+    /** List of items available for purchase in the shop. */
     private transient List<ShopItem> items;
-    /** Lista dei pulsanti di acquisto associati agli oggetti. */
+    /** List of buy buttons associated with items. */
     private transient List<JButton> buyButtons;
-    /** Fornitore funzionale per recuperare il saldo attuale delle monete. */
+    /** Functional supplier to retrieve current coin balance. */
     private transient IntSupplier coinsSupplier;
-    /** Riferimento al portafoglio del giocatore. */
+    /** Reference to the player's wallet. */
     private transient Wallet wallet;
-    /** Riferimento all'inventario del giocatore dove aggiungere gli oggetti acquistati. */
+    /** Reference to the player's inventory where purchased items are added. */
     private final transient Inventory inventory;
-    /** Indice dell'oggetto attualmente selezionato (-1 se nessuno). */
+    /** Index of the currently selected item (-1 if none). */
     private int selectedIndex = -1;
-    /** Etichetta Swing per visualizzare il saldo attuale. */
+    /** Swing label to display current balance. */
     private JLabel goldLabel;
 
     /**
-     * Crea un nuovo pannello del negozio.
+     * Creates a new shop panel.
      *
-     * @param combatManager il gestore del combattimento (necessario per inizializzare le armi)
-     * @param wallet il portafoglio del giocatore
-     * @param inventory l'inventario del giocatore
+     * @param combatManager the combat manager (needed to initialize weapons)
+     * @param wallet        the player's wallet
+     * @param inventory     the player's inventory
      */
-    @SuppressFBWarnings(
-            value = "EI_EXPOSE_REP2",
-            justification = "ShopPanel must modify the actual player inventory when items are purchased."
-    )
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Must modify the inventory when items are purchased.")
     public ShopPanel(final CombatManager combatManager, final Wallet wallet, final Inventory inventory) {
         this.inventory = inventory;
         initRuntimeState(combatManager, wallet);
@@ -179,10 +178,11 @@ public final class ShopPanel extends JPanel {
     }
 
     /**
-     * Inizializza lo stato a runtime, popolando la lista degli oggetti e configurando il wallet.
+     * Initializes runtime state, populating the item list and configuring the
+     * wallet.
      *
-     * @param combatManager il gestore del combattimento
-     * @param wallet il portafoglio del giocatore
+     * @param combatManager the combat manager
+     * @param wallet        the player's wallet
      */
     private void initRuntimeState(final CombatManager combatManager, final Wallet wallet) {
         this.items = new ArrayList<>();
@@ -196,8 +196,8 @@ public final class ShopPanel extends JPanel {
     }
 
     /**
-     * Crea e posiziona i pulsanti "Buy Item" per ogni oggetto nella lista.
-     * Assegna i listener per gestire il click di acquisto.
+     * Creates and positions "Buy Item" buttons for each item in the list.
+     * Assigns listeners to handle purchase clicks.
      */
     private void createBuyButtons() {
         int y = LIST_START_Y - ITEM_RECT_OFFSET_Y;
@@ -222,7 +222,7 @@ public final class ShopPanel extends JPanel {
     }
 
     /**
-     * Aggiorna il testo dell'etichetta dell'oro con il valore attuale del portafoglio.
+     * Updates the gold label text with the current wallet value.
      */
     public void updateGoldDisplay() {
         goldLabel.setText("Gold: " + coinsSupplier.getAsInt());
@@ -230,11 +230,12 @@ public final class ShopPanel extends JPanel {
     }
 
     /**
-     * Tenta di acquistare un oggetto specifico.
-     * Verifica se il giocatore ha abbastanza oro e se i riferimenti a wallet e inventario sono validi.
-     * In caso di successo, deduce l'oro e aggiunge l'oggetto all'inventario.
+     * Attempts to purchase a specific item.
+     * Checks if the player has enough gold and if wallet and inventory references
+     * are valid.
+     * On success, deducts gold and adds the item to the inventory.
      *
-     * @param item l'oggetto che si intende acquistare
+     * @param item the item to purchase
      */
     private void attemptPurchase(final ShopItem item) {
         if (wallet == null || inventory == null) {
@@ -260,11 +261,11 @@ public final class ShopPanel extends JPanel {
     }
 
     /**
-     * Esegue il rendering personalizzato del pannello.
-     * Disegna il titolo, la lista degli oggetti (con icone e prezzi), l'evidenziazione della selezione
-     * e la descrizione dell'oggetto selezionato.
+     * Performs custom rendering of the panel.
+     * Draws the title, item list (with icons and prices), selection highlight,
+     * and the description of the selected item.
      *
-     * @param g il contesto grafico su cui disegnare
+     * @param g the graphics context to draw on
      */
     @Override
     protected void paintComponent(final Graphics g) {
@@ -310,12 +311,13 @@ public final class ShopPanel extends JPanel {
     }
 
     /**
-     * Ricostruisce i campi transienti dopo la deserializzazione dell'oggetto.
-     * Reiniziata le liste e ricrea l'etichetta dell'oro se necessario.
+     * Reconstructs transient fields after object deserialization.
+     * Reinitializes lists and recreates the gold label if necessary.
      *
-     * @param in lo stream di input da cui leggere l'oggetto
-     * @throws IOException se si verifica un errore di I/O
-     * @throws ClassNotFoundException se la classe di un oggetto serializzato non viene trovata
+     * @param in the input stream to read the object from
+     * @throws IOException            if an I/O error occurs
+     * @throws ClassNotFoundException if the class of a serialized object is not
+     *                                found
      */
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
