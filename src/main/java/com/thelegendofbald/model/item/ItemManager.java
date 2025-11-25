@@ -80,7 +80,8 @@ public class ItemManager {
     /**
      * Handles item collection when Bald intersects with items.
      * Chests are opened to generate loot, usable items apply effects and are removed,
-     * and traps are triggered to apply their effects.
+     * traps are triggered to apply their effects,
+     * and coins are added to the wallet.
      * @param bald the Bald player character
      */
     public void handleItemCollection(final Bald bald) {
