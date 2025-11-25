@@ -13,25 +13,14 @@ import javax.swing.JPanel;
  */
 public final class GridPanel extends JPanel {
 
-    /** Per SpotBugs: le sottoclassi di Serializable dovrebbero dichiararlo. */
     private static final long serialVersionUID = 1L;
-
-    /** Lato di ciascun riquadro della griglia (in pixel). */
     private static final int TILE_SIZE = 32;
-
-    /** Larghezza preferita di default (quando non c'è un parent). */
     private static final int DEFAULT_WIDTH = 1280;
-
-    /** Altezza preferita di default (quando non c'è un parent). */
     private static final int DEFAULT_HEIGHT = 704;
-
-    /** Componenti RGBA per il colore della griglia. */
     private static final int GRID_R = 255;
     private static final int GRID_G = 255;
     private static final int GRID_B = 255;
     private static final int GRID_ALPHA = 40;
-
-    /** Colore della griglia (bianco trasparente). */
     private static final Color GRID_COLOR = new Color(GRID_R, GRID_G, GRID_B, GRID_ALPHA);
 
     /**
@@ -77,4 +66,3 @@ public final class GridPanel extends JPanel {
                 : new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 }
-

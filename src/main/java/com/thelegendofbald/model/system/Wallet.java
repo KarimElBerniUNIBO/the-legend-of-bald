@@ -4,7 +4,7 @@ package com.thelegendofbald.model.system;
  * Represents a wallet that stores the player's coins.
  * Used by the shop and other game systems.
  */
-public final class Wallet {
+public class Wallet {
 
     private int coins;
 

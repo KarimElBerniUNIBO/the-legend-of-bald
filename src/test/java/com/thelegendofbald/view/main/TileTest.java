@@ -161,6 +161,10 @@ class TileTest {
     @Test
     @DisplayName("Render: executes safely with or without images")
     void renderExecutesWithoutThrowing() {
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
         final Tile withImages = new Tile(makeImg(SMALL_SIZE, SMALL_SIZE, Color.RED),
                 SMALL_SIZE, SMALL_SIZE, 1, false, false, false, true,
                 makeImg(SMALL_SIZE, SMALL_SIZE, Color.GREEN));
@@ -172,6 +176,10 @@ class TileTest {
             withImages.render(canvas1.createGraphics(), RENDER_X, RENDER_Y);
         });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
         final Tile noImages = new Tile(null, SMALL_SIZE, SMALL_SIZE, 2,
                 false, false, false, false, null);
 

@@ -29,11 +29,16 @@ class GridPanelTest {
 
     private static final int GRID_SPACING = 32;
     private static final int DOUBLE_GRID = 64;
+<<<<<<< HEAD
 
     private static final int TEST_CANVAS_SIZE = 90;
 
     private static final int SAMPLE_OFFSET = 10;
 
+=======
+    private static final int TEST_CANVAS_SIZE = 90;
+    private static final int SAMPLE_OFFSET = 10;
+>>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
     private static final int ALPHA_SHIFT = 24;
     private static final int ALPHA_MASK = 0xFF;
 
@@ -85,6 +90,10 @@ class GridPanelTest {
         panel.paintComponent(g2);
         g2.dispose();
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
         final BiFunction<Integer, Integer, Integer> alphaAt = (x, y) ->
                 (img.getRGB(x, y) >>> ALPHA_SHIFT) & ALPHA_MASK;
 
