@@ -95,7 +95,7 @@ public final class SoundPlayer {
         clip.filter(c -> c.isControlSupported(FloatControl.Type.MASTER_GAIN))
                 .ifPresent(c -> {
                     final FloatControl gain = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
-                    final float dB = (float) (20 * Math.log10(volume)); // Fomula to convert linear volume to dB
+                    final float dB = (float) (20 * Math.log10(volume));
                     gain.setValue(dB);
                 });
     }

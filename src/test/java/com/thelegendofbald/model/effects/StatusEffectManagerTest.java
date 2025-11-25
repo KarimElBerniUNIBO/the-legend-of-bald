@@ -28,12 +28,10 @@ class StatusEffectManagerTest {
     private static final long EFFECT_INTERVAL = 1_000L;
     private static final int POISON_DAMAGE = 1;
 
-    // Helper: a simple Bald instance using the real constructor
     private static Bald makeBald() {
         return new Bald(0, 0, 100, "test-bald", 10);
     }
 
-    // Tests use real effect classes: PoisonDebuff and StrengthBuff
     @Test
     void constructorNullOwnerThrows() {
         assertThrows(IllegalArgumentException.class, () -> new StatusEffectManager(null));
@@ -61,13 +59,12 @@ class StatusEffectManagerTest {
         final StrengthBuff second = new StrengthBuff(EFFECT_DURATION, 10);
 
         mgr.applyEffect(first);
-        mgr.applyEffect(second); // should remove first by name and add second
+        mgr.applyEffect(second);
 
         final List<StatusEffect> active = mgr.getactiveEffects();
         assertEquals(1, active.size());
         assertSame(second, active.get(0));
         assertTrue(second.isActive());
-        // first should not be present
         assertFalse(active.contains(first));
     }
 
@@ -75,11 +72,9 @@ class StatusEffectManagerTest {
     void updateRemovesExpiredEffectsAndCallsRemove() {
         final Bald owner = makeBald();
         final StatusEffectManager mgr = new StatusEffectManager(owner);
-        // Create a poison effect with zero duration so it is immediately expired
         final PoisonDebuff expires = new PoisonDebuff(0L, POISON_DAMAGE, 1L);
 
         mgr.applyEffect(expires);
-        // After update, it should be considered expired and removed
         mgr.update();
 
         final List<StatusEffect> active = mgr.getactiveEffects();

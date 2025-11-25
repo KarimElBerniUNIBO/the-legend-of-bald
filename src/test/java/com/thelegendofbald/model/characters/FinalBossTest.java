@@ -37,17 +37,14 @@ class FinalBossTest {
 
     private static final int DAMAGE_10 = 10;
 
-    // Constant for string literals to avoid duplication
     private static final String BOSS_NAME = "Boss Test";
 
-    // Constants for damage tests
     private static final int TEST_INITIAL_HP = 50;
     private static final int DAMAGE_PARTIAL = 20;
     private static final int EXPECTED_HP_AFTER_PARTIAL = 30;
     private static final int DAMAGE_LETHAL = 40;
     private static final int DAMAGE_OVERKILL = 100;
 
-    // Constants for movement tests
     private static final int START_XY_50 = 50;
     private static final int BALD_XY_FAR = 200;
     private static final int BALD_X_AGGRO = 240;
@@ -158,10 +155,6 @@ class FinalBossTest {
         assertEquals(START_XY_50, bossNearBlocked.getY(), "Boss should be blocked (Y)");
     }
 
-    // -------------------------------------------------------
-    // INNER CLASSES (Must remain at the bottom for Checkstyle)
-    // -------------------------------------------------------
-
     /**
      * Mock {@link LifeComponent} for testing purposes.
      * Simulates health tracking without UI dependencies.
@@ -222,7 +215,7 @@ class FinalBossTest {
                     TILE_WIDTH_32,
                     TILE_HEIGHT_32,
                     TILE_ID_1,
-                    true, // Solid
+                    true,
                     false,
                     false,
                     true,

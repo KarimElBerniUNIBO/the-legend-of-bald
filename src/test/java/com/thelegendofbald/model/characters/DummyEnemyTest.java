@@ -30,8 +30,6 @@ class DummyEnemyTest {
 
     private static final String ENEMY_NAME = "Goblin";
 
-    // FIX: Rinominato da 'getAttackPower...' a 'attackPowerReturns...'
-    // Rimuovendo 'get' iniziale, il linter non si aspetta più un valore di ritorno.
     @Test
     void attackPowerReturnsValuePassedInConstructor() {
         final DummyEnemy enemy = new DummyEnemy(

@@ -27,13 +27,11 @@ class DataManagerTest {
     @BeforeEach
     void setUp() throws IOException {
         dataManager = new DataManager();
-        // Clean up the save file before each test
         Files.deleteIfExists(Paths.get(SAVE_FILE_PATH));
     }
 
     @AfterEach
     void tearDown() throws IOException {
-        // Clean up the save file after each test
         Files.deleteIfExists(Paths.get(SAVE_FILE_PATH));
     }
 

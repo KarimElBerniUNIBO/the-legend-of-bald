@@ -8,7 +8,7 @@ import com.thelegendofbald.model.system.CombatManager;
  */
 public abstract class HeavyMeleeWeapon extends MeleeWeapon {
 
-    private static final int ATTACK_COOLDOWN = 1000; // milliseconds
+    private static final int ATTACK_COOLDOWN = 1000;
 
     /**
      * Constructs a HeavyMeleeWeapon with the specified parameters.

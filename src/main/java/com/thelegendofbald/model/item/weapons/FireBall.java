@@ -17,7 +17,7 @@ public final class FireBall extends RangedWeapon implements ShopItem {
     private static final String NAME = "Fireball";
     private static final String DESCRIPTION = "A fiery projectile";
     private static final int DAMAGE = 25;
-    private static final int ATTACK_COOLDOWN = 600; // milliseconds
+    private static final int ATTACK_COOLDOWN = 600;
     private static final int PRICE = 120;
 
     /**

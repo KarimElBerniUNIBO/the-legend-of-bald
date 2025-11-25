@@ -460,7 +460,7 @@ public final class Bald extends Entity implements Combatant {
      * @return the player's wallet instance
      */
     public Wallet getWallet() {
-        return new Wallet(this.wallet);  // restituisci il wallet reale
+        return new Wallet(this.wallet);
     }
 
     /**

@@ -15,7 +15,7 @@ import java.awt.event.ComponentEvent;
  * <pre>
  * Example usage:
  * component.addComponentListener(new ResizeListener(() -> {
- *     // Code to execute on resize
+ *     Code to execute on resize
  * }));
  * </pre>
  */

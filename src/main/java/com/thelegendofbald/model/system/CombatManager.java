@@ -18,11 +18,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public class CombatManager {
 
-    private static final int ENEMY_ATTACK_COOLDOWN = 700; // milliseconds
+    private static final int ENEMY_ATTACK_COOLDOWN = 700; 
 
     private final Bald bald;
     private final List<DummyEnemy> enemies;
-    private FinalBoss boss; // MODIFICA: Rimosso 'final', non è nel costruttore
+    private FinalBoss boss; 
     private final List<Projectile> projectiles = new LinkedList<>();
 
     private long lastAttackTime;
@@ -38,11 +38,10 @@ public class CombatManager {
         justification = "This constructor is intended to be used for initializing"
         + " the CombatManager instance without throwing exceptions."
         )
-    // MODIFICA: Rimosso 'FinalBoss boss' dal costruttore
     public CombatManager(final Bald bald, final List<DummyEnemy> enemies) {
         this.bald = bald;
         this.enemies = enemies;
-        this.boss = null; // Il boss è nullo all'inizio
+        this.boss = null;
     }
 
     /**
@@ -73,8 +72,6 @@ public class CombatManager {
 
             bald.attack();
 
-            // MODIFICA: Passa anche il boss al metodo di attacco.
-            // Questo richiederà di aggiornare le tue classi Weapon (es. Sword).
             w.performAttack(bald, enemies, boss); 
 
             lastAttackTime = now;
@@ -95,15 +92,12 @@ public class CombatManager {
                     enemy.setLastAttackTime(now);
                 });
 
-        // NOTA: Gli attacchi del Boss (Melee/AOE) sono gestiti
-        // nel suo metodo followPlayer(), quindi non serve aggiungerli qui.
     }
 
     /**
      * Checks for projectile collisions with enemies AND THE BOSS.
      */
     public void checkProjectiles() {
-        // 1. Controlla i nemici normali (codice esistente)
         enemies.stream()
                 .filter(enemy -> enemy.isAlive() && projectiles.stream()
                         .anyMatch(projectile -> projectile.getBounds().intersects(enemy.getBounds())))
@@ -117,18 +111,15 @@ public class CombatManager {
                     });
                 });
 
-        // 2. --- MODIFICA DA AGGIUNGERE ---
-        // Controlla anche il boss, se esiste ed è vivo
         if (boss != null && boss.isAlive()) {
             projectiles.removeIf(projectile -> {
                 if (projectile.getBounds().intersects(boss.getBounds())) {
                     boss.takeDamage(projectile.getAttackPower());
-                    return true; // Il proiettile colpisce e viene rimosso
+                    return true;
                 }
                 return false;
             });
         }
-        // --- FINE MODIFICA ---
 
         projectiles.removeIf(projectile -> !projectile.isAlive());
     }

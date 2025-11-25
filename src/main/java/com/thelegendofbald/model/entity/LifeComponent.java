@@ -104,7 +104,6 @@ public class LifeComponent {
         final int oldHealth = this.currentHealth;
         this.currentHealth = Math.max(0, this.currentHealth - damage);
 
-        // "Spara" l'evento di notifica
         support.firePropertyChange(HEALTH_PROPERTY, oldHealth, this.currentHealth);
     }
 

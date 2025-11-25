@@ -25,7 +25,6 @@ public final class GameWindow extends JFrame implements View, MainView {
     private static final int DEFAULT_WINDOW_WIDTH = 1280;
     private static final int DEFAULT_WINDOW_HEIGHT = 704;
 
-    // volatile per garantire visibilità del riferimento tra thread
     private volatile Dimension internalSize = new Dimension(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
     private Panels currentPanel = Panels.MAIN_MENU;
     private transient Optional<Panels> lastPanel = Optional.empty();
@@ -36,9 +35,8 @@ public final class GameWindow extends JFrame implements View, MainView {
         this.updatePanelsSize();
     }
 
-    // SINCRONIZZATO: legge la size tramite getter sincronizzato e la applica ai pannelli
     private synchronized void updatePanelsSize() {
-        final Dimension size = this.getInternalSize(); // usa il getter synchronized + clone
+        final Dimension size = this.getInternalSize();
         Arrays.stream(Panels.values())
                 .map(Panels::getPanel)
                 .forEach(panel -> panel.setPreferredSize(size));
@@ -84,7 +82,6 @@ public final class GameWindow extends JFrame implements View, MainView {
 
     @Override
     public synchronized void setInternalSize(final Dimension size) {
-        // copia difensiva + aggiornamento coerente dei pannelli sotto lo stesso lock
         internalSize = (Dimension) size.clone();
         this.updatePanelsSize();
     }

@@ -102,7 +102,6 @@ public class TileMap {
      * @throws IOException se la lettura fallisce
      */
     private BufferedImage loadBufferedImage(final String path) throws IOException {
-        // MANTENIAMO TileMap.class invece di getClass() per evitare problemi di sicurezza
         final InputStream stream = TileMap.class.getResourceAsStream(path);
         if (stream == null) {
             throw new IllegalArgumentException("Risorsa non trovata: " + path);
@@ -165,7 +164,6 @@ public class TileMap {
     private int[][] loadMapFromFile(final String fileName) {
         final List<int[]> rows = new ArrayList<>();
 
-        // MANTENIAMO TileMap.class invece di getClass()
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
                 TileMap.class.getResourceAsStream("/map/" + fileName), StandardCharsets.UTF_8))) {
 
@@ -200,7 +198,6 @@ public class TileMap {
      * @return immagine o {@code null} se fallisce
      */
     private BufferedImage loadImage(final String path) {
-        // MANTENIAMO TileMap.class invece di getClass()
         try (InputStream is = TileMap.class.getResourceAsStream(path)) {
             if (is == null) {
                 LoggerUtils.error("Immagine non trovata: " + path);

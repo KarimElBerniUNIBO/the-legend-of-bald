@@ -57,10 +57,11 @@ final class CategoriesPanel extends AdapterPanel implements InteractivePanel {
 
     private List<JButton> getListOfButtons() {
         return Stream.iterate(0, i -> i <= Settings.getMaxIndex(), i -> i + 1)
-                .map(i -> (JButton) jbFactory.createTrasparentButton(Settings.getSettingByIndex(i).getName(), // NOPMD
-                        Optional.of(BUTTON_PROPORTION),
-                        Optional.of(Font.MONOSPACED), Optional.of(Color.WHITE), Optional.empty()))
-                .toList();
+            .map(i -> jbFactory.createTrasparentButton(Settings.getSettingByIndex(i).getName(),
+                Optional.of(BUTTON_PROPORTION),
+                Optional.of(Font.MONOSPACED), Optional.of(Color.WHITE), Optional.empty()))
+            .map(JButton.class::cast)
+            .toList();
     }
     /*
      * Suppresses the unchecked cast warning because the

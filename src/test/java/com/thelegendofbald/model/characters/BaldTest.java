@@ -41,8 +41,6 @@ class BaldTest {
 
     @Test
     void testWalletStartsEmptyAndCanAdd() {
-        // Rimosso 'final Bald bald = ...' perché non veniva utilizzato.
-        // Questo test verifica isolatamente il funzionamento del Wallet.
         final Wallet wallet = new Wallet(0);
 
         assertEquals(INITIAL_COINS, wallet.getCoins());

@@ -27,7 +27,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.thelegendofbald.model.system.CombatManager;
-// Assicurati di importare ShopItem corretto
 import com.thelegendofbald.model.item.ShopItem;
 
 class ShopPanelTest {
@@ -36,7 +35,6 @@ class ShopPanelTest {
 
     private static final class DummyCombatManager extends CombatManager {
         DummyCombatManager() {
-            // Passiamo null/liste vuote per soddisfare il costruttore di CombatManager
             super(null, Collections.emptyList());
         }
     }
@@ -89,21 +87,16 @@ class ShopPanelTest {
     @Test
     @DisplayName("Setup iniziale: size, bg, layout, label oro e popolamento items")
     void initialSetup_ok() {
-        // FIX: Aggiunto il terzo parametro (Inventory) come null
         ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
 
-        // Preferred size / BG / layout absolute
         assertEquals(new Dimension(400, 300), p.getPreferredSize());
         assertEquals(Color.DARK_GRAY, p.getBackground());
         assertNull(p.getLayout());
 
-        // Label oro presente
         JLabel gold = getGoldLabel(p);
         assertNotNull(gold);
-        // FIX: Il codice usa "Gold:", non "Oro:"
         assertTrue(gold.getText().startsWith("Gold: "), "La label deve iniziare con 'Gold: '");
 
-        // Lista item popolata (Sword, Axe, FireBall)
         List<?> items = getItems(p);
         assertNotNull(items);
         assertFalse(items.isEmpty());
@@ -113,39 +106,29 @@ class ShopPanelTest {
     @Test
     @DisplayName("updateGoldDisplay() riflette il valore del coinsSupplier")
     void updateGoldDisplay_updatesText() {
-        // FIX: Aggiunto il terzo parametro null
         ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
 
-        // Forziamo un supplier che ritorna 123
         setCoinsSupplier(p, () -> 123);
 
         p.updateGoldDisplay();
         JLabel gold = getGoldLabel(p);
-        // FIX: Il codice usa "Gold:", non "Oro:"
         assertEquals("Gold: 123", gold.getText());
     }
 
     @Test
     @DisplayName("paint/render non lancia eccezioni")
     void paint_noThrow() {
-        // FIX: Aggiunto il terzo parametro null
         ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
         BufferedImage surface = new BufferedImage(400, 300, BufferedImage.TYPE_INT_ARGB);
 
-        // FIX: Rimossa la lettera 'a' che causava errore di compilazione
         assertDoesNotThrow(() -> p.paint(surface.createGraphics()));
     }
 
     @Test
     @DisplayName("Click su primo item imposta selectedIndex = 0")
     void mouseClick_selectsFirstItem() {
-        // FIX: Aggiunto il terzo parametro null
         ShopPanel p = new ShopPanel(new DummyCombatManager(), null, null);
 
-        // Calcolo coordinate click:
-        // Nel codice: y start = 80, offset = 25.
-        // Rect Y start = 80 - 25 = 55. Altezza 35. Range Y [55, 90].
-        // Click Y = 80 - 25 + 1 = 56. (Valido)
         int clickX = 21;
         int clickY = 80 - 25 + 1;
 
@@ -168,24 +151,20 @@ class ShopPanelTest {
     @Test
     @DisplayName("Deserializzazione: readObject ripristina stato 'safe' (no throw)")
     void deserialize_resetsTransient_noThrow() {
-        // FIX: Aggiunto il terzo parametro null
         ShopPanel original = new ShopPanel(new DummyCombatManager(), null, null);
 
         assertDoesNotThrow(() -> {
-            // Serializza
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
                 oos.writeObject(original);
             }
             byte[] bytes = bos.toByteArray();
 
-            // Deserializza
             try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
                 Object obj = ois.readObject();
                 assertTrue(obj instanceof ShopPanel);
                 ShopPanel restored = (ShopPanel) obj;
 
-                // Dopo readObject nel tuo codice: items = new ArrayList<>(), quindi è vuoto.
                 List<?> items = getItems(restored);
                 assertNotNull(items);
                 assertTrue(items.isEmpty(), "Items deve essere vuoto (reinizializzato) dopo deserializzazione");
@@ -194,7 +173,6 @@ class ShopPanelTest {
                 restored.updateGoldDisplay();
                 JLabel gold = getGoldLabel(restored);
                 assertNotNull(gold);
-                // FIX: Il codice usa "Gold:", non "Oro:"
                 assertEquals("Gold: 77", gold.getText());
             }
         });

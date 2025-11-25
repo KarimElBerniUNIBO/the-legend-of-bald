@@ -22,12 +22,10 @@ import com.thelegendofbald.view.render.TileMap;
  */
 class ItemManagerTest {
 
-    // Test constants
     private static final int TEST_ITEM_SIZE = 5;
     private static final List<Integer> TEST_LOOT_POOL = List.of(7, 8, 9);
     private static final int TEST_TILE_SIZE = 32;
 
-    // ItemManager instance for testing
     private ItemManager itemManager;
 
     @BeforeEach
@@ -76,7 +74,6 @@ class ItemManagerTest {
 
     @Test
     void testHandleItemCollectionNonIntersectingItemNotRemoved() {
-        // Bald far away so no intersection with item at 0,0
         final Bald bald = new Bald(1000, 1000, 100, "Bald", 10);
         final GameItem distant = new GameItem(0, 0, 10, 10, "distant");
         itemManager.addItem(distant);
@@ -103,7 +100,6 @@ class ItemManagerTest {
             @Override
             public void render(final Graphics g) {
                 rendered = true;
-                // mutate manager during render to ensure snapshot protection
                 manager.addItem(new GameItem(getX() + 1, getY() + 1, TEST_ITEM_SIZE, TEST_ITEM_SIZE, "added"));
             }
         }
@@ -111,11 +107,9 @@ class ItemManagerTest {
         final TestRenderableDuringRender renderer = new TestRenderableDuringRender(0, 0, itemManager);
         itemManager.addItem(renderer);
 
-        // This should not throw ConcurrentModificationException because ItemManager uses a snapshot
         itemManager.renderAll(g);
 
         assertTrue(renderer.rendered, "Renderer's render should be invoked");
-        // The render method adds one new item to the manager
         assertTrue(itemManager.getItems().stream().anyMatch(i -> i != renderer),
             "Item added during render should be present after renderAll");
     }

@@ -12,7 +12,7 @@ import com.thelegendofbald.utils.LoggerUtils;
 public class StrengthPotion extends Potion  { 
 
     private static final int STRENGTH_BONUS = 50;
-    private static final long DURATION_MS = 10_000; // 10 seconds
+    private static final long DURATION_MS = 10_000;
     private static final int DEFAULT_WIDTH = 32;
     private static final int DEFAULT_HEIGHT = 32;
     private static final int DEFAULT_PRICE = 50;

@@ -60,15 +60,15 @@ public final class Tile {
                 g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                 g2.drawImage(image, 0, 0, width, height, null);
                 g2.dispose();
-                this.image = resized; // già copia
+                this.image = resized;
             } else {
-                this.image = deepCopy(image); // copia difensiva
+                this.image = deepCopy(image);
             }
         } else {
             this.image = null;
         }
 
-        this.overlayImage = overlayImage != null ? deepCopy(overlayImage) : null; // copia difensiva
+        this.overlayImage = overlayImage != null ? deepCopy(overlayImage) : null;
     }
 
     /**
@@ -181,7 +181,6 @@ public final class Tile {
     /* ===================== Util: copia difensiva BufferedImage ===================== */
 
     private static BufferedImage deepCopy(final BufferedImage src) {
-        // Evita TYPE_CUSTOM = 0
         final int type = src.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : src.getType();
         final BufferedImage copy = new BufferedImage(src.getWidth(), src.getHeight(), type);
         final Graphics2D g = copy.createGraphics();

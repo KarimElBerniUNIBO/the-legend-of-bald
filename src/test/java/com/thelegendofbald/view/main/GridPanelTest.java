@@ -30,13 +30,10 @@ class GridPanelTest {
     private static final int GRID_SPACING = 32;
     private static final int DOUBLE_GRID = 64;
 
-    // Dimensions for the paint test (enough to cover 0, 32, 64)
     private static final int TEST_CANVAS_SIZE = 90;
 
-    // Offset to sample pixels avoiding intersection points
     private static final int SAMPLE_OFFSET = 10;
 
-    // Alpha channel shift for ARGB color integers
     private static final int ALPHA_SHIFT = 24;
     private static final int ALPHA_MASK = 0xFF;
 
@@ -88,12 +85,9 @@ class GridPanelTest {
         panel.paintComponent(g2);
         g2.dispose();
 
-        // Helper function to extract the Alpha component (0..255) of a pixel
         final BiFunction<Integer, Integer, Integer> alphaAt = (x, y) ->
                 (img.getRGB(x, y) >>> ALPHA_SHIFT) & ALPHA_MASK;
 
-        // 1. Verify Vertical Lines (at x = 0, 32, 64)
-        // We check at y = SAMPLE_OFFSET to avoid crossing horizontal lines
         assertTrue(alphaAt.apply(0, SAMPLE_OFFSET) > 0,
                 "Vertical line at x=0 should be drawn");
         assertTrue(alphaAt.apply(GRID_SPACING, SAMPLE_OFFSET) > 0,
@@ -101,7 +95,6 @@ class GridPanelTest {
         assertTrue(alphaAt.apply(DOUBLE_GRID, SAMPLE_OFFSET) > 0,
                 "Vertical line at x=64 should be drawn");
 
-        // Verify gaps (pixels next to lines should be transparent)
         assertEquals(0, alphaAt.apply(1, SAMPLE_OFFSET),
                 "Pixel at x=1 should be transparent");
         assertEquals(0, alphaAt.apply(GRID_SPACING - 1, SAMPLE_OFFSET),
@@ -109,8 +102,6 @@ class GridPanelTest {
         assertEquals(0, alphaAt.apply(GRID_SPACING + 1, SAMPLE_OFFSET),
                 "Pixel at x=33 should be transparent");
 
-        // 2. Verify Horizontal Lines (at y = 0, 32, 64)
-        // We check at x = SAMPLE_OFFSET
         assertTrue(alphaAt.apply(SAMPLE_OFFSET, 0) > 0,
                 "Horizontal line at y=0 should be drawn");
         assertTrue(alphaAt.apply(SAMPLE_OFFSET, GRID_SPACING) > 0,
@@ -118,7 +109,6 @@ class GridPanelTest {
         assertTrue(alphaAt.apply(SAMPLE_OFFSET, DOUBLE_GRID) > 0,
                 "Horizontal line at y=64 should be drawn");
 
-        // Verify gaps for horizontal lines
         assertEquals(0, alphaAt.apply(SAMPLE_OFFSET, 1),
                 "Pixel at y=1 should be transparent");
         assertEquals(0, alphaAt.apply(SAMPLE_OFFSET, GRID_SPACING - 1),

@@ -23,23 +23,19 @@ import org.junit.jupiter.api.Test;
  */
 class TileTest {
 
-    // Dimensions for basic tests
     private static final int WIDTH_10 = 10;
     private static final int HEIGHT_12 = 12;
 
-    // Dimensions for resize tests
     private static final int SMALL_SIZE = 8;
     private static final int TARGET_WIDTH_32 = 32;
     private static final int TARGET_HEIGHT_24 = 24;
     private static final int OVERLAY_SIZE = 16;
 
-    // IDs
     private static final int ID_DEFAULT = 0;
     private static final int ID_TEST = 7;
     private static final int ID_NO_ID = -1;
     private static final int ID_EQUALITY = 42;
 
-    // Test coordinates/rects
     private static final int RECT_SIZE = 5;
     private static final int PIXEL_CHECK_X = 2;
     private static final int PIXEL_CHECK_Y = 2;
@@ -80,7 +76,6 @@ class TileTest {
         assertFalse(tile.isSpawn());
         assertFalse(tile.isWalkable());
 
-        // verify defensive copy on getter
         final BufferedImage got1 = tile.getImage();
         final BufferedImage got2 = tile.getImage();
 
@@ -88,13 +83,11 @@ class TileTest {
         assertNotSame(src, got1, "Getter should return a copy, not the original reference");
         assertNotSame(got1, got2, "Subsequent calls should return new copies");
 
-        // Modify the copy
         final Graphics2D g = got1.createGraphics();
         g.setColor(Color.GREEN);
         g.fillRect(0, 0, RECT_SIZE, RECT_SIZE);
         g.dispose();
 
-        // Verify internal state is unchanged
         final BufferedImage fresh = tile.getImage();
         final int rgbFresh = fresh.getRGB(PIXEL_CHECK_X, PIXEL_CHECK_Y);
         assertEquals(Color.RED.getRGB(), rgbFresh, "Internal image should remain modified");
@@ -110,7 +103,6 @@ class TileTest {
     void mainConstructorHandlesResizeFlag() {
         final BufferedImage src = makeImg(SMALL_SIZE, SMALL_SIZE, Color.BLUE);
 
-        // Case 1: Resize = true
         final Tile resized = new Tile(src, TARGET_WIDTH_32, TARGET_HEIGHT_24, ID_TEST,
                 true, true, false, true, null);
 
@@ -123,7 +115,6 @@ class TileTest {
         assertTrue(resized.isWalkable());
         assertTrue(resized.hasId());
 
-        // Case 2: Resize = false
         final Tile notResized = new Tile(src, TARGET_WIDTH_32, TARGET_HEIGHT_24, ID_NO_ID,
                 false, false, false, false, null);
 
@@ -153,7 +144,6 @@ class TileTest {
         assertNotSame(overlay, gotOverlay1);
         assertNotSame(gotOverlay1, gotOverlay2);
 
-        // Modify the retrieved overlay
         final Graphics2D g = gotOverlay1.createGraphics();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, RECT_SIZE - 1, RECT_SIZE - 1);
@@ -171,7 +161,6 @@ class TileTest {
     @Test
     @DisplayName("Render: executes safely with or without images")
     void renderExecutesWithoutThrowing() {
-        // Case 1: With images
         final Tile withImages = new Tile(makeImg(SMALL_SIZE, SMALL_SIZE, Color.RED),
                 SMALL_SIZE, SMALL_SIZE, 1, false, false, false, true,
                 makeImg(SMALL_SIZE, SMALL_SIZE, Color.GREEN));
@@ -183,7 +172,6 @@ class TileTest {
             withImages.render(canvas1.createGraphics(), RENDER_X, RENDER_Y);
         });
 
-        // Case 2: With null images
         final Tile noImages = new Tile(null, SMALL_SIZE, SMALL_SIZE, 2,
                 false, false, false, false, null);
 
@@ -212,15 +200,12 @@ class TileTest {
         final Tile c = new Tile(makeImg(RECT_SIZE, RECT_SIZE, Color.RED),
                 RECT_SIZE, RECT_SIZE, ID_TEST, false, false, false, false, null);
 
-        // Same ID -> Equal
         assertEquals(a, b);
         assertEquals(a.hashCode(), b.hashCode());
 
-        // Different ID -> Not Equal
         assertNotEquals(a, c);
         assertNotEquals(a.hashCode(), c.hashCode());
 
-        // Null and Type checks
         assertNotEquals(a, null);
         assertNotEquals(a, "not a tile");
     }
