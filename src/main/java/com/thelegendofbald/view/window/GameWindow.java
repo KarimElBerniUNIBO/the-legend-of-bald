@@ -32,13 +32,6 @@ public final class GameWindow extends JFrame implements View, MainView {
     /** Altezza predefinita della finestra in pixel. */
     private static final int DEFAULT_WINDOW_HEIGHT = 704;
 
-<<<<<<< HEAD
-=======
-    /**
-     * Dimensione interna attuale della finestra.
-     * Dichiarata volatile per garantire la visibilità delle modifiche tra i thread.
-     */
->>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
     private volatile Dimension internalSize = new Dimension(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
     /** Il pannello attualmente visualizzato nella finestra. */
@@ -59,16 +52,6 @@ public final class GameWindow extends JFrame implements View, MainView {
         this.updatePanelsSize();
     }
 
-<<<<<<< HEAD
-=======
-    /**
-     * Aggiorna la dimensione preferita di tutti i pannelli registrati nell'enum {@link Panels}.
-     * <p>
-     * Questo metodo è sincronizzato per evitare race condition durante il ridimensionamento
-     * concorrente della finestra.
-     * </p>
-     */
->>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
     private synchronized void updatePanelsSize() {
         final Dimension size = this.getInternalSize();
         Arrays.stream(Panels.values())

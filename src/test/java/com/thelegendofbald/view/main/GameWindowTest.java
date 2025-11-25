@@ -28,10 +28,6 @@ class GameWindowTest {
 
     @BeforeEach
     void setUp() {
-<<<<<<< HEAD
-=======
-
->>>>>>> f2bbfff79374462da6c37903b0911f2b7b6949da
         Assumptions.assumeFalse(GraphicsEnvironment.isHeadless(), "Richiede AWT non headless");
         this.window = new GameWindow();
     }
