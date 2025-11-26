@@ -51,15 +51,6 @@ application {
     mainClass.set("com.thelegendofbald.Main")
 }
 
-// TODO: remove exclusion when ShopPanelTest is fixed
-sourceSets {
-    test {
-        java {
-            exclude("**/ShopPanelTest.java")
-        }
-    }
-}
-
 tasks.test {
     useJUnitPlatform()
     testLogging {
